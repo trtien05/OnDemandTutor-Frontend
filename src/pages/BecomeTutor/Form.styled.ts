@@ -1,7 +1,7 @@
 import { Form, Typography, Checkbox } from "antd";
 import styled, { css } from 'styled-components';
 
-import { theme } from '../../../themes';
+import { theme } from '../../themes';
 import React from "react";
 
 const { Title, Text } = Typography;
@@ -30,9 +30,7 @@ export const FormCheckbox = styled(Checkbox)`
 export const FormWrapper = styled(Form)`
     display: flex;
     flex-wrap: wrap;
-    
     flex-direction: row;
-    
 `;
 
 export const FormTitle = styled(Title)`
@@ -132,4 +130,8 @@ export const FormItem = styled(Form.Item)<{$width: string;}>`
         line-height: 1.6;
     }
 `;
+
+
+
+
 
