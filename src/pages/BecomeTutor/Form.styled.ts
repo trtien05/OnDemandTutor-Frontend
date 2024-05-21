@@ -11,13 +11,12 @@ export const FormContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
-    max-width: 500px;
-    
     column-gap: 5%;
     margin: 0 auto;
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
         width: 100%;
+        flex-direction: column;
     }
 `;
 
@@ -30,7 +29,8 @@ export const FormCheckbox = styled(Checkbox)`
 export const FormWrapper = styled(Form)`
     display: flex;
     flex-wrap: wrap;
-    flex-direction: row;
+    flex-direction: column;
+    row-gap: 44px;
 `;
 
 export const FormTitle = styled(Title)`
@@ -56,10 +56,14 @@ export const FormDescription = styled(Text)`
 `;
 
 export const FormItem = styled(Form.Item)<{$width: string;}>`
-    display: flex;
+
     width: ${({ $width }) => $width || '100%'};
     &.ant-form-item {
-        margin-bottom: 12px;
+        margin-bottom: 24px;
+        ${({ theme }) => theme.breakpoints.down('sm')} {
+            
+            width: 100%
+        }
     }
 
     &.ant-form-item:last-child {
@@ -102,7 +106,7 @@ export const FormItem = styled(Form.Item)<{$width: string;}>`
         position: relative;
 
         & .ant-form-item-control-input + div {
-            position: absolute;
+            position: relative;
             top: 100%;
             left: 0;
         }
@@ -124,6 +128,7 @@ export const FormItem = styled(Form.Item)<{$width: string;}>`
 
     & .ant-form-item-explain-error {
         margin-top: 2px;
+        margin-bottom: 5px;
         color: ${theme.colors.error};
         font-size: 0.8rem;
         text-align: left;

@@ -122,7 +122,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
         <FormStyled.FormDescription>Make a great first impression!<br />
           Tutors who look friendly and professional get the most students</FormStyled.FormDescription>
 
-        <div style={{margin: 'auto'}}>  
+        <FormStyled.FormContainer style={{margin: 'auto'}}>  
         <ImgCrop
           quality={1}
           showReset
@@ -141,7 +141,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
               src={imageUrl}
             /></Upload>
         </ImgCrop>
-        </div>
+        </FormStyled.FormContainer>
 
         <FormStyled.FormCheckbox required name='agreement' value='true'>By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the Terms and Condition.</FormStyled.FormCheckbox>
         <Button type='primary' htmlType="submit">Save and continue</Button>

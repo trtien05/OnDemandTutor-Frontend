@@ -89,10 +89,7 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
   };
 
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }}>
-
-      <Title
-        style={{ color: `${theme.colors.primary}`, textTransform: 'capitalize' }}>Become our tutor!</Title>
+    <Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{margin: `auto`}}>
 
       <FormStyled.FormWrapper
         labelAlign='left'
@@ -102,8 +99,8 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
         onFinish={onFinish}
         initialValues={initialValues}>
         <FormStyled.FormContainer>
-          <FormStyled.FormTitle level={1}>About</FormStyled.FormTitle>
-          <FormStyled.FormDescription>Start creating your public tutor profile. Your progress will be automatically saved as you complete each section. You can return at any time to finish your registration.</FormStyled.FormDescription>
+          <FormStyled.FormTitle level={1}>Education</FormStyled.FormTitle>
+          <FormStyled.FormDescription>Tell students more about the higher education that you've completed or are working on.</FormStyled.FormDescription>
 
           {educationForm.map((field) => {
             return (
