@@ -1,8 +1,16 @@
-import { Input, DatePicker, Select } from 'antd';
+import { Input, DatePicker, Select, GetProps } from 'antd';
 import { Rule } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
 import { NamePath } from 'antd/es/form/interface';
-import { Degree, Gender } from '../../utils/enums';
+import * as Enum from '../../utils/enums';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import FileUpload from '../../components/UploadImg';
+
+const { RangePicker } = DatePicker;
+const { TextArea } = Input
+type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
+dayjs.extend(customParseFormat);
 
 export type FieldType = {
     key: number;
@@ -38,6 +46,12 @@ const validateBirthDate = (_: unknown, value: string) => {
     return Promise.resolve();
 };
 
+const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    // Can not select days after today and today
+    return current && current > dayjs().endOf('day');
+};
+
+
 export const aboutForm: FieldType[] = [
     {
         key: 1,
@@ -55,7 +69,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Full name must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder=" "/>,
+        children: <Input placeholder=" " />,
     },
     {
         key: 2,
@@ -121,7 +135,7 @@ export const aboutForm: FieldType[] = [
         key: 5,
         label: 'Gender',
         name: 'gender',
-        
+
         rules: [
             {
                 required: true,
@@ -129,10 +143,10 @@ export const aboutForm: FieldType[] = [
             },
         ],
         children: (
-            <Select size="large" placeholder="Select gender" style={{flex:0}} >
-                <Select.Option value={Gender.MALE}>Male</Select.Option>
-                <Select.Option value={Gender.FEMALE}>Female</Select.Option>
-                <Select.Option value={Gender.OTHER}>Other</Select.Option>
+            <Select size="large" placeholder="Select gender">
+                <Select.Option value={Enum.Gender.MALE}>Male</Select.Option>
+                <Select.Option value={Enum.Gender.FEMALE}>Female</Select.Option>
+                <Select.Option value={Enum.Gender.OTHER}>Other</Select.Option>
             </Select>
         ),
         $width: '30%',
@@ -151,9 +165,9 @@ export const aboutForm: FieldType[] = [
                 message: 'Address must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder="Phuong 7, Quan Phu Nhuan, TP.HCM" />,
+        children: <Input name='address' placeholder="Phuong 7, Quan Phu Nhuan, TP.HCM" />,
     },
-    
+
 ]
 
 export const educationForm: FieldType[] = [
@@ -172,7 +186,7 @@ export const educationForm: FieldType[] = [
                 message: 'University name must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder="Ho Chi Minh City University of Education" />,
+        children: <Input name='university' placeholder="Ho Chi Minh City University of Education" />,
     },
     {
         key: 2,
@@ -184,12 +198,12 @@ export const educationForm: FieldType[] = [
                 message: 'Please select your degree.',
             },
         ],
-        children: (<Select size="large"  placeholder="Select degree type" style={{ flex: `0`, lineHeight: `2.8rem` }} >
-        <Select.Option value={Degree.ASSOCIATE}>{Degree.ASSOCIATE}</Select.Option>
-        <Select.Option value={Degree.BACHELOR}>{Degree.BACHELOR}</Select.Option>
-        <Select.Option value={Degree.MASTER}>{Degree.MASTER}</Select.Option>
-        <Select.Option value={Degree.DOCTORAL}>{Degree.DOCTORAL}</Select.Option>
-    </Select>),
+        children: (<Select size="large" placeholder="Select degree type" >
+            <Select.Option value={Enum.Degree.ASSOCIATE}>{Enum.Degree.ASSOCIATE}</Select.Option>
+            <Select.Option value={Enum.Degree.BACHELOR}>{Enum.Degree.BACHELOR}</Select.Option>
+            <Select.Option value={Enum.Degree.MASTER}>{Enum.Degree.MASTER}</Select.Option>
+            <Select.Option value={Enum.Degree.DOCTORAL}>{Enum.Degree.DOCTORAL}</Select.Option>
+        </Select>),
         $width: '40%',
     },
     {
@@ -206,7 +220,7 @@ export const educationForm: FieldType[] = [
                 message: 'Major name must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder="English Language" />,
+        children: <Input name='major' placeholder="English Language" />,
         $width: '55%',
     },
     {
@@ -223,7 +237,146 @@ export const educationForm: FieldType[] = [
                 message: 'Degree\'s specialization must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder="Interpretation - Translation" />,
+        children: <Input name='specialization' placeholder="Interpretation - Translation" />,
         $width: '100%',
+    },
+    {
+        key: 5,
+        label: 'Academic year',
+        name: 'academicYear',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your academic year.',
+            },
+        ],
+        children: (
+            <RangePicker
+                size='large'
+                picker="year"
+                disabledDate={disabledDate}
+                id={{
+                    start: 'startYear',
+                    end: 'endYear',
+                }}
+                style={{ width: `100%` }}
+            />
+        ),
+    },
+    {
+        key: 6,
+        label: `Diploma Verification`,
+        name: 'educationVerification',
+        rules: [
+            {
+                required: false,
+                message: 'Please upload your diploma verification.',
+            },
+        ],
+        children: (
+            <FileUpload />
+        ),
+    },
+]
+
+export const certificateForm: FieldType[] = [
+    {
+        key: 1,
+        label: 'Subject',
+        name: 'subject',
+        rules: [
+            {
+                required: true,
+                message: 'Please select a subject for your certificate.',
+            },
+        ],
+        children: (
+            <Select size="large" placeholder="Select Subject">
+                {Object.values(Enum.Subject).map((subject) => (
+                    <Select.Option key={subject} value={subject}>
+                        {subject}
+                    </Select.Option>
+                ))}
+            </Select>
+        ),
+    },
+    {
+        key: 2,
+        label: 'Certificate name',
+        name: 'certificateName',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your certificate name.',
+            },
+            {
+                max: 50,
+                message: 'Certificate name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='certificateName' placeholder='TESOL' />,
+    },
+    {
+        key: 3,
+        label: 'Description',
+        name: 'description',
+        rules: [
+            {
+                max: 100,
+                message: 'Description must not exceed 100 characters.',
+            },
+        ],
+        children: <TextArea rows={3} name='description' placeholder="Teaching English as a second or foreign language" />,
+    },
+    {
+        key: 4,
+        label: 'Issued by',
+        name: 'issuedOrganization',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your certificate\'s issued organization.',
+            },
+            {
+                max: 50,
+                message: 'Certificate\'s issued organization name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='issuedOrganization' placeholder="Trinity College London" />,
+        $width: '70%',
+    },
+    {
+        key: 5,
+        label: 'Issued year',
+        name: 'issuedYear',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your certificate\'s issued year.',
+            },
+        ],
+        children: (
+            <DatePicker
+                size='large'
+                picker="year"
+                disabledDate={disabledDate}
+                style={{ width: `100%` }}
+            />
+        ),
+        $width: '25%',
+    },
+    {
+        key: 6,
+        label: `Certificate Verification`,
+        name: 'certificateVerification',
+        rules: [
+            {
+                required: false,
+                message: 'Please upload your certificate verification.',
+            },
+        ],
+        children: (
+            <FileUpload />
+        ),
     },
 ]

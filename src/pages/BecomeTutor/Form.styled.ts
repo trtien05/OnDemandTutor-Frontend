@@ -55,7 +55,7 @@ export const FormDescription = styled(Text)`
     font-size: 1rem;
 `;
 
-export const FormItem = styled(Form.Item)<{$width: string;}>`
+export const FormItem = styled(Form.Item)<{$width?: string;}>`
 
     width: ${({ $width }) => $width || '100%'};
     &.ant-form-item {
@@ -114,7 +114,8 @@ export const FormItem = styled(Form.Item)<{$width: string;}>`
 
     & .ant-input,
     & .ant-input-number-input,
-    & .ant-input-password {
+    & .ant-input-password,
+    & .ant-select-selector {
         padding: 12px 20px;
         font-size: 1rem;
         border-radius: 6px;

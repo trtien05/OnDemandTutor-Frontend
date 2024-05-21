@@ -4,7 +4,8 @@ import {
   UploadFile,
   notification,
   Typography,
-  Button
+  Button,
+  Form,
 } from 'antd';
 import { UserOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
@@ -121,16 +122,19 @@ const Form1 = ({onFinish, initialValues}:any) => {
         <FormStyled.FormTitle>Profile picture</FormStyled.FormTitle>
         <FormStyled.FormDescription>Make a great first impression!<br />
           Tutors who look friendly and professional get the most students</FormStyled.FormDescription>
-
+        <br/>
         <FormStyled.FormContainer style={{margin: 'auto'}}>  
+        <Form.Item>
         <ImgCrop
           quality={1}
           showReset
           showGrid
         >
-          <Upload name="avatar"
+          <Upload 
+            name="avatar"
             listType="picture-card"
             className="avatar-uploader"
+
             showUploadList={false}
             beforeUpload={beforeUpload}
             onChange={handleUploadAvatar}>
@@ -141,12 +145,21 @@ const Form1 = ({onFinish, initialValues}:any) => {
               src={imageUrl}
             /></Upload>
         </ImgCrop>
+        </Form.Item>
         </FormStyled.FormContainer>
-
-        <FormStyled.FormCheckbox required name='agreement' value='true'>By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the Terms and Condition.</FormStyled.FormCheckbox>
-        <Button type='primary' htmlType="submit">Save and continue</Button>
-      
+        <FormStyled.FormItem
+        name='agreement'
+        rules={[{ 
+          required: true, 
+          message: 'You must agree to our Terms and Condition to proceed' }]}
+          validateFirst
+          >
+          <FormStyled.FormCheckbox name='agreement' style={{margin: `0px`}}>By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{textDecoration:'underline'}}>Terms and Condition</a>.</FormStyled.FormCheckbox>
+        </FormStyled.FormItem>
       </FormStyled.FormContainer>
+      <div style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
+        <Button type='primary' htmlType="submit" >Save and continue</Button>
+        </div>
       </FormStyled.FormWrapper>
     </Col>
   )
