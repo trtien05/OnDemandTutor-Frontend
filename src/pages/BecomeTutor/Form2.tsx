@@ -11,21 +11,29 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
   useDocumentTitle('Become a tutor');
 
   //const file = useRef<UploadFile>();
-  const [form, setForm] = useState<FieldType[]>(educationForm);
+  const [form, setForm] = useState<FieldType[][]>([educationForm]);
 
   const addField = () => {
-    const newFieldKey = form.length + 1;
+    const newFieldKey = (form.length * educationForm.length);
     const newForm: FieldType[] = educationForm.map((field) => ({
-      ...field,
-      key: field.key + newFieldKey,
+      key: (field.key + newFieldKey),
       label: field.label,
-      name: field.name,
+      name: `${field.name}_${form.length}`,
       rules: field.rules,
-      children: field.children,
       initialValue: field.initialValue,
+      children: field.children,
       $width: field.$width,
     }));
-    setForm([...form, ...newForm]);
+    setForm([...form, newForm]);
+    console.log(form)
+  };
+
+  const removeField = (formIndex: number) => {
+    if (form.length > 1) {
+      setForm(form.filter((_, index) => index !== formIndex));
+    } else {
+      alert('At least one form must be present.');
+    }
   };
 
   return (
@@ -42,21 +50,35 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.FormTitle level={1}>Education</FormStyled.FormTitle>
           <FormStyled.FormDescription>Tell students more about the higher education that you've completed or are working on.</FormStyled.FormDescription>
 
-          {form.map((field) => {
-              return (<FormStyled.FormItem
-                key={field.key}
-                label={field.label}
-                name={field.name}
-                rules={field.rules}
-                $width={field.$width ? field.$width : '100%'}
-                initialValue={field.initialValue}
-                validateFirst
-              >
-                {field.children}
-              </FormStyled.FormItem>)}
-          )}
+          {form.map((form, formIndex) => (
+            <div>
+              {formIndex > 0 && (
+                <Button type='dashed' style={{ width: `100%`, margin: `24px 0px` }}  onClick={() => removeField(formIndex)}>
+                  Remove
+                </Button>
+              )}
+            <FormStyled.FormContainer key={formIndex}>
+              
+              {form.map((field) => (
+
+                <FormStyled.FormItem
+                  key={field.key}
+                  label={field.label}
+                  name={field.name}
+                  rules={field.rules}
+                  $width={field.$width ? field.$width : '100%'}
+                  initialValue={field.initialValue}
+                  validateFirst
+                >
+
+                  {field.children}
+                </FormStyled.FormItem>
+              ))}
+            </FormStyled.FormContainer>
+            </div>
+          ))}
         </FormStyled.FormContainer>
-        <Button type="dashed" onClick={addField}>
+        <Button type="dashed" style={{marginTop: `-24px`}}  onClick={addField}>
           Add another diploma
         </Button>
         <div style={{ alignSelf: 'flex-end' }}>
