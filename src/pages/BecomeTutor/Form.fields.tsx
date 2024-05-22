@@ -63,7 +63,11 @@ export const aboutForm: FieldType[] = [
                 required: true,
                 type: 'string',
                 message: 'Please input your full name.',
+                
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your full name.',
             },
             {
                 max: 50,
@@ -80,7 +84,7 @@ export const aboutForm: FieldType[] = [
         rules: [
             {
                 required: true,
-                validator: validateWhitespace,
+                
                 message: 'Please input your phone number.',
             },
             {
@@ -99,7 +103,7 @@ export const aboutForm: FieldType[] = [
         rules: [
             {
                 required: true,
-                validator: validateWhitespace,
+                
                 message: 'Please input your email.',
             },
             {
@@ -161,8 +165,11 @@ export const aboutForm: FieldType[] = [
         rules: [
             {
                 required: true,
-                message: 'Please input your address',
+                message: 'Please input your address.',
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your address.',
             },
             {
                 max: 50,
@@ -184,7 +191,11 @@ export const educationForm: FieldType[] = [
                 required: true,
                 type: 'string',
                 message: 'Please input your university name.',
+                
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your university name.',
             },
             {
                 max: 50,
@@ -209,7 +220,7 @@ export const educationForm: FieldType[] = [
             <Select.Option value={Enum.Degree.MASTER}>{Enum.Degree.MASTER}</Select.Option>
             <Select.Option value={Enum.Degree.DOCTORAL}>{Enum.Degree.DOCTORAL}</Select.Option>
         </Select>),
-        $width: '40%',
+        $width: '45%',
     },
     {
         key: 3,
@@ -219,7 +230,11 @@ export const educationForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your major.',
+                
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your major.',
             },
             {
                 max: 50,
@@ -237,7 +252,11 @@ export const educationForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your degree\'s specialization.',
+                
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your degree\'s specialization.',
             },
             {
                 max: 50,
@@ -315,7 +334,11 @@ export const certificateForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your certificate name.',
+                
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your certificate name.',
             },
             {
                 max: 50,
@@ -344,7 +367,11 @@ export const certificateForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your certificate\'s issued organization.',
+                
+            },
+            {
                 validator: validateWhitespace,
+                message: 'Please input your certificate\'s issued organization.',
             },
             {
                 max: 50,

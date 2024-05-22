@@ -82,9 +82,11 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
 
     width: ${({ $width }) => $width || '100%'};
     &.ant-form-item {
-        margin-bottom: 24px;
+        padding: 12px 0 12px 0;
+        margin: 0;
+        margin-bottom: 0px;
         ${({ theme }) => theme.breakpoints.down('sm')} {
-            
+            margin-bottom: 0px;
             width: 100%
         }
     }
@@ -135,10 +137,16 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
         }
     }
 
+    & .ant-select-selector,
+    & .ant-select,
+    & .ant-picker{
+        height: 44px;
+    }
+
     & .ant-input,
     & .ant-input-number-input,
     & .ant-input-password,
-    & .ant-select-selector {
+     {  
         padding: 12px 20px;
         font-size: 1rem;
         border-radius: 6px;
