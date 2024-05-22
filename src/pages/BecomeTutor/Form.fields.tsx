@@ -220,7 +220,7 @@ export const educationForm: FieldType[] = [
             <Select.Option value={Enum.Degree.MASTER}>{Enum.Degree.MASTER}</Select.Option>
             <Select.Option value={Enum.Degree.DOCTORAL}>{Enum.Degree.DOCTORAL}</Select.Option>
         </Select>),
-        $width: '45%',
+        $width: '40%',
     },
     {
         key: 3,

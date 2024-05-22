@@ -39,7 +39,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     { label: "Information Technology", value: "Information Technology" },
   ];
   return (
-    <Col lg={{ span: 24 }} sm={{ span: 24 }} xs={{ span: 24 }}>
+    <Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{margin:`auto`}}>
       <FormStyled.FormWrapper
         onFinish={onFinish}
         initialValues={initialValues}

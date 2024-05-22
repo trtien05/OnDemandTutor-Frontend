@@ -53,13 +53,17 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.FormTitle level={1}>Certificate</FormStyled.FormTitle>
           <FormStyled.FormDescription>Do you have any relevant certificates? If so, describe them to enhance your profile credibility and get more students.</FormStyled.FormDescription>
 
-          <Checkbox
-        checked={visibility}
-        onChange={(e) => setVisibility(e.target.checked)}
-        style={{marginBottom: `24px`}}
-      >
-        I don’t have relevant certificates
-      </Checkbox>
+          <FormStyled.FormItem
+        name='agreement'
+        valuePropName="checked"
+          >
+          <FormStyled.FormCheckbox 
+            name='noCertificate' 
+            style={{marginTop: `-24x`}}
+            checked={visibility}
+            onChange={(e) => setVisibility(e.target.checked)}>
+              I don’t have relevant certificates.</FormStyled.FormCheckbox>
+        </FormStyled.FormItem>
           {!visibility && form.map((form, formIndex) => (
             <div>
               {formIndex > 0 && (
