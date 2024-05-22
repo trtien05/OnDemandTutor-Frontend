@@ -1,7 +1,8 @@
 import { Steps, Typography } from "antd";
 import * as FormStyled from "./TutorForm1/Register.styled"
 import { useState } from "react";
-import Form1 from "./Form1";
+// import Form1 from "./Form1";
+import TutorForm4 from "./TutorForm4/TutorForm4";
 import Register from "./TutorForm1/TutorForm1";
 import Form2 from "./Form2";
 import MultipleSteps from "./MultipleSteps";
@@ -46,7 +47,8 @@ export default function FirstPage() {
     <Register onFinish={onFinishAboutForm} initialValues={aboutValues} />,
     <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} />,
     <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack}/>,
-    <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
+    <TutorForm4 onFinish={onFinishDescriptionForm} initialValues={educationValues} onClickBack={onClickBack}/>,
+    // <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
     <Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
   ]);
   

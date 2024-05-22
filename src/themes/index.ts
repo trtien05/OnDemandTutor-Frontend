@@ -35,7 +35,7 @@ export const theme = {
         shadowButton: 'rgba(0, 0, 0, 0.04)',
         overlayImage: 'rgba(106, 111, 119, 0.1)',
         borderDefault: '#E5E5E5',
-        borderInput: '#D9D9D9',
+        borderInput: '#B94AB7',
         starIcon: '#FADB14',
         descTabBorder: '#F0F0F0',
         done: '#1BC47D',
