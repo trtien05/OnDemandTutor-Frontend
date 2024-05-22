@@ -63,6 +63,7 @@ export const aboutForm: FieldType[] = [
                 required: true,
                 type: 'string',
                 message: 'Please input your full name.',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
@@ -79,6 +80,7 @@ export const aboutForm: FieldType[] = [
         rules: [
             {
                 required: true,
+                validator: validateWhitespace,
                 message: 'Please input your phone number.',
             },
             {
@@ -97,7 +99,8 @@ export const aboutForm: FieldType[] = [
         rules: [
             {
                 required: true,
-                message: 'Please input your phone number.',
+                validator: validateWhitespace,
+                message: 'Please input your email.',
             },
             {
                 type: 'email',
@@ -159,6 +162,7 @@ export const aboutForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your address',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
@@ -180,6 +184,7 @@ export const educationForm: FieldType[] = [
                 required: true,
                 type: 'string',
                 message: 'Please input your university name.',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
@@ -214,6 +219,7 @@ export const educationForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your major.',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
@@ -231,6 +237,7 @@ export const educationForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your degree\'s specialization.',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
@@ -308,6 +315,7 @@ export const certificateForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your certificate name.',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
@@ -336,6 +344,7 @@ export const certificateForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your certificate\'s issued organization.',
+                validator: validateWhitespace,
             },
             {
                 max: 50,
