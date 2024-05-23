@@ -6,7 +6,6 @@ export const register = (account: object) => {
 
 export const login = (account: object) => {
     return post('/auth/login', account);
-    // return post('/api/auth/login', account);
 };
 
 export const forgotPassword = (emailObj: { email: string }) => {

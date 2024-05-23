@@ -6,14 +6,14 @@ import { useEffect, useState } from 'react';
 import { MAX_COUNTDOWN_TIME } from '../../config/constants';
 import { PageEnum } from '../../utils/enums';
 import config from '../../config';
-// import { forgotPassword } from '@/utils/authAPI';
+import { forgotPassword } from '../../utils/authAPI';
 import { forgotPasswordFields } from '../../components/AuthForm/AuthForm.fields';
 import { useDocumentTitle } from '../../hooks';
 
 const { Text } = Typography;
 
 const ForgotPassword = () => {
-    useDocumentTitle('Quên Mật Khẩu | HouseMate');
+    useDocumentTitle('Forgot Password | HouseMate');
 
     const [seconds, setSeconds] = useState(0);
 
@@ -47,8 +47,8 @@ const ForgotPassword = () => {
             localStorage.setItem(config.localStorage.seconds, MAX_COUNTDOWN_TIME.toString());
 
             // Fetch API
-            // const { data } = await forgotPassword(values);
-            // messageApi.success(data);
+            const { data } = await forgotPassword(values);
+            messageApi.success(data);
         } catch (err: any) {
             if (err.response) messageApi.error(err.response.data);
             else messageApi.error(err.message);
@@ -60,21 +60,21 @@ const ForgotPassword = () => {
     };
 
     const redirect = {
-        description: 'Trở về đăng nhập?',
-        title: 'Đăng nhập ngay',
+        description: 'Return to login?',
+        title: 'Log In',
         url: config.routes.public.login,
     };
 
     const description = (
         <Styled.ForgotPasswordDescWrapper>
             <Styled.ForgotPasswordDesc>
-                Nhập email của bạn để nhận hướng dẫn cài lại mật khẩu.
+                Enter your email to receive password reset instructions.
             </Styled.ForgotPasswordDesc>
 
             <Styled.ForgotPasswordText>
                 {seconds !== 0 && (
                     <Text>
-                        Không nhận được email? Gửi lại sau
+                        Not receiving emails? Resend after
                         <Styled.ForgotPasswordCountdown>{seconds}</Styled.ForgotPasswordCountdown>s
                     </Text>
                 )}
@@ -87,8 +87,8 @@ const ForgotPassword = () => {
             {contextHolder}
             <Styled.AuthFormStyled
                 page={PageEnum.FORGOT_PASSWORD}
-                formTitle="Quên mật khẩu?"
-                buttonTitle="Cài Lại Mật Khẩu"
+                formTitle="Forgot Password?"
+                buttonTitle="Reset Password"
                 fields={forgotPasswordFields}
                 description={description}
                 redirect={redirect}

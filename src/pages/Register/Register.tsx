@@ -5,13 +5,13 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../../components/AuthForm';
 import { registerFields } from '../../components/AuthForm/AuthForm.fields';
 import config from '../../config';
-// import { register } from '../../utils/authAPI';
+import { register } from '../../utils/authAPI';
 import cookieUtils from '../../utils/cookieUtils';
 import { PageEnum } from '../../utils/enums';
 import { useDocumentTitle } from '../../hooks';
 
 const Register = () => {
-    useDocumentTitle('Đăng Ký | HouseMate');
+    useDocumentTitle('Register | HouseMate');
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
@@ -22,9 +22,9 @@ const Register = () => {
         try {
             setIsSubmitting(true);
 
-            // const { data } = await register(values);
+            const { data } = await register(values);
 
-            // cookieUtils.setItem(config.cookies.token, data);
+            cookieUtils.setItem(config.cookies.token, data);
             navigate(config.routes.public.home);
         } catch (error: any) {
             if (error.response) messageApi.error(error.response.data);
@@ -35,8 +35,8 @@ const Register = () => {
     };
 
     const redirect = {
-        description: 'Đã có tài khoản?',
-        title: 'Đăng nhập ngay',
+        description: 'Already have an account?',
+        title: 'Log in',
         url: config.routes.public.login,
     };
 
@@ -45,8 +45,8 @@ const Register = () => {
             {contextHolder}
             <AuthForm
                 page={PageEnum.REGISTER}
-                formTitle="Đăng ký"
-                buttonTitle="Đăng Ký"
+                formTitle="Register"
+                buttonTitle="Register"
                 fields={registerFields}
                 redirect={redirect}
                 onFinish={onFinish}

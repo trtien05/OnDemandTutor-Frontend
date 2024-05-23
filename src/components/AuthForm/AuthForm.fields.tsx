@@ -29,18 +29,18 @@ export const loginFields: FieldType[] = [
             {
                 required: true,
                 type: 'email',
-                message: 'Vui lòng nhập đúng định dạng email.',
+                message: 'Please enter the correct email format.',
             },
             {
                 max: 50,
-                message: 'Email không được vượt quá 50 ký tự.',
+                message: 'Email must not exceed 50 characters.',
             },
         ],
         children: <Input placeholder=" " />,
     },
     {
         key: 2,
-        label: 'Mật khẩu',
+        label: 'Password',
         name: 'password',
         rules: [
             {
@@ -48,13 +48,13 @@ export const loginFields: FieldType[] = [
                 max: 16,
                 pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
                 message:
-                    'Phải từ 8 đến 16 ký tự, bao gồm một số, một chữ cái viết hoa và một chữ cái viết thường.',
+                    'Must be between 8 and 16 characters, including a number, one uppercase letter, and one lowercase letter.',
             },
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
+                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
                 }
                 placeholder=" "
             />
@@ -71,25 +71,25 @@ export const registerFields: FieldType[] = [
             {
                 required: true,
                 type: 'email',
-                message: 'Vui lòng nhập đúng định dạng email.',
+                message: 'Please enter the correct email format.',
             },
             {
                 max: 50,
-                message: 'Email không được vượt quá 50 ký tự.',
+                message: 'Email must not exceed 50 characters.',
             },
         ],
         children: <Input placeholder=" " />,
     },
     {
         key: 2,
-        label: 'Họ và tên',
+        label: 'Full Name',
         name: 'fullName',
         rules: [
             {
                 required: true,
                 min: 2,
                 max: 50,
-                message: 'Vui lòng nhập họ và tên từ 2 đến 50 ký tự.',
+                message: 'Please enter first and last name from 2 to 50 characters.',
             },
             {
                 validator: validateWhitespace,
@@ -99,20 +99,20 @@ export const registerFields: FieldType[] = [
     },
     {
         key: 3,
-        label: 'Số điện thoại',
+        label: 'Phone',
         name: 'phoneNumber',
         rules: [
             {
                 required: true,
                 pattern: /^(0|\+?84)(3|5|7|8|9)[0-9]{8}$/,
-                message: 'Vui lòng nhập đúng định dạng số điện thoại.',
+                message: 'Please enter the correct phone number format.',
             },
         ],
         children: <Input placeholder=" " />,
     },
     {
         key: 4,
-        label: 'Mật khẩu',
+        label: 'Password',
         name: 'password',
         rules: [
             {
@@ -120,13 +120,13 @@ export const registerFields: FieldType[] = [
                 max: 16,
                 pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
                 message:
-                    'Phải từ 8 đến 16 ký tự, bao gồm một số, một chữ cái viết hoa và một chữ cái viết thường.',
+                    'Must be between 8 and 16 characters, including a number, one uppercase letter, and one lowercase letter.',
             },
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
+                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
                 }
                 placeholder=" "
             />
@@ -143,11 +143,11 @@ export const forgotPasswordFields: FieldType[] = [
             {
                 required: true,
                 type: 'email',
-                message: 'Vu lòng nhập đúng định dạng email.',
+                message: 'Please enter the correct email format.',
             },
             {
                 max: 50,
-                message: 'Email không được vượt quá 50 ký tự.',
+                message: 'Email must not exceed 50 characters.',
             },
         ],
         children: <Input placeholder=" " />,
@@ -165,13 +165,13 @@ export const setPasswordFields: FieldType[] = [
                 max: 16,
                 pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
                 message:
-                    'Phải từ 8 đến 16 ký tự, bao gồm một số, một chữ cái viết hoa và một chữ cái viết thường.',
+                    'Must be between 8 and 16 characters, including a number, one uppercase letter, and one lowercase letter.',
             },
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
+                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
                 }
                 placeholder=" "
             />
@@ -179,27 +179,27 @@ export const setPasswordFields: FieldType[] = [
     },
     {
         key: 2,
-        label: 'Xác nhận mật khẩu mới',
+        label: 'Confirm new password',
         name: 'confirm',
         dependencies: ['password'],
         rules: [
             {
                 required: true,
-                message: 'Vui lòng xác nhận mật khẩu mới.',
+                message: 'Please confirm new password.',
             },
             ({ getFieldValue }) => ({
                 validator(_, value) {
                     if (!value || getFieldValue('password') === value) {
                         return Promise.resolve();
                     }
-                    return Promise.reject(new Error('Mật khẩu xác nhận không khớp.'));
+                    return Promise.reject(new Error('Confirmation password does not match.'));
                 },
             }),
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
+                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
                 }
                 placeholder=" "
             />

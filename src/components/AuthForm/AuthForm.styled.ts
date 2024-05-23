@@ -12,7 +12,7 @@ export const AuthForm = styled.div`
     position: fixed;
     inset: 0;
     overflow-y: auto;
-    background-color: ${theme.colors.white};
+    background: linear-gradient(213deg, #4209c9 0%, #fa6ead 100%);
 `;
 
 export const FormRow = styled(Row)`
@@ -55,7 +55,7 @@ export const FormContainer = styled.div`
 export const FormWrapper = styled(Form)`
     display: flex;
     flex-direction: column;
-    row-gap: 44px;
+    row-gap: 40px;
 `;
 
 export const FormTitle = styled(Title)`
@@ -143,7 +143,7 @@ export const FormItem = styled(Form.Item)`
     & .ant-input-password {
         padding: 12px 20px;
         font-size: 1.6rem;
-        border-radius: 6px;
+        border-radius: 25px;
         border-color: ${theme.colors.border};
 
         &:hover,
