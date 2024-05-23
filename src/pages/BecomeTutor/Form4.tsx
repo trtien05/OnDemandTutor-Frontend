@@ -121,11 +121,11 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
           onChange={onChange}
           >
           </FormStyled.NumberInput>
+          </FormStyled.FormItem>
           <FormStyled.FormDescription>
           Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take. 
           Automatic recurring payment takes place every 28 days.
           </FormStyled.FormDescription>
-          </FormStyled.FormItem>
 
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>
           <FormStyled.FormDescription>
