@@ -37,7 +37,7 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
   };
 
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
+    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
 
       <FormStyled.FormWrapper
         labelAlign='left'

@@ -89,6 +89,7 @@ export default function FirstPage() {
             margin:`30px 0px 20px`
           }
         }>
+          {/* disabled={isDisabled(0)} */}
           <Steps current={current} onChange={goTo}>
             <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
             <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>

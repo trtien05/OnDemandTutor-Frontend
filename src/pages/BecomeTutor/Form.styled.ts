@@ -1,4 +1,4 @@
-import { Form, Typography, Checkbox, Input } from "antd";
+import { Form, Typography, Checkbox, Input, InputNumber } from "antd";
 import styled from "styled-components";
 
 import { theme } from '../../themes';
@@ -33,7 +33,7 @@ export const CheckboxGroup = styled(Checkbox.Group)`
 export const FormWrapper = styled(Form)`
     display: flex;
     flex-wrap: wrap;
-    flex-direction: column;
+    flex-direction: row;
     row-gap: 44px;
 `;
 
@@ -60,6 +60,19 @@ export const FormDescription = styled(Text)`
 
 
 export const CommentInput = styled(TextArea)`
+  &.ant-input-affix-wrapper {
+    border-radius: 2px;
+    border: 1px solid ${theme.colors.borderInput};
+    background: ${theme.colors.white};
+  }
+
+  &.ant-input-affix-wrapper textarea.ant-input {
+    padding: 12px 16px;
+    font-size: 1.6rem;
+    background: ${theme.colors.white};
+  }
+`;
+export const NumberInput = styled(InputNumber)`
   &.ant-input-affix-wrapper {
     border-radius: 2px;
     border: 1px solid ${theme.colors.borderInput};

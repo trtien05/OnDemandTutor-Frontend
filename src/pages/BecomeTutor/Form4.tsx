@@ -9,6 +9,7 @@ import ReactPlayer from "react-player";
 
 const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
   const [url, setUrl] = useState<string>("");
+  const [priceValue, setPriceValue] = useState<string>('');
   const isValidYouTubeUrl = (url: string): boolean => {
     const regex =
       /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
@@ -22,7 +23,39 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
       setUrl("");
     }
   };
-
+  const onChange = (value: number | string | null) => {
+    if (typeof value === 'string') {
+      setPriceValue(value);
+    } else if (value === null) {
+      setPriceValue('');
+    } else {
+      setPriceValue(value.toString());
+    }
+  };
+  const formatNumberValue = (value: number | string): number => {
+    if (typeof value === 'string') {
+      // Remove non-digit characters from the string
+      const numericString = value.replace(/\D/g, '');
+      // Convert the cleaned string to a number
+      return parseFloat(numericString);
+    } else {
+      // If the value is already a number, return it directly
+      return value;
+    }
+  };
+  const formatter = (value: number | string | undefined) => {
+    if (!value) return '';
+    // Use the helper function to ensure value is a number
+    const numberValue = formatNumberValue(value);
+    // Use Intl.NumberFormat for Vietnamese locale
+    const formattedValue = new Intl.NumberFormat('vi-VN').format(numberValue);
+    return formattedValue;
+  };
+  const parser = (value:string | undefined) => {
+    // Remove non-digit characters (commas, spaces, etc.)
+    return value ? value.replace(/\D/g, '') : '';
+  };
+  
   
   const options = [
     { label: "Mathematics", value: "Mathematics" },
@@ -39,7 +72,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     { label: "Information Technology", value: "Information Technology" },
   ];
   return (
-    <Col lg={{ span: 24 }} sm={{ span: 24 }} xs={{ span: 24 }}>
+    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{margin: `auto`}}>
       <FormStyled.FormWrapper
         onFinish={onFinish}
         initialValues={initialValues}
@@ -62,6 +95,38 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
               </Row>
           </FormStyled.CheckboxGroup>
           </FormStyled.FormItem>
+
+          <FormStyled.FormTitle>Hourly base rate</FormStyled.FormTitle>
+          <FormStyled.FormDescription>
+          You can change your base rate in settings after approval
+          </FormStyled.FormDescription>
+          <FormStyled.FormItem 
+          $width={"100%"}
+          name="amount"
+          label="Amount in VND"
+          rules={[
+            {
+              required: true,
+              type: 'number',
+              min: 0,
+              max:1000000
+            },
+          ]}>
+            <FormStyled.NumberInput
+          style={{ width: '100%' }}
+          placeholder="100,000" 
+          value={priceValue}
+          formatter={formatter}
+          parser={parser}
+          onChange={onChange}
+          >
+          </FormStyled.NumberInput>
+          <FormStyled.FormDescription>
+          Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take. 
+          Automatic recurring payment takes place every 28 days.
+          </FormStyled.FormDescription>
+          </FormStyled.FormItem>
+
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>
           <FormStyled.FormDescription>
             Show potential students who you are! Share your teaching experience
@@ -71,6 +136,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.FormItem name="description" $width={"100%"}>
             <CommentInput rows={6} placeholder="Tell us about yourself..." />
           </FormStyled.FormItem>
+
           <FormStyled.FormTitle>Video introduction</FormStyled.FormTitle>
           <FormStyled.FormDescription>
             Introduce yourself to students through a 30 seconds - 2 minutes
