@@ -43,11 +43,11 @@ export default function FirstPage() {
     back()
   }
   const { current, back, step, next, goTo } = MultipleSteps([
-    <Form1 onFinish={onFinishAboutForm} initialValues={aboutValues} />,
-    <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} />,
+    // <Form1 onFinish={onFinishAboutForm} initialValues={aboutValues} />,
+    //<Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} />,
     <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack}/>,
-    <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
-    <Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
+    //<Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
+    //<Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
   ]);
   
   const isDisabled = (stepNumber: number) => {

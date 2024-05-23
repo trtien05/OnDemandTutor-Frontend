@@ -1,4 +1,4 @@
-import { Input, DatePicker, Select, GetProps } from 'antd';
+import { Input, DatePicker, Select, GetProps, TimePicker } from 'antd';
 import { Rule } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
 import { NamePath } from 'antd/es/form/interface';
@@ -7,6 +7,7 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import FileUpload from '../../components/UploadImg';
 
+const format = 'HH:mm';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
@@ -220,7 +221,7 @@ export const educationForm: FieldType[] = [
             <Select.Option value={Enum.Degree.MASTER}>{Enum.Degree.MASTER}</Select.Option>
             <Select.Option value={Enum.Degree.DOCTORAL}>{Enum.Degree.DOCTORAL}</Select.Option>
         </Select>),
-        $width: '45%',
+        $width: '40%',
     },
     {
         key: 3,
@@ -415,4 +416,27 @@ export const certificateForm: FieldType[] = [
             <FileUpload />
         ),
     },
+]
+
+export const availabilityForm: FieldType[] = [
+    {
+        key: 1,
+        label: '',
+        name: 'timeslot',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your timeslot for this day.',
+            },
+        ],
+        children: (
+            <TimePicker.RangePicker 
+            format={format}
+            id={{
+                start: 'startTime',
+                end: 'endTime',
+            }}
+            style={{ width: `100%` }}/>
+        ),
+    }
 ]
