@@ -1,20 +1,20 @@
-import { Col, Button, Checkbox } from 'antd';
+import { Col, Button, Checkbox, Form } from 'antd';
 
-import { useState } from 'react';
+import { useCallback, useState, memo } from 'react';
 import { certificateForm, FieldType } from './Form.fields';
 
 import * as FormStyled from './Form.styled';
 
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
-const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
+const Form3 = ({ onFinish, initialValues, onClickBack }: any) => {
   useDocumentTitle('Become a tutor');
 
   //const file = useRef<UploadFile>();
   const [visibility, setVisibility] = useState<boolean>(false)
   const [form, setForm] = useState<FieldType[][]>([certificateForm]);
 
-  const addField = () => {
+  const addField = useCallback(() => {
     const newFieldKey = (form.length * certificateForm.length);
     const newForm: FieldType[] = certificateForm.map((field) => ({
       key: (field.key + newFieldKey),
@@ -25,22 +25,20 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
       children: field.children,
       $width: field.$width,
     }));
-    setForm([...form, newForm]);
+    setForm((prevForm) => [...prevForm, newForm])
     console.log(form)
-  };
+  }, [form.length]);
 
-  const removeField = (formIndex: number) => {
+  const removeField = useCallback((formIndex: number) => {
     if (form.length > 1) {
-      setForm(form.filter((_, index) => index !== formIndex));
+      setForm((prevForm) => prevForm.filter((_, index) => index !== formIndex));
     } else {
       alert('At least one form must be present.');
     }
-  };
+  },[form.length]);
 
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
-      
-
+    < Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
       <FormStyled.FormWrapper
         labelAlign='left'
         layout='vertical'
@@ -53,17 +51,18 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.FormTitle level={1}>Certificate</FormStyled.FormTitle>
           <FormStyled.FormDescription>Do you have any relevant certificates? If so, describe them to enhance your profile credibility and get more students.</FormStyled.FormDescription>
 
-          <FormStyled.FormItem
+          <Form.Item
         name='agreement'
         valuePropName="checked"
+        style={{margin: `0`}}
           >
           <FormStyled.FormCheckbox 
             name='noCertificate' 
-            style={{marginTop: `-24x`}}
+            style={{margin: `0`}}
             checked={visibility}
             onChange={(e) => setVisibility(e.target.checked)}>
               I don’t have relevant certificates.</FormStyled.FormCheckbox>
-        </FormStyled.FormItem>
+        </Form.Item>
           {!visibility && form.map((form, formIndex) => (
             <div>
               {formIndex > 0 && (
@@ -105,6 +104,6 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
   )
 }
 
-export default Form2;
+export default memo(Form3);
 
 
