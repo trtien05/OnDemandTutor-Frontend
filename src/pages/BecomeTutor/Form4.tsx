@@ -84,7 +84,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>Subject Taught</FormStyled.FormTitle>{" "}
           <br />
-          <FormStyled.FormItem name="checkedValues" $width={"100%"}>
+          <FormStyled.FormItem name="checkedValues" $width={"100%"} rules={[{required:true}]}>
           <FormStyled.CheckboxGroup>
             <Row>
                 {options.map(option => (

@@ -31,6 +31,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
   const [loading, setLoading] = useState<boolean>(false);
   const [reload, setReload] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null | undefined>(null);
+  
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
@@ -189,9 +190,12 @@ const Form1 = ({onFinish, initialValues}:any) => {
           required: true, 
           message: 'You must agree to our Terms and Condition to proceed' }]}
           validateFirst
+          
           >
           <FormStyled.FormCheckbox name='agreement' style={{margin: `0px`}}>By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{textDecoration:'underline'}}>Terms and Condition</a>.</FormStyled.FormCheckbox>
         </FormStyled.FormItem>
+        
+        
       </FormStyled.FormContainer>
       <div style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
         <Button type='primary' htmlType="submit" >Save and continue</Button>
