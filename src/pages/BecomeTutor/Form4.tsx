@@ -1,6 +1,6 @@
 import { Row, Col, Checkbox, Button, Input } from "antd";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 import * as FormStyled from "./Form.styled";
 import { CommentInput, ButtonDiv } from "./Form.styled";
@@ -82,7 +82,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
         size="middle"
       >
         <FormStyled.FormContainer>
-          <FormStyled.FormTitle level={1}>Subject Taught</FormStyled.FormTitle>{" "}
+          <FormStyled.FormTitle level={1}>Subject Taught</FormStyled.FormTitle>
           <br />
           <FormStyled.FormItem name="checkedValues" $width={"100%"}>
           <FormStyled.CheckboxGroup>
@@ -139,9 +139,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
 
           <FormStyled.FormTitle>Video introduction</FormStyled.FormTitle>
           <FormStyled.FormDescription>
-            Introduce yourself to students through a 30 seconds - 2 minutes
-            video. Remember to greet your students warmly and invite them to
-            book a lesson.
+            Introduce yourself to students through a video. Remember to greet your students warmly and invite them to book a lesson.
           </FormStyled.FormDescription>
           <FormStyled.FormItem
             name="youtubeLink"

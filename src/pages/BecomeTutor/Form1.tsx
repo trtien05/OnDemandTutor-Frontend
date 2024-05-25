@@ -9,7 +9,7 @@ import {
 import { UserOutlined } from '@ant-design/icons';
 import ImgCrop from 'antd-img-crop';
 import Upload, { RcFile } from 'antd/es/upload';
-import React, { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { UploadChangeParam } from 'antd/lib/upload';
 import type { GetProp, UploadProps } from 'antd';
 import { aboutForm } from './Form.fields';
@@ -27,6 +27,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
 
   //const file = useRef<UploadFile>();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [agreement, setAgreement] = useState<boolean>(false)
   const file = useRef<RcFile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [reload, setReload] = useState<boolean>(false);
@@ -121,7 +122,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
 
 
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{margin: `auto`}}>
+    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{margin: `auto`}}>
       
         <FormStyled.FormWrapper
           labelAlign='left'
@@ -132,7 +133,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
           initialValues={initialValues}
           >
       <FormStyled.FormContainer>
-        <FormStyled.FormTitle level={1}>About</FormStyled.FormTitle>
+        <FormStyled.FormTitle level={1}>About</FormStyled.FormTitle> <br/>
         <FormStyled.FormDescription>Start creating your public tutor profile. Your progress will be automatically saved as you complete each section. You can return at any time to finish your registration.</FormStyled.FormDescription>
         
           {aboutForm.map((field) => {
@@ -151,7 +152,7 @@ const Form1 = ({onFinish, initialValues}:any) => {
           })}
 
        
-        <FormStyled.FormTitle>Profile picture</FormStyled.FormTitle>
+        <FormStyled.FormTitle style={{display:`block`}}>Profile picture</FormStyled.FormTitle> <br/>
         <FormStyled.FormDescription>Make a great first impression!<br />
           Tutors who look friendly and professional get the most students</FormStyled.FormDescription>
         <br/>
@@ -190,12 +191,18 @@ const Form1 = ({onFinish, initialValues}:any) => {
           message: 'You must agree to our Terms and Condition to proceed' }]}
           validateFirst
           >
-          <FormStyled.FormCheckbox name='agreement' style={{margin: `0px`}}>By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{textDecoration:'underline'}}>Terms and Condition</a>.</FormStyled.FormCheckbox>
+          <FormStyled.FormCheckbox 
+          name='agreement' 
+          style={{margin: `0px`}}
+          checked={agreement}
+          onChange={(e) => setAgreement(e.target.checked)}
+          >By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{textDecoration:'underline'}}>Terms and Condition</a>.</FormStyled.FormCheckbox>
         </FormStyled.FormItem>
       </FormStyled.FormContainer>
-      <div style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
+      
+      {agreement && (<FormStyled.ButtonDiv style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
         <Button type='primary' htmlType="submit" >Save and continue</Button>
-        </div>
+        </FormStyled.ButtonDiv>)}
       </FormStyled.FormWrapper>
     </Col>
   )

@@ -8,7 +8,7 @@ import Form2 from "./Form2";
 import MultipleSteps from "./MultipleSteps";
 import Form3 from "./Form3";
 import Form4 from "./Form4";
-// import Form5 from "./Form5";
+import Form5 from "./Form5";
 import { theme } from "../../themes"
 export default function FirstPage() {
   const [aboutValues, setAboutValues] = useState(null);
@@ -47,7 +47,7 @@ export default function FirstPage() {
     <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} />,
     <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack}/>,
     <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
-    // <Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
+    <Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
   ]);
   
   const isDisabled = (stepNumber: number) => {
