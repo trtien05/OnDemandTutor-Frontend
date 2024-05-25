@@ -16,7 +16,7 @@ export default function FirstPage() {
   const [certificationValues, setCertificationValues] = useState(null);
   const [descriptionValues, setDescriptionValues] = useState(null);
   const [timePriceValues, setTimePriceValues] = useState(null);
-  
+  const [agreement, setAgreement] = useState<boolean>(false)
   const {Title} = Typography;
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
@@ -42,8 +42,11 @@ export default function FirstPage() {
   const onClickBack = () => {
     back()
   }
+  const handleAgreementChange = (checked: boolean) => {
+    setAgreement(checked);
+  };
   const { current, back, step, next, goTo } = MultipleSteps([
-    <Form1 onFinish={onFinishAboutForm} initialValues={aboutValues} />,
+    <Form1 onFinish={onFinishAboutForm} initialValues={aboutValues} agreement={agreement} onAgreementChange={handleAgreementChange}/>,
     <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} />,
     <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack}/>,
     <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
@@ -58,10 +61,10 @@ export default function FirstPage() {
       return false;
     }
     if (stepNumber == 1) {
-      return aboutValues === null;
+      return aboutValues === null || agreement === false;
     }
     if (stepNumber == 2) {
-      return aboutValues === null || educationValues === null;
+      return aboutValues === null || educationValues === null ;
     }
     if (stepNumber == 3) {
       return (

@@ -18,25 +18,30 @@ import * as FormStyled from './Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const { Title } = Typography;
-
+interface Form1Props {
+  agreement: boolean;
+  onAgreementChange: (checked: boolean) => void;
+  onFinish: (values: any) => void;
+  initialValues: any;
+}
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const Form1 = ({onFinish, initialValues}:any) => {
+const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, initialValues}:any) => {
   useDocumentTitle('Become a tutor');
 
   //const file = useRef<UploadFile>();
   const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [agreement, setAgreement] = useState<boolean>(false)
+  // const [agreement, setAgreement] = useState<boolean>(false)
   const file = useRef<RcFile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [reload, setReload] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null | undefined>(null);
-  
+  // const isCheckedBox = useRef<boolean>(agreement);
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
-
+  
   const beforeUpload = (f: FileType) => {
     // const isJpgOrPng = f.type === 'image/jpeg' || f.type === 'image/png';
     // if (!isJpgOrPng) {
@@ -119,7 +124,8 @@ const Form1 = ({onFinish, initialValues}:any) => {
     setFileList([mockFile]);
     setImageUrl(mockFile.url);
   }, []);
-
+  
+  
 
 
   return (
@@ -190,23 +196,25 @@ const Form1 = ({onFinish, initialValues}:any) => {
         rules={[{ 
           required: true, 
           message: 'You must agree to our Terms and Condition to proceed' }]}
-          validateFirst
+          // validateFirst
           
           >
           <FormStyled.FormCheckbox 
           name='agreement' 
           style={{margin: `0px`}}
           checked={agreement}
-          onChange={(e) => setAgreement(e.target.checked)}
+          onChange={(e) => onAgreementChange(e.target.checked)}
+          // checked={isCheckedBox.current}
+          // onChange={(e) => setAgreement(e.target.checked)}
           >By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{textDecoration:'underline'}}>Terms and Condition</a>.</FormStyled.FormCheckbox>
         </FormStyled.FormItem>
         
         
       </FormStyled.FormContainer>
-      
-      {agreement && (<FormStyled.ButtonDiv style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
+      { (agreement &&
+      <FormStyled.ButtonDiv style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
         <Button type='primary' htmlType="submit" >Save and continue</Button>
-        </FormStyled.ButtonDiv>)}
+        </FormStyled.ButtonDiv> )}
       </FormStyled.FormWrapper>
     </Col>
   )
