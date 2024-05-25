@@ -156,6 +156,7 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
     & .ant-select,
     & .ant-picker{
         height: 44px;
+        text-align: left;
     }
 
     & .ant-input,

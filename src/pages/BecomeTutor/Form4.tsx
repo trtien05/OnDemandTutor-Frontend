@@ -69,7 +69,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     { label: "Physics", value: "Physics" },
     { label: "Geography", value: "Geography" },
     { label: "History", value: "History" },
-    { label: "Information Technology", value: "Information Technology" },
+    { label: "Coding", value: "Coding" },
   ];
   return (
     <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{margin: `auto`}}>
@@ -88,7 +88,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.CheckboxGroup>
             <Row>
                 {options.map(option => (
-                  <Col span={6} key={option.value}>
+                  <Col lg={{span:6}} sm={{span:8}} xs={{ span: 8 }} key={option.value}>
                     <Checkbox value={option.value}>{option.label}</Checkbox>
                   </Col>
                 ))}

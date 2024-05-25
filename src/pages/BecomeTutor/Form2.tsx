@@ -1,14 +1,21 @@
-import { Col, Button } from 'antd';
+import { Col, Button } from "antd";
 
-import { useState } from 'react';
-import { educationForm, FieldType } from './Form.fields';
+import { useState } from "react";
+import { educationForm, FieldType } from "./Form.fields";
 
-import * as FormStyled from './Form.styled';
+import * as FormStyled from "./Form.styled";
 
-import useDocumentTitle from '../../hooks/useDocumentTitle';
+import useDocumentTitle from "../../hooks/useDocumentTitle";
 
-const Form2 = ({ form, onAddForm, onRemoveForm, onFinish, initialValues, onClickBack }: any) => {
-  useDocumentTitle('Become a tutor');
+const Form2 = ({
+  diploma,
+  onAddDiploma,
+  onRemoveDiploma,
+  onFinish,
+  initialValues,
+  onClickBack,
+}: any) => {
+  useDocumentTitle("Become a tutor");
 
   //const file = useRef<UploadFile>();
   // const [form, setForm] = useState<FieldType[][]>([educationForm]);
@@ -37,62 +44,76 @@ const Form2 = ({ form, onAddForm, onRemoveForm, onFinish, initialValues, onClick
   // };
 
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
-
+    <Col
+      lg={{ span: 12 }}
+      sm={{ span: 16 }}
+      xs={{ span: 24 }}
+      style={{ margin: `auto` }}
+    >
       <FormStyled.FormWrapper
-        labelAlign='left'
-        layout='vertical'
-        requiredMark='optional'
-        size='middle'
+        labelAlign="left"
+        layout="vertical"
+        requiredMark="optional"
+        size="middle"
         onFinish={onFinish}
-        initialValues={initialValues}>
+        initialValues={initialValues}
+      >
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>Education</FormStyled.FormTitle>
-          <FormStyled.FormDescription>Tell students more about the higher education that you've completed or are working on.</FormStyled.FormDescription>
+          <FormStyled.FormDescription>
+            Tell students more about the higher education that you've completed
+            or are working on.
+          </FormStyled.FormDescription>
           {/* form, formIndex */}
           {/* removeField(formIndex) */}
-          {form.map((form:FieldType[], formIndex:number) => (
+          {diploma.map((form: FieldType[], formIndex: number) => (
             <div>
               {formIndex > 0 && (
-                <Button type='dashed' style={{ width: `100%`, margin: `24px 0px` }}  onClick={() => onRemoveForm(formIndex)}>
+                <Button
+                  type="dashed"
+                  style={{ width: `100%`, margin: `24px 0px` }}
+                  onClick={() => onRemoveDiploma(formIndex)}
+                >
                   Remove
                 </Button>
               )}
-            <FormStyled.FormContainer key={formIndex}>
-              
-              {form.map((field) => (
-
-                <FormStyled.FormItem
-                  key={field.key}
-                  label={field.label}
-                  name={field.name}
-                  rules={field.rules}
-                  $width={field.$width ? field.$width : '100%'}
-                  initialValue={field.initialValue}
-                  validateFirst
-                >
-
-                  {field.children}
-                </FormStyled.FormItem>
-              ))}
-            </FormStyled.FormContainer>
+              <FormStyled.FormContainer key={formIndex}>
+                {form.map((field) => (
+                  <FormStyled.FormItem
+                    key={field.key}
+                    label={field.label}
+                    name={field.name}
+                    rules={field.rules}
+                    $width={field.$width ? field.$width : "100%"}
+                    initialValue={field.initialValue}
+                    validateFirst
+                  >
+                    {field.children}
+                  </FormStyled.FormItem>
+                ))}
+              </FormStyled.FormContainer>
             </div>
           ))}
-          <Button type="dashed" onClick={onAddForm}>
-          Add another diploma
+          <Button type="dashed" onClick={onAddDiploma}>
+            Add another diploma
           </Button>
         </FormStyled.FormContainer>
-        
-        <FormStyled.ButtonDiv>
-          <Button type="default" onClick={() => onClickBack(1)}>Back</Button>
-          <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>Save and continue</Button>
-        </FormStyled.ButtonDiv>
 
+        <FormStyled.ButtonDiv>
+          <Button type="default" onClick={() => onClickBack(1)}>
+            Back
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ marginLeft: `24px` }}
+          >
+            Save and continue
+          </Button>
+        </FormStyled.ButtonDiv>
       </FormStyled.FormWrapper>
     </Col>
-  )
-}
+  );
+};
 
 export default Form2;
-
-
