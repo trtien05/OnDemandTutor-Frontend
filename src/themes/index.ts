@@ -6,7 +6,7 @@ export const theme = {
     dark: '',
     colors: {
         primary: PRIMARY_COLOR,
-        secondary: '#31C3E0',
+        secondary: SECONDARY_COLOR,
         facebook: '#1877F2',
         info: '#1677FF',
         warning: '#FAAD14',

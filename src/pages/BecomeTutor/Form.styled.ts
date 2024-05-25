@@ -38,6 +38,7 @@ export const FormWrapper = styled(Form)`
 `;
 
 export const FormTitle = styled(Title)`
+display: block;
   &.ant-typography {
     margin-bottom: 12px;
     color: ${theme.colors.primary};

@@ -7,19 +7,19 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import FileUpload from '../../components/UploadImg';
 
-const format = 'HH:mm';
+const format = 'HH';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 dayjs.extend(customParseFormat);
 
 export type FieldType = {
-    key: number;
+    key: string;
     label: string;
     name: string;
     rules: Rule[];
     children: JSX.Element;
-    initialValue?: string;
+    initialValue?: any;
     $width?: string;
 };
 
@@ -55,7 +55,7 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
 
 export const aboutForm: FieldType[] = [
     {
-        key: 1,
+        key: '1',
         label: 'Full name',
         name: 'name',
         initialValue: 'Nguyen Van A',
@@ -78,7 +78,7 @@ export const aboutForm: FieldType[] = [
         children: <Input placeholder=" " />,
     },
     {
-        key: 2,
+        key: '2',
         label: 'Phone number',
         name: 'phoneNumber',
         initialValue: '0908888888',
@@ -97,7 +97,7 @@ export const aboutForm: FieldType[] = [
         $width: '40%',
     },
     {
-        key: 3,
+        key: '3',
         label: 'Email',
         name: 'email',
         initialValue: 'abc@gmail.com',
@@ -116,7 +116,7 @@ export const aboutForm: FieldType[] = [
         $width: '55%',
     },
     {
-        key: 4,
+        key: '4',
         label: 'Date of Birth',
         name: 'dateOfBirth',
         rules: [
@@ -140,7 +140,7 @@ export const aboutForm: FieldType[] = [
         $width: '65%',
     },
     {
-        key: 5,
+        key: '5',
         label: 'Gender',
         name: 'gender',
 
@@ -160,7 +160,7 @@ export const aboutForm: FieldType[] = [
         $width: '30%',
     },
     {
-        key: 6,
+        key: '6',
         label: 'Your address',
         name: 'address',
         rules: [
@@ -184,7 +184,7 @@ export const aboutForm: FieldType[] = [
 
 export const educationForm: FieldType[] = [
     {
-        key: 1,
+        key: '1',
         label: 'University',
         name: 'university',
         rules: [
@@ -206,7 +206,7 @@ export const educationForm: FieldType[] = [
         children: <Input name='university' placeholder="Ho Chi Minh City University of Education" />,
     },
     {
-        key: 2,
+        key: '2',
         label: 'Degree',
         name: 'degree',
         rules: [
@@ -224,7 +224,7 @@ export const educationForm: FieldType[] = [
         $width: '40%',
     },
     {
-        key: 3,
+        key: '3',
         label: 'Major',
         name: 'major',
         rules: [
@@ -246,7 +246,7 @@ export const educationForm: FieldType[] = [
         $width: '55%',
     },
     {
-        key: 4,
+        key: '4',
         label: 'Specialization',
         name: 'specialization',
         rules: [
@@ -268,7 +268,7 @@ export const educationForm: FieldType[] = [
         $width: '100%',
     },
     {
-        key: 5,
+        key: '5',
         label: 'Academic year',
         name: 'academicYear',
         rules: [
@@ -291,7 +291,7 @@ export const educationForm: FieldType[] = [
         ),
     },
     {
-        key: 6,
+        key: '6',
         label: `Diploma Verification`,
         name: 'educationVerification',
         rules: [
@@ -308,7 +308,7 @@ export const educationForm: FieldType[] = [
 
 export const certificateForm: FieldType[] = [
     {
-        key: 1,
+        key: '1',
         label: 'Subject',
         name: 'subject',
         rules: [
@@ -328,7 +328,7 @@ export const certificateForm: FieldType[] = [
         ),
     },
     {
-        key: 2,
+        key: '2',
         label: 'Certificate name',
         name: 'certificateName',
         rules: [
@@ -349,7 +349,7 @@ export const certificateForm: FieldType[] = [
         children: <Input name='certificateName' placeholder='TESOL' />,
     },
     {
-        key: 3,
+        key: '3',
         label: 'Description',
         name: 'description',
         rules: [
@@ -361,7 +361,7 @@ export const certificateForm: FieldType[] = [
         children: <TextArea rows={3} name='description' placeholder="Teaching English as a second or foreign language" />,
     },
     {
-        key: 4,
+        key: '4',
         label: 'Issued by',
         name: 'issuedOrganization',
         rules: [
@@ -383,7 +383,7 @@ export const certificateForm: FieldType[] = [
         $width: '70%',
     },
     {
-        key: 5,
+        key: '5',
         label: 'Issued year',
         name: 'issuedYear',
         rules: [
@@ -403,7 +403,7 @@ export const certificateForm: FieldType[] = [
         $width: '25%',
     },
     {
-        key: 6,
+        key: '6',
         label: `Certificate Verification`,
         name: 'certificateVerification',
         rules: [
@@ -416,27 +416,4 @@ export const certificateForm: FieldType[] = [
             <FileUpload />
         ),
     },
-]
-
-export const availabilityForm: FieldType[] = [
-    {
-        key: 1,
-        label: '',
-        name: 'timeslot',
-        rules: [
-            {
-                required: true,
-                message: 'Please select your timeslot for this day.',
-            },
-        ],
-        children: (
-            <TimePicker.RangePicker 
-            format={format}
-            id={{
-                start: 'startTime',
-                end: 'endTime',
-            }}
-            style={{ width: `100%` }}/>
-        ),
-    }
 ]

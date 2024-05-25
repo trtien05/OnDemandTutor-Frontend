@@ -38,7 +38,7 @@ const Form3 = ({ onFinish, initialValues, onClickBack }: any) => {
   },[form.length]);
 
   return (
-    < Col lg={{ span: 12 }} sm={{ span: 24 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
+    < Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
       <FormStyled.FormWrapper
         labelAlign='left'
         layout='vertical'
@@ -52,7 +52,7 @@ const Form3 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.FormDescription>Do you have any relevant certificates? If so, describe them to enhance your profile credibility and get more students.</FormStyled.FormDescription>
 
           <Form.Item
-        name='agreement'
+        name='certificate'
         valuePropName="checked"
         style={{margin: `0`}}
           >
