@@ -17,6 +17,7 @@ export default function FirstPage() {
   const [descriptionValues, setDescriptionValues] = useState(null);
   const [timePriceValues, setTimePriceValues] = useState(null);
   const [agreement, setAgreement] = useState<boolean>(false)
+  const [isTicked, setIsTicked] = useState<boolean>(false);
   const {Title} = Typography;
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
@@ -45,10 +46,13 @@ export default function FirstPage() {
   const handleAgreementChange = (checked: boolean) => {
     setAgreement(checked);
   };
+  const handleTickChange = (checked: boolean) => {
+    setIsTicked(checked);
+  };
   const { current, back, step, next, goTo } = MultipleSteps([
     <Form1 onFinish={onFinishAboutForm} initialValues={aboutValues} agreement={agreement} onAgreementChange={handleAgreementChange}/>,
-    <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} />,
-    <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack}/>,
+    <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack}  />,
+    <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack} isTicked={isTicked} onTickChange={handleTickChange}/>,
     <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
     <Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
   ]);

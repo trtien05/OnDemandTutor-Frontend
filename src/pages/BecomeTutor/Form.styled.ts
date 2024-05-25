@@ -87,8 +87,9 @@ export const NumberInput = styled(InputNumber)`
   }
 `;
 export const ButtonDiv = styled.div`
-        display: flex; 
-        justifyContent: flex-end; 
+        // display: flex; 
+        // justifyContent: flex-end;
+        alignSelf: flex-end; 
         width: 100%; 
         marginTop: 20px;
  `;

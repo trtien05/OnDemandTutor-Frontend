@@ -18,6 +18,8 @@ import * as FormStyled from './Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 
 const { Title } = Typography;
+//Using the Form1Props interface ensures type safety and clarity, 
+//making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
   agreement: boolean;
   onAgreementChange: (checked: boolean) => void;
@@ -212,7 +214,7 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
         
       </FormStyled.FormContainer>
       { (agreement &&
-      <FormStyled.ButtonDiv style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
+      <FormStyled.ButtonDiv>
         <Button type='primary' htmlType="submit" >Save and continue</Button>
         </FormStyled.ButtonDiv> )}
       </FormStyled.FormWrapper>

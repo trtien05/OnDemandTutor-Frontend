@@ -77,14 +77,15 @@ const Form2 = ({ onFinish, initialValues, onClickBack }: any) => {
             </FormStyled.FormContainer>
             </div>
           ))}
-        </FormStyled.FormContainer>
-        <Button type="dashed" style={{marginTop: `-24px`}}  onClick={addField}>
+          <Button type="dashed" onClick={addField}>
           Add another diploma
-        </Button>
-        <div style={{ alignSelf: 'flex-end' }}>
+          </Button>
+        </FormStyled.FormContainer>
+        
+        <FormStyled.ButtonDiv>
           <Button type="default" onClick={() => onClickBack(1)}>Back</Button>
           <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>Save and continue</Button>
-        </div>
+        </FormStyled.ButtonDiv>
 
       </FormStyled.FormWrapper>
     </Col>

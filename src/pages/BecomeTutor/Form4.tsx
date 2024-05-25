@@ -164,12 +164,12 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
               <ReactPlayer url={url} controls={true} width="100%" />
             </div>
           )}
-          <ButtonDiv>
-          <Button type="default" onClick={()=>onClickBack(1)}>Back</Button>
-          <Button type="primary" htmlType="submit">
+          <FormStyled.ButtonDiv>
+          <Button type="default" onClick={()=>onClickBack(1)} >Back</Button>
+          <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>
             Save and continue
           </Button>
-          </ButtonDiv> 
+          </FormStyled.ButtonDiv> 
           
           
         </FormStyled.FormContainer>

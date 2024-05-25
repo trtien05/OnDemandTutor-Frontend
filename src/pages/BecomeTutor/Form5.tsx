@@ -278,8 +278,9 @@ const getDisabledHours = (day: string, index: number, form: FormState) => {
         </FormStyled.FormItem>
           </ReviewContainer>
         </FormStyled.FormContainer>
-        {agreement && (<FormStyled.ButtonDiv style={{ alignSelf: 'flex-end', marginTop: `-36px` }}>
-        <Button type='primary' htmlType="submit" >Save and continue</Button>
+        {agreement && (<FormStyled.ButtonDiv>
+          <Button type="default" onClick={()=>onClickBack(1)} >Back</Button>
+        <Button type='primary' htmlType="submit" style={{ marginLeft: `24px` }}>Save and continue</Button>
         </FormStyled.ButtonDiv>)}
       </FormStyled.FormWrapper>
     </Col>

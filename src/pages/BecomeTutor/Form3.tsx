@@ -6,12 +6,17 @@ import { certificateForm, FieldType } from './Form.fields';
 import * as FormStyled from './Form.styled';
 
 import useDocumentTitle from '../../hooks/useDocumentTitle';
-
-const Form3 = ({ onFinish, initialValues, onClickBack }: any) => {
+// interface Form3Props {
+//   isTicked: boolean;
+//   onTickChange: (checked: boolean) => void;
+//   onFinish: (values: any) => void;
+//   initialValues: any;
+// }
+const Form3 = ({isTicked, onTickChange, onFinish, initialValues, onClickBack }: any) => {
   useDocumentTitle('Become a tutor');
 
   //const file = useRef<UploadFile>();
-  const [visibility, setVisibility] = useState<boolean>(false)
+  // const [visibility, setVisibility] = useState<boolean>(false)
   const [form, setForm] = useState<FieldType[][]>([certificateForm]);
 
   const addField = useCallback(() => {
@@ -59,11 +64,11 @@ const Form3 = ({ onFinish, initialValues, onClickBack }: any) => {
           <FormStyled.FormCheckbox 
             name='noCertificate' 
             style={{margin: `0`}}
-            checked={visibility}
-            onChange={(e) => setVisibility(e.target.checked)}>
+            checked={isTicked}
+            onChange={(e) => onTickChange(e.target.checked)}>
               I don’t have relevant certificates.</FormStyled.FormCheckbox>
         </Form.Item>
-          {!visibility && form.map((form, formIndex) => (
+          {!isTicked && form.map((form, formIndex) => (
             <div>
               {formIndex > 0 && (
                 <Button type='dashed' style={{ width: `100%`, margin: `24px 0px` }}  onClick={() => removeField(formIndex)}>
@@ -87,17 +92,20 @@ const Form3 = ({ onFinish, initialValues, onClickBack }: any) => {
                   {field.children}
                 </FormStyled.FormItem>
               ))}
+              <Button type="dashed" onClick={addField}>
+              Add another certificate
+              </Button>
             </FormStyled.FormContainer>
             </div>
+            
           ))}
+          
         </FormStyled.FormContainer>
-        <Button type="dashed" style={{marginTop: `-24px`}}  onClick={addField}>
-          Add another certificate
-        </Button>
-        <div style={{ alignSelf: 'flex-end' }}>
+        
+        <FormStyled.ButtonDiv>
           <Button type="default" onClick={() => onClickBack(1)}>Back</Button>
           <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>Save and continue</Button>
-        </div>
+          </FormStyled.ButtonDiv>
 
       </FormStyled.FormWrapper>
     </Col>
