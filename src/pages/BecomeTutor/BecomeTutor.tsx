@@ -1,6 +1,7 @@
 import { Steps, Typography } from "antd";
 import * as FormStyled from "./Form.styled"
 import { useState } from "react";
+import { educationForm, FieldType } from './Form.fields';
 // import Form1 from "./Form1";
 
 import Form1 from "./Form1"
@@ -18,6 +19,7 @@ export default function FirstPage() {
   const [timePriceValues, setTimePriceValues] = useState(null);
   const [agreement, setAgreement] = useState<boolean>(false)
   const [isTicked, setIsTicked] = useState<boolean>(false);
+  const [form, setForm] = useState<FieldType[][]>([educationForm]);
   const {Title} = Typography;
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
@@ -49,9 +51,31 @@ export default function FirstPage() {
   const handleTickChange = (checked: boolean) => {
     setIsTicked(checked);
   };
+  
+  const handleAddForm = () => {
+    const newFieldKey = (form.length * educationForm.length);
+    const newForm: FieldType[] = educationForm.map((field) => ({
+      key: (field.key + newFieldKey),
+      label: field.label,
+      name: `${field.name}_${form.length}`,
+      rules: field.rules,
+      initialValue: field.initialValue,
+      children: field.children,
+      $width: field.$width,
+    }));
+    setForm([...form, newForm]);
+    console.log(form)
+  };
+  const handleRemove = (formIndex: number) => {
+    if (form.length > 1) {
+      setForm(form.filter((_, index) => index !== formIndex));
+    } else {
+      alert('At least one form must be present.');
+    }
+  };
   const { current, back, step, next, goTo } = MultipleSteps([
     <Form1 onFinish={onFinishAboutForm} initialValues={aboutValues} agreement={agreement} onAgreementChange={handleAgreementChange}/>,
-    <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack}  />,
+    <Form2 onFinish={onFinishEducationForm} initialValues={educationValues} onClickBack={onClickBack} form={form} onAddForm={handleAddForm} onRemoveForm={handleRemove} />,
     <Form3 onFinish={onFinishCertificationForm} initialValues={certificationValues} onClickBack={onClickBack} isTicked={isTicked} onTickChange={handleTickChange}/>,
     <Form4 onFinish={onFinishDescriptionForm} initialValues={descriptionValues} onClickBack={onClickBack}/>,
     <Form5 onFinish={onFinishTimePriceForm} initialValues={timePriceValues} onClickBack={onClickBack}/>
