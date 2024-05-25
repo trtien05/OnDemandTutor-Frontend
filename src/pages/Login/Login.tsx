@@ -22,11 +22,14 @@ const Login = () => {
             setIsSubmitting(true);
 
             const { data } = await login(values);
-
-            cookieUtils.setItem(config.cookies.token, data);
+            const { accessToken } = data;
+            cookieUtils.setItem(config.cookies.token, accessToken);
+            console.log(accessToken)
             navigate(config.routes.public.home);
         } catch (error: any) {
             if (error.response) messageApi.error(error.response.data);
+
+            // if (error.response) messageApi.error();
             else messageApi.error(error.message);
         } finally {
             setIsSubmitting(false);
