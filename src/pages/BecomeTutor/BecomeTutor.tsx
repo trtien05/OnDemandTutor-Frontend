@@ -20,9 +20,7 @@ export default function FirstPage() {
   const [agreement, setAgreement] = useState<boolean>(false);
   const [isTicked, setIsTicked] = useState<boolean>(false);
   const [diploma, setDiploma] = useState<FieldType[][]>([educationForm]);
-  const [certificate, setCertificate] = useState<FieldType[][]>([
-    certificateForm,
-  ]);
+  const [certificate, setCertificate] = useState<FieldType[][]>([certificateForm]);
   const { Title } = Typography;
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);

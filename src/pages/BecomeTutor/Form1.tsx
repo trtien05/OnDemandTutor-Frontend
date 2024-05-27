@@ -39,7 +39,6 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
   const [loading, setLoading] = useState<boolean>(false);
   const [reload, setReload] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null | undefined>(null);
-  // const isCheckedBox = useRef<boolean>(agreement);
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
