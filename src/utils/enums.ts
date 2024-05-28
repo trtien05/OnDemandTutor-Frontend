@@ -31,3 +31,14 @@ export enum Subject {
 
     OTHER = 'Other',
   }
+  export enum AccountStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'INACTIVE',
+    BANNED = 'BANNED',
+}
+export const Role: { [key: string]: string } = {
+    STUDENT: 'STUDENT',
+    TUTOR: 'TUTOR',
+    MODERATOR: 'MODERATOR',
+    ADMIN: 'ADMIN',
+};

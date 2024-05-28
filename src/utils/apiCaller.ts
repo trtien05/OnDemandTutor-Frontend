@@ -23,7 +23,7 @@ export const request = (
     const token = cookieUtils.getToken();
 
     return axios({
-        url: config.publicRuntimeConfig.API_URL + endpoint,
+        url: config.publicRuntime.API_URL + endpoint,
         method: method,
         headers: Object.assign({}, headers, { Authorization: `Bearer ${token}` }),
         params: Object.assign(params),

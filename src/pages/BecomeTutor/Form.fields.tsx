@@ -185,7 +185,7 @@ export const educationForm: FieldType[] = [
   {
     key: "1",
     label: "University",
-    name: "university",
+    name: "universityName",
     rules: [
       {
         required: true,
@@ -211,7 +211,7 @@ export const educationForm: FieldType[] = [
   {
     key: "2",
     label: "Degree",
-    name: "degree",
+    name: "degreeType",
     rules: [
       {
         required: true,
@@ -239,7 +239,7 @@ export const educationForm: FieldType[] = [
   {
     key: "3",
     label: "Major",
-    name: "major",
+    name: "majorName",
     rules: [
       {
         required: true,
@@ -306,7 +306,7 @@ export const educationForm: FieldType[] = [
   {
     key: "6",
     label: `Diploma Verification`,
-    name: "educationVerification",
+    name: "diplomaUrl",
     rules: [
       {
         required: false,

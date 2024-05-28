@@ -1,4 +1,4 @@
-type AboutType = {
+export type AboutType = {
     dayOfBirth: Date,
     gender: true,
     address: string,
@@ -6,7 +6,7 @@ type AboutType = {
     fullName: string,
     phoneNumber: string
 }
-type EducationType = {
+export type EducationType = {
     id: string,
     majorName: string,
     specialization: string,
@@ -15,9 +15,9 @@ type EducationType = {
     startYear: number,
     endYear: number,
     diplomaUrl: string,
-    verified: true
+    verified?: boolean
 }
-type CertificationType = {
+export type CertificationType = {
     id: number,
     certificateName: string,
     description: string,
@@ -26,7 +26,7 @@ type CertificationType = {
     certificateUrl: string,
     verified: boolean
 }
-type AvailabilityType = {
+export type AvailabilityType = {
     teachingPricePerHour: number,
     backgroundDescription: string,
     meetingLink: string,

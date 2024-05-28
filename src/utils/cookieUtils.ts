@@ -1,6 +1,6 @@
 import Cookies from 'universal-cookie';
 import config from '../config';
-import {jwtDecode} from 'jwt-decode';
+import jwtDecode from 'jwt-decode';
 
 const cookies = new Cookies(null, { path: '/' });
 
