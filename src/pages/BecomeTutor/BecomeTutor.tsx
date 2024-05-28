@@ -3,7 +3,7 @@ import * as FormStyled from "./Form.styled";
 import { useState, useCallback } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs, { Dayjs } from 'dayjs'
-import { addEducations, updateDetails } from "../../api/tutorRegisterAPI";
+import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
 
 // import Form1 from "./Form1";
 
@@ -145,6 +145,13 @@ export default function FirstPage() {
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
     console.log(aboutValues);
+    const tutorId = 1; // Example tutorId
+    saveBecomeTutor(tutorId);
+    saveAccountDetails(tutorId, values)
+      .catch(error => {
+        console.error('Error saving account details:', error);
+      });
+
     next();
   };
   const handleDiplomaURLChange = (url: string) => {
@@ -173,25 +180,31 @@ export default function FirstPage() {
     }
 
     setEducationValues(values);
-    const tutorId = 1;
+    const tutorId = 1; // Example tutorId
     saveEducations(tutorId, values)
-      .then(response => {
-        console.log('Educations saved:', response);
-      })
       .catch(error => {
         console.error('Error saving educations:', error);
       });
-    next();
     next();
   };
   const onFinishCertificationForm = (values: any) => {
     setCertificationValues(values);
     console.log(educationValues)
+    const tutorId = 1;
+    saveCertificates(tutorId, values)
+      .catch(error => {
+        console.error('Error saving certificates:', error);
+      });
     next();
   };
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
     console.log(aboutValues);
+    const tutorId = 1; // Example tutorId
+    saveTutorDescription(tutorId, values)
+      .catch(error => {
+        console.error('Error saving tutor description:', error);
+      });
     next();
   };
   const onFinishTimePriceForm = (values: any) => {
@@ -363,25 +376,77 @@ export default function FirstPage() {
       );
     }
   };
+  //------------------------------------FETCH BECOME TUTOR API-------------------------------
+  async function saveBecomeTutor(tutorId: number) {
+    try {
+      const response = await becomeTutor(tutorId);
+      console.log(' saved successfully:', response);
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
 
-  // fetch apis
-  async function saveEducations(tutorId: number, formData: any) {
+  //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
+  async function saveAccountDetails(tutorId: number, formData: any) {
 
     // Get JSON body from form data
-    const jsonRequestBody = convertFormDataToJSON(formData);
+    const jsonRequestBody = convertAccountDetailsFormData(formData);
 
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const response = await addEducations(tutorId, jsonRequestBody);
+      const responseData = await updateDetails(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
-        throw new Error(`Error: ${response.statusText}`);
+        throw new Error(`Error: ${responseData.statusText}`);
       }
 
       // Get response data
-      const responseData = await response;
+      console.log(' saved successfully:', responseData);
+
+      // Return success response
+      return responseData;
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+
+  function convertAccountDetailsFormData(formData: any) {
+    // convert form data to account details data
+    return {
+      fullName: formData.fullName,
+      phoneNumber: formData.phoneNumber,
+      email: formData.email,
+      dayOfBirth: formData.dayOfBirth.format('YYYY-MM-DD'), // Assuming dayOfBirth is a moment object
+      gender: formData.gender,
+      address: formData.address,
+      avatarUrl: formData.avatarUrl
+    };
+  }
+  //------------------------------------FETCH EDUCATION API----------------------------
+  async function saveEducations(tutorId: number, formData: any) {
+
+    // Get JSON body from form data
+    const jsonRequestBody = convertEducationFormData(formData);
+
+    try {
+
+      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+      const responseData = await addEducations(tutorId, jsonRequestBody);
+
+      // Check response status
+      if (!api.success) {
+        throw new Error(`Error: ${responseData.statusText}`);
+      }
+
+      // Get response data
       console.log('Educations saved successfully:', responseData);
 
       // Return success response
@@ -393,7 +458,8 @@ export default function FirstPage() {
       });
     }
   }
-  function convertFormDataToJSON(formData: any) {
+
+  function convertEducationFormData(formData: any) {
     const educationData = [];
 
     const numberOfEntries = Math.max(
@@ -418,6 +484,103 @@ export default function FirstPage() {
 
     return educationData;
   }
+  //------------------------------------FETCH CERTIFICATE API----------------------------
+  async function saveCertificates(tutorId: number, formData: any) {
+
+    // Get JSON body from form data
+    const jsonRequestBody = convertCertificateFormData(formData);
+
+    try {
+
+      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+      const responseData = await addCertificates(tutorId, jsonRequestBody);
+
+      // Check response status
+      if (!api.success) {
+        throw new Error(`Error: ${responseData.statusText}`);
+      }
+
+      // Get response data
+      console.log('Certificates saved successfully:', responseData);
+
+      // Return success response
+      return responseData;
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+
+  function convertCertificateFormData(formData: any) {
+    const certificateData = [];
+
+    const numberOfEntries = Math.max(
+      ...Object.keys(formData)
+        .filter(key => key.includes('_'))
+        .map(key => parseInt(key.split('_').pop() ?? '0'))
+    ) + 1;
+
+    for (let i = 0; i < numberOfEntries; i++) {
+      const entry = {
+        // convert form data to certificate json format
+        subject: formData[`subject_${i}`] || formData.subject,
+        certificateName: formData[`certificateName_${i}`] || formData.certificateName,
+        description: formData[`description_${i}`] || formData.description,
+        issuedBy: formData[`issuedBy_${i}`] || formData.issuedBy,
+        issuedYear: formData[`issuedYear_${i}`].$y,
+        certificateUrl: formData[`certificateUrl_${i}`] || formData.certificateUrl,
+      };
+
+      certificateData.push(entry);
+    }
+
+    return certificateData;
+  }
+  //------------------------------------FETCH TUTOR DESCRIPTION API----------------------------
+  async function saveTutorDescription(tutorId: number, formData: any) {
+
+    // Get JSON body from form data
+    const jsonRequestBody = convertTutorDescriptionFormData(formData);
+
+    try {
+
+      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+      const responseData = await addTutorDescription(tutorId, jsonRequestBody);
+
+      // Check response status
+      if (!api.success) {
+        throw new Error(`Error: ${responseData.statusText}`);
+      }
+
+      // Get response data
+      console.log('Tutor description saved successfully:', responseData);
+
+      // Return success response
+      return responseData;
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+
+  function convertTutorDescriptionFormData(formData: any) {
+    const descriptionData = {
+      // convert form data to tutor description json format
+      teachingPricePerHour: formData.amount,
+      backgroundDescription: formData.description,
+      meetingLink: formData.meetingLink,
+      videoIntroductionLink: formData.youtubeLink,
+      subjects: formData.checkedValues,
+    };
+
+    return descriptionData;
+  }
+  //------------------------------------FETCH SCHEDULE API----------------------------------
+
 
   return (
     <>
