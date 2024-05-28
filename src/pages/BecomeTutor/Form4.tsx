@@ -51,12 +51,12 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     const formattedValue = new Intl.NumberFormat('vi-VN').format(numberValue);
     return formattedValue;
   };
-  const parser = (value:string | undefined) => {
+  const parser = (value: string | undefined) => {
     // Remove non-digit characters (commas, spaces, etc.)
     return value ? value.replace(/\D/g, '') : '';
   };
-  
-  
+
+
   const options = [
     { label: "Mathematics", value: "Mathematics" },
     { label: "Chemistry", value: "Chemistry" },
@@ -72,7 +72,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     { label: "Coding", value: "Coding" },
   ];
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{margin: `auto`}}>
+    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
       <FormStyled.FormWrapper
         onFinish={onFinish}
         initialValues={initialValues}
@@ -84,47 +84,47 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>Subject Taught</FormStyled.FormTitle>
           <br />
-          <FormStyled.FormItem name="checkedValues" $width={"100%"} rules={[{required:true, message: 'Please choose a subject'}]}>
-          <FormStyled.CheckboxGroup>
-            <Row>
+          <FormStyled.FormItem name="checkedValues" $width={"100%"} rules={[{ required: true, message: 'Please choose a subject' }]}>
+            <FormStyled.CheckboxGroup>
+              <Row>
                 {options.map(option => (
-                  <Col lg={{span:6}} sm={{span:8}} xs={{ span: 8 }} key={option.value}>
+                  <Col lg={{ span: 6 }} sm={{ span: 8 }} xs={{ span: 8 }} key={option.value}>
                     <Checkbox value={option.value}>{option.label}</Checkbox>
                   </Col>
                 ))}
               </Row>
-          </FormStyled.CheckboxGroup>
+            </FormStyled.CheckboxGroup>
           </FormStyled.FormItem>
 
           <FormStyled.FormTitle>Hourly base rate</FormStyled.FormTitle>
           <FormStyled.FormDescription>
-          You can change your base rate in settings after approval
+            You can change your base rate in settings after approval
           </FormStyled.FormDescription>
-          <FormStyled.FormItem 
-          $width={"100%"}
-          name="amount"
-          label="Amount in VND"
-          rules={[
-            {
-              required: true,
-              type: 'number',
-              min: 0,
-              max:1000000
-            },
-          ]}>
+          <FormStyled.FormItem
+            $width={"100%"}
+            name="amount"
+            label="Amount in VND"
+            rules={[
+              {
+                required: true,
+                type: 'number',
+                min: 0,
+                max: 1000000
+              },
+            ]}>
             <FormStyled.NumberInput
-          style={{ width: '100%' }}
-          placeholder="100,000" 
-          value={priceValue}
-          formatter={formatter}
-          parser={parser}
-          onChange={onChange}
-          >
-          </FormStyled.NumberInput>
+              style={{ width: '100%' }}
+              placeholder="100,000"
+              value={priceValue}
+              formatter={formatter}
+              parser={parser}
+              onChange={onChange}
+            >
+            </FormStyled.NumberInput>
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
-          Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take. 
-          Automatic recurring payment takes place every 28 days.
+            Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take.
+            Automatic recurring payment takes place every 28 days.
           </FormStyled.FormDescription>
 
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>
@@ -165,13 +165,13 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             </div>
           )}
           <FormStyled.ButtonDiv>
-          <Button type="default" onClick={()=>onClickBack(1)} >Back</Button>
-          <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>
-            Save and continue
-          </Button>
-          </FormStyled.ButtonDiv> 
-          
-          
+            <Button type="default" onClick={() => onClickBack(1)} >Back</Button>
+            <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>
+              Save and continue
+            </Button>
+          </FormStyled.ButtonDiv>
+
+
         </FormStyled.FormContainer>
       </FormStyled.FormWrapper>
     </Col>

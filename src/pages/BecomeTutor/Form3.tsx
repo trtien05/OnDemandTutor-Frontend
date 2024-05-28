@@ -87,7 +87,7 @@ const Form3 = ({
               I don’t have relevant certificates.
             </FormStyled.FormCheckbox>
           </Form.Item>
-         
+
           {!isTicked &&
             certificate.map((certificate: FieldType[], formIndex: number) => (
               <div>
@@ -103,9 +103,9 @@ const Form3 = ({
                 <FormStyled.FormContainer key={formIndex}>
                   {certificate.map((field) => (
                     <FormStyled.FormItem
-                      key={field.key}
+                      key={field.key + '_' + formIndex}
                       label={field.label}
-                      name={field.name}
+                      name={field.name + '_' + formIndex}
                       rules={field.rules}
                       $width={field.$width ? field.$width : "100%"}
                       initialValue={field.initialValue}
@@ -117,11 +117,11 @@ const Form3 = ({
                 </FormStyled.FormContainer>
               </div>
             ))}
-             {!isTicked && 
-              <Button type="dashed" onClick={onAddCertificate}>
+          {!isTicked &&
+            <Button type="dashed" onClick={onAddCertificate}>
               Add another certificate
-              </Button>} 
-          
+            </Button>}
+
         </FormStyled.FormContainer>
 
         <FormStyled.ButtonDiv>

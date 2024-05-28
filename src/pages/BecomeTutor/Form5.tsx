@@ -43,8 +43,8 @@ const getDisabledHours = (day: string, index: number, form: FormState) => {
   };
 };
 
- const Form5 = ({ onFinish, initialValues, onClickBack }: any) => {
-   useDocumentTitle('Become a tutor');
+const Form5 = ({ onFinish, initialValues, onClickBack }: any) => {
+  useDocumentTitle('Become a tutor');
 
   const [visibility, setVisibility] = useState<VisibilityState>({
     'monday': true,
@@ -262,31 +262,32 @@ const getDisabledHours = (day: string, index: number, form: FormState) => {
               </div>
             ))}
             <FormStyled.FormItem
-        name='agreement'
-        valuePropName="checked"
-        rules={[{ 
-          required: true, 
-          message: 'You must agree to our Terms and Condition to proceed' }]}
-          validateFirst
-          >
-          <FormStyled.FormCheckbox 
-          name='agreement' 
-          style={{margin: `0px`, color: `${theme.colors.black}`}}
-          checked={agreement}
-          onChange={(e) => setAgreement(e.target.checked)}
-          >Yes, I'm available at those times.</FormStyled.FormCheckbox>
-        </FormStyled.FormItem>
+              name='agreement'
+              valuePropName="checked"
+              rules={[{
+                required: true,
+                message: 'You must agree to our Terms and Condition to proceed'
+              }]}
+              validateFirst
+            >
+              <FormStyled.FormCheckbox
+                name='agreement'
+                style={{ margin: `0px`, color: `${theme.colors.black}` }}
+                checked={agreement}
+                onChange={(e) => setAgreement(e.target.checked)}
+              >Yes, I'm available at those times.</FormStyled.FormCheckbox>
+            </FormStyled.FormItem>
           </ReviewContainer>
         </FormStyled.FormContainer>
         {agreement && (<FormStyled.ButtonDiv>
-          <Button type="default" onClick={()=>onClickBack(1)} >Back</Button>
-        <Button type='primary' htmlType="submit" style={{ marginLeft: `24px` }}>Save and continue</Button>
+          <Button type="default" onClick={() => onClickBack(1)} >Back</Button>
+          <Button type='primary' htmlType="submit" style={{ marginLeft: `24px` }}>Save and continue</Button>
         </FormStyled.ButtonDiv>)}
       </FormStyled.FormWrapper>
     </Col>
   )
 }
 
- export default Form5;
+export default Form5;
 
 

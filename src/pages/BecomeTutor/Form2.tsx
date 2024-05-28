@@ -80,9 +80,9 @@ const Form2 = ({
               <FormStyled.FormContainer key={formIndex}>
                 {form.map((field) => (
                   <FormStyled.FormItem
-                    key={field.key}
+                    key={field.key + '_' + formIndex}
                     label={field.label}
-                    name={field.name}
+                    name={field.name + '_' + formIndex}
                     rules={field.rules}
                     $width={field.$width ? field.$width : "100%"}
                     initialValue={field.initialValue}
