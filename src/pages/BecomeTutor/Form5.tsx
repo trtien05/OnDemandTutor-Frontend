@@ -1,4 +1,4 @@
-import { Col, Checkbox, Form, TimePicker, Button, Grid, Card } from 'antd';
+import { Col, Checkbox, Form, TimePicker, Button, Grid, Card, Input } from 'antd';
 import { useEffect, useState } from 'react';
 import { FieldType } from './Form.fields';
 import * as FormStyled from './Form.styled';
@@ -99,6 +99,19 @@ const Form5 = ({ onFinish,
                 )}
               </FormStyled.TimeslotStyle>
             ))}
+            <FormStyled.FormItem
+                        key='noOfWeek'
+                        label='Number of weeks apply'
+                        name='noOfWeek'
+                        rules={[{
+                          required: true,
+                          message: 'You must insert in this field'
+                        }]}
+                        $width={'100%'}
+                        validateFirst
+                      >
+                        <Input placeholder='3'/>
+                      </FormStyled.FormItem>
           </FormStyled.FormContainer>
 
 

@@ -3,7 +3,7 @@ import * as FormStyled from "./Form.styled";
 import { useState, useCallback } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs, { Dayjs } from 'dayjs'
-import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
+// import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
 
 // import Form1 from "./Form1";
 
@@ -31,9 +31,17 @@ export default function FirstPage() {
   const [diplomaURL, setDiplomaURL] = useState<string[]>([])
   const [certURL, setCertURL] = useState<string[]>([])
   const [diplomaFile, setDiplomaFile] = useState<UploadFile[]>([])
+  const [certFile, setCertFile] = useState<UploadFile[]>([])
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+  const handleDiplomaURLChange = (url: string) => {
+    setDiplomaURL((prevState) => [...prevState, url])
+  }
+  const handleCertificateURLChange = (url: string) => {
+    setCertURL((prevState) => [...prevState, url])
+  }
+
   const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
     let files = [...info.fileList];
     setDiplomaFile(prev => ({
@@ -43,8 +51,17 @@ export default function FirstPage() {
     console.log(`Updated fileList for ${name}:`, files);
     ;
   }
+  const handleCertChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
+    let files = [...info.fileList];
+    setCertFile(prev => ({
+      ...prev,
+      [name]: files,
+    }));
+    console.log(`Updated fileList for ${name}:`, files);
+    ;
+  }
 
-  //FORM 5
+  //---------------------------------------FORM 5
   interface VisibilityState {
     [key: string]: boolean;
   }
@@ -140,7 +157,7 @@ export default function FirstPage() {
   };
 
   const [timeslotForm, setTimeslotForm] = useState<FormState>(initialFormState())
-  //end form 5
+  //----------------------------end form 5
   const { Title } = Typography;
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
@@ -154,30 +171,24 @@ export default function FirstPage() {
 
     next();
   };
-  const handleDiplomaURLChange = (url: string) => {
-    setDiplomaURL((prevState) => [...prevState, url])
-  }
-  const handleCertificateURLChange = (url: string) => {
-    setCertURL((prevState) => [...prevState, url])
-  }
 
   const onFinishEducationForm = (values: any) => {
-    //get number of upload entries in form
-    const numberOfEntries = Math.max(
-      ...Object.keys(values)
-        .filter(key => key.includes('_'))
-        .map(key => {
-          const lastPart = key.split('_').pop();
-          return lastPart ? parseInt(lastPart, 10) : 0;
-        })
-    ) + 1;
-    console.log(diplomaFile)
-    for (let i = 0; i < numberOfEntries; i++) {
-      console.log(diplomaFile[`diplomaVerification_${i}`][0])
-      uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
-      let url = diplomaURL[i];
-      values[`diplomaVerification_${i}`] = url;
-    }
+    // //get number of upload entries in form
+    // const numberOfEntries = Math.max(
+    //   ...Object.keys(values)
+    //     .filter(key => key.includes('_'))
+    //     .map(key => {
+    //       const lastPart = key.split('_').pop();
+    //       return lastPart ? parseInt(lastPart, 10) : 0;
+    //     })
+    // ) + 1;
+    // console.log(diplomaFile)
+    // for (let i = 0; i < numberOfEntries; i++) {
+    //   console.log(diplomaFile[`diplomaVerification_${i}`][0])
+    //   uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
+    //   let url = diplomaURL[i];
+    //   values[`diplomaVerification_${i}`] = url;
+    // }
 
     setEducationValues(values);
     const tutorId = 1; // Example tutorId
@@ -187,6 +198,7 @@ export default function FirstPage() {
       });
     next();
   };
+
   const onFinishCertificationForm = (values: any) => {
     setCertificationValues(values);
     console.log(educationValues)
@@ -209,6 +221,7 @@ export default function FirstPage() {
   };
   const onFinishTimePriceForm = (values: any) => {
     setTimePriceValues(values);
+    console.log(values)
     console.log(
       aboutValues,
       educationValues,
@@ -306,33 +319,34 @@ export default function FirstPage() {
     //   agreement={agreement}
     //   onAgreementChange={handleAgreementChange}
     // />,
-    <Form2
-      onFinish={onFinishEducationForm}
-      initialValues={educationValues}
-      onClickBack={onClickBack}
-      diploma={diploma}
-      onAddDiploma={handleAddDiploma}
-      onRemoveDiploma={handleRemoveDiploma}
-      diplomaFile={diplomaFile}
-      onDiplomaFileChange={handleDiplomaChange}
-      diplomaURL={diplomaURL}
-    />,
-    <Form3
-      onFinish={onFinishCertificationForm}
-      initialValues={certificationValues}
-      onClickBack={onClickBack}
-      isTicked={isTicked}
-      onTickChange={handleTickChange}
-      certificate={certificate}
-      onAddCertificate={handleAddCertificate}
-      onRemoveCertificate={handleRemoveCertificate}
-      certificateURL={certURL}
-    />,
-    <Form4
-      onFinish={onFinishDescriptionForm}
-      initialValues={descriptionValues}
-      onClickBack={onClickBack}
-    />,
+    // <Form2
+    //   onFinish={onFinishEducationForm}
+    //   initialValues={educationValues}
+    //   onClickBack={onClickBack}
+    //   diploma={diploma}
+    //   onAddDiploma={handleAddDiploma}
+    //   onRemoveDiploma={handleRemoveDiploma}
+    //   diplomaFile={diplomaFile}
+    //   onDiplomaFileChange={handleDiplomaChange}
+    //   diplomaURL={diplomaURL}
+    // />,
+    // <Form3
+    //   onFinish={onFinishCertificationForm}
+    //   initialValues={certificationValues}
+    //   onClickBack={onClickBack}
+    //   isTicked={isTicked}
+    //   onTickChange={handleTickChange}
+    //   certificate={certificate}
+    //   onAddCertificate={handleAddCertificate}
+    //   onRemoveCertificate={handleRemoveCertificate}
+    //   certificateFile={certFile}
+    //   onCertificateFileChange={handleCertChange}
+    // />,
+    // <Form4
+    //   onFinish={onFinishDescriptionForm}
+    //   initialValues={descriptionValues}
+    //   onClickBack={onClickBack}
+    // />,
     <Form5
       onFinish={onFinishTimePriceForm}
       initialValues={timePriceValues}
