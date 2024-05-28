@@ -1,17 +1,20 @@
-import { Input, DatePicker, Select, GetProps, TimePicker } from 'antd';
+import { Input, DatePicker, Select, GetProps } from 'antd';
 import { Rule } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
-import { NamePath } from 'antd/es/form/interface';
 import * as Enum from '../../utils/enums';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import FileUpload from '../../components/UploadImg';
+
+//import FileUpload from '../../components/UploadImg';
 
 const format = 'HH';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 dayjs.extend(customParseFormat);
+
+ 
 
 export type FieldType = {
     key: string;
@@ -49,7 +52,8 @@ const validateBirthDate = (_: unknown, value: string) => {
 
 const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     // Can not select days after today and today
-    return current && current > dayjs().endOf('day');
+    const fourYearsFromToday = dayjs().add(4, 'year').endOf('day');
+    return current && current > fourYearsFromToday;
 };
 
 
@@ -286,6 +290,7 @@ export const educationForm: FieldType[] = [
                     start: 'startYear',
                     end: 'endYear',
                 }}
+                
                 style={{ width: `100%` }}
             />
         ),
@@ -293,7 +298,7 @@ export const educationForm: FieldType[] = [
     {
         key: '6',
         label: `Diploma Verification`,
-        name: 'educationVerification',
+        name: 'diplomaVerification',
         rules: [
             {
                 required: false,
@@ -301,7 +306,7 @@ export const educationForm: FieldType[] = [
             },
         ],
         children: (
-            <FileUpload />
+            <></>
         ),
     },
 ]
@@ -413,7 +418,8 @@ export const certificateForm: FieldType[] = [
             },
         ],
         children: (
-            <FileUpload />
+            <></>
         ),
     },
 ]
+

@@ -1,7 +1,10 @@
-import { Steps, Typography } from "antd";
+import { Steps, Typography, TimePicker, UploadFile, notification } from "antd";
 import * as FormStyled from "./Form.styled";
 import { useState, useCallback } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
+import dayjs, { Dayjs } from 'dayjs'
+import { addEducations, updateDetails } from "../../api/tutorRegisterAPI";
+
 // import Form1 from "./Form1";
 
 import Form1 from "./Form1";
@@ -11,6 +14,8 @@ import Form3 from "./Form3";
 import Form4 from "./Form4";
 import Form5 from "./Form5";
 import { theme } from "../../themes";
+import { uploadImage } from "../../components/UploadImg";
+import { UploadChangeParam } from "antd/es/upload";
 export default function FirstPage() {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
@@ -23,21 +28,170 @@ export default function FirstPage() {
   const [certificate, setCertificate] = useState<FieldType[][]>([
     certificateForm,
   ]);
+  const [diplomaURL, setDiplomaURL] = useState<string[]>([])
+  const [certURL, setCertURL] = useState<string[]>([])
+  const [diplomaFile, setDiplomaFile] = useState<UploadFile[]>([])
+  const [api, contextHolderNotification] = notification.useNotification({
+    top: 100,
+  });
+  const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
+    let files = [...info.fileList];
+    setDiplomaFile(prev => ({
+      ...prev,
+      [name]: files,
+    }));
+    console.log(`Updated fileList for ${name}:`, files);
+    ;
+  }
+
+  //FORM 5
+  interface VisibilityState {
+    [key: string]: boolean;
+  }
+  type FormState = {
+    [key in keyof VisibilityState]: FieldType[];
+  };
+
+  const [visibility, setVisibility] = useState<VisibilityState>({
+    'monday': true,
+    'tuesday': true,
+    'wednesday': true,
+    'thursday': true,
+    'friday': true,
+    'saturday': true,
+    'sunday': true,
+  })
+  const [timeslotAgreement, setTimeslotAgreement] = useState<boolean>(false)
+  const setVisibilityForDay = (day: string, value: boolean) => {
+    setVisibility(prevState => ({ ...prevState, [day]: value }));
+  };
+  const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
+
+  const handleInputChange = (
+    day: string,
+    index: number,
+    value: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null
+  ) => {
+    setTimeslotForm((prevState) => {
+      const updatedFields = prevState[day].map(
+        (field, i) =>
+          i === index ? { ...field, initialValue: value } : field
+      );
+      return { ...prevState, [day]: updatedFields };
+    });
+  };
+
+  const getDisabledHours = (day: string, index: number, form: FormState) => {
+    const existingTimes = form[day]
+      .filter((_, i) => i !== index)
+      .map(field => field.initialValue)
+      .filter(Boolean);
+
+    let latestEndHour = -1;
+    existingTimes.forEach(timeslot => {
+      if (timeslot && timeslot[1].hour() > latestEndHour) {
+        latestEndHour = timeslot[1].hour();
+      }
+    });
+
+    return {
+      disabledHours: () => {
+        if (latestEndHour === -1) return [];
+        return Array.from({ length: latestEndHour + 1 }, (_, i) => i);
+      },
+      disabledMinutes: () => [] // no minutes to disable
+    };
+  };
+
+
+  const timeslotSelection = (day: string,
+    index: number,
+    initialValue: [dayjs.Dayjs | null, dayjs.Dayjs | null] | null): FieldType => ({
+      key: `${day}_${index}`,
+      label: '',
+      name: `${day}_timeslot_${index}`,
+      rules: [
+        {
+          required: true,
+          message: 'Please select your timeslot for this day.',
+        },
+      ],
+      children: (
+        <TimePicker.RangePicker
+          size='small'
+          format={'HH'}
+          value={initialValue}
+          id={{
+            start: `${day}_${index}_startTime`,
+            end: `${day}_${index}_endTime`,
+          }}
+          onChange={(times) => handleInputChange(day, index, times)}
+          disabledTime={() => getDisabledHours(day, index, timeslotForm)}
+          style={{ width: `100%` }} />
+      ),
+      $width: `90%`,
+    })
+
+  const initialFormState = (): FormState => {
+    return daysOfWeek.reduce((acc, day) => {
+      acc[day as keyof VisibilityState] = [timeslotSelection(day, 0, null)];
+      return acc;
+    }, {} as FormState);
+  };
+
+  const [timeslotForm, setTimeslotForm] = useState<FormState>(initialFormState())
+  //end form 5
   const { Title } = Typography;
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
+    console.log(aboutValues);
     next();
   };
+  const handleDiplomaURLChange = (url: string) => {
+    setDiplomaURL((prevState) => [...prevState, url])
+  }
+  const handleCertificateURLChange = (url: string) => {
+    setCertURL((prevState) => [...prevState, url])
+  }
+
   const onFinishEducationForm = (values: any) => {
+    //get number of upload entries in form
+    const numberOfEntries = Math.max(
+      ...Object.keys(values)
+        .filter(key => key.includes('_'))
+        .map(key => {
+          const lastPart = key.split('_').pop();
+          return lastPart ? parseInt(lastPart, 10) : 0;
+        })
+    ) + 1;
+    console.log(diplomaFile)
+    for (let i = 0; i < numberOfEntries; i++) {
+      console.log(diplomaFile[`diplomaVerification_${i}`][0])
+      uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
+      let url = diplomaURL[i];
+      values[`diplomaVerification_${i}`] = url;
+    }
+
     setEducationValues(values);
+    const tutorId = 1;
+    saveEducations(tutorId, values)
+      .then(response => {
+        console.log('Educations saved:', response);
+      })
+      .catch(error => {
+        console.error('Error saving educations:', error);
+      });
+    next();
     next();
   };
   const onFinishCertificationForm = (values: any) => {
     setCertificationValues(values);
+    console.log(educationValues)
     next();
   };
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
+    console.log(aboutValues);
     next();
   };
   const onFinishTimePriceForm = (values: any) => {
@@ -49,6 +203,7 @@ export default function FirstPage() {
       descriptionValues,
       timePriceValues
     );
+
     next();
   };
   const onClickBack = () => {
@@ -60,13 +215,34 @@ export default function FirstPage() {
   const handleTickChange = (checked: boolean) => {
     setIsTicked(checked);
   };
+  const handleDayVisibility = (day: string, checked: boolean) => {
+    setVisibilityForDay(day, checked);
+  }
+  const handleTimeslotAgreement = (checked: boolean) => {
+    setTimeslotAgreement(checked);
+  }
+  const handleAddTimeslot = (day: string) => {
+    setTimeslotForm(prevState => {
+      const newIndex = (prevState[day].length);
+      return {
+        ...prevState,
+        [day]: [...prevState[day], timeslotSelection(day, newIndex, null)],
+      };
+    });
+  }
+  const handleRemoveTimeslot = (day: string, formIndex: number) => {
+    setTimeslotForm(prevState => ({
+      ...prevState,
+      [day]: prevState[day].filter((_, index) => index !== formIndex),
+    }));
+  }
 
   const handleAddDiploma = () => {
     const newFieldKey = diploma.length * educationForm.length;
     const newForm: FieldType[] = educationForm.map((field) => ({
       key: field.key + newFieldKey,
       label: field.label,
-      name: `${field.name}_${diploma.length}`,
+      name: `${field.name}`,
       rules: field.rules,
       initialValue: field.initialValue,
       children: field.children,
@@ -80,7 +256,7 @@ export default function FirstPage() {
     const newForm: FieldType[] = certificateForm.map((field) => ({
       key: field.key + newFieldKey,
       label: field.label,
-      name: `${field.name}_${certificate.length}`,
+      name: `${field.name}`,
       rules: field.rules,
       initialValue: field.initialValue,
       children: field.children,
@@ -108,13 +284,15 @@ export default function FirstPage() {
     },
     [certificate.length]
   );
+
+
   const { current, back, step, next, goTo } = MultipleSteps([
-    <Form1
-      onFinish={onFinishAboutForm}
-      initialValues={aboutValues}
-      agreement={agreement}
-      onAgreementChange={handleAgreementChange}
-    />,
+    // <Form1
+    //   onFinish={onFinishAboutForm}
+    //   initialValues={aboutValues}
+    //   agreement={agreement}
+    //   onAgreementChange={handleAgreementChange}
+    // />,
     <Form2
       onFinish={onFinishEducationForm}
       initialValues={educationValues}
@@ -122,6 +300,9 @@ export default function FirstPage() {
       diploma={diploma}
       onAddDiploma={handleAddDiploma}
       onRemoveDiploma={handleRemoveDiploma}
+      diplomaFile={diplomaFile}
+      onDiplomaFileChange={handleDiplomaChange}
+      diplomaURL={diplomaURL}
     />,
     <Form3
       onFinish={onFinishCertificationForm}
@@ -132,6 +313,7 @@ export default function FirstPage() {
       certificate={certificate}
       onAddCertificate={handleAddCertificate}
       onRemoveCertificate={handleRemoveCertificate}
+      certificateURL={certURL}
     />,
     <Form4
       onFinish={onFinishDescriptionForm}
@@ -142,6 +324,13 @@ export default function FirstPage() {
       onFinish={onFinishTimePriceForm}
       initialValues={timePriceValues}
       onClickBack={onClickBack}
+      visibility={visibility}
+      onAddTimeslot={handleAddTimeslot}
+      onRemoveTimeslot={handleRemoveTimeslot}
+      timeslotAgreement={timeslotAgreement}
+      onVisibilityChange={handleDayVisibility}
+      onTimeslotAgreementChange={handleTimeslotAgreement}
+      timeslotForm={timeslotForm}
     />,
   ]);
 
@@ -174,6 +363,61 @@ export default function FirstPage() {
       );
     }
   };
+
+  // fetch apis
+  async function saveEducations(tutorId: number, formData: any) {
+
+    // Get JSON body from form data
+    const jsonRequestBody = convertFormDataToJSON(formData);
+
+    try {
+
+      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+      const response = await addEducations(tutorId, jsonRequestBody);
+
+      // Check response status
+      if (!api.success) {
+        throw new Error(`Error: ${response.statusText}`);
+      }
+
+      // Get response data
+      const responseData = await response;
+      console.log('Educations saved successfully:', responseData);
+
+      // Return success response
+      return responseData;
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+  function convertFormDataToJSON(formData: any) {
+    const educationData = [];
+
+    const numberOfEntries = Math.max(
+      ...Object.keys(formData)
+        .filter(key => key.includes('_'))
+        .map(key => parseInt(key.split('_').pop() ?? '0'))
+    ) + 1;
+
+    for (let i = 0; i < numberOfEntries; i++) {
+      const entry = {
+        majorName: formData[`majorName_${i}`] || formData.majorName,
+        specialization: formData[`specialization_${i}`] || formData.specialization,
+        universityName: formData[`universityName_${i}`] || formData.universityName,
+        degreeType: formData[`degreeType_${i}`] || formData.degreeType,
+        startYear: formData[`academicYear_${i}`][0].$y,
+        endYear: formData[`academicYear_${i}`][1].$y,
+        diplomaUrl: formData[`diplomaUrl_${i}`] || formData.diplomaUrl
+      };
+
+      educationData.push(entry);
+    }
+
+    return educationData;
+  }
 
   return (
     <>
