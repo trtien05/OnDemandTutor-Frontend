@@ -172,21 +172,21 @@ export default function FirstPage() {
   //-----------------------------FINISH EDUCATION FORM---------------------------------
   const onFinishEducationForm = (values: any) => {
     //get number of upload entries in form
-    const numberOfEntries = Math.max(
-      ...Object.keys(values)
-        .filter(key => key.includes('_'))
-        .map(key => {
-          const lastPart = key.split('_').pop();
-          return lastPart ? parseInt(lastPart, 10) : 0;
-        })
-    ) + 1;
-    console.log(diplomaFile)
-    for (let i = 0; i < numberOfEntries; i++) {
-      console.log(diplomaFile[`diplomaVerification_${i}`][0])
-      uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
-      let url = diplomaURL[i];
-      values[`diplomaVerification_${i}`] = url;
-    }
+    // const numberOfEntries = Math.max(
+    //   ...Object.keys(values)
+    //     .filter(key => key.includes('_'))
+    //     .map(key => {
+    //       const lastPart = key.split('_').pop();
+    //       return lastPart ? parseInt(lastPart, 10) : 0;
+    //     })
+    // ) + 1;
+    // console.log(diplomaFile)
+    // for (let i = 0; i < numberOfEntries; i++) {
+    //   console.log(diplomaFile[`diplomaVerification_${i}`][0])
+    //   uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
+    //   let url = diplomaURL[i];
+    //   values[`diplomaVerification_${i}`] = url;
+    // }
 
     setEducationValues(values);
     console.log(values);
