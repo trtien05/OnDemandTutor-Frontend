@@ -5,7 +5,7 @@ import * as FormStyled from './Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
 import styled from 'styled-components';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 
 const { useBreakpoint } = Grid;
 

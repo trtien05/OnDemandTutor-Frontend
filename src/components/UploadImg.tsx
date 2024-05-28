@@ -31,7 +31,7 @@ interface FileUploadProps {
   handleChange: (name: string, info: UploadChangeParam<UploadFile<any>>) => void;
 }
 
-export const uploadImage = async ( tutorId: number, file: File | null, sectionName: string, handleChange: (url:string) => void) => {
+export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, handleChange: (url: string) => void) => {
   console.log(file)
   if (!file) {
     console.log("No file selected for upload.");
@@ -56,11 +56,11 @@ export const uploadImage = async ( tutorId: number, file: File | null, sectionNa
   } catch (error) {
     console.log(`Upload failed: ${error}`);
   }
-  
+
 }
 
 
-const FileUpload: React.FC<FileUploadProps> = ({name, fileList, handleChange}) => {
+const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange }) => {
 
   // call setfile on file input onChange
   // const [file, setFile] = useState<File | null>(null);
@@ -73,14 +73,15 @@ const FileUpload: React.FC<FileUploadProps> = ({name, fileList, handleChange}) =
     handleChange(name, info);
   };
 
-  
 
- 
+
+
   const beforeUpload = (file: FileType) => {
     // You can remove this validation if you want
     const isLt5M = file.size / 1024 / 1024 < 5;
     if (!isLt5M) {
-      console.log('Image must be smaller than 5MB!');}
+      console.log('Image must be smaller than 5MB!');
+    }
     // } else {
     //   setFileList([file])
     // }
@@ -94,7 +95,7 @@ const FileUpload: React.FC<FileUploadProps> = ({name, fileList, handleChange}) =
 
   return (
     <Dragger
-    
+
       name={name}
       fileList={fileList}
       listType="picture"

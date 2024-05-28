@@ -32,15 +32,15 @@ const Form2 = ({
 
   const handleDiplomaFileList = useEffect(() => (
     diplomaFile.map((file, index) => {
-      setFileList((prevState) => [...prevState,{
+      setFileList((prevState) => [...prevState, {
         uid: index,
         name: file[0].name,
         status: 'done',
       }])
     })
-  ),[])
-  
-  
+  ), [])
+
+
   return (
     <Col
       lg={{ span: 12 }}
@@ -78,31 +78,32 @@ const Form2 = ({
               <FormStyled.FormContainer key={formIndex}>
                 {form.map((field) => {
                   const diplomaVerificationProps = field.name.includes('diplomaVerification')
-                  ? {
+                    ? {
                       valuePropName: 'fileList',
                       getValueFromEvent: normFile,
                     }
-                  : {};
+                    : {};
 
-                  return(
-                  <FormStyled.FormItem
-                    key={field.key + '_' + formIndex}
-                    label={field.label}
-                    name={field.name + '_' + formIndex}
-                    rules={field.rules}
-                    $width={field.$width ? field.$width : "100%"}
-                    initialValue={field.initialValue}
-                    {...diplomaVerificationProps}
-                    validateFirst
-                  >
-                    {field.name.includes(`diplomaVerification`)&& 
-                    (<FileUpload 
-                    name={field.name + '_' + formIndex}
-                    fileList={fileList}
-                    handleChange={onDiplomaFileChange}/>)}
-                    {field.children}
-                  </FormStyled.FormItem>
-                )})}
+                  return (
+                    <FormStyled.FormItem
+                      key={field.key + '_' + formIndex}
+                      label={field.label}
+                      name={field.name + '_' + formIndex}
+                      rules={field.rules}
+                      $width={field.$width ? field.$width : "100%"}
+                      initialValue={field.initialValue}
+                      {...diplomaVerificationProps}
+                      validateFirst
+                    >
+                      {field.name.includes(`diplomaVerification`) &&
+                        (<FileUpload
+                          name={field.name + '_' + formIndex}
+                          fileList={fileList}
+                          handleChange={onDiplomaFileChange} />)}
+                      {field.children}
+                    </FormStyled.FormItem>
+                  )
+                })}
               </FormStyled.FormContainer>
             </div>
           ))}

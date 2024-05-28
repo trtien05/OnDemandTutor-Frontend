@@ -11,7 +11,10 @@ import Form3 from "./Form3";
 import Form4 from "./Form4";
 import Form5 from "./Form5";
 import { theme } from "../../themes";
-import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
+import {
+  addEducations, updateDetails, addCertificates,
+  addTutorDescription, becomeTutor, addAvailableSchedule
+} from "../../api/tutorRegisterAPI";
 import useAuth from '../../hooks/useAuth';
 
 import { uploadImage } from "../../components/UploadImg";
@@ -36,6 +39,9 @@ export default function FirstPage() {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+  const { Title } = Typography;
+  const { user } = useAuth();
+
   const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
     let files = [...info.fileList];
     setDiplomaFile(prev => ({
@@ -143,13 +149,10 @@ export default function FirstPage() {
 
   const [timeslotForm, setTimeslotForm] = useState<FormState>(initialFormState())
   //end form 5
-  const { Title } = Typography;
-  const { user } = useAuth();
-
+  //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
-    console.log(values);
-    // const tutorId = user?.userId;
+    console.log(aboutValues);
     const tutorId = 1; // Example tutorId
     saveBecomeTutor(tutorId);
     saveAccountDetails(tutorId, values)
@@ -159,13 +162,14 @@ export default function FirstPage() {
 
     next();
   };
+
   const handleDiplomaURLChange = (url: string) => {
     setDiplomaURL((prevState) => [...prevState, url])
   }
   const handleCertificateURLChange = (url: string) => {
     setCertURL((prevState) => [...prevState, url])
   }
-
+  //-----------------------------FINISH EDUCATION FORM---------------------------------
   const onFinishEducationForm = (values: any) => {
     //get number of upload entries in form
     const numberOfEntries = Math.max(
@@ -194,7 +198,7 @@ export default function FirstPage() {
       });
     next();
   };
-
+  //----------------------------------FINISH CERTIFICATION FORM----------------------------
   const onFinishCertificationForm = (values: any) => {
     setCertificationValues(values);
     console.log(values);
@@ -206,7 +210,7 @@ export default function FirstPage() {
       });
     next();
   };
-
+  //-----------------------------------FINISH DESCRIPTION FORM---------------------------
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
     console.log(values);
@@ -219,33 +223,46 @@ export default function FirstPage() {
     next();
   };
 
+  //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = (values: any) => {
     setTimePriceValues(values);
-    console.log(
-      aboutValues,
-      educationValues,
-      certificationValues,
-      descriptionValues,
-      timePriceValues
-    );
+    // console.log(
+    //   aboutValues,
+    //   educationValues,
+    //   certificationValues,
+    //   descriptionValues,
+    //   timePriceValues
+    // );
+    console.log(values);
+    // const tutorId = user?.userId;
+    const tutorId = 1; // Example tutorId
+    saveTutorAvailableTimeslots(tutorId, values)
+      .catch(error => {
+        console.error('Error saving tutor available timeslot:', error);
+      });
     next();
   };
 
   const onClickBack = () => {
     back();
   };
+
   const handleAgreementChange = (checked: boolean) => {
     setAgreement(checked);
   };
+
   const handleTickChange = (checked: boolean) => {
     setIsTicked(checked);
   };
+
   const handleDayVisibility = (day: string, checked: boolean) => {
     setVisibilityForDay(day, checked);
   }
+
   const handleTimeslotAgreement = (checked: boolean) => {
     setTimeslotAgreement(checked);
   }
+
   const handleAddTimeslot = (day: string) => {
     setTimeslotForm(prevState => {
       const newIndex = (prevState[day].length);
@@ -255,6 +272,7 @@ export default function FirstPage() {
       };
     });
   }
+
   const handleRemoveTimeslot = (day: string, formIndex: number) => {
     setTimeslotForm(prevState => ({
       ...prevState,
@@ -313,12 +331,12 @@ export default function FirstPage() {
   );
 
   const { current, back, step, next, goTo } = MultipleSteps([
-    // <Form1
-    //   onFinish={onFinishAboutForm}
-    //   initialValues={aboutValues}
-    //   agreement={agreement}
-    //   onAgreementChange={handleAgreementChange}
-    // />,
+    <Form1
+      onFinish={onFinishAboutForm}
+      initialValues={aboutValues}
+      agreement={agreement}
+      onAgreementChange={handleAgreementChange}
+    />,
     <Form2
       onFinish={onFinishEducationForm}
       initialValues={educationValues}
@@ -471,6 +489,7 @@ export default function FirstPage() {
     }
   }
 
+
   function convertEducationFormData(formData: any) {
     const educationData = [];
 
@@ -488,7 +507,7 @@ export default function FirstPage() {
         degreeType: formData[`degreeType_${i}`] || formData.degreeType,
         startYear: formData[`academicYear_${i}`][0].$y,
         endYear: formData[`academicYear_${i}`][1].$y,
-        diplomaUrl: formData[`diplomaUrl_${i}`] || formData.diplomaUrl
+        diplomaUrl: formData[`diplomaVerification_${i}`] || formData.diplomaUrl
       };
 
       educationData.push(entry);
@@ -592,8 +611,59 @@ export default function FirstPage() {
     return descriptionData;
   }
   //------------------------------------FETCH SCHEDULE API----------------------------------
+  async function saveTutorAvailableTimeslots(tutorId: number, formData: any) {
 
+    // Get JSON body from form data
+    const jsonRequestBody = convertTimeslotsToJSON(formData);
 
+    try {
+
+      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+      const responseData = await addAvailableSchedule(tutorId, jsonRequestBody);
+
+      // Check response status
+      if (!api.success) {
+        throw new Error(`Error: ${responseData.statusText}`);
+      }
+
+      // Get response data
+      console.log('Tutor available timeslots saved successfully:', responseData);
+
+      // Return success response
+      return responseData;
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+
+  function convertTimeslotsToJSON(formData: any) {
+    const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    const jsonResult = [];
+
+    daysOfWeek.forEach((day, index) => {
+      // Check for timeslots for the current day
+      for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
+        const timeslot = formData[`${day}_timeslot_${i}`];
+        if (timeslot && timeslot.length === 2) {
+          const startTime = timeslot[0].format("HH:mm:ss");
+          const endTime = timeslot[1].format("HH:mm:ss");
+
+          jsonResult.push({
+            startTime,
+            endTime,
+            dayOfWeek: index + 2, // Monday is 2, Sunday is 8
+          });
+        }
+      }
+    });
+
+    return jsonResult;
+  }
+
+  //----------------------------------------------------------------------------------------
   return (
     <>
       <Title
