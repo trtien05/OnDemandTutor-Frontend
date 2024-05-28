@@ -1,4 +1,4 @@
-import { Form, Typography, Checkbox, Input, InputNumber } from "antd";
+import { Form, Typography, Checkbox, Input, InputNumber, Button, Card } from "antd";
 import styled from "styled-components";
 
 import { theme } from '../../themes';
@@ -184,6 +184,39 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
     }
 `;
 
+export const DeleteButton = styled(Button)`
+    width: 5px; 
+    margin: 16px 0px; 
+    padding: 0;
+    align-item: center;
+    ${({ theme }) => theme.breakpoints.down('sm')}{
+      width: 100%;
+      margin: 0px auto;
+    }
+  `
+export const ReviewContainer = styled(Card)`
+  width: 100%;
+  background: ${theme.colors.secondary};
+  padding: 5%;
+  margin-top: 24px;
+  border-radius: 25px;
+  
+    & .ant-card-body{
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    ${({ theme }) => theme.breakpoints.down('xs')}{
+      flex-direction: column;
+    }
+  }
+  `
+
+export const TimeslotStyle = styled.div`
+    width: 45%;
+    ${({ theme }) => theme.breakpoints.down('sm')}{
+      width: 100%;
+    }
+  `
 
 
 

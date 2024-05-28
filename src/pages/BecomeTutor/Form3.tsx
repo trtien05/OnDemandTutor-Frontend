@@ -74,7 +74,7 @@ const Form3 = ({
           </FormStyled.FormDescription>
 
           <Form.Item
-            name="certificate"
+            name="noCertificate"
             valuePropName="checked"
             style={{ margin: `0` }}
           >
@@ -109,6 +109,7 @@ const Form3 = ({
                       rules={field.rules}
                       $width={field.$width ? field.$width : "100%"}
                       initialValue={field.initialValue}
+                      {...(field.name.includes(`certificateVerification_${formIndex}`) && { valuePropName: 'fileList' })}
                       validateFirst
                     >
                       {field.children}

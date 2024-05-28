@@ -1,11 +1,11 @@
-import { Col, Button } from "antd";
-
-import { useState } from "react";
-import { educationForm, FieldType } from "./Form.fields";
-
+import { Col, Button, UploadFile } from "antd";
+import { FieldType } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 
 import useDocumentTitle from "../../hooks/useDocumentTitle";
+import FileUpload from "../../components/UploadImg";
+import { useEffect, useState } from "react";
+import { UploadChangeParam } from "antd/es/upload";
 
 const Form2 = ({
   diploma,
@@ -14,35 +14,33 @@ const Form2 = ({
   onFinish,
   initialValues,
   onClickBack,
+  diplomaFile,
+  onDiplomaFileChange,
+  diplomaURL
 }: any) => {
   useDocumentTitle("Become a tutor");
 
-  //const file = useRef<UploadFile>();
-  // const [form, setForm] = useState<FieldType[][]>([educationForm]);
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
 
-  // const addField = () => {
-  //   const newFieldKey = (form.length * educationForm.length);
-  //   const newForm: FieldType[] = educationForm.map((field) => ({
-  //     key: (field.key + newFieldKey),
-  //     label: field.label,
-  //     name: `${field.name}_${form.length}`,
-  //     rules: field.rules,
-  //     initialValue: field.initialValue,
-  //     children: field.children,
-  //     $width: field.$width,
-  //   }));
-  //   setForm([...form, newForm]);
-  //   console.log(form)
-  // };
+  const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
 
-  // const removeField = (formIndex: number) => {
-  //   if (form.length > 1) {
-  //     setForm(form.filter((_, index) => index !== formIndex));
-  //   } else {
-  //     alert('At least one form must be present.');
-  //   }
-  // };
-
+  const handleDiplomaFileList = useEffect(() => (
+    diplomaFile.map((file, index) => {
+      setFileList((prevState) => [...prevState,{
+        uid: index,
+        name: file[0].name,
+        status: 'done',
+      }])
+    })
+  ),[])
+  
+  
   return (
     <Col
       lg={{ span: 12 }}
@@ -78,7 +76,15 @@ const Form2 = ({
                 </Button>
               )}
               <FormStyled.FormContainer key={formIndex}>
-                {form.map((field) => (
+                {form.map((field) => {
+                  const diplomaVerificationProps = field.name.includes('diplomaVerification')
+                  ? {
+                      valuePropName: 'fileList',
+                      getValueFromEvent: normFile,
+                    }
+                  : {};
+
+                  return(
                   <FormStyled.FormItem
                     key={field.key + '_' + formIndex}
                     label={field.label}
@@ -86,11 +92,17 @@ const Form2 = ({
                     rules={field.rules}
                     $width={field.$width ? field.$width : "100%"}
                     initialValue={field.initialValue}
+                    {...diplomaVerificationProps}
                     validateFirst
                   >
+                    {field.name.includes(`diplomaVerification`)&& 
+                    (<FileUpload 
+                    name={field.name + '_' + formIndex}
+                    fileList={fileList}
+                    handleChange={onDiplomaFileChange}/>)}
                     {field.children}
                   </FormStyled.FormItem>
-                ))}
+                )})}
               </FormStyled.FormContainer>
             </div>
           ))}
