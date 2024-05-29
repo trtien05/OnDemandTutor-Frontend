@@ -197,8 +197,6 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
         rules={[{ 
           required: true, 
           message: 'You must agree to our Terms and Condition to proceed' }]}
-          // validateFirst
-          
           >
           <FormStyled.FormCheckbox 
           name='agreement' 

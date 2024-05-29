@@ -1,17 +1,20 @@
-import { Input, DatePicker, Select, GetProps, TimePicker, InputNumber } from "antd";
-import { Rule } from "antd/es/form";
-import locale from "antd/es/date-picker/locale/vi_VN";
-import { NamePath } from "antd/es/form/interface";
-import * as Enum from "../../utils/enums";
-import dayjs from "dayjs";
-import customParseFormat from "dayjs/plugin/customParseFormat";
-import FileUpload from "../../components/UploadImg";
+import { Input, DatePicker, Select, GetProps, Upload } from 'antd';
+import { Rule } from 'antd/es/form';
+import locale from 'antd/es/date-picker/locale/vi_VN'
+import * as Enum from '../../utils/enums';
+import dayjs from 'dayjs';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import FileUpload from '../../components/UploadImg';
 
-const format = "HH";
+//import FileUpload from '../../components/UploadImg';
+
+const format = 'HH';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 dayjs.extend(customParseFormat);
+
+ 
 
 export type FieldType = {
   key: string;
@@ -47,9 +50,10 @@ const validateBirthDate = (_: unknown, value: string) => {
   return Promise.resolve();
 };
 
-const disabledDate: RangePickerProps["disabledDate"] = (current) => {
-  // Can not select days after today and today
-  return current && current > dayjs().endOf("day");
+const disabledDate: RangePickerProps['disabledDate'] = (current) => {
+    // Can not select days after today and today
+    const fourYearsFromToday = dayjs().add(4, 'year').endOf('day');
+    return current && current > fourYearsFromToday;
 };
 
 export const aboutForm: FieldType[] = [
@@ -182,374 +186,242 @@ export const aboutForm: FieldType[] = [
 ];
 
 export const educationForm: FieldType[] = [
-  {
-    key: "1",
-    label: "University",
-    name: "universityName",
-    rules: [
-      {
-        required: true,
-        type: "string",
-        message: "Please input your university name.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your university name.",
-      },
-      {
-        max: 50,
-        message: "University name must not exceed 50 characters.",
-      },
-    ],
-    children: (
-      <Input
-        name="university"
-        placeholder="Ho Chi Minh City University of Education"
-      />
-    ),
-  },
-  {
-    key: "2",
-    label: "Degree",
-    name: "degreeType",
-    rules: [
-      {
-        required: true,
-        message: "Please select your degree.",
-      },
-    ],
-    children: (
-      <Select size="large" placeholder="Select degree type">
-        <Select.Option value={Enum.Degree.ASSOCIATE}>
-          {Enum.Degree.ASSOCIATE}
-        </Select.Option>
-        <Select.Option value={Enum.Degree.BACHELOR}>
-          {Enum.Degree.BACHELOR}
-        </Select.Option>
-        <Select.Option value={Enum.Degree.MASTER}>
-          {Enum.Degree.MASTER}
-        </Select.Option>
-        <Select.Option value={Enum.Degree.DOCTORAL}>
-          {Enum.Degree.DOCTORAL}
-        </Select.Option>
-      </Select>
-    ),
-    $width: "40%",
-  },
-  {
-    key: "3",
-    label: "Major",
-    name: "majorName",
-    rules: [
-      {
-        required: true,
-        message: "Please input your major.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your major.",
-      },
-      {
-        max: 50,
-        message: "Major name must not exceed 50 characters.",
-      },
-    ],
-    children: <Input name="major" placeholder="English Language" />,
-    $width: "55%",
-  },
-  {
-    key: "4",
-    label: "Specialization",
-    name: "specialization",
-    rules: [
-      {
-        required: true,
-        message: "Please input your degree's specialization.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your degree's specialization.",
-      },
-      {
-        max: 50,
-        message: "Degree's specialization must not exceed 50 characters.",
-      },
-    ],
-    children: (
-      <Input name="specialization" placeholder="Interpretation - Translation" />
-    ),
-    $width: "100%",
-  },
-  {
-    key: "5",
-    label: "Academic year",
-    name: "academicYear",
-    rules: [
-      {
-        required: true,
-        message: "Please select your academic year.",
-      },
-    ],
-    children: (
-      <RangePicker
-        size="large"
-        picker="year"
-        disabledDate={disabledDate}
-        id={{
-          start: "startYear",
-          end: "endYear",
-        }}
-        style={{ width: `100%` }}
-      />
-    ),
-  },
-  {
-    key: "6",
-    label: `Diploma Verification`,
-    name: "diplomaUrl",
-    rules: [
-      {
-        required: false,
-        message: "Please upload your diploma verification.",
-      },
-    ],
-    children: <FileUpload />,
-  },
-];
+    {
+        key: '1',
+        label: 'University',
+        name: 'university',
+        rules: [
+            {
+                required: true,
+                type: 'string',
+                message: 'Please input your university name.',
+                
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your university name.',
+            },
+            {
+                max: 50,
+                message: 'University name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='university' placeholder="Ho Chi Minh City University of Education" />,
+    },
+    {
+        key: '2',
+        label: 'Degree',
+        name: 'degree',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your degree.',
+            },
+        ],
+        children: (<Select size="large" placeholder="Select degree type" >
+            <Select.Option value={Enum.Degree.ASSOCIATE}>{Enum.Degree.ASSOCIATE}</Select.Option>
+            <Select.Option value={Enum.Degree.BACHELOR}>{Enum.Degree.BACHELOR}</Select.Option>
+            <Select.Option value={Enum.Degree.MASTER}>{Enum.Degree.MASTER}</Select.Option>
+            <Select.Option value={Enum.Degree.DOCTORAL}>{Enum.Degree.DOCTORAL}</Select.Option>
+        </Select>),
+        $width: '40%',
+    },
+    {
+        key: '3',
+        label: 'Major',
+        name: 'major',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your major.',
+                
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your major.',
+            },
+            {
+                max: 50,
+                message: 'Major name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='major' placeholder="English Language" />,
+        $width: '55%',
+    },
+    {
+        key: '4',
+        label: 'Specialization',
+        name: 'specialization',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your degree\'s specialization.',
+                
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your degree\'s specialization.',
+            },
+            {
+                max: 50,
+                message: 'Degree\'s specialization must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='specialization' placeholder="Interpretation - Translation" />,
+        $width: '100%',
+    },
+    {
+        key: '5',
+        label: 'Academic year',
+        name: 'academicYear',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your academic year.',
+            },
+        ],
+        children: (
+            <RangePicker
+                size='large'
+                picker="year"
+                disabledDate={disabledDate}
+                id={{
+                    start: 'startYear',
+                    end: 'endYear',
+                }}
+                
+                style={{ width: `100%` }}
+            />
+        ),
+    },
+    {
+        key: '6',
+        label: `Diploma Verification`,
+        name: 'diplomaVerification',
+        rules: [
+            {
+                required: false,
+                message: 'Please upload your diploma verification.',
+            },
+        ],
+        children: (
+            // <></>
+            <Upload name="diplomaVerification" listType="picture" maxCount={1}>
+              <Button icon={<UploadOutlined />}>Upload Diploma</Button>
+            </Upload>
+        ),
+    },
+]
 
 export const certificateForm: FieldType[] = [
-  {
-    key: "1",
-    label: "Subject",
-    name: "subject",
-    rules: [
-      {
-        required: true,
-        message: "Please select a subject for your certificate.",
-      },
-    ],
-    children: (
-      <Select size="large" placeholder="Select Subject">
-        {Object.values(Enum.Subject).map((subject) => (
-          <Select.Option key={subject} value={subject}>
-            {subject}
-          </Select.Option>
-        ))}
-      </Select>
-    ),
-  },
-  {
-    key: "2",
-    label: "Certificate name",
-    name: "certificateName",
-    rules: [
-      {
-        required: true,
-        message: "Please input your certificate name.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your certificate name.",
-      },
-      {
-        max: 50,
-        message: "Certificate name must not exceed 50 characters.",
-      },
-    ],
-    children: <Input name="certificateName" placeholder="TESOL" />,
-  },
-  {
-    key: "3",
-    label: "Description",
-    name: "description",
-    rules: [
-      {
-        max: 100,
-        message: "Description must not exceed 100 characters.",
-      },
-    ],
-    children: (
-      <TextArea
-        rows={3}
-        name="description"
-        placeholder="Teaching English as a second or foreign language"
-      />
-    ),
-  },
-  {
-    key: "4",
-    label: "Issued by",
-    name: "issuedOrganization",
-    rules: [
-      {
-        required: true,
-        message: "Please input your certificate's issued organization.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your certificate's issued organization.",
-      },
-      {
-        max: 50,
-        message:
-          "Certificate's issued organization name must not exceed 50 characters.",
-      },
-    ],
-    children: (
-      <Input name="issuedOrganization" placeholder="Trinity College London" />
-    ),
-    $width: "70%",
-  },
-  {
-    key: "5",
-    label: "Issued year",
-    name: "issuedYear",
-    rules: [
-      {
-        required: true,
-        message: "Please select your certificate's issued year.",
-      },
-    ],
-    children: (
-      <DatePicker
-        size="large"
-        picker="year"
-        disabledDate={disabledDate}
-        style={{ width: `100%` }}
-      />
-    ),
-    $width: "25%",
-  },
-  {
-    key: "6",
-    label: `Certificate Verification`,
-    name: "certificateVerification",
-    rules: [
-      {
-        required: false,
-        message: "Please upload your certificate verification.",
-      },
-    ],
-    children: <FileUpload />,
-  },
-];
-// export const descriptionForm: FieldType[] = [
-//   {
-//     key: "1",
-//     label: "Amount in VND",
-//     name: "teachingPricePerHour",
-//     rules: [
-//       {
-//         required: true,
-//         type: "number",
-//         min: 0,
-//         max: 1000000,
-//         // message: 'Please select a subject for your certificate.',
-//       },
-//     ],
-//     children: (
-//       <InputNumber
-//         style={{ width: "100%" }}
-//         placeholder="100,000"
-//         value={priceValue}
-//         formatter={formatter}
-//         parser={parser}
-//         onChange={onChange}
-//       ></InputNumber>
-//     ),
-//   },
-//   {
-//     key: "2",
-//     label: "Certificate name",
-//     name: "certificateName",
-//     rules: [
-//       {
-//         required: true,
-//         message: "Please input your certificate name.",
-//       },
-//       {
-//         validator: validateWhitespace,
-//         message: "Please input your certificate name.",
-//       },
-//       {
-//         max: 50,
-//         message: "Certificate name must not exceed 50 characters.",
-//       },
-//     ],
-//     children: <Input name="certificateName" placeholder="TESOL" />,
-//   },
-//   {
-//     key: "3",
-//     label: "Description",
-//     name: "description",
-//     rules: [
-//       {
-//         max: 100,
-//         message: "Description must not exceed 100 characters.",
-//       },
-//     ],
-//     children: (
-//       <TextArea
-//         rows={3}
-//         name="description"
-//         placeholder="Teaching English as a second or foreign language"
-//       />
-//     ),
-//   },
-//   {
-//     key: "4",
-//     label: "Issued by",
-//     name: "issuedOrganization",
-//     rules: [
-//       {
-//         required: true,
-//         message: "Please input your certificate's issued organization.",
-//       },
-//       {
-//         validator: validateWhitespace,
-//         message: "Please input your certificate's issued organization.",
-//       },
-//       {
-//         max: 50,
-//         message:
-//           "Certificate's issued organization name must not exceed 50 characters.",
-//       },
-//     ],
-//     children: (
-//       <Input name="issuedOrganization" placeholder="Trinity College London" />
-//     ),
-//     $width: "70%",
-//   },
-//   {
-//     key: "5",
-//     label: "Issued year",
-//     name: "issuedYear",
-//     rules: [
-//       {
-//         required: true,
-//         message: "Please select your certificate's issued year.",
-//       },
-//     ],
-//     children: (
-//       <DatePicker
-//         size="large"
-//         picker="year"
-//         disabledDate={disabledDate}
-//         style={{ width: `100%` }}
-//       />
-//     ),
-//     $width: "25%",
-//   },
-//   {
-//     key: "6",
-//     label: `Certificate Verification`,
-//     name: "certificateVerification",
-//     rules: [
-//       {
-//         required: false,
-//         message: "Please upload your certificate verification.",
-//       },
-//     ],
-//     children: <FileUpload />,
-//   },
-// ];
+    {
+        key: '1',
+        label: 'Subject',
+        name: 'subject',
+        rules: [
+            {
+                required: true,
+                message: 'Please select a subject for your certificate.',
+            },
+        ],
+        children: (
+            <Select size="large" placeholder="Select Subject">
+                {Object.values(Enum.Subject).map((subject) => (
+                    <Select.Option key={subject} value={subject}>
+                        {subject}
+                    </Select.Option>
+                ))}
+            </Select>
+        ),
+    },
+    {
+        key: '2',
+        label: 'Certificate name',
+        name: 'certificateName',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your certificate name.',
+                
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your certificate name.',
+            },
+            {
+                max: 50,
+                message: 'Certificate name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='certificateName' placeholder='TESOL' />,
+    },
+    {
+        key: '3',
+        label: 'Description',
+        name: 'description',
+        rules: [
+            {
+                max: 100,
+                message: 'Description must not exceed 100 characters.',
+            },
+        ],
+        children: <TextArea rows={3} name='description' placeholder="Teaching English as a second or foreign language" />,
+    },
+    {
+        key: '4',
+        label: 'Issued by',
+        name: 'issuedOrganization',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your certificate\'s issued organization.',
+                
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your certificate\'s issued organization.',
+            },
+            {
+                max: 50,
+                message: 'Certificate\'s issued organization name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='issuedOrganization' placeholder="Trinity College London" />,
+        $width: '70%',
+    },
+    {
+        key: '5',
+        label: 'Issued year',
+        name: 'issuedYear',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your certificate\'s issued year.',
+            },
+        ],
+        children: (
+            <DatePicker
+                size='large'
+                picker="year"
+                disabledDate={disabledDate}
+                style={{ width: `100%` }}
+            />
+        ),
+        $width: '25%',
+    },
+    {
+        key: '6',
+        label: `Certificate Verification`,
+        name: 'certificateVerification',
+        rules: [
+            {
+                required: false,
+                message: 'Please upload your certificate verification.',
+            },
+        ],
+        children: (
+            <></>
+        ),
+    },
+]
+

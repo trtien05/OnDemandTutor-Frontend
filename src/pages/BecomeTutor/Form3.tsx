@@ -74,7 +74,7 @@ const Form3 = ({
           </FormStyled.FormDescription>
 
           <Form.Item
-            name="certificate"
+            name="noCertificate"
             valuePropName="checked"
             style={{ margin: `0` }}
           >
@@ -103,16 +103,17 @@ const Form3 = ({
                 <FormStyled.FormContainer key={formIndex}>
                   {certificate.map((field) => (
                     <FormStyled.FormItem
-                      key={field.key}
-                      label={field.label}
-                      name={field.name}
-                      rules={field.rules}
-                      $width={field.$width ? field.$width : "100%"}
-                      initialValue={field.initialValue}
-                      validateFirst
-                    >
-                      {field.children}
-                    </FormStyled.FormItem>
+                    key={field.key + '_' + formIndex}
+                    label={field.label}
+                    name={field.name + '_' + formIndex}
+                    rules={field.rules}
+                    $width={field.$width ? field.$width : "100%"}
+                    initialValue={field.initialValue}
+                    {...(field.name.includes(`certificateVerification_${formIndex}`) && { valuePropName: 'fileList' })}
+                    validateFirst
+                  >
+                    {field.children}
+                  </FormStyled.FormItem>
                   ))}
                 </FormStyled.FormContainer>
               </div>
