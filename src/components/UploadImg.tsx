@@ -2,12 +2,12 @@ import React, { useRef, useState } from 'react';
 import { Form, Button, Upload, message, GetProp, Spin } from 'antd';
 import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { getDownloadURL, uploadBytes, ref, getBlob } from "firebase/storage";
+import { getDownloadURL, uploadBytes, ref, getBlob, uploadBytesResumable, UploadTaskSnapshot } from "firebase/storage";
 import { storage, firestore } from "../utils/firebase";
 import { stringify, v4 } from "uuid";
 import { RcFile, UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import firebase from 'firebase/compat/app';
-import { addDoc, collection } from 'firebase/firestore';
+import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
 // set initial state for the object 
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -31,27 +31,64 @@ interface FileUploadProps {
   handleChange: (name: string, info: UploadChangeParam<UploadFile<any>>) => void;
 }
 
-export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, handleChange: (url: string) => void) => {
+export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, index: number, handleChange: (url: string) => void) => {
   console.log(file)
   if (!file) {
     console.log("No file selected for upload.");
     return;
   }
+
+  // định dạng convert file - get url dynamic
+  const blob = new Blob([file], { type: file.type });
+  const blobBuffer = await blob.arrayBuffer();
+  const blobEncoded = btoa(blobBuffer.toString());
+
+  var downloadURL;
   //By creating a reference to a file, your app gains access to it.
-  const imageRef = ref(storage, `${tutorId}/${sectionName}_${file.name}`);
+  const imageRef = ref(storage, `${tutorId}/${sectionName}_${index}`);
   const metadata = {
     contentType: file.type
   };
   try {
-    const uploadResult = await uploadBytes(imageRef, file, metadata);
+    // upload firebase v9
+    const uploadResult = await uploadBytes(imageRef, blobBuffer, metadata)
+    //   const collectionRef = collection(firestore,`${sectionName}`);
+    //   setDoc(doc(collectionRef), blobBuffer)
+    // .then(() => {
+    //   console.log('String data saved successfully!');
+    // })
+    // .catch((error) => {
+    //   console.error('Error saving string data:', error);
+    // });
+    //   const uploadTask = await
+    //   imageRef.put
+    //     storage.ref().put(blob).then(function(snapshot) {
+    //       console.log(`${file.name} file uploaded successfully.`);
 
-    console.log(`${file.name} file uploaded successfully.`);
+    // })
+
+
+
+    // uploadResult.on(
+    //   'state_changed', // Use 'state_changed' for TypeScript compatibility
+    //   (snapshot: UploadTaskSnapshot) => {
+    //     const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+    //     console.log(`Upload progress: ${progress}%`);
+    //   },
+    //   (error) => {
+    //     console.error('Error uploading file:', error);
+    //   },
+    //   async () => {
+    //      downloadURL = await getDownloadURL(uploadResult.snapshot.ref);
+    //     console.log(`Download URL: ${downloadURL}`);
+    //   }
+    // );
 
     // Get the download URL
     const url = await getDownloadURL(uploadResult.ref);
     console.log(`File available at: ${url}`);
-    if (url) {
-      handleChange(url);
+    if (downloadURL) {
+      handleChange(downloadURL); // handleChange đang bị dùng ở cả handle file và url
     }
   } catch (error) {
     console.log(`Upload failed: ${error}`);
@@ -59,9 +96,16 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
 
 }
 
+type DefaultFile = {
+  uid: number,
+  name: string,
+  status: string,
+  url: string
+}
 
+// drag để upload ảnh
 const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange }) => {
-
+  const [defaultFiles, setDefaultFiles] = useState<UploadFile[]>([])
   // call setfile on file input onChange
   // const [file, setFile] = useState<File | null>(null);
   const file = useRef<RcFile | null>(null)
@@ -73,8 +117,16 @@ const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange })
     handleChange(name, info);
   };
 
-
-
+  const handleDefaultFileList = () => {
+    setDefaultFiles((prevState) =>
+      fileList.map((file, index): UploadFile => ({
+        uid: `${index}`,
+        name: file.name,
+        status: 'done',
+        //url: URL.createObjectURL(new Blob([file.originFileObj],{type: file.type})), // Handle potential undefined originFileObj
+      }))
+    );
+  };
 
   const beforeUpload = (file: FileType) => {
     // You can remove this validation if you want
@@ -101,7 +153,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange })
       listType="picture"
       showUploadList={true}
       onChange={handleInternalChange}
-      defaultFileList={fileList}
+      defaultFileList={defaultFiles}
       beforeUpload={beforeUpload}
       onRemove={handleRemove}
       iconRender={() => (<Spin />)}
@@ -115,5 +167,7 @@ const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange })
     </Dragger>
   );
 };
+
+
 
 export default FileUpload;

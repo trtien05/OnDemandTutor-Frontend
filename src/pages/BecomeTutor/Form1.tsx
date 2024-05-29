@@ -29,7 +29,7 @@ interface Form1Props {
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
-const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, initialValues}:any) => {
+const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, initialValues }: any) => {
   useDocumentTitle('Become a tutor');
 
   //const file = useRef<UploadFile>();
@@ -43,7 +43,7 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
-  
+
   const beforeUpload = (f: FileType) => {
     // const isJpgOrPng = f.type === 'image/jpeg' || f.type === 'image/png';
     // if (!isJpgOrPng) {
@@ -112,8 +112,8 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
     });
   };
 
-   // Effect to simulate file upload for testing
-   useEffect(() => {
+  // Effect to simulate file upload for testing
+  useEffect(() => {
     // Create a mock file object
     const mockFile: UploadFile = {
       uid: '-1',
@@ -126,25 +126,25 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
     setFileList([mockFile]);
     setImageUrl(mockFile.url);
   }, []);
-  
-  
+
+
 
 
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{margin: `auto`}}>
-      
-        <FormStyled.FormWrapper
-          labelAlign='left'
-          layout='vertical'
-          requiredMark='optional'
-          size='middle'
-          onFinish={onFinish} 
-          initialValues={initialValues}
-          >
-      <FormStyled.FormContainer>
-        <FormStyled.FormTitle level={1}>About</FormStyled.FormTitle> <br/>
-        <FormStyled.FormDescription>Start creating your public tutor profile. Your progress will be automatically saved as you complete each section. You can return at any time to finish your registration.</FormStyled.FormDescription>
-        
+    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
+
+      <FormStyled.FormWrapper
+        labelAlign='left'
+        layout='vertical'
+        requiredMark='optional'
+        size='middle'
+        onFinish={onFinish}
+        initialValues={initialValues}
+      >
+        <FormStyled.FormContainer>
+          <FormStyled.FormTitle level={1}>About</FormStyled.FormTitle> <br />
+          <FormStyled.FormDescription>Start creating your public tutor profile. Your progress will be automatically saved as you complete each section. You can return at any time to finish your registration.</FormStyled.FormDescription>
+
           {aboutForm.map((field) => {
             return (
               <FormStyled.FormItem
@@ -160,61 +160,62 @@ const Form1: React.FC<Form1Props> = ({agreement, onAgreementChange,onFinish, ini
               </FormStyled.FormItem>)
           })}
 
-       
-        <FormStyled.FormTitle style={{display:`block`}}>Profile picture</FormStyled.FormTitle> <br/>
-        <FormStyled.FormDescription>Make a great first impression!<br />
-          Tutors who look friendly and professional get the most students</FormStyled.FormDescription>
-        <br/>
-        <FormStyled.FormContainer style={{margin: 'auto'}}>  
-        <FormStyled.FormItem
-         name="avatar"
-         valuePropName="fileList"
-         getValueFromEvent={e => e && e.fileList}
-         rules={[{ required: false, message: 'Please upload an avatar!' }]}>
-        <ImgCrop
-          quality={1}
-          showReset
-          showGrid
-        >
-          <Upload 
-            name="avatar"
-            className="avatar-uploader"
-            fileList={fileList}
-            showUploadList={false}
-            beforeUpload={beforeUpload}
-            onChange={handleUploadAvatar}>
-            <Avatar
-              shape='square'
-              icon={<UserOutlined />}
-              size={100}
-              src={imageUrl}
-            /></Upload>
-        </ImgCrop>
-        </FormStyled.FormItem>
-        </FormStyled.FormContainer>
-        <FormStyled.FormItem
-        name='agreement'
-        valuePropName="checked"
-        rules={[{ 
-          required: true, 
-          message: 'You must agree to our Terms and Condition to proceed' }]}
+
+          <FormStyled.FormTitle style={{ display: `block` }}>Profile picture</FormStyled.FormTitle> <br />
+          <FormStyled.FormDescription>Make a great first impression!<br />
+            Tutors who look friendly and professional get the most students</FormStyled.FormDescription>
+          <br />
+          <FormStyled.FormContainer style={{ margin: 'auto' }}>
+            <FormStyled.FormItem
+              name="avatar"
+              valuePropName="fileList"
+              getValueFromEvent={e => e && e.fileList}
+              rules={[{ required: false, message: 'Please upload an avatar!' }]}>
+              <ImgCrop
+                quality={1}
+                showReset
+                showGrid
+              >
+                <Upload
+                  name="avatar"
+                  className="avatar-uploader"
+                  fileList={fileList}
+                  showUploadList={false}
+                  beforeUpload={beforeUpload}
+                  onChange={handleUploadAvatar}>
+                  <Avatar
+                    shape='square'
+                    icon={<UserOutlined />}
+                    size={100}
+                    src={imageUrl}
+                  /></Upload>
+              </ImgCrop>
+            </FormStyled.FormItem>
+          </FormStyled.FormContainer>
+          <FormStyled.FormItem
+            name='agreement'
+            valuePropName="checked"
+            rules={[{
+              required: true,
+              message: 'You must agree to our Terms and Condition to proceed'
+            }]}
           >
-          <FormStyled.FormCheckbox 
-          name='agreement' 
-          style={{margin: `0px`}}
-          checked={agreement}
-          onChange={(e) => onAgreementChange(e.target.checked)}
-          // checked={isCheckedBox.current}
-          // onChange={(e) => setAgreement(e.target.checked)}
-          >By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{textDecoration:'underline'}}>Terms and Condition</a>.</FormStyled.FormCheckbox>
-        </FormStyled.FormItem>
-        
-        
-      </FormStyled.FormContainer>
-      { (agreement &&
-      <FormStyled.ButtonDiv>
-        <Button type='primary' htmlType="submit" >Save and continue</Button>
-        </FormStyled.ButtonDiv> )}
+            <FormStyled.FormCheckbox
+              name='agreement'
+              style={{ margin: `0px` }}
+              checked={agreement}
+              onChange={(e) => onAgreementChange(e.target.checked)}
+            // checked={isCheckedBox.current}
+            // onChange={(e) => setAgreement(e.target.checked)}
+            >By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{ textDecoration: 'underline' }}>Terms and Condition</a>.</FormStyled.FormCheckbox>
+          </FormStyled.FormItem>
+
+
+        </FormStyled.FormContainer>
+        {(agreement &&
+          <FormStyled.ButtonDiv>
+            <Button type='primary' htmlType="submit" >Save and continue</Button>
+          </FormStyled.ButtonDiv>)}
       </FormStyled.FormWrapper>
     </Col>
   )
