@@ -30,15 +30,7 @@ const Form2 = ({
     return e?.fileList;
   };
 
-  // const handleDiplomaFileList = useEffect(() => (
-  //   diplomaFile.map((file, index) => {
-  //     setFileList((prevState) => [...prevState,{
-  //       uid: index,
-  //       name: file[0].name,
-  //       status: 'done',
-  //     }])
-  //   })
-  // ),[])
+
   
   
   return (

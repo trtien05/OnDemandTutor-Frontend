@@ -163,39 +163,39 @@ export default function FirstPage() {
     setAboutValues(values);
     console.log(aboutValues);
     const tutorId = 1; // Example tutorId
-    saveBecomeTutor(tutorId);
-    saveAccountDetails(tutorId, values)
-      .catch(error => {
-        console.error('Error saving account details:', error);
-      });
+    // saveBecomeTutor(tutorId);
+    // saveAccountDetails(tutorId, values)
+    //   .catch(error => {
+    //     console.error('Error saving account details:', error);
+    //   });
 
     next();
   };
 
   const onFinishEducationForm = (values: any) => {
-    // //get number of upload entries in form
-    // const numberOfEntries = Math.max(
-    //   ...Object.keys(values)
-    //     .filter(key => key.includes('_'))
-    //     .map(key => {
-    //       const lastPart = key.split('_').pop();
-    //       return lastPart ? parseInt(lastPart, 10) : 0;
-    //     })
-    // ) + 1;
-    // console.log(diplomaFile)
-    // for (let i = 0; i < numberOfEntries; i++) {
-    //   console.log(diplomaFile[`diplomaVerification_${i}`][0])
-    //   uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
-    //   let url = diplomaURL[i];
-    //   values[`diplomaVerification_${i}`] = url;
-    // }
+    //get number of upload entries in form
+    const numberOfEntries = Math.max(
+      ...Object.keys(values)
+        .filter(key => key.includes('_'))
+        .map(key => {
+          const lastPart = key.split('_').pop();
+          return lastPart ? parseInt(lastPart, 10) : 0;
+        })
+    ) + 1;
+    console.log(diplomaFile)
+    for (let i = 0; i < numberOfEntries; i++) {
+      console.log(diplomaFile[`diplomaVerification_${i}`][0])
+      uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma',i, handleDiplomaURLChange);
+      let url = diplomaURL[i];
+      values[`diplomaVerification_${i}`] = url;
+    }
 
     setEducationValues(values);
     const tutorId = 1; // Example tutorId
-    saveEducations(tutorId, values)
-      .catch(error => {
-        console.error('Error saving educations:', error);
-      });
+    // saveEducations(tutorId, values)
+    //   .catch(error => {
+    //     console.error('Error saving educations:', error);
+    //   });
     next();
   };
 
@@ -203,21 +203,21 @@ export default function FirstPage() {
     setCertificationValues(values);
     console.log(educationValues)
     const tutorId = 1;
-    saveCertificates(tutorId, values)
-      .catch(error => {
-        console.error('Error saving certificates:', error);
-      });
+    // saveCertificates(tutorId, values)
+    //   .catch(error => {
+    //     console.error('Error saving certificates:', error);
+    //   });
     next();
   };
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
     console.log(aboutValues);
     const tutorId = 1; // Example tutorId
-    saveTutorDescription(tutorId, values)
-      .catch(error => {
-        console.error('Error saving tutor description:', error);
-      });
-    next();
+    // saveTutorDescription(tutorId, values)
+    //   .catch(error => {
+    //     console.error('Error saving tutor description:', error);
+    //   });
+    // next();
   };
   const onFinishTimePriceForm = (values: any) => {
     setTimePriceValues(values);
@@ -319,34 +319,34 @@ export default function FirstPage() {
     //   agreement={agreement}
     //   onAgreementChange={handleAgreementChange}
     // />,
-    // <Form2
-    //   onFinish={onFinishEducationForm}
-    //   initialValues={educationValues}
-    //   onClickBack={onClickBack}
-    //   diploma={diploma}
-    //   onAddDiploma={handleAddDiploma}
-    //   onRemoveDiploma={handleRemoveDiploma}
-    //   diplomaFile={diplomaFile}
-    //   onDiplomaFileChange={handleDiplomaChange}
-    //   diplomaURL={diplomaURL}
-    // />,
-    // <Form3
-    //   onFinish={onFinishCertificationForm}
-    //   initialValues={certificationValues}
-    //   onClickBack={onClickBack}
-    //   isTicked={isTicked}
-    //   onTickChange={handleTickChange}
-    //   certificate={certificate}
-    //   onAddCertificate={handleAddCertificate}
-    //   onRemoveCertificate={handleRemoveCertificate}
-    //   certificateFile={certFile}
-    //   onCertificateFileChange={handleCertChange}
-    // />,
-    // <Form4
-    //   onFinish={onFinishDescriptionForm}
-    //   initialValues={descriptionValues}
-    //   onClickBack={onClickBack}
-    // />,
+    <Form2
+      onFinish={onFinishEducationForm}
+      initialValues={educationValues}
+      onClickBack={onClickBack}
+      diploma={diploma}
+      onAddDiploma={handleAddDiploma}
+      onRemoveDiploma={handleRemoveDiploma}
+      diplomaFile={diplomaFile}
+      onDiplomaFileChange={handleDiplomaChange}
+      diplomaURL={diplomaURL}
+    />,
+    <Form3
+      onFinish={onFinishCertificationForm}
+      initialValues={certificationValues}
+      onClickBack={onClickBack}
+      isTicked={isTicked}
+      onTickChange={handleTickChange}
+      certificate={certificate}
+      onAddCertificate={handleAddCertificate}
+      onRemoveCertificate={handleRemoveCertificate}
+      certificateFile={certFile}
+      onCertificateFileChange={handleCertChange}
+    />,
+    <Form4
+      onFinish={onFinishDescriptionForm}
+      initialValues={descriptionValues}
+      onClickBack={onClickBack}
+    />,
     <Form5
       onFinish={onFinishTimePriceForm}
       initialValues={timePriceValues}
@@ -391,209 +391,209 @@ export default function FirstPage() {
     }
   };
   //------------------------------------FETCH BECOME TUTOR API-------------------------------
-  async function saveBecomeTutor(tutorId: number) {
-    try {
-      const response = await becomeTutor(tutorId);
-      console.log(' saved successfully:', response);
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
+  // async function saveBecomeTutor(tutorId: number) {
+  //   try {
+  //     const response = await becomeTutor(tutorId);
+  //     console.log(' saved successfully:', response);
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: 'Lỗi',
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   }
+  // }
 
-  //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
-  async function saveAccountDetails(tutorId: number, formData: any) {
+  // //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
+  // async function saveAccountDetails(tutorId: number, formData: any) {
 
-    // Get JSON body from form data
-    const jsonRequestBody = convertAccountDetailsFormData(formData);
+  //   // Get JSON body from form data
+  //   const jsonRequestBody = convertAccountDetailsFormData(formData);
 
-    try {
+  //   try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await updateDetails(tutorId, jsonRequestBody);
+  //     // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+  //     const responseData = await updateDetails(tutorId, jsonRequestBody);
 
-      // Check response status
-      if (!api.success) {
-        throw new Error(`Error: ${responseData.statusText}`);
-      }
+  //     // Check response status
+  //     if (!api.success) {
+  //       throw new Error(`Error: ${responseData.statusText}`);
+  //     }
 
-      // Get response data
-      console.log(' saved successfully:', responseData);
+  //     // Get response data
+  //     console.log(' saved successfully:', responseData);
 
-      // Return success response
-      return responseData;
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
+  //     // Return success response
+  //     return responseData;
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: 'Lỗi',
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   }
+  // }
 
-  function convertAccountDetailsFormData(formData: any) {
-    // convert form data to account details data
-    return {
-      fullName: formData.fullName,
-      phoneNumber: formData.phoneNumber,
-      email: formData.email,
-      dayOfBirth: formData.dayOfBirth.format('YYYY-MM-DD'), // Assuming dayOfBirth is a moment object
-      gender: formData.gender,
-      address: formData.address,
-      avatarUrl: formData.avatarUrl
-    };
-  }
-  //------------------------------------FETCH EDUCATION API----------------------------
-  async function saveEducations(tutorId: number, formData: any) {
+  // function convertAccountDetailsFormData(formData: any) {
+  //   // convert form data to account details data
+  //   return {
+  //     fullName: formData.fullName,
+  //     phoneNumber: formData.phoneNumber,
+  //     email: formData.email,
+  //     dayOfBirth: formData.dayOfBirth.format('YYYY-MM-DD'), // Assuming dayOfBirth is a moment object
+  //     gender: formData.gender,
+  //     address: formData.address,
+  //     avatarUrl: formData.avatarUrl
+  //   };
+  // }
+  // //------------------------------------FETCH EDUCATION API----------------------------
+  // async function saveEducations(tutorId: number, formData: any) {
 
-    // Get JSON body from form data
-    const jsonRequestBody = convertEducationFormData(formData);
+  //   // Get JSON body from form data
+  //   const jsonRequestBody = convertEducationFormData(formData);
 
-    try {
+  //   try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addEducations(tutorId, jsonRequestBody);
+  //     // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+  //     const responseData = await addEducations(tutorId, jsonRequestBody);
 
-      // Check response status
-      if (!api.success) {
-        throw new Error(`Error: ${responseData.statusText}`);
-      }
+  //     // Check response status
+  //     if (!api.success) {
+  //       throw new Error(`Error: ${responseData.statusText}`);
+  //     }
 
-      // Get response data
-      console.log('Educations saved successfully:', responseData);
+  //     // Get response data
+  //     console.log('Educations saved successfully:', responseData);
 
-      // Return success response
-      return responseData;
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
+  //     // Return success response
+  //     return responseData;
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: 'Lỗi',
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   }
+  // }
 
-  function convertEducationFormData(formData: any) {
-    const educationData = [];
+  // function convertEducationFormData(formData: any) {
+  //   const educationData = [];
 
-    const numberOfEntries = Math.max(
-      ...Object.keys(formData)
-        .filter(key => key.includes('_'))
-        .map(key => parseInt(key.split('_').pop() ?? '0'))
-    ) + 1;
+  //   const numberOfEntries = Math.max(
+  //     ...Object.keys(formData)
+  //       .filter(key => key.includes('_'))
+  //       .map(key => parseInt(key.split('_').pop() ?? '0'))
+  //   ) + 1;
 
-    for (let i = 0; i < numberOfEntries; i++) {
-      const entry = {
-        majorName: formData[`majorName_${i}`] || formData.majorName,
-        specialization: formData[`specialization_${i}`] || formData.specialization,
-        universityName: formData[`universityName_${i}`] || formData.universityName,
-        degreeType: formData[`degreeType_${i}`] || formData.degreeType,
-        startYear: formData[`academicYear_${i}`][0].$y,
-        endYear: formData[`academicYear_${i}`][1].$y,
-        diplomaUrl: formData[`diplomaUrl_${i}`] || formData.diplomaUrl
-      };
+  //   for (let i = 0; i < numberOfEntries; i++) {
+  //     const entry = {
+  //       majorName: formData[`majorName_${i}`] || formData.majorName,
+  //       specialization: formData[`specialization_${i}`] || formData.specialization,
+  //       universityName: formData[`universityName_${i}`] || formData.universityName,
+  //       degreeType: formData[`degreeType_${i}`] || formData.degreeType,
+  //       startYear: formData[`academicYear_${i}`][0].$y,
+  //       endYear: formData[`academicYear_${i}`][1].$y,
+  //       diplomaUrl: formData[`diplomaUrl_${i}`] || formData.diplomaUrl
+  //     };
 
-      educationData.push(entry);
-    }
+  //     educationData.push(entry);
+  //   }
 
-    return educationData;
-  }
-  //------------------------------------FETCH CERTIFICATE API----------------------------
-  async function saveCertificates(tutorId: number, formData: any) {
+  //   return educationData;
+  // }
+  // //------------------------------------FETCH CERTIFICATE API----------------------------
+  // async function saveCertificates(tutorId: number, formData: any) {
 
-    // Get JSON body from form data
-    const jsonRequestBody = convertCertificateFormData(formData);
+  //   // Get JSON body from form data
+  //   const jsonRequestBody = convertCertificateFormData(formData);
 
-    try {
+  //   try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addCertificates(tutorId, jsonRequestBody);
+  //     // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+  //     const responseData = await addCertificates(tutorId, jsonRequestBody);
 
-      // Check response status
-      if (!api.success) {
-        throw new Error(`Error: ${responseData.statusText}`);
-      }
+  //     // Check response status
+  //     if (!api.success) {
+  //       throw new Error(`Error: ${responseData.statusText}`);
+  //     }
 
-      // Get response data
-      console.log('Certificates saved successfully:', responseData);
+  //     // Get response data
+  //     console.log('Certificates saved successfully:', responseData);
 
-      // Return success response
-      return responseData;
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
+  //     // Return success response
+  //     return responseData;
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: 'Lỗi',
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   }
+  // }
 
-  function convertCertificateFormData(formData: any) {
-    const certificateData = [];
+  // function convertCertificateFormData(formData: any) {
+  //   const certificateData = [];
 
-    const numberOfEntries = Math.max(
-      ...Object.keys(formData)
-        .filter(key => key.includes('_'))
-        .map(key => parseInt(key.split('_').pop() ?? '0'))
-    ) + 1;
+  //   const numberOfEntries = Math.max(
+  //     ...Object.keys(formData)
+  //       .filter(key => key.includes('_'))
+  //       .map(key => parseInt(key.split('_').pop() ?? '0'))
+  //   ) + 1;
 
-    for (let i = 0; i < numberOfEntries; i++) {
-      const entry = {
-        // convert form data to certificate json format
-        subject: formData[`subject_${i}`] || formData.subject,
-        certificateName: formData[`certificateName_${i}`] || formData.certificateName,
-        description: formData[`description_${i}`] || formData.description,
-        issuedBy: formData[`issuedBy_${i}`] || formData.issuedBy,
-        issuedYear: formData[`issuedYear_${i}`].$y,
-        certificateUrl: formData[`certificateUrl_${i}`] || formData.certificateUrl,
-      };
+  //   for (let i = 0; i < numberOfEntries; i++) {
+  //     const entry = {
+  //       // convert form data to certificate json format
+  //       subject: formData[`subject_${i}`] || formData.subject,
+  //       certificateName: formData[`certificateName_${i}`] || formData.certificateName,
+  //       description: formData[`description_${i}`] || formData.description,
+  //       issuedBy: formData[`issuedBy_${i}`] || formData.issuedBy,
+  //       issuedYear: formData[`issuedYear_${i}`].$y,
+  //       certificateUrl: formData[`certificateUrl_${i}`] || formData.certificateUrl,
+  //     };
 
-      certificateData.push(entry);
-    }
+  //     certificateData.push(entry);
+  //   }
 
-    return certificateData;
-  }
-  //------------------------------------FETCH TUTOR DESCRIPTION API----------------------------
-  async function saveTutorDescription(tutorId: number, formData: any) {
+  //   return certificateData;
+  // }
+  // //------------------------------------FETCH TUTOR DESCRIPTION API----------------------------
+  // async function saveTutorDescription(tutorId: number, formData: any) {
 
-    // Get JSON body from form data
-    const jsonRequestBody = convertTutorDescriptionFormData(formData);
+  //   // Get JSON body from form data
+  //   const jsonRequestBody = convertTutorDescriptionFormData(formData);
 
-    try {
+  //   try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addTutorDescription(tutorId, jsonRequestBody);
+  //     // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+  //     const responseData = await addTutorDescription(tutorId, jsonRequestBody);
 
-      // Check response status
-      if (!api.success) {
-        throw new Error(`Error: ${responseData.statusText}`);
-      }
+  //     // Check response status
+  //     if (!api.success) {
+  //       throw new Error(`Error: ${responseData.statusText}`);
+  //     }
 
-      // Get response data
-      console.log('Tutor description saved successfully:', responseData);
+  //     // Get response data
+  //     console.log('Tutor description saved successfully:', responseData);
 
-      // Return success response
-      return responseData;
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
+  //     // Return success response
+  //     return responseData;
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: 'Lỗi',
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   }
+  // }
 
-  function convertTutorDescriptionFormData(formData: any) {
-    const descriptionData = {
-      // convert form data to tutor description json format
-      teachingPricePerHour: formData.amount,
-      backgroundDescription: formData.description,
-      meetingLink: formData.meetingLink,
-      videoIntroductionLink: formData.youtubeLink,
-      subjects: formData.checkedValues,
-    };
+  // function convertTutorDescriptionFormData(formData: any) {
+  //   const descriptionData = {
+  //     // convert form data to tutor description json format
+  //     teachingPricePerHour: formData.amount,
+  //     backgroundDescription: formData.description,
+  //     meetingLink: formData.meetingLink,
+  //     videoIntroductionLink: formData.youtubeLink,
+  //     subjects: formData.checkedValues,
+  //   };
 
-    return descriptionData;
-  }
-  //------------------------------------FETCH SCHEDULE API----------------------------------
+  //   return descriptionData;
+  // }
+  // //------------------------------------FETCH SCHEDULE API----------------------------------
 
 
   return (
