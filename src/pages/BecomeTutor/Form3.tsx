@@ -21,35 +21,11 @@ const Form3 = ({
   onFinish,
   initialValues,
   onClickBack,
+  certificateFile,
+  onCertificateFileChange
 }: any) => {
   useDocumentTitle("Become a tutor");
 
-  //const file = useRef<UploadFile>();
-  // const [visibility, setVisibility] = useState<boolean>(false)
-  // const [form, setForm] = useState<FieldType[][]>([certificateForm]);
-
-  // const addField = useCallback(() => {
-  //   const newFieldKey = (form.length * certificateForm.length);
-  //   const newForm: FieldType[] = certificateForm.map((field) => ({
-  //     key: (field.key + newFieldKey),
-  //     label: field.label,
-  //     name: `${field.name}_${form.length}`,
-  //     rules: field.rules,
-  //     initialValue: field.initialValue,
-  //     children: field.children,
-  //     $width: field.$width,
-  //   }));
-  //   setForm((prevForm) => [...prevForm, newForm])
-  //   console.log(form)
-  // }, [form.length]);
-
-  // const removeField = useCallback((formIndex: number) => {
-  //   if (form.length > 1) {
-  //     setForm((prevForm) => prevForm.filter((_, index) => index !== formIndex));
-  //   } else {
-  //     alert('At least one form must be present.');
-  //   }
-  // },[form.length]);
 
   return (
     <Col

@@ -29,6 +29,7 @@ const Form2 = ({
     }
     return e?.fileList;
   };
+<<<<<<< HEAD
   // <FileUpload
   //                   name={field.name + '_' + formIndex}
   //                   fileList={fileList}
@@ -42,6 +43,11 @@ const Form2 = ({
   //     }])
   //   })
   // ),[])
+=======
+
+
+  
+>>>>>>> f49fd29edf8360e913745a655400166b806ceae6
   
   const handleUploadChange = (info: any, formIndex: number) => {
     const updatedFileList = [...info.fileList];
