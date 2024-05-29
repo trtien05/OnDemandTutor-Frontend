@@ -88,20 +88,11 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>Subject Taught</FormStyled.FormTitle>
           <br />
-          <FormStyled.FormItem
-            name="checkedValues"
-            $width={"100%"}
-            rules={[{ required: true, message: "Please choose a subject" }]}
-          >
+          <FormStyled.FormItem name="checkedValues" $width={"100%"} rules={[{ required: true, message: 'Please choose a subject' }]}>
             <FormStyled.CheckboxGroup>
               <Row>
-                {options.map((option) => (
-                  <Col
-                    lg={{ span: 6 }}
-                    sm={{ span: 8 }}
-                    xs={{ span: 8 }}
-                    key={option.value}
-                  >
+                {options.map(option => (
+                  <Col lg={{ span: 6 }} sm={{ span: 8 }} xs={{ span: 8 }} key={option.value}>
                     <Checkbox value={option.value}>{option.label}</Checkbox>
                   </Col>
                 ))}
@@ -120,25 +111,24 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             rules={[
               {
                 required: true,
-                type: "number",
+                type: 'number',
                 min: 0,
-                max: 1000000,
+                max: 1000000
               },
-            ]}
-          >
+            ]}>
             <FormStyled.NumberInput
-              style={{ width: "100%" }}
+              style={{ width: '100%' }}
               placeholder="100,000"
               value={priceValue}
               formatter={formatter}
               parser={parser}
               onChange={onChange}
-            ></FormStyled.NumberInput>
+            >
+            </FormStyled.NumberInput>
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
-            Students can subscribe to monthly or yearly plans based on the
-            frequency of lessons they’ll take. Automatic recurring payment takes
-            place every 28 days.
+            Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take.
+            Automatic recurring payment takes place every 28 days.
           </FormStyled.FormDescription>
 
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>
@@ -207,17 +197,13 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             </div>
           )}
           <FormStyled.ButtonDiv>
-            <Button type="default" onClick={() => onClickBack(1)}>
-              Back
-            </Button>
-            <Button
-              type="primary"
-              htmlType="submit"
-              style={{ marginLeft: `24px` }}
-            >
+            <Button type="default" onClick={() => onClickBack(1)} >Back</Button>
+            <Button type="primary" htmlType="submit" style={{ marginLeft: `24px` }}>
               Save and continue
             </Button>
           </FormStyled.ButtonDiv>
+
+
         </FormStyled.FormContainer>
       </FormStyled.FormWrapper>
     </Col>

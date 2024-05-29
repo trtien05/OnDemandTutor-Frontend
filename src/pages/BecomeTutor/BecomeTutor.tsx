@@ -3,8 +3,6 @@ import * as FormStyled from "./Form.styled";
 import { useState, useCallback } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs, { Dayjs } from 'dayjs'
-import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
-
 
 import Form1 from "./Form1";
 import Form2 from "./Form2";
@@ -13,9 +11,14 @@ import Form3 from "./Form3";
 import Form4 from "./Form4";
 import Form5 from "./Form5";
 import { theme } from "../../themes";
+import {
+  addEducations, updateDetails, addCertificates,
+  addTutorDescription, becomeTutor, addAvailableSchedule
+} from "../../api/tutorRegisterAPI";
+import useAuth from '../../hooks/useAuth';
+
 import { uploadImage } from "../../components/UploadImg";
 import { UploadChangeParam } from "antd/es/upload";
-import { next } from "stylis";
 export default function FirstPage() {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
@@ -32,38 +35,31 @@ export default function FirstPage() {
   ]);
   const [diplomaURL, setDiplomaURL] = useState<string[]>([])
   const [certURL, setCertURL] = useState<string[]>([])
-  const [diplomaFile, setDiplomaFile] = useState<UploadFile[]>([])
-  const [certFile, setCertFile] = useState<UploadFile[]>([])
+  const [diplomaFile, setDiplomaFile] = useState<any>([])
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
-  const handleDiplomaURLChange = (url: string) => {
-    setDiplomaURL((prevState) => [...prevState, url])
-  }
-  const handleCertificateURLChange = (url: string) => {
-    setCertURL((prevState) => [...prevState, url])
-  }
+  const { Title } = Typography;
+  const { user } = useAuth();
 
-  const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
-    // let files = [...info.fileList];
-    // setDiplomaFile(prev => ({
-    //   ...prev,
-    //   ...values,
-    // }));
-    // console.log(`Updated fileList for ${name}:`, files);
-    ;
-  }
-  const handleCertChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
-    let files = [...info.fileList];
-    setCertFile(prev => ({
-      ...prev,
-      [name]: files,
-    }));
-    console.log(`Updated fileList for ${name}:`, files);
-    ;
-  }
-
-  //---------------------------------------FORM 5
+  // const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
+  //   let files = [...info.fileList];
+  //   setDiplomaFile(prev => ({
+  //     ...prev,
+  //     [name]: files,
+  //   }));
+  //   console.log(`Updated fileList for ${name}:`, files);
+  //   ;
+  // }
+  const handleDiplomaChange = (info: any, formIndex: number) => {
+    const updatedFileList = [...info.fileList];
+    setDiplomaFile((prev: any) => {
+      const newState = [...prev];
+      newState[formIndex] = updatedFileList;
+      return newState;
+    });
+  };
+  //FORM 5
   interface VisibilityState {
     [key: string]: boolean;
   }
@@ -159,119 +155,121 @@ export default function FirstPage() {
   };
 
   const [timeslotForm, setTimeslotForm] = useState<FormState>(initialFormState())
-  //----------------------------end form 5
-  const { Title } = Typography;
-  // const { user } = useAuth();
-  
-
+  //end form 5
+  //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
     console.log(aboutValues);
     const tutorId = 1; // Example tutorId
-    // saveBecomeTutor(tutorId);
-    // saveAccountDetails(tutorId, values)
-    //   .catch(error => {
-    //     console.error('Error saving account details:', error);
-    //   });
+    saveBecomeTutor(tutorId);
+    saveAccountDetails(tutorId, values)
+      .catch(error => {
+        console.error('Error saving account details:', error);
+      });
 
     next();
   };
 
+  const handleDiplomaURLChange = (url: string) => {
+    setDiplomaURL((prevState) => [...prevState, url])
+  }
+  const handleCertificateURLChange = (url: string) => {
+    setCertURL((prevState) => [...prevState, url])
+  }
+  //-----------------------------FINISH EDUCATION FORM---------------------------------
   const onFinishEducationForm = (values: any) => {
     //get number of upload entries in form
-    const numberOfEntries = Math.max(
-      ...Object.keys(values)
-        .filter(key => key.includes('_'))
-        .map(key => {
-          const lastPart = key.split('_').pop();
-          return lastPart ? parseInt(lastPart, 10) : 0;
-        })
-    ) + 1;
-    console.log(diplomaFile)
-    for (let i = 0; i < numberOfEntries; i++) {
-      console.log(diplomaFile[`diplomaVerification_${i}`][0])
-      uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma',i, handleDiplomaURLChange);
-      let url = diplomaURL[i];
-      values[`diplomaVerification_${i}`] = url;
-    }
-
-  //   setEducationValues(values);
-  //   const tutorId = 1; // Example tutorId
-  //   saveEducations(tutorId, values)
-  //     .catch(error => {
-  //       console.error('Error saving educations:', error);
-  //     });
-  //   next();
-  // };
-  const onFinishEducationForm = async (values: any) => {
-    console.log(diplomaFile);
-  
-    // for (let key in diplomaFile) {
-    //   if (diplomaFile.hasOwnProperty(key)) {
-    //     const fileList = diplomaFile[key];
-    //     if (fileList && fileList.length > 0) {
-    //       await uploadImage(1, fileList[0], 'diploma', handleDiplomaURLChange);
-    //     }
-    //   }
+    // const numberOfEntries = Math.max(
+    //   ...Object.keys(values)
+    //     .filter(key => key.includes('_'))
+    //     .map(key => {
+    //       const lastPart = key.split('_').pop();
+    //       return lastPart ? parseInt(lastPart, 10) : 0;
+    //     })
+    // ) + 1;
+    // console.log(diplomaFile)
+    // for (let i = 0; i < numberOfEntries; i++) {
+    //   console.log(diplomaFile[`diplomaVerification_${i}`][0])
+    //   uploadImage(1, diplomaFile[`diplomaVerification_${i}`][0], 'diploma', handleDiplomaURLChange);
+    //   let url = diplomaURL[i];
+    //   values[`diplomaVerification_${i}`] = url;
     // }
-  
+
     setEducationValues(values);
+    console.log(values);
+    // const tutorId = user?.userId;
     const tutorId = 1; // Example tutorId
-    // saveEducations(tutorId, values)
-    //   .catch(error => {
-    //     console.error('Error saving educations:', error);
-    //   });
+    saveEducations(tutorId, values)
+      .catch(error => {
+        console.error('Error saving educations:', error);
+      });
     next();
   };
-
+  //----------------------------------FINISH CERTIFICATION FORM----------------------------
   const onFinishCertificationForm = (values: any) => {
     setCertificationValues(values);
-    console.log(educationValues)
-    const tutorId = 1;
-    // saveCertificates(tutorId, values)
-    //   .catch(error => {
-    //     console.error('Error saving certificates:', error);
-    //   });
+    console.log(values);
+    // const tutorId = user?.userId;
+    const tutorId = 1; // Example tutorId
+    saveCertificates(tutorId, values)
+      .catch(error => {
+        console.error('Error saving certificates:', error);
+      });
     next();
   };
+  //-----------------------------------FINISH DESCRIPTION FORM---------------------------
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
-    console.log(aboutValues);
+    console.log(values);
+    // const tutorId = user?.userId;
     const tutorId = 1; // Example tutorId
-    // saveTutorDescription(tutorId, values)
-    //   .catch(error => {
-    //     console.error('Error saving tutor description:', error);
-    //   });
-    // next();
-  };
-  const onFinishTimePriceForm = (values: any) => {
-    setTimePriceValues(values);
-    console.log(values)
-    console.log(
-      aboutValues,
-      educationValues,
-      certificationValues,
-      descriptionValues,
-      timePriceValues
-    );
-
+    saveTutorDescription(tutorId, values)
+      .catch(error => {
+        console.error('Error saving tutor description:', error);
+      });
     next();
   };
+
+  //---------------------------------FINISH TIMESLOT FORM-----------------------------
+  const onFinishTimePriceForm = (values: any) => {
+    setTimePriceValues(values);
+    // console.log(
+    //   aboutValues,
+    //   educationValues,
+    //   certificationValues,
+    //   descriptionValues,
+    //   timePriceValues
+    // );
+    console.log(values);
+    // const tutorId = user?.userId;
+    const tutorId = 1; // Example tutorId
+    saveTutorAvailableTimeslots(tutorId, values)
+      .catch(error => {
+        console.error('Error saving tutor available timeslot:', error);
+      });
+    next();
+  };
+
   const onClickBack = () => {
     back();
   };
+
   const handleAgreementChange = (checked: boolean) => {
     setAgreement(checked);
   };
+
   const handleTickChange = (checked: boolean) => {
     setIsTicked(checked);
   };
+
   const handleDayVisibility = (day: string, checked: boolean) => {
     setVisibilityForDay(day, checked);
   }
+
   const handleTimeslotAgreement = (checked: boolean) => {
     setTimeslotAgreement(checked);
   }
+
   const handleAddTimeslot = (day: string) => {
     setTimeslotForm(prevState => {
       const newIndex = (prevState[day].length);
@@ -281,6 +279,7 @@ export default function FirstPage() {
       };
     });
   }
+
   const handleRemoveTimeslot = (day: string, formIndex: number) => {
     setTimeslotForm(prevState => ({
       ...prevState,
@@ -293,7 +292,7 @@ export default function FirstPage() {
     const newForm: FieldType[] = educationForm.map((field) => ({
       key: field.key + newFieldKey,
       label: field.label,
-      name: `${field.name}`,
+      name: field.name,
       rules: field.rules,
       initialValue: field.initialValue,
       children: field.children,
@@ -308,7 +307,7 @@ export default function FirstPage() {
     const newForm: FieldType[] = certificateForm.map((field) => ({
       key: field.key + newFieldKey,
       label: field.label,
-      name: `${field.name}`,
+      name: field.name,
       rules: field.rules,
       initialValue: field.initialValue,
       children: field.children,
@@ -326,26 +325,25 @@ export default function FirstPage() {
     }
   };
 
-  const handleRemoveCertificate = useCallback(
-    (formIndex: number) => {
-      if (certificate.length > 1) {
-        setCertificate((prevForm) =>
-          prevForm.filter((_, index) => index !== formIndex)
-        );
-      } else {
-        alert("At least one form must be present.");
-      }
-    },
+  const handleRemoveCertificate = useCallback((formIndex: number) => {
+    if (certificate.length > 1) {
+      setCertificate((prevForm) =>
+        prevForm.filter((_, index) => index !== formIndex)
+      );
+    } else {
+      alert("At least one form must be present.");
+    }
+  },
     [certificate.length]
   );
 
   const { current, back, step, next, goTo } = MultipleSteps([
-    // <Form1
-    //   onFinish={onFinishAboutForm}
-    //   initialValues={aboutValues}
-    //   agreement={agreement}
-    //   onAgreementChange={handleAgreementChange}
-    // />,
+    <Form1
+      onFinish={onFinishAboutForm}
+      initialValues={aboutValues}
+      agreement={agreement}
+      onAgreementChange={handleAgreementChange}
+    />,
     <Form2
       onFinish={onFinishEducationForm}
       initialValues={educationValues}
@@ -366,8 +364,7 @@ export default function FirstPage() {
       certificate={certificate}
       onAddCertificate={handleAddCertificate}
       onRemoveCertificate={handleRemoveCertificate}
-      certificateFile={certFile}
-      onCertificateFileChange={handleCertChange}
+      certificateURL={certURL}
     />,
     <Form4
       onFinish={onFinishDescriptionForm}
@@ -417,7 +414,7 @@ export default function FirstPage() {
       );
     }
   };
-  // ------------------------------------FETCH BECOME TUTOR API-------------------------------
+  //------------------------------------FETCH BECOME TUTOR API-------------------------------
   async function saveBecomeTutor(tutorId: number) {
     try {
       const response = await becomeTutor(tutorId);
@@ -429,7 +426,6 @@ export default function FirstPage() {
       });
     }
   }
-
   //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
   async function saveAccountDetails(tutorId: number, formData: any) {
 
@@ -500,6 +496,7 @@ export default function FirstPage() {
     }
   }
 
+
   function convertEducationFormData(formData: any) {
     const educationData = [];
 
@@ -517,7 +514,7 @@ export default function FirstPage() {
         degreeType: formData[`degreeType_${i}`] || formData.degreeType,
         startYear: formData[`academicYear_${i}`][0].$y,
         endYear: formData[`academicYear_${i}`][1].$y,
-        diplomaUrl: formData[`diplomaUrl_${i}`] || formData.diplomaUrl
+        diplomaUrl: formData[`diplomaVerification_${i}`] || formData.diplomaUrl
       };
 
       educationData.push(entry);
@@ -621,29 +618,23 @@ export default function FirstPage() {
     return descriptionData;
   }
   //------------------------------------FETCH SCHEDULE API----------------------------------
-
-
-
-
-  // fetch apis
-  async function saveSchedule(tutorId: number, formData: any) {
+  async function saveTutorAvailableTimeslots(tutorId: number, formData: any) {
 
     // Get JSON body from form data
-    const jsonRequestBody = convertFormDataToJSON(formData);
+    const jsonRequestBody = convertTimeslotsToJSON(formData);
 
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const response = await addEducations(tutorId, jsonRequestBody);
+      const responseData = await addAvailableSchedule(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
-        throw new Error(`Error: ${response.statusText}`);
+        throw new Error(`Error: ${responseData.statusText}`);
       }
 
       // Get response data
-      const responseData = await response;
-      console.log('Educations saved successfully:', responseData);
+      console.log('Tutor available timeslots saved successfully:', responseData);
 
       // Return success response
       return responseData;
@@ -654,32 +645,32 @@ export default function FirstPage() {
       });
     }
   }
-  function convertFormDataToJSON(formData: any) {
-    const educationData = [];
 
-    const numberOfEntries = Math.max(
-      ...Object.keys(formData)
-        .filter(key => key.includes('_'))
-        .map(key => parseInt(key.split('_').pop() ?? '0'))
-    ) + 1;
+  function convertTimeslotsToJSON(formData: any) {
+    const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
+    const jsonResult = [];
 
-    for (let i = 0; i < numberOfEntries; i++) {
-      const entry = {
-        majorName: formData[`majorName_${i}`] || formData.majorName,
-        specialization: formData[`specialization_${i}`] || formData.specialization,
-        universityName: formData[`universityName_${i}`] || formData.universityName,
-        degreeType: formData[`degreeType_${i}`] || formData.degreeType,
-        startYear: formData[`academicYear_${i}`][0].$y,
-        endYear: formData[`academicYear_${i}`][1].$y,
-        diplomaUrl: formData[`diplomaUrl_${i}`] || formData.diplomaUrl
-      };
+    daysOfWeek.forEach((day, index) => {
+      // Check for timeslots for the current day
+      for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
+        const timeslot = formData[`${day}_timeslot_${i}`];
+        if (timeslot && timeslot.length === 2) {
+          const startTime = timeslot[0].format("HH:mm:ss");
+          const endTime = timeslot[1].format("HH:mm:ss");
 
-      educationData.push(entry);
-    }
+          jsonResult.push({
+            startTime,
+            endTime,
+            dayOfWeek: index + 2, // Monday is 2, Sunday is 8
+          });
+        }
+      }
+    });
 
-    return educationData;
+    return jsonResult;
   }
 
+  //----------------------------------------------------------------------------------------
   return (
     <>
       <Title
@@ -715,4 +706,3 @@ export default function FirstPage() {
     </>
   );
 }
-

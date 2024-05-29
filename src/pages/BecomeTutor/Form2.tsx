@@ -1,7 +1,7 @@
-import { Col, Button, UploadFile, Input } from "antd";
+import { Col, Button, UploadFile, Upload } from "antd";
 import { FieldType } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
-
+import { UploadOutlined } from '@ant-design/icons';
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import FileUpload from "../../components/UploadImg";
 import { useEffect, useState } from "react";
@@ -16,44 +16,31 @@ const Form2 = ({
   onClickBack,
   diplomaFile,
   onDiplomaFileChange,
-  diplomaURL,
+  diplomaURL
 }: any) => {
   useDocumentTitle("Become a tutor");
 
   const [fileList, setFileList] = useState<UploadFile[]>([]);
 
   const normFile = (e: any) => {
-    console.log("Upload event:", e);
+    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
     return e?.fileList;
   };
-<<<<<<< HEAD
-  // <FileUpload
-  //                   name={field.name + '_' + formIndex}
-  //                   fileList={fileList}
-  //                   handleChange={onDiplomaFileChange}/>
+
   // const handleDiplomaFileList = useEffect(() => (
   //   diplomaFile.map((file, index) => {
-  //     setFileList((prevState) => [...prevState,{
+  //     setFileList((prevState) => [...prevState, {
   //       uid: index,
   //       name: file[0].name,
   //       status: 'done',
   //     }])
   //   })
-  // ),[])
-=======
+  // ), [])
 
 
-  
->>>>>>> f49fd29edf8360e913745a655400166b806ceae6
-  
-  const handleUploadChange = (info: any, formIndex: number) => {
-    const updatedFileList = [...info.fileList];
-    setFileList(updatedFileList);
-    onDiplomaFileChange({ [`diplomaVerification_${formIndex}`]: updatedFileList });
-  };
   return (
     <Col
       lg={{ span: 12 }}
@@ -90,37 +77,57 @@ const Form2 = ({
               )}
               <FormStyled.FormContainer key={formIndex}>
                 {form.map((field) => {
-                  const diplomaVerificationProps = field.name.includes(
-                    "diplomaVerification"
-                  )
+                  // const diplomaVerificationProps = field.name.includes('diplomaVerification')
+                  //   ? {
+                  //     valuePropName: 'fileList',
+                  //     getValueFromEvent: normFile,
+                  //   }
+                  //   : {};
+                  const diplomaVerificationProps = field.name.includes('diplomaVerification')
                     ? {
-                        valuePropName: "fileList",
-                        getValueFromEvent: normFile,
-                      }
+                      valuePropName: 'fileList',
+                      getValueFromEvent: normFile,
+                    }
                     : {};
-
                   return (
                     <FormStyled.FormItem
-                      key={field.key + "_" + formIndex}
+                      key={field.key + '_' + formIndex}
                       label={field.label}
-                      name={field.name + "_" + formIndex}
+                      name={field.name + '_' + formIndex}
                       rules={field.rules}
                       $width={field.$width ? field.$width : "100%"}
                       initialValue={field.initialValue}
-                      // {...diplomaVerificationProps}
+                      {...diplomaVerificationProps}
                       validateFirst
                     >
-                      {field.name.includes(`diplomaVerification`) && (
-                        <Input
+                      {/* <FileUpload
+                          name={field.name + '_' + formIndex}
+                          fileList={fileList}
+                          handleChange={onDiplomaFileChange} /> */}
+                          
+                      {/* <Upload
                           name={field.name + "_" + formIndex}
-                          type="file"
-                          value={diplomaFile}
-                          onChange={onDiplomaFileChange}
-                        ></Input>
-                      )}
+                          fileList={diplomaFile[formIndex] || []}
+                          // onChange={onDiplomaFileChange}
+                          onChange={(info: any) => onDiplomaFileChange(info, formIndex)}
+                          beforeUpload={() => false} // Prevent upload by return false
+                        >
+                          <Button icon={<UploadOutlined />}>Click to upload</Button>
+                        </Upload> */}
+                      
+                      {field.name.includes(`diplomaVerification`) &&
+                        (<Upload
+                          name={field.name + "_" + formIndex}
+                          fileList={diplomaFile[formIndex] || []}
+                          // onChange={onDiplomaFileChange}
+                          onChange={(info: any) => onDiplomaFileChange(info, formIndex)}
+                          beforeUpload={() => false} // Prevent upload by return false
+                        >
+                          <Button icon={<UploadOutlined />}>Click to upload</Button>
+                        </Upload>)}
                       {field.children}
                     </FormStyled.FormItem>
-                  );
+                  )
                 })}
               </FormStyled.FormContainer>
             </div>

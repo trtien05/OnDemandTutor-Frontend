@@ -14,7 +14,7 @@ const { TextArea } = Input;
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
 dayjs.extend(customParseFormat);
 
- 
+
 
 export type FieldType = {
   key: string;
@@ -57,145 +57,143 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
 };
 
 export const aboutForm: FieldType[] = [
-  {
-    key: "1",
-    label: "Full name",
-    name: "name",
-    initialValue: "Nguyen Van A",
-    rules: [
-      {
-        required: true,
-        type: "string",
-        message: "Please input your full name.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your full name.",
-      },
-      {
-        max: 50,
-        message: "Full name must not exceed 50 characters.",
-      },
-    ],
-    children: <Input placeholder=" " />,
-  },
-  {
-    key: "2",
-    label: "Phone number",
-    name: "phoneNumber",
-    initialValue: "0908888888",
-    rules: [
-      {
-        required: true,
+    {
+        key: '1',
+        label: 'Full name',
+        name: 'fullName',
+        initialValue: 'Nguyen Van A',
+        rules: [
+            {
+                required: true,
+                type: 'string',
+                message: 'Please input your full name.',
 
-        message: "Please input your phone number.",
-      },
-      {
-        pattern: /^(0|\+?84)(3|5|7|8|9)[0-9]{8}$/,
-        message: "Invalid phone number.",
-      },
-    ],
-    children: <Input placeholder="0908888888" disabled />,
-    $width: "40%",
-  },
-  {
-    key: "3",
-    label: "Email",
-    name: "email",
-    initialValue: "abc@gmail.com",
-    rules: [
-      {
-        required: true,
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your full name.',
+            },
+            {
+                max: 50,
+                message: 'Full name must not exceed 50 characters.',
+            },
+        ],
+        children: <Input placeholder=" " />,
+    },
+    {
+        key: '2',
+        label: 'Phone number',
+        name: 'phoneNumber',
+        initialValue: '0908888888',
+        rules: [
+            {
+                required: true,
 
-        message: "Please input your email.",
-      },
-      {
-        type: "email",
-        message: "Invalid email.",
-      },
-    ],
-    children: <Input placeholder="abc@example.com" disabled />,
-    $width: "55%",
-  },
-  {
-    key: "4",
-    label: "Date of Birth",
-    name: "dateOfBirth",
-    rules: [
-      {
-        required: true,
-        message: "Please select your date of birth.",
-      },
-      {
-        validator: validateBirthDate,
-      },
-    ],
-    children: (
-      <DatePicker
-        size="large"
-        placeholder="DD/MM/YYYY"
-        locale={locale}
-        format="DD/MM/YYYY"
-        style={{ width: "100%" }}
-      />
-    ),
-    $width: "65%",
-  },
-  {
-    key: "5",
-    label: "Gender",
-    name: "gender",
+                message: 'Please input your phone number.',
+            },
+            {
+                pattern: /^(0|\+?84)(3|5|7|8|9)[0-9]{8}$/,
+                message: 'Invalid phone number.',
+            },
+        ],
+        children: <Input placeholder="0908888888" disabled />,
+        $width: '40%',
+    },
+    {
+        key: '3',
+        label: 'Email',
+        name: 'email',
+        initialValue: 'abc@gmail.com',
+        rules: [
+            {
+                required: true,
 
-    rules: [
-      {
-        required: true,
-        message: "Please select your Gender",
-      },
-    ],
-    children: (
-      <Select size="large" placeholder="Select gender">
-        <Select.Option value={Enum.Gender.MALE}>Male</Select.Option>
-        <Select.Option value={Enum.Gender.FEMALE}>Female</Select.Option>
-        <Select.Option value={Enum.Gender.OTHER}>Other</Select.Option>
-      </Select>
-    ),
-    $width: "30%",
-  },
-  {
-    key: "6",
-    label: "Your address",
-    name: "address",
-    rules: [
-      {
-        required: true,
-        message: "Please input your address.",
-      },
-      {
-        validator: validateWhitespace,
-        message: "Please input your address.",
-      },
-      {
-        max: 50,
-        message: "Address must not exceed 50 characters.",
-      },
-    ],
-    children: (
-      <Input name="address" placeholder="Phuong 7, Quan Phu Nhuan, TP.HCM" />
-    ),
-  },
+                message: 'Please input your email.',
+            },
+            {
+                type: 'email',
+                message: 'Invalid email.',
+            },
+        ],
+        children: <Input placeholder="abc@example.com" disabled />,
+        $width: '55%',
+    },
+    {
+        key: '4',
+        label: 'Date of Birth',
+        name: 'dayOfBirth',
+        rules: [
+            {
+                required: true,
+                message: 'Please select your date of birth.',
+            },
+            {
+                validator: validateBirthDate,
+            },
+        ],
+        children: (
+            <DatePicker
+                size="large"
+                placeholder="DD/MM/YYYY"
+                locale={locale}
+                format="DD/MM/YYYY"
+                style={{ width: '100%' }}
+            />
+        ),
+        $width: '65%',
+    },
+    {
+        key: '5',
+        label: 'Gender',
+        name: 'gender',
+
+        rules: [
+            {
+                required: true,
+                message: 'Please select your Gender',
+            },
+        ],
+        children: (
+            <Select size="large" placeholder="Select gender">
+                <Select.Option value={false}>Male</Select.Option>
+                <Select.Option value={true}>Female</Select.Option>
+            </Select>
+        ),
+        $width: '30%',
+    },
+    {
+        key: '6',
+        label: 'Your address',
+        name: 'address',
+        rules: [
+            {
+                required: true,
+                message: 'Please input your address.',
+            },
+            {
+                validator: validateWhitespace,
+                message: 'Please input your address.',
+            },
+            {
+                max: 50,
+                message: 'Address must not exceed 50 characters.',
+            },
+        ],
+        children: <Input name='address' placeholder="Phuong 7, Quan Phu Nhuan, TP.HCM" />,
+    },
 ];
 
 export const educationForm: FieldType[] = [
     {
         key: '1',
         label: 'University',
-        name: 'university',
+        name: 'universityName',
         rules: [
             {
                 required: true,
                 type: 'string',
                 message: 'Please input your university name.',
-                
+
             },
             {
                 validator: validateWhitespace,
@@ -211,7 +209,7 @@ export const educationForm: FieldType[] = [
     {
         key: '2',
         label: 'Degree',
-        name: 'degree',
+        name: 'degreeType',
         rules: [
             {
                 required: true,
@@ -229,12 +227,12 @@ export const educationForm: FieldType[] = [
     {
         key: '3',
         label: 'Major',
-        name: 'major',
+        name: 'majorName',
         rules: [
             {
                 required: true,
                 message: 'Please input your major.',
-                
+
             },
             {
                 validator: validateWhitespace,
@@ -245,7 +243,7 @@ export const educationForm: FieldType[] = [
                 message: 'Major name must not exceed 50 characters.',
             },
         ],
-        children: <Input name='major' placeholder="English Language" />,
+        children: <Input name='majorName' placeholder="English Language" />,
         $width: '55%',
     },
     {
@@ -256,7 +254,7 @@ export const educationForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your degree\'s specialization.',
-                
+
             },
             {
                 validator: validateWhitespace,
@@ -289,7 +287,7 @@ export const educationForm: FieldType[] = [
                     start: 'startYear',
                     end: 'endYear',
                 }}
-                
+
                 style={{ width: `100%` }}
             />
         ),
@@ -305,10 +303,10 @@ export const educationForm: FieldType[] = [
             },
         ],
         children: (
-            // <></>
-            <Upload name="diplomaVerification" listType="picture" maxCount={1}>
-              <Button icon={<UploadOutlined />}>Upload Diploma</Button>
-            </Upload>
+            <></>
+            // <Upload name="diplomaVerification" listType="picture" maxCount={1}>
+            //   <Button icon={<UploadOutlined />}>Upload Diploma</Button>
+            // </Upload>
         ),
     },
 ]
@@ -342,7 +340,7 @@ export const certificateForm: FieldType[] = [
             {
                 required: true,
                 message: 'Please input your certificate name.',
-                
+
             },
             {
                 validator: validateWhitespace,
@@ -370,12 +368,12 @@ export const certificateForm: FieldType[] = [
     {
         key: '4',
         label: 'Issued by',
-        name: 'issuedOrganization',
+        name: 'issuedBy',
         rules: [
             {
                 required: true,
                 message: 'Please input your certificate\'s issued organization.',
-                
+
             },
             {
                 validator: validateWhitespace,
@@ -386,7 +384,7 @@ export const certificateForm: FieldType[] = [
                 message: 'Certificate\'s issued organization name must not exceed 50 characters.',
             },
         ],
-        children: <Input name='issuedOrganization' placeholder="Trinity College London" />,
+        children: <Input name='issuedBy' placeholder="Trinity College London" />,
         $width: '70%',
     },
     {
@@ -412,7 +410,7 @@ export const certificateForm: FieldType[] = [
     {
         key: '6',
         label: `Certificate Verification`,
-        name: 'certificateVerification',
+        name: 'certificateUrl',
         rules: [
             {
                 required: false,

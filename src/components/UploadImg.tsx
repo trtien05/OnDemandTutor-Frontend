@@ -4,7 +4,7 @@ import { UploadOutlined, InboxOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { getDownloadURL, uploadBytes, ref, getBlob, uploadBytesResumable, UploadTaskSnapshot } from "firebase/storage";
 import { storage, firestore } from "../utils/firebase";
-import { stringify, v4 } from "uuid";
+// import { stringify, v4 } from "uuid";
 import { RcFile, UploadChangeParam, UploadFile, UploadProps } from 'antd/es/upload';
 import firebase from 'firebase/compat/app';
 import { addDoc, collection, doc, setDoc } from 'firebase/firestore';
@@ -148,25 +148,37 @@ const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange })
   };
 
   return (
-    <Dragger
-
-      name={name}
-      fileList={fileList}
-      listType="picture"
-      showUploadList={true}
-      onChange={handleInternalChange}
-      defaultFileList={defaultFiles}
-      beforeUpload={beforeUpload}
-      onRemove={handleRemove}
-      iconRender={() => (<Spin />)}
-      accept=".jpg,.jpeg,.png,.pdf"
+    <Upload
+    name={name}
+    fileList={fileList}
+    onChange={handleInternalChange}
+    showUploadList={true}
+    defaultFileList={defaultFiles}
+    beforeUpload={beforeUpload}
+    onRemove={handleRemove}
+    accept=".jpg,.jpeg,.png,.pdf"
     >
-      <p className="ant-upload-drag-icon">
-        <InboxOutlined />
-      </p>
-      <p className="ant-upload-text">Click or drag file to this area to upload</p>
-      <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
-    </Dragger>
+      <Button icon={<UploadOutlined />}>Click to upload</Button>
+    </Upload> 
+    // <Dragger
+
+    //   name={name}
+    //   fileList={fileList}
+    //   listType="picture"
+    //   showUploadList={true}
+    //   onChange={handleInternalChange}
+    //   defaultFileList={defaultFiles}
+    //   beforeUpload={beforeUpload}
+    //   onRemove={handleRemove}
+    //   iconRender={() => (<Spin />)}
+    //   accept=".jpg,.jpeg,.png,.pdf"
+    // >
+    //   <p className="ant-upload-drag-icon">
+    //     <InboxOutlined />
+    //   </p>
+    //   <p className="ant-upload-text">Click or drag file to this area to upload</p>
+    //   <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
+    // </Dragger>
   );
 };
 

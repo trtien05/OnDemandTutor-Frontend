@@ -1,8 +1,3 @@
-export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER',
-}
 
 export enum Degree {
     ASSOCIATE = 'Associate',
@@ -17,28 +12,33 @@ export enum Subject {
     BIOLOGY = 'Biology',
     PHYSICS = 'Physics',
     GEOGRAPHY = 'Geography',
-  
+
     LITERATURE = 'Literature',
     ENGLISH = 'English',
-  
+
     IELTS = 'IELTS',
     TOEIC = 'TOEIC',
     TOEFL = 'TOEFL',
-  
+
     CODING = 'Coding',
-  
+
     HISTORY = 'History',
 
     OTHER = 'Other',
-  }
-  export enum AccountStatus {
+}
+
+
+export enum AccountStatus {
     ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE',
+    INACTIVE = 'UNVERIFIED',
+    PROCESSING = 'PROCESSING',
     BANNED = 'BANNED',
 }
+
 export const Role: { [key: string]: string } = {
     STUDENT: 'STUDENT',
     TUTOR: 'TUTOR',
     MODERATOR: 'MODERATOR',
     ADMIN: 'ADMIN',
 };
+
