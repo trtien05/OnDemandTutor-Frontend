@@ -80,6 +80,7 @@ const SetPassword = () => {
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
                 isSubmitting={isSubmitting}
+                OTPFields={[]}
             />
         </>
     );

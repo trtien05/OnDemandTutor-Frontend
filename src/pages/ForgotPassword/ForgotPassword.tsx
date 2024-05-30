@@ -45,7 +45,6 @@ const ForgotPassword = () => {
         try {
             setSeconds(MAX_COUNTDOWN_TIME);
             localStorage.setItem(config.localStorage.seconds, MAX_COUNTDOWN_TIME.toString());
-
             // Fetch API
             const { data } = await forgotPassword(values);
             messageApi.success(data);
@@ -95,6 +94,7 @@ const ForgotPassword = () => {
                 isSubmitting={seconds !== 0}
                 onFinish={onFinish}
                 onFinishFailed={onFinishFailed}
+                OTPFields={[]}
             />
         </>
     );

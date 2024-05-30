@@ -12,6 +12,13 @@ export type FieldType = {
     children: JSX.Element;
     initialValue?: string;
 };
+export type OTPFieldType = {
+    key: number;
+    name: string;
+    dependencies?: NamePath[];
+    children: JSX.Element;
+    initialValue?: string;
+};
 
 const validateWhitespace = (_: unknown, value: string) => {
     if (value && value.trim() === '') {
@@ -206,3 +213,9 @@ export const setPasswordFields: FieldType[] = [
         ),
     },
 ];
+export const verifyCodeFields: OTPFieldType[] = Array.from({ length: 6 }, (_, index) => ({
+    key: index,
+    name: `otp${index}`,
+    children:
+        <Input maxLength={1} />,
+}));

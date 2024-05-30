@@ -6,12 +6,11 @@ import AuthForm from '../../components/AuthForm';
 import { registerFields } from '../../components/AuthForm/AuthForm.fields';
 import config from '../../config';
 import { register } from '../../utils/authAPI';
-import cookieUtils from '../../utils/cookieUtils';
 import { PageEnum } from '../../utils/enums';
 import { useDocumentTitle } from '../../hooks';
 
 const Register = () => {
-    useDocumentTitle('Register | HouseMate');
+    useDocumentTitle('Register | MyTutor');
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
@@ -23,12 +22,21 @@ const Register = () => {
             setIsSubmitting(true);
 
             const { data } = await register(values);
-
-            cookieUtils.setItem(config.cookies.token, data);
-            navigate(config.routes.public.home);
+            console.log(data);
+            if (!data) {
+                throw new Error('Network response was not ok');
+            } else {
+                messageApi.success(`Verify your email: ${data}`);
+                setTimeout(() => {
+                    navigate(config.routes.public.verifyCode, { state: { email: values.email } });
+                }, 2000);
+            }
         } catch (error: any) {
-            if (error.response) messageApi.error(error.response.data);
-            else messageApi.error(error.message);
+            if (error.response) {
+                messageApi.error(error.response.data);
+            } else {
+                messageApi.error(error.message);
+            }
         } finally {
             setIsSubmitting(false);
         }
@@ -52,6 +60,7 @@ const Register = () => {
                 onFinish={onFinish}
                 reverse
                 isSubmitting={isSubmitting}
+                OTPFields={[]}
             />
         </>
     );

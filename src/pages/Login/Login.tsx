@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../../components/AuthForm';
 import { loginFields } from '../../components/AuthForm/AuthForm.fields';
 import config from '../../config';
-import { login } from '../../utils/authAPI';
+import { login, loginGoogle } from '../../utils/authAPI';
 import cookieUtils from '../../utils/cookieUtils';
 import { PageEnum } from '../../utils/enums';
 import { useDocumentTitle } from '../../hooks';
@@ -18,14 +18,21 @@ const Login = () => {
     const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish = async (values: any) => {
+
         try {
             setIsSubmitting(true);
 
             const { data } = await login(values);
-            const { accessToken } = data;
-            cookieUtils.setItem(config.cookies.token, accessToken);
-            console.log(accessToken)
-            navigate(config.routes.public.home);
+            if (!data) {
+                throw new Error('Network response was not ok');
+            } else {
+                const { accessToken } = data;
+                cookieUtils.setItem(config.cookies.token, accessToken);
+                messageApi.success('Logged in successfully');
+                setTimeout(() => {
+                    navigate(config.routes.public.home);
+                }, 2000);
+            }
         } catch (error: any) {
             if (error.response) messageApi.error(error.response.data);
 
@@ -35,6 +42,26 @@ const Login = () => {
             setIsSubmitting(false);
         }
     };
+
+    const onGoogleSignIn = async (values: any) => {
+        try {
+            const { data } = await loginGoogle(values);
+
+            if (!data) {
+                throw new Error('Network response was not ok');
+            } else {
+                messageApi.success('Logged in successfully');
+                setTimeout(() => {
+                    navigate(config.routes.public.home);
+                }, 2000);
+            }
+        } catch (error: any) {
+            if (error.response) messageApi.error(error.response.data);
+            else messageApi.error(error.message);
+        } finally {
+            setIsSubmitting(false);
+        }
+    }
 
     const redirect = {
         description: 'Don’t have an account?',
@@ -53,7 +80,9 @@ const Login = () => {
                 fields={loginFields}
                 redirect={redirect}
                 onFinish={onFinish}
+                onGoogleSignIn={onGoogleSignIn}
                 isSubmitting={isSubmitting}
+                OTPFields={[]}
             />
         </>
     );
