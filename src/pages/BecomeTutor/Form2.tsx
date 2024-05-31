@@ -1,11 +1,12 @@
-import { Col, Button, UploadFile, Upload } from "antd";
+import { Col, Button, UploadFile, Upload, Spin } from "antd";
 import { FieldType } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
-import { UploadOutlined } from '@ant-design/icons';
+import { UploadOutlined,InboxOutlined } from '@ant-design/icons';
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import FileUpload from "../../components/UploadImg";
 import { useEffect, useState } from "react";
 import { UploadChangeParam } from "antd/es/upload";
+import Dragger from "antd/es/upload/Dragger";
 
 const Form2 = ({
   diploma,
@@ -14,9 +15,6 @@ const Form2 = ({
   onFinish,
   initialValues,
   onClickBack,
-  diplomaFile,
-  onDiplomaFileChange,
-  diplomaURL
 }: any) => {
   useDocumentTitle("Become a tutor");
 
@@ -32,12 +30,12 @@ const Form2 = ({
   };
   // name: string, info: UploadChangeParam<UploadFile<any>>
   // {fileList:newFileList}
-//   const onChange = ({fileList:newFileList}) => {
-//     setFileList(newFileList);
-//   };
-// const handleFinish = (values:any)=>{
-//   onFinish({...values, fileList})
-// }
+  const onChange = ({fileList:newFileList}) => {
+    setFileList(newFileList);
+  };
+  const handleFinish = (values:any)=>{
+    onFinish({...values, fileList})
+  }
   // const handleDiplomaFileList = useEffect(() => (
   //   diplomaFile.map((file, index) => {
   //     setFileList((prevState) => [...prevState, {
@@ -61,7 +59,7 @@ const Form2 = ({
         layout="vertical"
         requiredMark="optional"
         size="middle"
-        onFinish={onFinish}
+        onFinish={handleFinish}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -103,39 +101,25 @@ const Form2 = ({
                       {...diplomaVerificationProps}
                       validateFirst
                     >
-                      {/* <FileUpload
-                          name={field.name + '_' + formIndex}
-                          fileList={fileList}
-                          handleChange={onDiplomaFileChange} /> */}
-                          
-                      {/* <Upload
-                          name={field.name + "_" + formIndex}
-                          fileList={diplomaFile[formIndex] || []}
-                          // onChange={onDiplomaFileChange}
-                          onChange={(info: any) => onDiplomaFileChange(info, formIndex)}
-                          beforeUpload={() => false} // Prevent upload by return false
-                        >
-                          <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload> */}
-                      {/* <Upload
+                      
+                      {field.name.includes(`diplomaVerification`) &&
+                        (<Dragger
                           name={field.name + "_" + formIndex}
                           fileList={fileList}
+                          listType="picture"
+                          showUploadList={true}
                           // onChange={onDiplomaFileChange}
                           onChange={onChange}
+                          iconRender={() => (<Spin />)}
+                          accept=".jpg,.jpeg,.png,.pdf"
                           beforeUpload={() => false} // Prevent upload by return false
                         >
-                          <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload> */}
-                      {field.name.includes(`diplomaVerification`) &&
-                        (<Upload
-                          name={field.name + "_" + formIndex}
-                          fileList={diplomaFile[formIndex] || []}
-                          // onChange={onDiplomaFileChange}
-                          onChange={(info: any) => onDiplomaFileChange(info, formIndex)}
-                          beforeUpload={() => false} // Prevent upload by return false
-                        >
-                          <Button icon={<UploadOutlined />}>Click to upload</Button>
-                        </Upload>)}
+                          <p className="ant-upload-drag-icon">
+                          <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                        <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
+                        </Dragger>)}
                       {field.children}
                     </FormStyled.FormItem>
                   )

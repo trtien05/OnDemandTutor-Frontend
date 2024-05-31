@@ -20,6 +20,6 @@ export const addTutorDescription = (tutorId: number, description: any) => {
     return post(`/tutors/${tutorId}/tutor-description`, description);
 };
 
-export const addAvailableSchedule = (tutorId: number, schedule: any) => {
-    return post(`/schedules/tutors/${tutorId}/add-new-schedule`, schedule);
+export const addAvailableSchedule = (noOfWeeks: number, tutorId: number, schedule: any) => {
+    return post(`/schedules/tutors/${tutorId}/add-new-schedule?numberOfWeeks=${noOfWeeks}`, schedule);
 }

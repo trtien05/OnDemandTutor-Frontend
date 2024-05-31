@@ -1,8 +1,8 @@
-import { Col, Button, Checkbox, Form } from "antd";
+import { Col, Button, Checkbox, Form, UploadFile, Upload, Spin } from "antd";
 
 import { useCallback, useState, memo } from "react";
 import { certificateForm, FieldType } from "./Form.fields";
-
+import { UploadOutlined,InboxOutlined } from '@ant-design/icons';
 import * as FormStyled from "./Form.styled";
 
 import useDocumentTitle from "../../hooks/useDocumentTitle";
@@ -12,6 +12,7 @@ import useDocumentTitle from "../../hooks/useDocumentTitle";
 //   onFinish: (values: any) => void;
 //   initialValues: any;
 // }
+
 const Form3 = ({
   certificate,
   onAddCertificate,
@@ -25,8 +26,20 @@ const Form3 = ({
   onCertificateFileChange
 }: any) => {
   useDocumentTitle("Become a tutor");
-
-
+  const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
+  const onChange = ({fileList:newFileList}) => {
+    setFileList(newFileList);
+  };
+const handleFinish = (values:any)=>{
+  onFinish({...values, fileList})
+}
+const normFile = (e: any) => {
+  console.log('Upload event:', e);
+  if (Array.isArray(e)) {
+    return e;
+  }
+  return e?.fileList;
+};
   return (
     <Col
       lg={{ span: 12 }}
@@ -65,7 +78,7 @@ const Form3 = ({
           </Form.Item>
 
           {!isTicked &&
-            certificate.map((certificate: FieldType[], formIndex: number) => (
+            certificate.map((certificateForm: FieldType[], formIndex: number) => (
               <div>
                 {formIndex > 0 && (
                   <Button
@@ -77,7 +90,15 @@ const Form3 = ({
                   </Button>
                 )}
                 <FormStyled.FormContainer key={formIndex}>
-                  {certificate.map((field) => (
+                
+                  {certificateForm.map((field) => {
+                      const certificateVerificationProps = field.name.includes('certificateVerification')
+                      ? {
+                        valuePropName: 'fileList',
+                        getValueFromEvent: normFile,
+                      }
+                      : {};
+                    return(
                     <FormStyled.FormItem
                       key={field.key + '_' + formIndex}
                       label={field.label}
@@ -85,15 +106,33 @@ const Form3 = ({
                       rules={field.rules}
                       $width={field.$width ? field.$width : "100%"}
                       initialValue={field.initialValue}
-                      {...(field.name.includes(`certificateVerification_${formIndex}`) && { valuePropName: 'fileList' })}
+                      {...certificateVerificationProps}
                       validateFirst
                     >
+                      {field.name.includes(`certificateVerification`) &&
+                        (<Upload.Dragger
+                          name={field.name + "_" + formIndex}
+                          fileList={fileList}
+                          listType="picture"
+                          showUploadList={true}
+                          // onChange={onDiplomaFileChange}
+                          onChange={onChange}
+                          iconRender={() => (<Spin />)}
+                          accept=".jpg,.jpeg,.png,.pdf"
+                          beforeUpload={() => false} // Prevent upload by return false
+                        >
+                          <p className="ant-upload-drag-icon">
+                          <InboxOutlined />
+                        </p>
+                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                        <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
+                        </Upload.Dragger>)}
                       {field.children}
                     </FormStyled.FormItem>
-                  ))}
+                  )})}
                 </FormStyled.FormContainer>
               </div>
-            ))}
+              ))}
           {!isTicked &&
             <Button type="dashed" onClick={onAddCertificate}>
               Add another certificate

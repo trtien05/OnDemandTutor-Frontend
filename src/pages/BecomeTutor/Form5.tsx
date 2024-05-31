@@ -100,18 +100,18 @@ const Form5 = ({ onFinish,
               </FormStyled.TimeslotStyle>
             ))}
             <FormStyled.FormItem
-                        key='noOfWeek'
-                        label='Number of weeks apply'
-                        name='noOfWeek'
-                        rules={[{
-                          required: true,
-                          message: 'You must insert in this field'
-                        }]}
-                        $width={'100%'}
-                        validateFirst
-                      >
-                        <Input placeholder='3' type='number' max='8' min='1'/>
-                      </FormStyled.FormItem>
+              key='noOfWeek'
+              label='Number of weeks apply'
+              name='noOfWeek'
+              rules={[{
+                required: true,
+                message: 'You must insert in this field'
+              }]}
+              $width={'100%'}
+              validateFirst
+            >
+              <Input placeholder='3' type='number' max='8' min='1' />
+            </FormStyled.FormItem>
           </FormStyled.FormContainer>
 
 

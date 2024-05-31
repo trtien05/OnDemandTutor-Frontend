@@ -43,11 +43,11 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
     return;
   }
 
-  
-
-  const blob = new Blob([file],{type: file.type});
+  // định dạng convert file - get url dynamic
+  const blob = new Blob([file], { type: file.type });
   const blobBuffer = await blob.arrayBuffer();
   const blobEncoded = btoa(blobBuffer.toString());
+
   var downloadURL;
   //By creating a reference to a file, your app gains access to it.
   const imageRef = ref(storage, `${tutorId}/${sectionName}_${index}`);
@@ -55,24 +55,24 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
     contentType: file.type
   };
   try {
-
+    // upload firebase v9
     const uploadResult = await uploadBytes(imageRef, blobBuffer, metadata)
-  //   const collectionRef = collection(firestore,`${sectionName}`);
-  //   setDoc(doc(collectionRef), blobBuffer)
-  // .then(() => {
-  //   console.log('String data saved successfully!');
-  // })
-  // .catch((error) => {
-  //   console.error('Error saving string data:', error);
-  // });
-  //   const uploadTask = await
-  //   imageRef.put
-  //     storage.ref().put(blob).then(function(snapshot) {
-  //       console.log(`${file.name} file uploaded successfully.`);
+    //   const collectionRef = collection(firestore,`${sectionName}`);
+    //   setDoc(doc(collectionRef), blobBuffer)
+    // .then(() => {
+    //   console.log('String data saved successfully!');
+    // })
+    // .catch((error) => {
+    //   console.error('Error saving string data:', error);
+    // });
+    //   const uploadTask = await
+    //   imageRef.put
+    //     storage.ref().put(blob).then(function(snapshot) {
+    //       console.log(`${file.name} file uploaded successfully.`);
 
-  // })
+    // })
 
-    
+
 
     // uploadResult.on(
     //   'state_changed', // Use 'state_changed' for TypeScript compatibility
@@ -93,7 +93,7 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
     const url = await getDownloadURL(uploadResult.ref);
     console.log(`File available at: ${url}`);
     if (downloadURL) {
-      handleChange(downloadURL);
+      handleChange(downloadURL); // handleChange đang bị dùng ở cả handle file và url
     }
   } catch (error) {
     console.log(`Upload failed: ${error}`);
@@ -108,7 +108,7 @@ type DefaultFile = {
   url: string
 }
 
-
+// drag để upload ảnh
 const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange }) => {
   const [defaultFiles, setDefaultFiles] = useState<UploadFile[]>([])
   // const [defaultFiles, setDefaultFiles] = useState<[]>([])

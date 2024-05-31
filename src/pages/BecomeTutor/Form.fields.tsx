@@ -410,7 +410,7 @@ export const certificateForm: FieldType[] = [
     {
         key: '6',
         label: `Certificate Verification`,
-        name: 'certificateUrl',
+        name: 'certificateVerification',
         rules: [
             {
                 required: false,
