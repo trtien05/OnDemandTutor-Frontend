@@ -1,7 +1,11 @@
-import { post, put } from '../utils/apiCaller';
+import { post, put, get } from '../utils/apiCaller';
 
 export const becomeTutor = (accountId: number) => {
     return put(`/accounts/${accountId}/become-a-tutor`);
+};
+
+export const getAccountById = (accountId: number) => {
+    return get(`/accounts/${accountId}/profile`);
 };
 
 export const updateDetails = (accountId: number, account: any) => {

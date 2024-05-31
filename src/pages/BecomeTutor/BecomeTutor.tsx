@@ -22,6 +22,7 @@ import useAuth from '../../hooks/useAuth';
 
 import { uploadImage } from "../../components/UploadImg";
 import moment from "moment";
+import axios from "axios";
 export default function FirstPage() {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
@@ -36,6 +37,7 @@ export default function FirstPage() {
   const [certificate, setCertificate] = useState<FieldType[][]>([
     certificateForm,
   ]);
+  const [avatarURL, setAvatarURL] = useState('')
   const [diplomaURL, setDiplomaURL] = useState<string[]>([])
   const [certURL, setCertURL] = useState<string[]>([])
   const [api, contextHolderNotification] = notification.useNotification({
@@ -44,6 +46,9 @@ export default function FirstPage() {
   const { Title } = Typography;
   const { user } = useAuth();
 
+  const handleAvatarURL = (url: string) => {
+    setAvatarURL(url)
+  }
   const handleDiplomaURLChange = (url: string) => {
     setDiplomaURL((prevState) => [...prevState, url])
   }
@@ -434,6 +439,15 @@ export default function FirstPage() {
     }
   }
   //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
+
+  // async function fetchAccount() {
+  //   const response = await axios.get(
+  //     "https://662b9b40de35f91de158d81b.mockapi.io/Movie"
+  //   );
+
+  //   console.log(response.data);
+  //   setDataSource(response.data);
+  // }
 
   async function saveAccountDetails(tutorId: number, formData: any) {
 
