@@ -1,12 +1,10 @@
 import {
   Avatar,
   Col,
+  UploadFile,
   notification,
   Typography,
   Button,
-  GetProp,
-  UploadFile,
-  UploadProps,
   Spin,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
@@ -14,11 +12,12 @@ import ImgCrop from "antd-img-crop";
 import Upload, { RcFile } from "antd/es/upload";
 import { useState, useRef, useEffect } from "react";
 import { UploadChangeParam } from "antd/lib/upload";
+import type { GetProp, UploadProps } from "antd";
 import { aboutForm } from "./Form.fields";
 import { theme } from "../../themes";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { UploadOutlined,InboxOutlined } from '@ant-design/icons';
+import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
@@ -38,12 +37,9 @@ const Form1: React.FC<Form1Props> = ({
   initialValues,
 }: any) => {
   useDocumentTitle("Become a tutor");
-  // type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+
   //const file = useRef<UploadFile>();
-  // const [fileList, setFileList] = useState<UploadFile[]>([]);
-  const [fileList, setFileList] = useState<[]>([]);
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState("");
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
   // const [agreement, setAgreement] = useState<boolean>(false)
   const file = useRef<RcFile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -67,61 +63,49 @@ const Form1: React.FC<Form1Props> = ({
     return false;
   };
 
-  // const handleUploadAvatar = async ({fileList:AnotherFileList}) => {
-  //   setImageUrl(URL.createObjectURL(new Blob(AnotherFileList.file)));
-  //   const newFileList = AnotherFileList.slice(-1); // Keep only the latest file
-  //   setFileList(newFileList);
+  const handleUploadAvatar = async (
+    info: UploadChangeParam<UploadFile<any>>
+  ) => {
+    setImageUrl(URL.createObjectURL(info.file as RcFile));
+    const newFileList = info.fileList.slice(-1); // Keep only the latest file
+    setFileList(newFileList);
 
-  //   // if (AnotherFileList.file.status === 'done' || AnotherFileList.file.status === 'removed') {
-  //     const file = newFileList[0]?.originFileObj;
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
-  //       reader.readAsDataURL(file);
-  //     } else {
-  //       setImageUrl(null);
-  //     }
+    if (info.file.status === "done" || info.file.status === "removed") {
+      const file = newFileList[0]?.originFileObj;
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = (e) => setImageUrl(e.target?.result as string);
+        reader.readAsDataURL(file);
+      } else {
+        setImageUrl(null);
+      }
+    }
 
-    // const onPreview = async (file: UploadFile) => {
-    //   let src = file.url as string;
-    //   if (!src) {
-    //     src = await new Promise((resolve) => {
-    //       const reader = new FileReader();
-    //       reader.readAsDataURL(file.originFileObj as FileType);
-    //       reader.onload = () => resolve(reader.result as string);
-    //     });
-    //   }
-    //   const image = new Image();
-    //   image.src = src;
-    //   const imgWindow = window.open(src);
-    //   imgWindow?.document.write(image.outerHTML);
-    // };
+    if (!file.current) return;
 
-  //   if (!file.current) return;
+    try {
+      setLoading(true);
 
-  //   try {
-  //     setLoading(true);
+      //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
+      const response = await mockUpload(file.current); // Use mock upload
+      const uploadedUrl = response.url;
+      setImageUrl(uploadedUrl);
+      api.success({
+        message: "Upload successfully",
+        description: "",
+      });
 
-  //     //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
-  //     const response = await mockUpload(file.current); // Use mock upload
-  //     const uploadedUrl = response.url;
-  //     setImageUrl(uploadedUrl);
-  //     api.success({
-  //       message: 'Upload successfully',
-  //       description: '',
-  //     });
-
-  //     setReload(!reload);
-  //   } catch (error: any) {
-  //     api.error({
-  //       message: 'Error',
-  //       description: error.response ? error.response.data : error.message,
-  //     });
-  //   } finally {
-  //     setLoading(false);
-  //     console.log(fileList);
-  //   }
-  // };
+      setReload(!reload);
+    } catch (error: any) {
+      api.error({
+        message: "Error",
+        description: error.response ? error.response.data : error.message,
+      });
+    } finally {
+      setLoading(false);
+      console.log(fileList);
+    }
+  };
 
   //MOCKUP
   const mockUpload = (file: RcFile): Promise<{ url: string }> => {
@@ -135,53 +119,26 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   // Effect to simulate file upload for testing
-  // useEffect(() => {
+  useEffect(() => {
     // Create a mock file object
-  //   const mockFile: UploadFile = {
-  //     uid: "-1",
-  //     name: "example.png",
-  //     status: "done",
-  //     url: "https://via.placeholder.com/100",
-  //   };
+    const mockFile: UploadFile = {
+      uid: "-1",
+      name: "example.png",
+      status: "done",
+      url: "https://via.placeholder.com/100",
+    };
 
-  //   // Update fileList and imageUrl with the mock file
-  //   setFileList([mockFile]);
-  //   setImageUrl(mockFile.url);
-  // }, []);
-  // const onChange:UploadProps['onChange'] = ({ fileList: newFileList }) => {
-  //   setFileList(newFileList);
-  //   const file = newFileList[0]?.originFileObj;
-  //   setImageUrl(URL.createObjectURL(new Blob(file)));
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
-  //       reader.readAsDataURL(file);
-  //     } else {
-  //       setImageUrl(null);
-  //     }
-
-  // };
-  const getBase64 = (file:any) =>
-    new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result);
-      reader.onerror = (error) => reject(error);
-    });
-  const handlePreview = async (file:any) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj);
-    }
-    setPreviewImage(file.url || file.preview);
-    setPreviewOpen(true);
+    // Update fileList and imageUrl with the mock file
+    setFileList([mockFile]);
+    setImageUrl(mockFile.url);
+  }, []);
+  const onChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
   };
-  // const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
-  //   setFileList(newFileList);
-  // };
   const handleFinish = (values: any) => {
     onFinish({ ...values, fileList });
   };
-  const onChange = ({ fileList: newFileList }) => setFileList(newFileList);
+
   return (
     <Col
       lg={{ span: 12 }}
@@ -194,7 +151,7 @@ const Form1: React.FC<Form1Props> = ({
         layout="vertical"
         requiredMark="optional"
         size="middle"
-        onFinish={handleFinish}
+        onFinish={onFinish}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -229,7 +186,7 @@ const Form1: React.FC<Form1Props> = ({
             Tutors who look friendly and professional get the most students
           </FormStyled.FormDescription>
           <br />
-          {/* //<FormStyled.FormContainer style={{ margin: "auto" }}> */}
+          {/* <FormStyled.FormContainer style={{ margin: "auto" }}> */}
             <FormStyled.FormItem
               name="avatar"
               valuePropName="fileList"
@@ -246,71 +203,45 @@ const Form1: React.FC<Form1Props> = ({
                   className="avatar-uploader"
                   fileList={fileList}
                   showUploadList={false}
-                  beforeUpload={beforeUpload}
-                  onChange={handleUploadAvatar}
-                  // beforeUpload={() => false}
-                  // onChange={onChange}
+                  // beforeUpload={beforeUpload}
+                  // onChange={handleUploadAvatar}
+                  beforeUpload={() => false}
+                  onChange={onChange}
                   accept=".jpg,.jpeg,.png"
+                  iconRender={() => (<Spin />)}
                   >
                   <Avatar
                     shape='square'
                     icon={<UserOutlined />}
                     size={100}
                     src={imageUrl}
-                  /></Upload>
+                  />
+
+                  </Upload>
               </ImgCrop> */}
-              {/* <ImgCrop rotationSlider
-                quality={1}
-                showReset
-                showGrid>
-                <Upload
-                  action=""
-                  listType="picture-card"
-                  onChange={onChange}
-                  onPreview={onPreview}
-                  name="avatar"
-                  className="avatar-uploader"
-                  fileList={fileList}
-                  showUploadList={false}
-                  
-                  // beforeUpload={() => false}
-                  // onChange={onChange}
-                  accept=".jpg,.jpeg,.png"
-                >
-                  {fileList.length < 5 && '+ Upload'}
-                </Upload>
-              </ImgCrop> */}
-              <ImgCrop
-                quality={1}
-                showReset
-                showGrid
-              >
-              <Upload
-                name='avatar'
-                className="avatar-uploader"
+              <Upload.Dragger
+                name="avatar"
+                
                 fileList={fileList}
                 listType="picture"
-                showUploadList={false}
+                showUploadList={true}
+                // onChange={onDiplomaFileChange}
                 onChange={onChange}
-                onPreview={handlePreview}
                 iconRender={() => <Spin />}
-                accept=".jpg,.jpeg,.png"
+                accept=".jpg,.jpeg,.png,.pdf"
                 beforeUpload={() => false} // Prevent upload by return false
               >
-                {/* {!(fileList.length == 1) && */}
-                    {/* <Avatar
-                    shape='square'
-                    icon={<UserOutlined />}
-                    size={100}
-                    src={imageUrl}
-                  /> */}
-                {/* } */}
-                
-              </Upload>
-              </ImgCrop>
-              
+                <p className="ant-upload-drag-icon">
+                  <InboxOutlined />
+                </p>
+                <p className="ant-upload-text">
+                  Click or drag file to this area to upload
+                </p>
+                <p className="ant-upload-hint">
+                  Support for a single image (JPG/PNG) or PDF file.
+                </p>
+              </Upload.Dragger>
             </FormStyled.FormItem>
-            
           {/* </FormStyled.FormContainer> */}
           <FormStyled.FormItem
             name="agreement"
