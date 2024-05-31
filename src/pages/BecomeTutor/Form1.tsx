@@ -19,7 +19,8 @@ import { theme } from "../../themes";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
-const { Title } = Typography;
+import axios from 'axios';
+
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -29,7 +30,7 @@ interface Form1Props {
   initialValues: any;
 }
 
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
+type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
 
 const Form1: React.FC<Form1Props> = ({
   agreement,
@@ -136,6 +137,7 @@ const Form1: React.FC<Form1Props> = ({
   //   setImageUrl(mockFile.url);
   // }, []);
   const onChange = ({ fileList: newFileList }) => {
+    setFileList(newFileList);
     if (newFileList.length > 0) {
       const file = newFileList[0].originFileObj as RcFile;
       const reader = new FileReader();
@@ -144,7 +146,7 @@ const Form1: React.FC<Form1Props> = ({
     } else {
       setImageUrl(null);
     }
-    setFileList(newFileList);
+
   };
   const getBase64 = (file:RcFile) =>
   new Promise<string>((resolve, reject) => {
@@ -176,6 +178,14 @@ const Form1: React.FC<Form1Props> = ({
   
     // then upload `file` from the argument manually
     return false;
+  };
+
+  const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
   };
 
   return (
@@ -232,7 +242,7 @@ const Form1: React.FC<Form1Props> = ({
             <FormStyled.FormItem
               name="avatar"
               valuePropName="fileList"
-              getValueFromEvent={(e) => e && e.fileList}
+              getValueFromEvent={normFile}
               rules={[{ required: false, message: "Please upload an avatar!" }]}
               
             >
@@ -247,6 +257,7 @@ const Form1: React.FC<Form1Props> = ({
                 // action=''
                 listType="picture-card"
                 fileList={fileList}
+                onRemove={() => (setFileList([]))}
                 // onChange={onChange}
                 onPreview={handlePreview}
                 accept=".jpg,.jpeg,.png"

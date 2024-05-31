@@ -35,6 +35,13 @@ const Form5 = ({ onFinish,
   // });
 
   const screens = useBreakpoint()
+  const validateIntegerInRange = (_: unknown, value: number) => {
+    const parsedValue = Number(value);
+    if (!(Number.isInteger(parsedValue)) || value < 1 || value > 8) {
+      return Promise.reject("Please enter a valid integer between 1 and 8");
+    }
+    return Promise.resolve();
+  };
 
   return (
     < Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
@@ -86,7 +93,7 @@ const Form5 = ({ onFinish,
                         {field.children}
                       </FormStyled.FormItem>
                       {formIndex > 0 && (
-                        <FormStyled.DeleteButton type='link' onClick={() => onRemoveTimeslot(day, formIndex)} key={`${day}_${formIndex}`}>
+                        <FormStyled.DeleteButton type='link' onClick={() => onRemoveTimeslot(day, formIndex)} key={`${field.key}_X`}>
                           {screens.xs ? 'Delete Timeslot' : 'X'}
                         </FormStyled.DeleteButton>
                       )}
@@ -107,6 +114,9 @@ const Form5 = ({ onFinish,
               rules={[{
                 required: true,
                 message: 'You must insert in this field'
+              },{
+                validator: validateIntegerInRange,
+                message: 'Please enter a valid integer between 1 and 8'
               }]}
               $width={'100%'}
               validateFirst

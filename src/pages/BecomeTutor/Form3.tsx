@@ -115,9 +115,7 @@ const normFile = (e: any) => {
                           fileList={fileList}
                           listType="picture"
                           showUploadList={true}
-                          // onChange={onDiplomaFileChange}
                           onChange={onChange}
-                          iconRender={() => (<Spin />)}
                           accept=".jpg,.jpeg,.png,.pdf"
                           beforeUpload={() => false} // Prevent upload by return false
                         >

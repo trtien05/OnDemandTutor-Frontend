@@ -155,6 +155,10 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
                 /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
                 message: "Invalid Google Meet link.",
               },
+              {
+                required: true,
+                message: "Please provide your Google Meet link.",
+              },
             ]}
           >
             <Input

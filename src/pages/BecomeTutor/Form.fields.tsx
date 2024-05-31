@@ -1,5 +1,5 @@
-import { Input, DatePicker, Select, GetProps, Upload } from 'antd';
-import { Rule } from 'antd/es/form';
+import { Input, DatePicker, Select, GetProps, Upload, UploadFile } from 'antd';
+import { Rule, RuleObject } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
 import * as Enum from '../../utils/enums';
 import dayjs from 'dayjs';
@@ -55,6 +55,18 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     const fourYearsFromToday = dayjs().add(4, 'year').endOf('day');
     return current && current > fourYearsFromToday;
 };
+
+const validateFileType = (_: RuleObject, fileList: UploadFile[]) => {
+    if (fileList && fileList.length > 0) {
+      const file = fileList[0];
+      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+  
+      if (!allowedTypes.includes(file.type)) {
+        return Promise.reject("File type must be png, pdf, jpeg, or jpg");
+      }
+    }
+    return Promise.resolve();
+}
 
 export const aboutForm: FieldType[] = [
     {
@@ -298,15 +310,16 @@ export const educationForm: FieldType[] = [
         name: 'diplomaVerification',
         rules: [
             {
-                required: false,
+                required: true,
                 message: 'Please upload your diploma verification.',
+            },
+            {
+                validator: validateFileType,
+                message: 'File type must be png, pdf, jpeg, or jpg',
             },
         ],
         children: (
             <></>
-            // <Upload name="diplomaVerification" listType="picture" maxCount={1}>
-            //   <Button icon={<UploadOutlined />}>Upload Diploma</Button>
-            // </Upload>
         ),
     },
 ]
@@ -413,8 +426,12 @@ export const certificateForm: FieldType[] = [
         name: 'certificateVerification',
         rules: [
             {
-                required: false,
+                required: true,
                 message: 'Please upload your certificate verification.',
+            },
+            {
+                validator: validateFileType,
+                message: 'File type must be png, pdf, jpeg, or jpg',
             },
         ],
         children: (

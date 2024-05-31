@@ -36,15 +36,6 @@ const Form2 = ({
   const handleFinish = (values:any)=>{
     onFinish({...values, fileList})
   }
-  // const handleDiplomaFileList = useEffect(() => (
-  //   diplomaFile.map((file, index) => {
-  //     setFileList((prevState) => [...prevState, {
-  //       uid: index,
-  //       name: file[0].name,
-  //       status: 'done',
-  //     }])
-  //   })
-  // ), [])
 
 
   return (
@@ -110,7 +101,6 @@ const Form2 = ({
                           showUploadList={true}
                           // onChange={onDiplomaFileChange}
                           onChange={onChange}
-                          iconRender={() => (<Spin />)}
                           accept=".jpg,.jpeg,.png,.pdf"
                           beforeUpload={() => false} // Prevent upload by return false
                         >
