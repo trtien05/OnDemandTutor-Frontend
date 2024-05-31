@@ -45,29 +45,7 @@ export default function FirstPage() {
   });
   const { Title } = Typography;
   const { user } = useAuth();
-  // const handleDiplomaChange = (name, newFileList) => {
-  //   setDiplomaFile(prevState => ({
-  //     ...prevState,
-  //     [name]: newFileList,
-  //   }));
-  // };
-  // const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
-  //   let files = [...info.fileList];
-  //   setDiplomaFile(prev => ({
-  //     ...prev,
-  //     [name]: files,
-  //   }));
-  //   console.log(`Updated fileList for ${name}:`, files);
-  //   ;
-  // }
-  // const handleDiplomaChange = (info: any, formIndex: number) => {
-  //   const updatedFileList = [...info.fileList];
-  //   setDiplomaFile((prev: any) => {
-  //     const newState = [...prev];
-  //     newState[formIndex] = updatedFileList;
-  //     return newState;
-  //   });
-  // };
+  
   //FORM 5
 
   const handleDiplomaURLChange = (url: string) => {
@@ -268,7 +246,7 @@ export default function FirstPage() {
       educationValues,
       certificationValues,
       descriptionValues,
-      timePriceValues
+      values
     );
     // console.log(values);
     // const tutorId = user?.userId;
@@ -290,7 +268,7 @@ export default function FirstPage() {
         console.error('Error saving tutor description:', error);
       });
 
-    saveTutorAvailableTimeslots(tutorId, timePriceValues)
+    saveTutorAvailableTimeslots(tutorId, values)
       .catch(error => {
         console.error('Error saving tutor available timeslot:', error);
       });

@@ -58,6 +58,7 @@ const Form5 = ({ onFinish,
                 <Form.Item
                   name={day}
                   valuePropName="checked"
+                  initialValue={visibility[day]}
                   style={{ margin: '0', width: '100%' }}
                 >
                   <FormStyled.FormCheckbox
