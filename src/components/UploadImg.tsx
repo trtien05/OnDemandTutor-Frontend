@@ -28,7 +28,10 @@ const Thumbnail = styled.div`
 interface FileUploadProps {
   name: string;
   fileList: UploadFile[];
+  // fileList: [];
   handleChange: (name: string, info: UploadChangeParam<UploadFile<any>>) => void;
+  // handleChange: ( info: UploadChangeParam<UploadFile<any>>) => void;
+ 
 }
 
 
@@ -108,15 +111,16 @@ type DefaultFile = {
 
 const FileUpload: React.FC<FileUploadProps> = ({ name, fileList, handleChange }) => {
   const [defaultFiles, setDefaultFiles] = useState<UploadFile[]>([])
+  // const [defaultFiles, setDefaultFiles] = useState<[]>([])
   // call setfile on file input onChange
   // const [file, setFile] = useState<File | null>(null);
   const file = useRef<RcFile | null>(null)
   const [data, setData] = useState<string>();
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-
-  const handleInternalChange: UploadProps['onChange'] = (info: any) => {
-    handleChange(name, info);
+  // handleChange(name, info);
+  const handleInternalChange: UploadProps['onChange'] = (info: UploadChangeParam<UploadFile<any>>) => {
+    handleChange(name,info);
   };
 
   const handleDefaultFileList = () => {

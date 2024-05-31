@@ -35,13 +35,18 @@ export default function FirstPage() {
   ]);
   const [diplomaURL, setDiplomaURL] = useState<string[]>([])
   const [certURL, setCertURL] = useState<string[]>([])
-  const [diplomaFile, setDiplomaFile] = useState<any>([])
+  const [diplomaFile, setDiplomaFile] = useState({ })
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
   const { Title } = Typography;
   const { user } = useAuth();
-
+  // const handleDiplomaChange = (name, newFileList) => {
+  //   setDiplomaFile(prevState => ({
+  //     ...prevState,
+  //     [name]: newFileList,
+  //   }));
+  // };
   // const handleDiplomaChange = (name: string, info: UploadChangeParam<UploadFile<any>>) => {
   //   let files = [...info.fileList];
   //   setDiplomaFile(prev => ({
@@ -159,7 +164,7 @@ export default function FirstPage() {
   //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
-    console.log(aboutValues);
+    console.log(values);
     const tutorId = 1; // Example tutorId
     saveBecomeTutor(tutorId);
     saveAccountDetails(tutorId, values)

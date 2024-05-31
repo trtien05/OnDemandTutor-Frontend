@@ -6,6 +6,7 @@ import { DefaultTheme,ThemeProvider } from 'styled-components'
 import { AntdThemeConfig } from './themes/'
 import { createStyledBreakpointsTheme } from 'styled-breakpoints';
 import { ConfigProvider } from 'antd'
+import { BrowserRouter } from 'react-router-dom'
 
 export const breakpoints = {
   xs: '360px',
@@ -22,10 +23,12 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   //<React.StrictMode>
+  <BrowserRouter>
     <ThemeProvider theme={theme}>
       <ConfigProvider theme={AntdThemeConfig}>
     <App />
       </ConfigProvider>
     </ThemeProvider>
+  </BrowserRouter>
   //</React.StrictMode>,
 )

@@ -20,7 +20,8 @@ const Form2 = ({
 }: any) => {
   useDocumentTitle("Become a tutor");
 
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  // const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
 
   const normFile = (e: any) => {
     console.log('Upload event:', e);
@@ -29,7 +30,14 @@ const Form2 = ({
     }
     return e?.fileList;
   };
-
+  // name: string, info: UploadChangeParam<UploadFile<any>>
+  // {fileList:newFileList}
+//   const onChange = ({fileList:newFileList}) => {
+//     setFileList(newFileList);
+//   };
+// const handleFinish = (values:any)=>{
+//   onFinish({...values, fileList})
+// }
   // const handleDiplomaFileList = useEffect(() => (
   //   diplomaFile.map((file, index) => {
   //     setFileList((prevState) => [...prevState, {
@@ -77,12 +85,7 @@ const Form2 = ({
               )}
               <FormStyled.FormContainer key={formIndex}>
                 {form.map((field) => {
-                  // const diplomaVerificationProps = field.name.includes('diplomaVerification')
-                  //   ? {
-                  //     valuePropName: 'fileList',
-                  //     getValueFromEvent: normFile,
-                  //   }
-                  //   : {};
+                  
                   const diplomaVerificationProps = field.name.includes('diplomaVerification')
                     ? {
                       valuePropName: 'fileList',
@@ -114,7 +117,15 @@ const Form2 = ({
                         >
                           <Button icon={<UploadOutlined />}>Click to upload</Button>
                         </Upload> */}
-                      
+                      {/* <Upload
+                          name={field.name + "_" + formIndex}
+                          fileList={fileList}
+                          // onChange={onDiplomaFileChange}
+                          onChange={onChange}
+                          beforeUpload={() => false} // Prevent upload by return false
+                        >
+                          <Button icon={<UploadOutlined />}>Click to upload</Button>
+                        </Upload> */}
                       {field.name.includes(`diplomaVerification`) &&
                         (<Upload
                           name={field.name + "_" + formIndex}
