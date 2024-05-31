@@ -233,16 +233,33 @@ export default function FirstPage() {
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = (values: any) => {
     setTimePriceValues(values);
-    // console.log(
-    //   aboutValues,
-    //   educationValues,
-    //   certificationValues,
-    //   descriptionValues,
-    //   timePriceValues
-    // );
-    console.log(values);
+    console.log(
+      aboutValues,
+      educationValues,
+      certificationValues,
+      descriptionValues,
+      values
+    );
+    // console.log(values);
     // const tutorId = user?.userId;
     const tutorId = 1; // Example tutorId
+    saveAccountDetails(tutorId, aboutValues)
+      .catch(error => {
+        console.error('Error saving account details:', error);
+      });
+    saveEducations(tutorId, educationValues)
+      .catch(error => {
+        console.error('Error saving educations:', error);
+      });
+    saveCertificates(tutorId, certificationValues)
+      .catch(error => {
+        console.error('Error saving certificates:', error);
+      });
+    saveTutorDescription(tutorId, descriptionValues)
+      .catch(error => {
+        console.error('Error saving tutor description:', error);
+      });
+
     saveTutorAvailableTimeslots(tutorId, values)
       .catch(error => {
         console.error('Error saving tutor available timeslot:', error);
