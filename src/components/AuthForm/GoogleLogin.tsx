@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import config from "../config";
+import config from "../../config";
 
 type GoogleLoginProps = {
   onGoogleSignIn?: (value: any) => void;

@@ -26,7 +26,7 @@ const Register = () => {
             if (!data) {
                 throw new Error('Network response was not ok');
             } else {
-                messageApi.success(`Verify your email: ${data}`);
+                messageApi.success(`Verify your email: ${data.email}`);
                 setTimeout(() => {
                     navigate(config.routes.public.verifyCode, { state: { email: values.email } });
                 }, 2000);

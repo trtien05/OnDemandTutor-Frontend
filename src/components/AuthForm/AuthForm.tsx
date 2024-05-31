@@ -1,19 +1,13 @@
 import * as FormStyled from './AuthForm.styled';
-
-import { Col, Typography, Input } from 'antd';
+import { Col } from 'antd';
 import images, { fallbackImg } from './AuthForm.images';
-import { useNavigate } from 'react-router-dom';
-
 import Container from '../../components/Container';
-import { FcGoogle } from 'react-icons/fc';
 import { FieldType, OTPFieldType } from './AuthForm.fields';
-import { LOGIN_GOOGLE_URL } from '../../config/constants';
 import Link from '../../components/Link';
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { PageEnum } from '../../utils/enums';
 import config from '../../config'
-import GoogleLogin from '../GoogleLogin';
-const { Text } = Typography;
+import GoogleLogin from '../../components/AuthForm/GoogleLogin';
 
 type RedirectType = {
     description: string;

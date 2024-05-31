@@ -6,45 +6,44 @@ import { PageEnum } from '../../utils/enums';
 import { SetPasswordDesc } from './SetPassword.styled';
 import config from '../../config';
 import { message } from 'antd';
-// import { resetPassword } from '../../utils/authAPI';
+import { resetPassword } from '../../utils/authAPI';
 import { setPasswordFields } from '../../components/AuthForm/AuthForm.fields';
 import { useDocumentTitle } from '../../hooks';
 
 const SetPassword = () => {
-    useDocumentTitle('Thiết Lập Mật Khẩu | HouseMate');
+    useDocumentTitle('Set New Password | MyTutor');
 
     const [isSubmitting, setIsSubmitting] = useState(false);
-
-    // Get token from URL
-    let location = useLocation();
-    const UrlParams = new URLSearchParams(location.search);
-    const token = UrlParams.get('token');
-
-    // Check token not exist in URL
+    const location = useLocation();
     const navigate = useNavigate();
-    useEffect(() => {
-        if (!token) navigate(config.routes.public.home);
-    }, [token]);
+
+    const { email } = location.state || {};
 
     // Message toast
     const [messageApi, contextHolder] = message.useMessage();
 
     const onFinish = async (values: any) => {
         try {
+            const newValues = {
+                email,
+                password: values.password,
+            }
             setIsSubmitting(true);
 
-            if (token == null) return;
-
             // Fetch API
-            const requestData = { token, password: values.password };
-            // const { data } = await resetPassword(requestData);
-            // messageApi.success(data);
+            const { data } = await resetPassword(newValues.password, newValues.email);
+            messageApi.success(data);
 
             // Navigate to login page
-            setTimeout(() => navigate(config.routes.public.login), 3000);
-        } catch (err: any) {
-            if (err.response) messageApi.error(err.response.data);
-            else messageApi.error(err.message);
+            setTimeout(() => navigate(config.routes.public.login), 2000);
+        } catch (error: any) {
+            if (error.response && error.response.status === 404) {
+                messageApi.error('Fail to reset password');
+            } else if (error.response) {
+                messageApi.error(error.response.data);
+            } else {
+                messageApi.error(error.message);
+            }
         } finally {
             setIsSubmitting(false);
         }

@@ -17,12 +17,12 @@ const VerifyCode = () => {
     useDocumentTitle('Verify Email | MyTutor');
 
     const [messageApi, contextHolder] = message.useMessage();
+    const [seconds, setSeconds] = useState(0);
 
     const location = useLocation();
     const navigate = useNavigate();
 
-    const { email } = location.state || {};
-    const [seconds, setSeconds] = useState(0);
+    const { email, status } = location.state || {};
 
     // Check email before verify
     useEffect(() => {
@@ -83,17 +83,25 @@ const VerifyCode = () => {
     const onFinish = async (values: any) => {
         const newValues = {
             email,
-            otp: values.otp
+            otp: values.otp,
+            status,
         }
         try {
             const { data } = await postOTP(newValues.email, newValues.otp);
             if (!data) {
                 throw new Error('Network response was not ok');
             } else {
-                messageApi.success(data);
-                setTimeout(() => {
-                    navigate(config.routes.public.login);
-                }, 2000);
+                if (newValues.status === 'FORGOT_PASSWORD') {
+                    messageApi.success('Valid OTP');
+                    setTimeout(() => {
+                        navigate(config.routes.public.setPassword, { state: { email: newValues.email } });
+                    }, 2000);
+                } else {
+                    messageApi.success('Successfully created account');
+                    setTimeout(() => {
+                        navigate(config.routes.public.login);
+                    }, 2000);
+                }
             }
         } catch (error: any) {
             if (error.response) {

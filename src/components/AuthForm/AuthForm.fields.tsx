@@ -164,7 +164,7 @@ export const forgotPasswordFields: FieldType[] = [
 export const setPasswordFields: FieldType[] = [
     {
         key: 1,
-        label: 'Mật khẩu mới',
+        label: 'New password',
         name: 'password',
         rules: [
             {

@@ -1,19 +1,19 @@
 import * as Styled from './ForgotPassword.styled';
-
 import { Typography, message } from 'antd';
 import { useEffect, useState } from 'react';
-
 import { MAX_COUNTDOWN_TIME } from '../../config/constants';
 import { PageEnum } from '../../utils/enums';
 import config from '../../config';
 import { forgotPassword } from '../../utils/authAPI';
 import { forgotPasswordFields } from '../../components/AuthForm/AuthForm.fields';
 import { useDocumentTitle } from '../../hooks';
+import { useNavigate } from 'react-router-dom';
 
 const { Text } = Typography;
 
 const ForgotPassword = () => {
-    useDocumentTitle('Forgot Password | HouseMate');
+    useDocumentTitle('Forgot Password | MyTutor');
+    const navigate = useNavigate();
 
     const [seconds, setSeconds] = useState(0);
 
@@ -47,10 +47,23 @@ const ForgotPassword = () => {
             localStorage.setItem(config.localStorage.seconds, MAX_COUNTDOWN_TIME.toString());
             // Fetch API
             const { data } = await forgotPassword(values);
-            messageApi.success(data);
-        } catch (err: any) {
-            if (err.response) messageApi.error(err.response.data);
-            else messageApi.error(err.message);
+
+            if (!data) {
+                throw new Error('Network response was not ok');
+            } else {
+                messageApi.success(`Verify your email: ${data.email}`);
+                setTimeout(() => {
+                    navigate(config.routes.public.verifyCode, { state: { email: values.email, status: data.status } });
+                }, 2000);
+            }
+        } catch (error: any) {
+            if (error.response && error.response.status === 404) {
+                messageApi.error('Account not found');
+            } else if (error.response) {
+                messageApi.error(error.response.data);
+            } else {
+                messageApi.error(error.message);
+            }
         }
     };
 
@@ -66,10 +79,6 @@ const ForgotPassword = () => {
 
     const description = (
         <Styled.ForgotPasswordDescWrapper>
-            <Styled.ForgotPasswordDesc>
-                Enter your email to receive password reset instructions.
-            </Styled.ForgotPasswordDesc>
-
             <Styled.ForgotPasswordText>
                 {seconds !== 0 && (
                     <Text>
