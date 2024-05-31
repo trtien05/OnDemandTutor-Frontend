@@ -1,24 +1,26 @@
 import {
   Avatar,
   Col,
-  UploadFile,
   notification,
   Typography,
   Button,
-} from 'antd';
-import { UserOutlined } from '@ant-design/icons';
-import ImgCrop from 'antd-img-crop';
-import Upload, { RcFile } from 'antd/es/upload';
-import { useState, useRef, useEffect } from 'react';
-import { UploadChangeParam } from 'antd/lib/upload';
-import type { GetProp, UploadProps } from 'antd';
-import { aboutForm } from './Form.fields';
-import { theme } from '../../themes';
-import * as FormStyled from './Form.styled';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
-
+  GetProp,
+  UploadFile,
+  UploadProps,
+  Spin,
+} from "antd";
+import { UserOutlined } from "@ant-design/icons";
+import ImgCrop from "antd-img-crop";
+import Upload, { RcFile } from "antd/es/upload";
+import { useState, useRef, useEffect } from "react";
+import { UploadChangeParam } from "antd/lib/upload";
+import { aboutForm } from "./Form.fields";
+import { theme } from "../../themes";
+import * as FormStyled from "./Form.styled";
+import useDocumentTitle from "../../hooks/useDocumentTitle";
+import { UploadOutlined,InboxOutlined } from '@ant-design/icons';
 const { Title } = Typography;
-//Using the Form1Props interface ensures type safety and clarity, 
+//Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
   agreement: boolean;
@@ -27,13 +29,21 @@ interface Form1Props {
   initialValues: any;
 }
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
-const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, initialValues }: any) => {
-  useDocumentTitle('Become a tutor');
-
+const Form1: React.FC<Form1Props> = ({
+  agreement,
+  onAgreementChange,
+  onFinish,
+  initialValues,
+}: any) => {
+  useDocumentTitle("Become a tutor");
+  // type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
   //const file = useRef<UploadFile>();
-  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  // const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [fileList, setFileList] = useState<[]>([]);
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState("");
   // const [agreement, setAgreement] = useState<boolean>(false)
   const file = useRef<RcFile | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
@@ -57,48 +67,61 @@ const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, i
     return false;
   };
 
-  const handleUploadAvatar = async ({fileList:AnotherFileList}) => {
-    setImageUrl(URL.createObjectURL(new Blob(AnotherFileList.file)));
-    const newFileList = AnotherFileList.slice(-1); // Keep only the latest file
-    setFileList(newFileList);
+  // const handleUploadAvatar = async ({fileList:AnotherFileList}) => {
+  //   setImageUrl(URL.createObjectURL(new Blob(AnotherFileList.file)));
+  //   const newFileList = AnotherFileList.slice(-1); // Keep only the latest file
+  //   setFileList(newFileList);
 
-    // if (AnotherFileList.file.status === 'done' || AnotherFileList.file.status === 'removed') {
-      const file = newFileList[0]?.originFileObj;
-      if (file) {
-        const reader = new FileReader();
-        reader.onload = (e) => setImageUrl(e.target?.result as string);
-        reader.readAsDataURL(file);
-      } else {
-        setImageUrl(null);
-      }
-    // }
+  //   // if (AnotherFileList.file.status === 'done' || AnotherFileList.file.status === 'removed') {
+  //     const file = newFileList[0]?.originFileObj;
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
+  //       reader.readAsDataURL(file);
+  //     } else {
+  //       setImageUrl(null);
+  //     }
 
+    // const onPreview = async (file: UploadFile) => {
+    //   let src = file.url as string;
+    //   if (!src) {
+    //     src = await new Promise((resolve) => {
+    //       const reader = new FileReader();
+    //       reader.readAsDataURL(file.originFileObj as FileType);
+    //       reader.onload = () => resolve(reader.result as string);
+    //     });
+    //   }
+    //   const image = new Image();
+    //   image.src = src;
+    //   const imgWindow = window.open(src);
+    //   imgWindow?.document.write(image.outerHTML);
+    // };
 
-    if (!file.current) return;
+  //   if (!file.current) return;
 
-    try {
-      setLoading(true);
+  //   try {
+  //     setLoading(true);
 
-      //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
-      const response = await mockUpload(file.current); // Use mock upload
-      const uploadedUrl = response.url;
-      setImageUrl(uploadedUrl);
-      api.success({
-        message: 'Upload successfully',
-        description: '',
-      });
+  //     //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
+  //     const response = await mockUpload(file.current); // Use mock upload
+  //     const uploadedUrl = response.url;
+  //     setImageUrl(uploadedUrl);
+  //     api.success({
+  //       message: 'Upload successfully',
+  //       description: '',
+  //     });
 
-      setReload(!reload);
-    } catch (error: any) {
-      api.error({
-        message: 'Error',
-        description: error.response ? error.response.data : error.message,
-      });
-    } finally {
-      setLoading(false);
-      console.log(fileList);
-    }
-  };
+  //     setReload(!reload);
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: 'Error',
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //     console.log(fileList);
+  //   }
+  // };
 
   //MOCKUP
   const mockUpload = (file: RcFile): Promise<{ url: string }> => {
@@ -112,43 +135,75 @@ const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, i
   };
 
   // Effect to simulate file upload for testing
-  useEffect(() => {
+  // useEffect(() => {
     // Create a mock file object
-    const mockFile: UploadFile = {
-      uid: '-1',
-      name: 'example.png',
-      status: 'done',
-      url: 'https://via.placeholder.com/100',
-    };
+  //   const mockFile: UploadFile = {
+  //     uid: "-1",
+  //     name: "example.png",
+  //     status: "done",
+  //     url: "https://via.placeholder.com/100",
+  //   };
 
-    // Update fileList and imageUrl with the mock file
-    setFileList([mockFile]);
-    setImageUrl(mockFile.url);
-  }, []);
-  const onChange = ({fileList:newFileList}) => {
-    setFileList(newFileList);
+  //   // Update fileList and imageUrl with the mock file
+  //   setFileList([mockFile]);
+  //   setImageUrl(mockFile.url);
+  // }, []);
+  // const onChange:UploadProps['onChange'] = ({ fileList: newFileList }) => {
+  //   setFileList(newFileList);
+  //   const file = newFileList[0]?.originFileObj;
+  //   setImageUrl(URL.createObjectURL(new Blob(file)));
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
+  //       reader.readAsDataURL(file);
+  //     } else {
+  //       setImageUrl(null);
+  //     }
+
+  // };
+  const getBase64 = (file:any) =>
+    new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  const handlePreview = async (file:any) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewOpen(true);
   };
-  const handleFinish = (values:any)=>{
-    onFinish({...values, fileList})
-  }
-
-
-
+  // const onChange: UploadProps['onChange'] = ({ fileList: newFileList }) => {
+  //   setFileList(newFileList);
+  // };
+  const handleFinish = (values: any) => {
+    onFinish({ ...values, fileList });
+  };
+  const onChange = ({ fileList: newFileList }) => setFileList(newFileList);
   return (
-    <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
-
+    <Col
+      lg={{ span: 12 }}
+      sm={{ span: 16 }}
+      xs={{ span: 24 }}
+      style={{ margin: `auto` }}
+    >
       <FormStyled.FormWrapper
-        labelAlign='left'
-        layout='vertical'
-        requiredMark='optional'
-        size='middle'
+        labelAlign="left"
+        layout="vertical"
+        requiredMark="optional"
+        size="middle"
         onFinish={handleFinish}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>About</FormStyled.FormTitle> <br />
-          <FormStyled.FormDescription>Start creating your public tutor profile. Your progress will be automatically saved as you complete each section. You can return at any time to finish your registration.</FormStyled.FormDescription>
-
+          <FormStyled.FormDescription>
+            Start creating your public tutor profile. Your progress will be
+            automatically saved as you complete each section. You can return at
+            any time to finish your registration.
+          </FormStyled.FormDescription>
           {aboutForm.map((field) => {
             return (
               <FormStyled.FormItem
@@ -156,26 +211,32 @@ const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, i
                 label={field.label}
                 name={field.name}
                 rules={field.rules}
-                $width={field.$width ? field.$width : '100%'}
+                $width={field.$width ? field.$width : "100%"}
                 initialValue={field.initialValue}
                 validateFirst
               >
                 {field.children}
-              </FormStyled.FormItem>)
+              </FormStyled.FormItem>
+            );
           })}
-
-
-          <FormStyled.FormTitle style={{ display: `block` }}>Profile picture</FormStyled.FormTitle> <br />
-          <FormStyled.FormDescription>Make a great first impression!<br />
-            Tutors who look friendly and professional get the most students</FormStyled.FormDescription>
+          <FormStyled.FormTitle style={{ display: `block` }}>
+            Profile picture
+          </FormStyled.FormTitle>{" "}
           <br />
-          <FormStyled.FormContainer style={{ margin: 'auto' }}>
+          <FormStyled.FormDescription>
+            Make a great first impression!
+            <br />
+            Tutors who look friendly and professional get the most students
+          </FormStyled.FormDescription>
+          <br />
+          {/* //<FormStyled.FormContainer style={{ margin: "auto" }}> */}
             <FormStyled.FormItem
               name="avatar"
               valuePropName="fileList"
-              getValueFromEvent={e => e && e.fileList}
-              rules={[{ required: false, message: 'Please upload an avatar!' }]}>
-              <ImgCrop
+              getValueFromEvent={(e) => e && e.fileList}
+              rules={[{ required: false, message: "Please upload an avatar!" }]}
+            >
+              {/* <ImgCrop
                 quality={1}
                 showReset
                 showGrid
@@ -185,9 +246,9 @@ const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, i
                   className="avatar-uploader"
                   fileList={fileList}
                   showUploadList={false}
-                  // beforeUpload={beforeUpload}
+                  beforeUpload={beforeUpload}
                   onChange={handleUploadAvatar}
-                  beforeUpload={() => false}
+                  // beforeUpload={() => false}
                   // onChange={onChange}
                   accept=".jpg,.jpeg,.png"
                   >
@@ -197,36 +258,97 @@ const Form1: React.FC<Form1Props> = ({ agreement, onAgreementChange, onFinish, i
                     size={100}
                     src={imageUrl}
                   /></Upload>
+              </ImgCrop> */}
+              {/* <ImgCrop rotationSlider
+                quality={1}
+                showReset
+                showGrid>
+                <Upload
+                  action=""
+                  listType="picture-card"
+                  onChange={onChange}
+                  onPreview={onPreview}
+                  name="avatar"
+                  className="avatar-uploader"
+                  fileList={fileList}
+                  showUploadList={false}
+                  
+                  // beforeUpload={() => false}
+                  // onChange={onChange}
+                  accept=".jpg,.jpeg,.png"
+                >
+                  {fileList.length < 5 && '+ Upload'}
+                </Upload>
+              </ImgCrop> */}
+              <ImgCrop
+                quality={1}
+                showReset
+                showGrid
+              >
+              <Upload
+                name='avatar'
+                className="avatar-uploader"
+                fileList={fileList}
+                listType="picture"
+                showUploadList={false}
+                onChange={onChange}
+                onPreview={handlePreview}
+                iconRender={() => <Spin />}
+                accept=".jpg,.jpeg,.png"
+                beforeUpload={() => false} // Prevent upload by return false
+              >
+                {/* {!(fileList.length == 1) && */}
+                    {/* <Avatar
+                    shape='square'
+                    icon={<UserOutlined />}
+                    size={100}
+                    src={imageUrl}
+                  /> */}
+                {/* } */}
+                
+              </Upload>
               </ImgCrop>
+              
             </FormStyled.FormItem>
-          </FormStyled.FormContainer>
+            
+          {/* </FormStyled.FormContainer> */}
           <FormStyled.FormItem
-            name='agreement'
+            name="agreement"
             valuePropName="checked"
-            rules={[{
-              required: true,
-              message: 'You must agree to our Terms and Condition to proceed'
-            }]}
+            rules={[
+              {
+                required: true,
+                message: "You must agree to our Terms and Condition to proceed",
+              },
+            ]}
           >
             <FormStyled.FormCheckbox
-              name='agreement'
+              name="agreement"
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
-            // checked={isCheckedBox.current}
-            // onChange={(e) => setAgreement(e.target.checked)}
-            >By clicking Save and continue, I confirm that I’m over 18 years old. I also have read and agreed with the <a href='#' style={{ textDecoration: 'underline' }}>Terms and Condition</a>.</FormStyled.FormCheckbox>
+              // checked={isCheckedBox.current}
+              // onChange={(e) => setAgreement(e.target.checked)}
+            >
+              By clicking Save and continue, I confirm that I’m over 18 years
+              old. I also have read and agreed with the{" "}
+              <a href="#" style={{ textDecoration: "underline" }}>
+                Terms and Condition
+              </a>
+              .
+            </FormStyled.FormCheckbox>
           </FormStyled.FormItem>
-
-
         </FormStyled.FormContainer>
-        {(agreement &&
+        {agreement && (
           <FormStyled.ButtonDiv>
-            <Button type='primary' htmlType="submit" >Save and continue</Button>
-          </FormStyled.ButtonDiv>)}
+            <Button type="primary" htmlType="submit">
+              Save and continue
+            </Button>
+          </FormStyled.ButtonDiv>
+        )}
       </FormStyled.FormWrapper>
     </Col>
-  )
-}
+  );
+};
 
-export default Form1
+export default Form1;
