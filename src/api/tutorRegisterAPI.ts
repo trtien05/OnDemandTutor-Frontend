@@ -5,7 +5,7 @@ export const becomeTutor = (accountId: number) => {
 };
 
 export const getAccountById = (accountId: number) => {
-    return get(`/accounts/${accountId}/profile`);
+    return get(`/accounts/${accountId}`);
 };
 
 export const updateDetails = (accountId: number, account: any) => {

@@ -28,6 +28,7 @@ interface Form1Props {
   onAgreementChange: (checked: boolean) => void;
   onFinish: (values: any) => void;
   initialValues: any;
+  dataSource: any;
 }
 
 type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
@@ -37,6 +38,7 @@ const Form1: React.FC<Form1Props> = ({
   onAgreementChange,
   onFinish,
   initialValues,
+  dataSource
 }: any) => {
   useDocumentTitle("Become a tutor");
 
@@ -53,89 +55,6 @@ const Form1: React.FC<Form1Props> = ({
     top: 100,
   });
 
-  // const beforeUpload = (f: FileType) => {
-  //   // const isJpgOrPng = f.type === 'image/jpeg' || f.type === 'image/png';
-  //   // if (!isJpgOrPng) {
-  //   //   message.error('You can only upload JPG/PNG file!');
-  //   // }
-  //   // const isLt2M = f.size / 1024 / 1024 < 5;
-  //   // if (!isLt2M) {
-  //   //   message.error('Image must smaller than 2MB!');
-  //   // }
-  //   // return isJpgOrPng && isLt2M;
-  //   file.current = f;
-  //   return false;
-  // };
-
-  // const handleUploadAvatar = async (
-  //   info: UploadChangeParam<UploadFile<any>>
-  // ) => {
-  //   setImageUrl(URL.createObjectURL(info.file as RcFile));
-  //   const newFileList = info.fileList.slice(-1); // Keep only the latest file
-  //   setFileList(newFileList);
-
-  //   if (info.file.status === "done" || info.file.status === "removed") {
-  //     const file = newFileList[0]?.originFileObj;
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
-  //       reader.readAsDataURL(file);
-  //     } else {
-  //       setImageUrl(null);
-  //     }
-  //   }
-
-  //   if (!file.current) return;
-
-  //   try {
-  //     setLoading(true);
-
-  //     //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
-  //     const response = await mockUpload(file.current); // Use mock upload
-  //     const uploadedUrl = response.url;
-  //     setImageUrl(uploadedUrl);
-  //     api.success({
-  //       message: "Upload successfully",
-  //       description: "",
-  //     });
-
-  //     setReload(!reload);
-  //   } catch (error: any) {
-  //     api.error({
-  //       message: "Error",
-  //       description: error.response ? error.response.data : error.message,
-  //     });
-  //   } finally {
-  //     setLoading(false);
-  //     console.log(fileList);
-  //   }
-  // };
-
-  //MOCKUP
-  // const mockUpload = (file: RcFile): Promise<{ url: string }> => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       // Simulate a server response with a generated URL
-  //       const url = URL.createObjectURL(file);
-  //       resolve({ url });
-  //     }, 1000);
-  //   });
-  // };
-
-  // Effect to simulate file upload for testing
-  // useEffect(() => {
-  //   // Create a mock file object
-  //   const mockFile: UploadFile = {
-  //     uid: "-1",
-  //     name: "example.png",
-  //     status: "done",
-  //     url: "https://via.placeholder.com/100",
-  //   };
-
-  //   // Update fileList and imageUrl with the mock file
-  //   setFileList([mockFile]);
-  //   setImageUrl(mockFile.url);
-  // }, []);
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
     if (newFileList.length > 0) {

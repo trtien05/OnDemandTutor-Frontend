@@ -16,7 +16,8 @@ import Form5 from "./Form5";
 import { theme } from "../../themes";
 import {
   addEducations, updateDetails, addCertificates,
-  addTutorDescription, becomeTutor, addAvailableSchedule
+  addTutorDescription, becomeTutor, addAvailableSchedule,
+  getAccountById
 } from "../../api/tutorRegisterAPI";
 import useAuth from '../../hooks/useAuth';
 
@@ -43,6 +44,8 @@ export default function FirstPage() {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+  const accountId = 1;
+  const [dataSource, setDataSource] = useState(getAccountById(1));
   const { Title } = Typography;
   const { user } = useAuth();
 
@@ -239,7 +242,7 @@ export default function FirstPage() {
       } else { await Promise.all([avatarUploadPromise, ...diplomaUploadPromises]); }
 
 
-      await saveAccountDetails(tutorId, aboutValues)
+      await saveAccountDetails(tutorId, aboutValues, avatarURL)
         .catch(error => {
           console.error('Error saving account details:', error);
         });
@@ -356,6 +359,7 @@ export default function FirstPage() {
     <Form1
       onFinish={onFinishAboutForm}
       initialValues={aboutValues}
+      dataSource={dataSource}
       agreement={agreement}
       onAgreementChange={handleAgreementChange}
     />,
@@ -440,19 +444,15 @@ export default function FirstPage() {
   }
   //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
 
-  // async function fetchAccount() {
-  //   const response = await axios.get(
-  //     "https://662b9b40de35f91de158d81b.mockapi.io/Movie"
-  //   );
+  async function fetchAccount(tutorId: number) {
+    const response = await getAccountById(tutorId);
+    setDataSource(response.data);
+  }
 
-  //   console.log(response.data);
-  //   setDataSource(response.data);
-  // }
-
-  async function saveAccountDetails(tutorId: number, formData: any) {
+  async function saveAccountDetails(tutorId: number, formData: any, url: any) {
 
     // Get JSON body from form data
-    const jsonRequestBody = convertAccountDetailsFormData(formData);
+    const jsonRequestBody = convertAccountDetailsFormData(formData, url);
 
     try {
 
@@ -477,7 +477,7 @@ export default function FirstPage() {
     }
   }
 
-  function convertAccountDetailsFormData(formData: any) {
+  function convertAccountDetailsFormData(formData: any, url: any) {
     // convert form data to account details data
     return {
       fullName: formData[`fullName`],
@@ -486,7 +486,7 @@ export default function FirstPage() {
       dayOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
       gender: formData[`gender`],
       address: formData[`address`],
-      avatarUrl: formData[`avatarUrl`]
+      avatarUrl: url
     };
   }
   //------------------------------------FETCH EDUCATION API----------------------------
