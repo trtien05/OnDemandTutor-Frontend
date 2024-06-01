@@ -7,8 +7,6 @@ import {
   Button,
   Image,
   Spin,
-  Input,
-  Form,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import ImgCrop from "antd-img-crop";
@@ -17,10 +15,11 @@ import { useState, useRef, useEffect } from "react";
 import { UploadChangeParam } from "antd/lib/upload";
 import type { GetProp, UploadProps } from "antd";
 import { aboutForm } from "./Form.fields";
+import { theme } from "../../themes";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { FieldPath } from "firebase/firestore";
-
+import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
+const { Title } = Typography;
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -28,82 +27,159 @@ interface Form1Props {
   onAgreementChange: (checked: boolean) => void;
   onFinish: (values: any) => void;
   initialValues: any;
-  dataSource: any;
 }
 
-type FileType = Parameters<GetProp<UploadProps, 'beforeUpload'>>[0];
+type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const Form1: React.FC<Form1Props> = ({
   agreement,
   onAgreementChange,
   onFinish,
   initialValues,
-  dataSource,
-}) => {
+}: any) => {
   useDocumentTitle("Become a tutor");
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string| null>(null);
+  // const [fileList, setFileList] = useState<UploadFile[]>([]);
+  // const [agreement, setAgreement] = useState<boolean>(false)
   const file = useRef<RcFile | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(initialValues?.imageUrl || null);
-  const [form] = Form.useForm();
+  const [loading, setLoading] = useState<boolean>(false);
+  const [reload, setReload] = useState<boolean>(false);
+  const [imageUrl, setImageUrl] = useState<string | null >(initialValues?.imageUrl || null);
+  const [api, contextHolderNotification] = notification.useNotification({
+    top: 100,
+  });
 
-  useEffect(() => {
-    // Set initial values only when the component mounts
-    form.setFieldsValue({ ...initialValues, ...dataSource });
-  }, []);
+  // const beforeUpload = (f: FileType) => {
+  //   // const isJpgOrPng = f.type === 'image/jpeg' || f.type === 'image/png';
+  //   // if (!isJpgOrPng) {
+  //   //   message.error('You can only upload JPG/PNG file!');
+  //   // }
+  //   // const isLt2M = f.size / 1024 / 1024 < 5;
+  //   // if (!isLt2M) {
+  //   //   message.error('Image must smaller than 2MB!');
+  //   // }
+  //   // return isJpgOrPng && isLt2M;
+  //   file.current = f;
+  //   return false;
+  // };
 
+  // const handleUploadAvatar = async (
+  //   info: UploadChangeParam<UploadFile<any>>
+  // ) => {
+  //   setImageUrl(URL.createObjectURL(info.file as RcFile));
+  //   const newFileList = info.fileList.slice(-1); // Keep only the latest file
+  //   setFileList(newFileList);
+
+  //   if (info.file.status === "done" || info.file.status === "removed") {
+  //     const file = newFileList[0]?.originFileObj;
+  //     if (file) {
+  //       const reader = new FileReader();
+  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
+  //       reader.readAsDataURL(file);
+  //     } else {
+  //       setImageUrl(null);
+  //     }
+  //   }
+
+  //   if (!file.current) return;
+
+  //   try {
+  //     setLoading(true);
+
+  //     //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
+  //     const response = await mockUpload(file.current); // Use mock upload
+  //     const uploadedUrl = response.url;
+  //     setImageUrl(uploadedUrl);
+  //     api.success({
+  //       message: "Upload successfully",
+  //       description: "",
+  //     });
+
+  //     setReload(!reload);
+  //   } catch (error: any) {
+  //     api.error({
+  //       message: "Error",
+  //       description: error.response ? error.response.data : error.message,
+  //     });
+  //   } finally {
+  //     setLoading(false);
+  //     console.log(fileList);
+  //   }
+  // };
+
+  //MOCKUP
+  // const mockUpload = (file: RcFile): Promise<{ url: string }> => {
+  //   return new Promise((resolve) => {
+  //     setTimeout(() => {
+  //       // Simulate a server response with a generated URL
+  //       const url = URL.createObjectURL(file);
+  //       resolve({ url });
+  //     }, 1000);
+  //   });
+  // };
+
+  // Effect to simulate file upload for testing
+  // useEffect(() => {
+  //   // Create a mock file object
+  //   const mockFile: UploadFile = {
+  //     uid: "-1",
+  //     name: "example.png",
+  //     status: "done",
+  //     url: "https://via.placeholder.com/100",
+  //   };
+
+  //   // Update fileList and imageUrl with the mock file
+  //   setFileList([mockFile]);
+  //   setImageUrl(mockFile.url);
+  // }, []);
   const onChange = ({ fileList: newFileList }) => {
+    // if (newFileList.length > 0) {
+    //   const file = newFileList[0].originFileObj as RcFile;
+    //   const reader = new FileReader();
+    //   reader.onload = () => setImageUrl(reader.result as string);
+    //   reader.readAsDataURL(file);
+    // } else {
+    //   setImageUrl(null);
+    // }
     setFileList(newFileList);
-    if (newFileList.length > 0) {
-      const file = newFileList[0].originFileObj as RcFile;
-      const reader = new FileReader();
-      reader.onload = () => setImageUrl(reader.result as string);
-      reader.readAsDataURL(file);
-    } else {
-      setImageUrl(null);
+    for (let index = 0; index < newFileList.length; index++) {
+      newFileList[index].status='done'
+      
     }
   };
-
-  const getBase64 = (file: RcFile) =>
-    new Promise<string>((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
-
-  const handlePreview = async (file: UploadFile) => {
+  const getBase64 = (file:RcFile) =>
+  new Promise<string>((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+  const handlePreview = async (file:UploadFile) => {
+    
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
-    setPreviewImage(file.url || file.preview );
+    setPreviewImage(file.url || file.preview);
     setPreviewOpen(true);
   };
 
   const handleFinish = (values: any) => {
     onFinish({ ...values, fileList, imageUrl });
   };
-
-  const beforeUpload = (file: RcFile) => {
+  const beforeUpload = (file:RcFile) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      setFileList((prev) => [...prev,  
-        //{ uid: file.uid, name: file.name, status: 'done', url: reader.result as string }
-      file
-      ]);
+    //   // setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
       setImageUrl(reader.result as string);
+      setFileList((prev) => [...prev, file]);
     };
+  
+    // then upload `file` from the argument manually
     return false;
-  };
-
-  const normFile = (e: any) => {
-    if (Array.isArray(e)) {
-      return e;
-    }
-    return e?.fileList;
   };
 
   return (
@@ -116,10 +192,9 @@ const Form1: React.FC<Form1Props> = ({
       <FormStyled.FormWrapper
         labelAlign="left"
         layout="vertical"
-        requiredMark={false}
+        requiredMark="optional"
         size="middle"
         onFinish={handleFinish}
-        form={form}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -129,21 +204,21 @@ const Form1: React.FC<Form1Props> = ({
             automatically saved as you complete each section. You can return at
             any time to finish your registration.
           </FormStyled.FormDescription>
-          {aboutForm.map((field) => (
-            <FormStyled.FormItem
-              key={field.key}
-              label={field.label}
-              name={field.name}
-              rules={field.rules}
-              $width={field.$width ? field.$width : "100%"}
-              initialValue={dataSource[field.name]} // Use initial value from dataSource
-              validateFirst
-            >
-              {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
-              {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
-              {!field.name.includes('email') && !field.name.includes('phoneNumber') && (field.children)}
-            </FormStyled.FormItem>
-          ))}
+          {aboutForm.map((field) => {
+            return (
+              <FormStyled.FormItem
+                key={field.key}
+                label={field.label}
+                name={field.name}
+                rules={field.rules}
+                $width={field.$width ? field.$width : "100%"}
+                initialValue={field.initialValue}
+                validateFirst
+              >
+                {field.children}
+              </FormStyled.FormItem>
+            );
+          })}
           <FormStyled.FormTitle style={{ display: `block` }}>
             Profile picture
           </FormStyled.FormTitle>{" "}
@@ -154,27 +229,41 @@ const Form1: React.FC<Form1Props> = ({
             Tutors who look friendly and professional get the most students
           </FormStyled.FormDescription>
           <br />
+          {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
           <Col style={{ margin: `auto` }}>
+                    
+                  
             <FormStyled.FormItem
               name="avatar"
-              valuePropName='fileList'
-              getValueFromEvent={normFile}
+              valuePropName="fileList"
+              getValueFromEvent={(e) => e && e.fileList}
               rules={[{ required: false, message: "Please upload an avatar!" }]}
+              
             >
-              <ImgCrop rotationSlider quality={1} showReset showGrid>
-                <Upload
-                  name="avatar"
-                  listType="picture-card"
-                  fileList={fileList}
-                  onRemove={() => setFileList([])}
-                  onPreview={handlePreview}
-                  accept=".jpg,.jpeg,.png"
-                  beforeUpload={beforeUpload}
+              <ImgCrop 
+                rotationSlider 
+                quality={1}
+                showReset
+                showGrid
                 >
-                  {fileList.length < 1 && "+ Upload"}
-                </Upload>
-              </ImgCrop>
+              <Upload
+                name="avatar"
+                // action=''
+                listType="picture-card"
+                fileList={fileList}
+                onChange={onChange}
+                onPreview={handlePreview}
+                accept=".jpg,.jpeg,.png"
+                // beforeUpload={() => false} // Prevent upload by return false
+                // beforeUpload={beforeUpload} 
+                
+              >
+                {fileList.length < 1 && "+ Upload"}
+              </Upload>
+          </ImgCrop>
+          
             </FormStyled.FormItem>
+          {/* </FormStyled.FormContainer> */}
           </Col>
           {previewImage && (
             <Image
@@ -205,6 +294,8 @@ const Form1: React.FC<Form1Props> = ({
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
+              // checked={isCheckedBox.current}
+              // onChange={(e) => setAgreement(e.target.checked)}
             >
               By clicking Save and continue, I confirm that I’m over 18 years
               old. I also have read and agreed with the{" "}

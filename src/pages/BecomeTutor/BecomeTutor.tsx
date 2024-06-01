@@ -218,7 +218,7 @@ export default function FirstPage() {
   const saveToFirebase = async (tutorId: number) => {
     //upload avatar to firebase
     
-    const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0], 'avatar', accountId, handleAvatarURL)
+    const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)
     //upload diploma to firebase
     const numberOfEntries1 = Math.max(
       ...Object.keys(educationValues)
