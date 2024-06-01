@@ -1,6 +1,6 @@
 import { Steps, Typography, TimePicker, UploadFile, notification } from "antd";
 import * as FormStyled from "./Form.styled";
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs, { Dayjs } from 'dayjs'
 // import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
@@ -24,6 +24,7 @@ import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../components/UploadImg";
 import moment from "moment";
 import axios from "axios";
+import { RcFile } from "antd/es/upload";
 export default function FirstPage() {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
@@ -38,14 +39,21 @@ export default function FirstPage() {
   const [certificate, setCertificate] = useState<FieldType[][]>([
     certificateForm,
   ]);
-  const [avatarURL, setAvatarURL] = useState('')
+  const [avatarURL, setAvatarURL] = useState<string>('')
   const [diplomaURL, setDiplomaURL] = useState<string[]>([])
   const [certURL, setCertURL] = useState<string[]>([])
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+
   const accountId = 1;
-  const [dataSource, setDataSource] = useState(getAccountById(1));
+  interface initAccount {
+    fullName: string,
+    phoneNumber: string,
+    email: string
+  }
+  const [dataSource, setDataSource] = useState([])
+
   const { Title } = Typography;
   const { user } = useAuth();
 
@@ -164,8 +172,7 @@ export default function FirstPage() {
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
     console.log(values);
-    const tutorId = 1; // Example tutorId
-    saveBecomeTutor(tutorId);
+    saveBecomeTutor(accountId);
 
     next();
   };
@@ -183,6 +190,7 @@ export default function FirstPage() {
   //-----------------------------------FINISH DESCRIPTION FORM---------------------------
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
+    saveToFirebase(accountId)
     next();
   };
 
@@ -194,53 +202,60 @@ export default function FirstPage() {
       educationValues,
       certificationValues,
       descriptionValues,
-      values
+      values,
+      avatarURL,
+      diplomaURL,
+      certURL
     );
 
-    saveData(values);
+   // Example tutorId
+
+    await saveData(values, accountId);
 
     next();
   };
 
-  const saveData = async (values: any) => {
-    try {
-      const tutorId = 1; // Example tutorId
+  const saveToFirebase = async (tutorId: number) => {
+    //upload avatar to firebase
+    
+    const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0], 'avatar', accountId, handleAvatarURL)
+    //upload diploma to firebase
+    const numberOfEntries1 = Math.max(
+      ...Object.keys(educationValues)
+        .filter(key => key.includes('_'))
+        .map(key => {
+          const lastPart = key.split('_').pop();
+          return lastPart ? parseInt(lastPart, 10) : 0;
+        })
+    ) + 1;
+    const diplomaUploadPromises = [];
+    for (let i = 0; i < numberOfEntries1; i++) {
+      diplomaUploadPromises.push(uploadImage(tutorId, educationValues[`diplomaVerification_${i}`][0].originFileObj, 'diploma', i, handleDiplomaURLChange));
+    }
 
-      //upload avatar to firebase
-      const avatarUploadPromise = uploadImage(tutorId, aboutValues[`fileList`][0].originFileObj, 'avatar', 1, handleAvatarURL)
-      //upload diploma to firebase
-      const numberOfEntries1 = Math.max(
-        ...Object.keys(educationValues)
+    //upload cert to firebase
+    const certificateUploadPromises = []
+    if (certificationValues[`certificateVerification_0`]) {
+      const numberOfEntries2 = Math.max(
+        ...Object.keys(certificationValues)
           .filter(key => key.includes('_'))
           .map(key => {
             const lastPart = key.split('_').pop();
             return lastPart ? parseInt(lastPart, 10) : 0;
           })
       ) + 1;
-      const diplomaUploadPromises = [];
-      for (let i = 0; i < numberOfEntries1; i++) {
-        diplomaUploadPromises.push(uploadImage(tutorId, educationValues[`diplomaVerification_${i}`][0].originFileObj, 'diploma', i, handleDiplomaURLChange));
+      for (let i = 0; i < numberOfEntries2; i++) {
+        certificateUploadPromises.push(uploadImage(tutorId, certificationValues[`certificateVerification_${i}`][0].originFileObj, 'certificate', i, handleCertificateURLChange));
       }
+    }
+    if (certificateUploadPromises.length > 0) {
+      await Promise.all([avatarUploadPromise, ...diplomaUploadPromises, ...certificateUploadPromises]);
+    } else { await Promise.all([avatarUploadPromise, ...diplomaUploadPromises]); }
 
-      //upload cert to firebase
-      const certificateUploadPromises = []
-      if (certificationValues[`certificateVerification_0`]) {
-        const numberOfEntries2 = Math.max(
-          ...Object.keys(certificationValues)
-            .filter(key => key.includes('_'))
-            .map(key => {
-              const lastPart = key.split('_').pop();
-              return lastPart ? parseInt(lastPart, 10) : 0;
-            })
-        ) + 1;
-        for (let i = 0; i < numberOfEntries2; i++) {
-          certificateUploadPromises.push(uploadImage(tutorId, certificationValues[`certificateVerification_${i}`][0].originFileObj, 'certificate', i, handleCertificateURLChange));
-        }
-      }
-      if (certificateUploadPromises.length > 0) {
-        await Promise.all([avatarUploadPromise, ...diplomaUploadPromises, ...certificateUploadPromises]);
-      } else { await Promise.all([avatarUploadPromise, ...diplomaUploadPromises]); }
+  }
 
+  const saveData = async (values: any, tutorId: number) => {
+    try {
 
       await saveAccountDetails(tutorId, aboutValues, avatarURL)
         .catch(error => {
@@ -297,6 +312,7 @@ export default function FirstPage() {
       };
     });
   }
+
 
   const handleRemoveTimeslot = (day: string, formIndex: number) => {
     setTimeslotForm(prevState => ({
@@ -445,9 +461,20 @@ export default function FirstPage() {
   //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
 
   async function fetchAccount(tutorId: number) {
-    const response = await getAccountById(tutorId);
-    setDataSource(response.data);
+    try {
+      const response = await getAccountById(tutorId);
+      setDataSource(response.data)
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
   }
+
+  useEffect(() => {
+    fetchAccount(accountId);
+  }, [accountId])
 
   async function saveAccountDetails(tutorId: number, formData: any, url: any) {
 
@@ -486,7 +513,7 @@ export default function FirstPage() {
       dayOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
       gender: formData[`gender`],
       address: formData[`address`],
-      avatarUrl: url
+      avatarUrl: url,
     };
   }
   //------------------------------------FETCH EDUCATION API----------------------------

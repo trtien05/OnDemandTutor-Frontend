@@ -73,7 +73,6 @@ export const aboutForm: FieldType[] = [
         key: '1',
         label: 'Full name',
         name: 'fullName',
-        initialValue: 'Nguyen Van A',
         rules: [
             {
                 required: true,
@@ -90,16 +89,15 @@ export const aboutForm: FieldType[] = [
                 message: 'Full name must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder=" " />,
+        children: <Input placeholder="Nguyen Van A" />,
     },
     {
         key: '2',
         label: 'Phone number',
         name: 'phoneNumber',
-        initialValue: '0908888888',
         rules: [
             {
-                required: true,
+                required: false,
 
                 message: 'Please input your phone number.',
             },
@@ -108,17 +106,16 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid phone number.',
             },
         ],
-        children: <Input placeholder="0908888888" disabled />,
+        children: <Input placeholder="" disabled />,
         $width: '40%',
     },
     {
         key: '3',
         label: 'Email',
         name: 'email',
-        initialValue: 'abc@gmail.com',
         rules: [
             {
-                required: true,
+                required: false,
 
                 message: 'Please input your email.',
             },

@@ -7,6 +7,8 @@ import {
   Button,
   Image,
   Spin,
+  Input,
+  Form,
 } from "antd";
 import { UserOutlined } from "@ant-design/icons";
 import ImgCrop from "antd-img-crop";
@@ -15,11 +17,9 @@ import { useState, useRef, useEffect } from "react";
 import { UploadChangeParam } from "antd/lib/upload";
 import type { GetProp, UploadProps } from "antd";
 import { aboutForm } from "./Form.fields";
-import { theme } from "../../themes";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
-import axios from 'axios';
+import { FieldPath } from "firebase/firestore";
 
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
@@ -38,22 +38,21 @@ const Form1: React.FC<Form1Props> = ({
   onAgreementChange,
   onFinish,
   initialValues,
-  dataSource
-}: any) => {
+  dataSource,
+}) => {
   useDocumentTitle("Become a tutor");
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string| null>(null);
-  // const [fileList, setFileList] = useState<UploadFile[]>([]);
-  // const [agreement, setAgreement] = useState<boolean>(false)
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
   const file = useRef<RcFile | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [reload, setReload] = useState<boolean>(false);
-  const [imageUrl, setImageUrl] = useState<string | null >(initialValues?.imageUrl || null);
-  const [api, contextHolderNotification] = notification.useNotification({
-    top: 100,
-  });
+  const [imageUrl, setImageUrl] = useState<string | null>(initialValues?.imageUrl || null);
+  const [form] = Form.useForm();
+
+  useEffect(() => {
+    // Set initial values only when the component mounts
+    form.setFieldsValue({ ...initialValues, ...dataSource });
+  }, []);
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -65,42 +64,42 @@ const Form1: React.FC<Form1Props> = ({
     } else {
       setImageUrl(null);
     }
-
   };
-  const getBase64 = (file:RcFile) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-  const handlePreview = async (file:UploadFile) => {
-    
+
+  const getBase64 = (file: RcFile) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+
+  const handlePreview = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
-    setPreviewImage(file.url || file.preview);
+    setPreviewImage(file.url || file.preview );
     setPreviewOpen(true);
   };
 
   const handleFinish = (values: any) => {
     onFinish({ ...values, fileList, imageUrl });
   };
-  const beforeUpload = (file:RcFile) => {
+
+  const beforeUpload = (file: RcFile) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-      setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
+      setFileList((prev) => [...prev,  
+        //{ uid: file.uid, name: file.name, status: 'done', url: reader.result as string }
+      file
+      ]);
       setImageUrl(reader.result as string);
-      // setFileList((prev) => [...prev, { url: reader.result }]);
     };
-  
-    // then upload `file` from the argument manually
     return false;
   };
 
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -117,9 +116,10 @@ const Form1: React.FC<Form1Props> = ({
       <FormStyled.FormWrapper
         labelAlign="left"
         layout="vertical"
-        requiredMark="optional"
+        requiredMark={false}
         size="middle"
         onFinish={handleFinish}
+        form={form}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -129,21 +129,21 @@ const Form1: React.FC<Form1Props> = ({
             automatically saved as you complete each section. You can return at
             any time to finish your registration.
           </FormStyled.FormDescription>
-          {aboutForm.map((field) => {
-            return (
-              <FormStyled.FormItem
-                key={field.key}
-                label={field.label}
-                name={field.name}
-                rules={field.rules}
-                $width={field.$width ? field.$width : "100%"}
-                initialValue={field.initialValue}
-                validateFirst
-              >
-                {field.children}
-              </FormStyled.FormItem>
-            );
-          })}
+          {aboutForm.map((field) => (
+            <FormStyled.FormItem
+              key={field.key}
+              label={field.label}
+              name={field.name}
+              rules={field.rules}
+              $width={field.$width ? field.$width : "100%"}
+              initialValue={dataSource[field.name]} // Use initial value from dataSource
+              validateFirst
+            >
+              {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
+              {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
+              {!field.name.includes('email') && !field.name.includes('phoneNumber') && (field.children)}
+            </FormStyled.FormItem>
+          ))}
           <FormStyled.FormTitle style={{ display: `block` }}>
             Profile picture
           </FormStyled.FormTitle>{" "}
@@ -154,43 +154,27 @@ const Form1: React.FC<Form1Props> = ({
             Tutors who look friendly and professional get the most students
           </FormStyled.FormDescription>
           <br />
-          {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
           <Col style={{ margin: `auto` }}>
-                    
-                  
             <FormStyled.FormItem
               name="avatar"
-              valuePropName="fileList"
+              valuePropName='fileList'
               getValueFromEvent={normFile}
               rules={[{ required: false, message: "Please upload an avatar!" }]}
-              
             >
-              <ImgCrop 
-                rotationSlider 
-                quality={1}
-                showReset
-                showGrid
+              <ImgCrop rotationSlider quality={1} showReset showGrid>
+                <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onRemove={() => setFileList([])}
+                  onPreview={handlePreview}
+                  accept=".jpg,.jpeg,.png"
+                  beforeUpload={beforeUpload}
                 >
-              <Upload
-                name="avatar"
-                // action=''
-                listType="picture-card"
-                fileList={fileList}
-                onRemove={() => (setFileList([]))}
-                // onChange={onChange}
-                onPreview={handlePreview}
-                accept=".jpg,.jpeg,.png"
-                // beforeUpload={() => false} // Prevent upload by return false
-                beforeUpload={beforeUpload}
-                
-                
-              >
-                {fileList.length < 1 && "+ Upload"}
-              </Upload>
-          </ImgCrop>
-          
+                  {fileList.length < 1 && "+ Upload"}
+                </Upload>
+              </ImgCrop>
             </FormStyled.FormItem>
-          {/* </FormStyled.FormContainer> */}
           </Col>
           {previewImage && (
             <Image
@@ -221,8 +205,6 @@ const Form1: React.FC<Form1Props> = ({
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
-              // checked={isCheckedBox.current}
-              // onChange={(e) => setAgreement(e.target.checked)}
             >
               By clicking Save and continue, I confirm that I’m over 18 years
               old. I also have read and agreed with the{" "}
