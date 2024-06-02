@@ -1,7 +1,7 @@
 import * as Styled from './Home.styled';
 
 import { Col, Collapse, theme, Row, Skeleton, List } from 'antd';
-import { CSSProperties, MouseEvent, useEffect, useState } from 'react';
+import { CSSProperties, useEffect, useState } from 'react';
 
 import Container from '../../components/Container';
 import { FaStar } from "react-icons/fa";
@@ -18,7 +18,6 @@ import { useDocumentTitle } from '../../hooks';
 import DefaultBanner from '../../components/Banner/DefaultBanner';
 import { RightOutlined } from '@ant-design/icons';
 import { CollapseProps } from 'antd/lib';
-import { number } from 'prop-types';
 import Link from '../../components/Link';
 import config from '../../config';
 
@@ -82,6 +81,7 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
     },
 ];
 const Home = () => {
+    useDocumentTitle('Home | MyTutor');
     const [translateY, setTranslateY] = useState<number>(0);
     const [hoveredTutor, setHoveredTutor] = useState<DataType>();
 
@@ -93,7 +93,6 @@ const Home = () => {
         setHoveredTutor(item);
         setTranslateY(newTranslateY);
     };
-    useDocumentTitle('Home | MyTutor');
     const listCategory = [ieltsImg, mathImg, programImg, toeicImg];
     const [initLoading, setInitLoading] = useState(true);
     const [data, setData] = useState<DataType[]>([]);
@@ -303,6 +302,7 @@ const Home = () => {
                             </Styled.TurtorVideo>
                         </Col>
                     </Row>
+
                     <Row>
                         <Col lg={24} md={24} xs={24} sm={24} >
                             <Styled.ButtonWrapper>

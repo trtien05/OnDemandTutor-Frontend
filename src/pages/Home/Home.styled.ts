@@ -276,7 +276,7 @@ export const BestTutorDescription = styled(Paragraph)`
    &.ant-typography{
         color: ${theme.colors.primary};
         font-family: 'Roboto';
-        `;
+`;
 export const CollapseIconStyle = styled.div`
     backgroundcolor: #fff;
     width: 40px;
