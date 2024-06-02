@@ -1,11 +1,16 @@
-import { BrowserRouter as Router } from 'react-router-dom';
-import RoutesComponent from './routes';
+import './App.css'
+import BecomeTutor from './pages/BecomeTutor/BecomeTutor'
+import { Routes, Route } from 'react-router-dom'
 
 function App() {
+
   return (
-    <Router>
-      <RoutesComponent />
-    </Router>
+    // <Routes>
+    //   <Route path='/' element={<BecomeTutor/>}/>
+      <BecomeTutor/>
+      
+      
+    // </Routes>
   )
 }
 

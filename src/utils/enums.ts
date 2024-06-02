@@ -5,6 +5,42 @@ export enum PageEnum {
     SET_PASSWORD = 'SetPassword',
 }
 
+export enum Degree {
+    ASSOCIATE = 'Associate',
+    BACHELOR = 'Bachelor',
+    MASTER = 'Master',
+    DOCTORAL = 'Doctoral',
+}
+
+export enum Subject {
+    MATH = 'Math',
+    CHEMISTRY = 'Chemistry',
+    BIOLOGY = 'Biology',
+    PHYSICS = 'Physics',
+    GEOGRAPHY = 'Geography',
+
+    LITERATURE = 'Literature',
+    ENGLISH = 'English',
+
+    IELTS = 'IELTS',
+    TOEIC = 'TOEIC',
+    TOEFL = 'TOEFL',
+
+    CODING = 'Coding',
+
+    HISTORY = 'History',
+
+    OTHER = 'Other',
+}
+
+
+export enum AccountStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'UNVERIFIED',
+    PROCESSING = 'PROCESSING',
+    BANNED = 'BANNED',
+}
+
 export const Role: { [key: string]: string } = {
     STUDENT: 'STUDENT',
     TUTOR: 'TUTOR',
@@ -162,18 +198,6 @@ export enum TaskStatusLabel {
     DOING = 'Đang làm việc',
     DONE = 'Đã hoàn thành',
     CANCELLED = 'Đã hủy',
-}
-
-export enum AccountStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE',
-    BANNED = 'BANNED',
-}
-
-export enum AccountStatusLabel {
-    ACTIVE = 'Đang hoạt động',
-    INACTIVE = 'Ngừng hoạt động',
-    BANNED = 'Đã bị cấm',
 }
 
 export enum Config {
