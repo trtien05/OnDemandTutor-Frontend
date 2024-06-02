@@ -1,10 +1,8 @@
-import { Button, Col, Collapse, Image, List, Row, Typography } from 'antd';
+import { Collapse, List, Row, Typography } from 'antd';
 
 // import ServiceList from '@/components/ServiceList';
 import styled from 'styled-components';
 import { theme } from '../../themes';
-import Icon from '@ant-design/icons/lib/components/Icon';
-import { RightCircleOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph } = Typography;
 
