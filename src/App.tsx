@@ -1,16 +1,13 @@
-import './App.css'
-import BecomeTutor from './pages/BecomeTutor/BecomeTutor'
-import { Routes, Route } from 'react-router-dom'
 
+
+import { BrowserRouter as Router } from 'react-router-dom';
+import RoutesComponent from './routes';
 function App() {
 
   return (
-    // <Routes>
-    //   <Route path='/' element={<BecomeTutor/>}/>
-      <BecomeTutor/>
-      
-      
-    // </Routes>
+    <Router>
+      <RoutesComponent />
+    </Router>
   )
 }
 
