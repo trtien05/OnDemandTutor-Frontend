@@ -1,11 +1,9 @@
-import { Col, Button, UploadFile, Upload, Spin } from "antd";
+import { Col, Button, UploadFile} from "antd";
 import { FieldType } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
-import { UploadOutlined,InboxOutlined } from '@ant-design/icons';
+import { InboxOutlined } from '@ant-design/icons';
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import FileUpload from "../../components/UploadImg";
-import { useEffect, useState } from "react";
-import { UploadChangeParam } from "antd/es/upload";
+import { useState } from "react";
 import Dragger from "antd/es/upload/Dragger";
 
 const Form2 = ({
@@ -18,7 +16,6 @@ const Form2 = ({
 }: any) => {
   useDocumentTitle("Become a tutor");
 
-  // const [fileList, setFileList] = useState<UploadFile[]>([]);
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
 
   const normFile = (e: any) => {
@@ -28,8 +25,6 @@ const Form2 = ({
     }
     return e?.fileList;
   };
-  // name: string, info: UploadChangeParam<UploadFile<any>>
-  // {fileList:newFileList}
   const onChange = ({fileList:newFileList}) => {
     setFileList(newFileList);
   };
@@ -59,8 +54,6 @@ const Form2 = ({
             Tell students more about the higher education that you've completed
             or are working on.
           </FormStyled.FormDescription>
-          {/* form, formIndex */}
-          {/* removeField(formIndex) */}
           {diploma.map((form: FieldType[], formIndex: number) => (
             <div>
               {formIndex > 0 && (

@@ -1,17 +1,12 @@
-import { Col, Button, Checkbox, Form, UploadFile, Upload, Spin } from "antd";
+import { Col, Button, Form, UploadFile, Upload } from "antd";
 
-import { useCallback, useState, memo } from "react";
-import { certificateForm, FieldType } from "./Form.fields";
-import { UploadOutlined,InboxOutlined } from '@ant-design/icons';
+import { useState, memo } from "react";
+import { FieldType } from "./Form.fields";
+import { InboxOutlined } from '@ant-design/icons';
 import * as FormStyled from "./Form.styled";
 
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-// interface Form3Props {
-//   isTicked: boolean;
-//   onTickChange: (checked: boolean) => void;
-//   onFinish: (values: any) => void;
-//   initialValues: any;
-// }
+
 
 const Form3 = ({
   certificate,
@@ -22,17 +17,13 @@ const Form3 = ({
   onFinish,
   initialValues,
   onClickBack,
-  certificateFile,
-  onCertificateFileChange
 }: any) => {
   useDocumentTitle("Become a tutor");
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const onChange = ({fileList:newFileList}) => {
     setFileList(newFileList);
   };
-const handleFinish = (values:any)=>{
-  onFinish({...values, fileList})
-}
+
 const normFile = (e: any) => {
   console.log('Upload event:', e);
   if (Array.isArray(e)) {

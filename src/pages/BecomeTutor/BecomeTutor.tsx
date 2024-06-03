@@ -1,12 +1,7 @@
-import { Steps, Typography, TimePicker, UploadFile, notification } from "antd";
-import * as FormStyled from "./Form.styled";
+import { Steps, Typography, TimePicker, notification } from "antd";
 import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
-import dayjs, { Dayjs } from 'dayjs'
-// import { addEducations, updateDetails, addCertificates, addTutorDescription, becomeTutor } from "../../api/tutorRegisterAPI";
-
-// import Form1 from "./Form1";
-
+import dayjs from 'dayjs'
 import Form1 from "./Form1";
 import Form2 from "./Form2";
 import MultipleSteps from "./MultipleSteps";
@@ -20,11 +15,8 @@ import {
   getAccountById
 } from "../../api/tutorRegisterAPI";
 import useAuth from '../../hooks/useAuth';
+import { uploadImage } from "../../utils/UploadImg";
 
-import { uploadImage } from "../../components/UploadImg";
-import moment from "moment";
-import axios from "axios";
-import { RcFile } from "antd/es/upload";
 export default function FirstPage() {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
@@ -47,15 +39,8 @@ export default function FirstPage() {
   });
 
   const accountId = 1;
-  interface initAccount {
-    fullName: string,
-    phoneNumber: string,
-    email: string
-  }
   const [dataSource, setDataSource] = useState([])
-
   const { Title } = Typography;
-  const { user } = useAuth();
 
   const handleAvatarURL = (url: string) => {
     setAvatarURL(url)
@@ -148,10 +133,10 @@ export default function FirstPage() {
           size='small'
           format={'HH'}
           value={initialValue}
-          id={{
-            start: `${day}_${index}_startTime`,
-            end: `${day}_${index}_endTime`,
-          }}
+          // id = {{
+          //   start: `${day}_${index}_startTime`,
+          //   end: `${day}_${index}_endTime`,
+          // }}
           onChange={(times) => handleInputChange(day, index, times)}
           disabledTime={() => getDisabledHours(day, index, timeslotForm)}
           style={{ width: `100%` }} />
@@ -464,6 +449,7 @@ export default function FirstPage() {
     try {
       const response = await getAccountById(tutorId);
       setDataSource(response.data)
+      console.log(response.data)
     } catch (error: any) {
       api.error({
         message: 'Lỗi',

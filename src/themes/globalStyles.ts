@@ -18,10 +18,10 @@ const GlobalStyles = createGlobalStyle`
     }
 
     body {
-        font-family: 'Inter', 'SVN-Poppins', Arial, Helvetica, sans-serif;
+        font-family: 'Roboto', Arial, Helvetica, sans-serif;
         font-size: 1.6rem;
         line-height: 1.5;
-
+        background: linear-gradient(213deg, #4209C9 0%, #FA6EAD 100%);
         overflow: unset;
         text-rendering: optimizeLegibility;
         -webkit-font-smoothing: antialiased;
@@ -79,7 +79,7 @@ const GlobalStyles = createGlobalStyle`
 
     /* Custom styles */
     h1.ant-typography, h2.ant-typography, h3.ant-typography, h4.ant-typography, h5.ant-typography, h6.ant-typography {
-        font-family: 'SVN-Poppins', Arial, Helvetica, sans-serif;
+        font-family: 'Montserrat', Arial, Helvetica, sans-serif;
     }
 
     /* Change Autocomplete styles in Chrome*/

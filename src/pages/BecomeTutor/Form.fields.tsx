@@ -1,12 +1,9 @@
-import { Input, DatePicker, Select, GetProps, Upload, UploadFile } from 'antd';
+import { Input, DatePicker, Select, GetProps, UploadFile } from 'antd';
 import { Rule, RuleObject } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
 import * as Enum from '../../utils/enums';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import FileUpload from '../../components/UploadImg';
-
-//import FileUpload from '../../components/UploadImg';
 
 const format = 'HH';
 const { RangePicker } = DatePicker;
@@ -106,7 +103,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid phone number.',
             },
         ],
-        children: <Input placeholder="" disabled />,
+        children: <></>,
         $width: '40%',
     },
     {
@@ -124,7 +121,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid email.',
             },
         ],
-        children: <Input placeholder="abc@example.com" disabled />,
+        children: <></>,
         $width: '55%',
     },
     {

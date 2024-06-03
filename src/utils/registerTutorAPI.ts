@@ -1,5 +1,5 @@
 import { post } from './apiCaller';
-import {EducationType} from '../pages/BecomeTutor/Form.type';  
+
 export const tutorEducation = (tutorId:number,education: any) => {
     return post(`/api/tutors/${tutorId}/educations`, education);
 };

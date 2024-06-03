@@ -1,11 +1,8 @@
-import { Col, Checkbox, Form, TimePicker, Button, Grid, Card, Input } from 'antd';
-import { useEffect, useState } from 'react';
+import { Col, Form, Button, Grid, Input } from 'antd';
 import { FieldType } from './Form.fields';
 import * as FormStyled from './Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
-import styled from 'styled-components';
-import dayjs, { Dayjs } from 'dayjs';
 
 const { useBreakpoint } = Grid;
 
@@ -22,17 +19,6 @@ const Form5 = ({ onFinish,
   useDocumentTitle('Become a tutor');
 
   const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
-
-  //SET UNIQUE INITIAL FORM
-  // const [form, setForm] = useState<FormState>({
-  //   monday: [timeslotSelection('monday', 0)],
-  //   tuesday: [timeslotSelection('tuesday', 0)],
-  //   wednesday: [timeslotSelection('wednesday', 0)],
-  //   thursday: [timeslotSelection('thursday', 0)],
-  //   friday: [timeslotSelection('friday', 0)],
-  //   saturday: [timeslotSelection('saturday', 0)],
-  //   sunday: [timeslotSelection('sunday', 0)],
-  // });
 
   const screens = useBreakpoint()
   const validateIntegerInRange = (_: unknown, value: number) => {

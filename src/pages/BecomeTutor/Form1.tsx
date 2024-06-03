@@ -1,25 +1,16 @@
 import {
-  Avatar,
   Col,
   UploadFile,
-  notification,
-  Typography,
   Button,
   Image,
-  Spin,
+  Input,
 } from "antd";
-import { UserOutlined } from "@ant-design/icons";
 import ImgCrop from "antd-img-crop";
 import Upload, { RcFile } from "antd/es/upload";
-import { useState, useRef, useEffect } from "react";
-import { UploadChangeParam } from "antd/lib/upload";
-import type { GetProp, UploadProps } from "antd";
+import { useState } from "react";
 import { aboutForm } from "./Form.fields";
-import { theme } from "../../themes";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { UploadOutlined, InboxOutlined } from "@ant-design/icons";
-const { Title } = Typography;
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -27,123 +18,25 @@ interface Form1Props {
   onAgreementChange: (checked: boolean) => void;
   onFinish: (values: any) => void;
   initialValues: any;
+  dataSource: any;
 }
-
-type FileType = Parameters<GetProp<UploadProps, "beforeUpload">>[0];
 
 const Form1: React.FC<Form1Props> = ({
   agreement,
   onAgreementChange,
   onFinish,
   initialValues,
+  dataSource
 }: any) => {
   useDocumentTitle("Become a tutor");
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string| null>(null);
-  // const [fileList, setFileList] = useState<UploadFile[]>([]);
-  // const [agreement, setAgreement] = useState<boolean>(false)
-  const file = useRef<RcFile | null>(null);
-  const [loading, setLoading] = useState<boolean>(false);
-  const [reload, setReload] = useState<boolean>(false);
   const [imageUrl, setImageUrl] = useState<string | null >(initialValues?.imageUrl || null);
-  const [api, contextHolderNotification] = notification.useNotification({
-    top: 100,
-  });
 
-  // const beforeUpload = (f: FileType) => {
-  //   // const isJpgOrPng = f.type === 'image/jpeg' || f.type === 'image/png';
-  //   // if (!isJpgOrPng) {
-  //   //   message.error('You can only upload JPG/PNG file!');
-  //   // }
-  //   // const isLt2M = f.size / 1024 / 1024 < 5;
-  //   // if (!isLt2M) {
-  //   //   message.error('Image must smaller than 2MB!');
-  //   // }
-  //   // return isJpgOrPng && isLt2M;
-  //   file.current = f;
-  //   return false;
-  // };
 
-  // const handleUploadAvatar = async (
-  //   info: UploadChangeParam<UploadFile<any>>
-  // ) => {
-  //   setImageUrl(URL.createObjectURL(info.file as RcFile));
-  //   const newFileList = info.fileList.slice(-1); // Keep only the latest file
-  //   setFileList(newFileList);
-
-  //   if (info.file.status === "done" || info.file.status === "removed") {
-  //     const file = newFileList[0]?.originFileObj;
-  //     if (file) {
-  //       const reader = new FileReader();
-  //       reader.onload = (e) => setImageUrl(e.target?.result as string);
-  //       reader.readAsDataURL(file);
-  //     } else {
-  //       setImageUrl(null);
-  //     }
-  //   }
-
-  //   if (!file.current) return;
-
-  //   try {
-  //     setLoading(true);
-
-  //     //await uploadAvatar(customer.userInfo.userId, file.current as RcFile);
-  //     const response = await mockUpload(file.current); // Use mock upload
-  //     const uploadedUrl = response.url;
-  //     setImageUrl(uploadedUrl);
-  //     api.success({
-  //       message: "Upload successfully",
-  //       description: "",
-  //     });
-
-  //     setReload(!reload);
-  //   } catch (error: any) {
-  //     api.error({
-  //       message: "Error",
-  //       description: error.response ? error.response.data : error.message,
-  //     });
-  //   } finally {
-  //     setLoading(false);
-  //     console.log(fileList);
-  //   }
-  // };
-
-  //MOCKUP
-  // const mockUpload = (file: RcFile): Promise<{ url: string }> => {
-  //   return new Promise((resolve) => {
-  //     setTimeout(() => {
-  //       // Simulate a server response with a generated URL
-  //       const url = URL.createObjectURL(file);
-  //       resolve({ url });
-  //     }, 1000);
-  //   });
-  // };
-
-  // Effect to simulate file upload for testing
-  // useEffect(() => {
-  //   // Create a mock file object
-  //   const mockFile: UploadFile = {
-  //     uid: "-1",
-  //     name: "example.png",
-  //     status: "done",
-  //     url: "https://via.placeholder.com/100",
-  //   };
-
-  //   // Update fileList and imageUrl with the mock file
-  //   setFileList([mockFile]);
-  //   setImageUrl(mockFile.url);
-  // }, []);
   const onChange = ({ fileList: newFileList }) => {
-    // if (newFileList.length > 0) {
-    //   const file = newFileList[0].originFileObj as RcFile;
-    //   const reader = new FileReader();
-    //   reader.onload = () => setImageUrl(reader.result as string);
-    //   reader.readAsDataURL(file);
-    // } else {
-    //   setImageUrl(null);
-    // }
     setFileList(newFileList);
     for (let index = 0; index < newFileList.length; index++) {
       newFileList[index].status='done'
@@ -192,7 +85,7 @@ const Form1: React.FC<Form1Props> = ({
       <FormStyled.FormWrapper
         labelAlign="left"
         layout="vertical"
-        requiredMark="optional"
+        requiredMark={false}
         size="middle"
         onFinish={handleFinish}
         initialValues={initialValues}
@@ -215,6 +108,8 @@ const Form1: React.FC<Form1Props> = ({
                 initialValue={field.initialValue}
                 validateFirst
               >
+                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
+                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );
