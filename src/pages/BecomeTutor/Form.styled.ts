@@ -42,7 +42,7 @@ display: block;
   &.ant-typography {
     margin-bottom: 12px;
     color: ${theme.colors.primary};
-    font-size: 1.6rem;
+    font-size: 3rem;
     font-weight: 700;
     text-align: left;
   }
@@ -56,7 +56,7 @@ export const FormDescription = styled(Text)`
   margin-top: -8px;
   margin-bottom: 24px;
   color: ${theme.colors.textPrimary};
-  font-size: 1rem;
+  font-size: 1.5rem;
 `;
 
 

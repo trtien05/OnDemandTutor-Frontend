@@ -30,7 +30,7 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <AppAntd>
     <App />
         </AppAntd>
-        {/* <GlobalStyles /> */}
+        <GlobalStyles />
       </ConfigProvider>
     </ThemeProvider>
   </React.StrictMode>,
