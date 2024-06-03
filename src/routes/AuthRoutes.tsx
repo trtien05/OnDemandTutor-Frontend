@@ -5,6 +5,7 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import SetPassword from '../pages/SetPassword';
 import config from '../config';
+import BecomeTutor from '../pages/BecomeTutor';
 // import { useAuth } from '../hooks';
 
 // Authorization
@@ -22,6 +23,7 @@ const AuthRoutes = {
         { path: config.routes.public.register, element: <Register /> },
         { path: config.routes.public.forgotPassword, element: <ForgotPassword /> },
         { path: config.routes.public.setPassword, element: <SetPassword /> },
+        { path: config.routes.public.registerTutor, element: <BecomeTutor /> },
     ],
 };
 

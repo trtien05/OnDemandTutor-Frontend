@@ -6,7 +6,7 @@ const routes = {
         forgotPassword: '/forgot-password',
         setPassword: '/set-password',
         contact: '/contact',
-        regiterTutor: '/regiter-tutor',
+        registerTutor: '/register-tutor',
         searchTutors: '/search-tutors',
         tutorDetails: '/search-tutors/:tutorId',
         searchClasses: '/search-classes',
