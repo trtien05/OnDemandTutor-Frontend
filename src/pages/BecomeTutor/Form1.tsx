@@ -155,7 +155,7 @@ const Form1: React.FC<Form1Props> = ({
               >
                 {fileList.length < 1 && "+ Upload"}
               </Upload>
-          </ImgCrop>
+            </ImgCrop>
           
             </FormStyled.FormItem>
           {/* </FormStyled.FormContainer> */}

@@ -713,11 +713,12 @@ export default function FirstPage() {
 
   //----------------------------------------------------------------------------------------
   return (
-    <>
+    <div style={{background: `white`}}>
       <Title
         style={{
           color: `${theme.colors.primary}`,
           textTransform: `capitalize`,
+          textAlign: `center`
         }}
       >
         Become our tutor!
@@ -744,6 +745,6 @@ export default function FirstPage() {
       </div>
 
       {step}
-    </>
+    </div>
   );
 }
