@@ -3,7 +3,7 @@ import config from '../config';
 import jwtDecode from 'jwt-decode';
 
 const cookies = new Cookies(null, { path: '/' });
-
+console.log(cookies);
 class CookieUtils {
     getItem(key: string, defaultValue = '') {
         const item = cookies.get(key);

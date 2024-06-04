@@ -1,12 +1,14 @@
+import { useLocation } from 'react-router-dom';
 import config from '../config';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
 import Home from '../pages/Home';
+import { useAuth } from '../hooks';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
-    // const { pathname } = useLocation();
-    // const { role } = useAuth();
+    const { pathname } = useLocation();
+    const { role } = useAuth();
 
     // if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
     // if (role === Role.STAFF) return <Navigate to={config.routes.staff.home} />;

@@ -37,19 +37,19 @@ const createMenuItem = (
 
 export const menuUnLogged = () => {
     const menu: MenuType[] = [
-        // createMenuItem(config.routes.public.home, <AiOutlineHome size={20} />, 'Trang chủ'),
-        // createMenuItem(config.routes.public.shop, <AiOutlineShopping size={20} />, 'Cửa hàng'),
-        // createMenuItem(
-        //     config.routes.customer.purchased,
-        //     <AiOutlineTag size={20} />,
-        //     'Dịch vụ của tôi',
-        // ),
-        // createMenuItem(
-        //     config.routes.customer.schedule,
-        //     <AiOutlineCalendar size={20} />,
-        //     'Lịch sử dụng',
-        // ),
-        // createMenuItem(config.routes.public.login, <AiOutlineLogin size={20} />, 'Login'),
+        createMenuItem(config.routes.public.home, <AiOutlineHome size={20} />, 'Trang chủ'),
+        createMenuItem(config.routes.student.profile, <AiOutlineShopping size={20} />, 'Cửa hàng'),
+        createMenuItem(
+            config.routes.student.profile,
+            <AiOutlineTag size={20} />,
+            'Dịch vụ của tôi',
+        ),
+        createMenuItem(
+            config.routes.student.profile,
+            <AiOutlineCalendar size={20} />,
+            'Lịch sử dụng',
+        ),
+        createMenuItem(config.routes.public.login, <AiOutlineLogin size={20} />, 'Login'),
     ];
 
     return menu;
@@ -61,30 +61,30 @@ export const menuLogged = (user: PIIProps) => {
     };
 
     const menu: MenuType[] = [
-        // {
-        //     key: config.routes.customer.profile,
-        //     label: (
-        //         <HeaderAvatarWrapper>
-        //             <Link to={config.routes.customer.profile}>
-        //                 {user?.avatar ? (
-        //                     <Avatar size={90} src={user.avatar} alt={user.fullName} />
-        //                 ) : (
-        //                     <Avatar size={90} icon={<UserOutlined />} />
-        //                 )}
-        //             </Link>
-        //             <Text>{user?.fullName}</Text>
-        //             <Divider />
-        //         </HeaderAvatarWrapper>
-        //     ),
-        // },
+        {
+            key: config.routes.student.profile,
+            label: (
+                <HeaderAvatarWrapper>
+                    <Link to={config.routes.student.profile}>
+                        {user?.avatar ? (
+                            <Avatar size={90} src={user.avatar} alt={user.fullName} />
+                        ) : (
+                            <Avatar size={90} icon={<UserOutlined />} />
+                        )}
+                    </Link>
+                    <Text>{user?.fullName}</Text>
+                    <Divider />
+                </HeaderAvatarWrapper>
+            ),
+        },
 
-        // ...menuUnLogged().slice(0, -1),
+        ...menuUnLogged().slice(0, -1),
 
-        // createMenuItem(
-        //     config.routes.customer.cart,
-        //     <AiOutlineShoppingCart size={20} />,
-        //     'Giỏ hàng của tôi',
-        // ),
+        createMenuItem(
+            config.routes.student.profile,
+            <AiOutlineShoppingCart size={20} />,
+            'Giỏ hàng của tôi',
+        ),
         createMenuItem(
             config.routes.public.login,
             <AiOutlineLogout size={20} />,
@@ -118,7 +118,4 @@ export const navbar: MenuType[] = [
     createNavbarItem(config.routes.public.searchTutors, 'Tutors'),
     createNavbarItem(config.routes.public.contact, 'Contact'),
     createNavbarItem(config.routes.public.regiterTutor, 'Become A Tutor'),
-    createNavbarItem(config.routes.public.login, 'Login'),
-
-
 ];
