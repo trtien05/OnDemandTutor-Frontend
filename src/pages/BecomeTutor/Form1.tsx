@@ -118,14 +118,14 @@ const Form1: React.FC<Form1Props> = ({
             Profile picture
           </FormStyled.FormTitle>{" "}
           <br />
-          <FormStyled.FormDescription>
+          <FormStyled.FormDescription style={{ display: `block` }}>
             Make a great first impression!
             <br />
             Tutors who look friendly and professional get the most students
           </FormStyled.FormDescription>
           <br />
           {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
-          <Col style={{ margin: `auto` }}>
+          
                     
                   
             <FormStyled.FormItem
@@ -133,13 +133,15 @@ const Form1: React.FC<Form1Props> = ({
               valuePropName="fileList"
               getValueFromEvent={(e) => e && e.fileList}
               rules={[{ required: false, message: "Please upload an avatar!" }]}
-              
+              // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
             >
+              <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}>
               <ImgCrop 
                 rotationSlider 
                 quality={1}
                 showReset
                 showGrid
+                 
                 >
               <Upload
                 name="avatar"
@@ -151,15 +153,15 @@ const Form1: React.FC<Form1Props> = ({
                 accept=".jpg,.jpeg,.png"
                 // beforeUpload={() => false} // Prevent upload by return false
                 // beforeUpload={beforeUpload} 
-                
+                style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
               >
                 {fileList.length < 1 && "+ Upload"}
               </Upload>
             </ImgCrop>
-          
+            </div>
             </FormStyled.FormItem>
           {/* </FormStyled.FormContainer> */}
-          </Col>
+          
           {previewImage && (
             <Image
               wrapperStyle={{

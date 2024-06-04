@@ -1,4 +1,4 @@
-import { Form, Typography, Checkbox, Input, InputNumber, Button, Card } from "antd";
+import { Form, Typography, Input, Button, Card } from "antd";
 import styled from "styled-components";
 
 import { theme } from '../../themes';
@@ -19,17 +19,6 @@ export const FormContainer = styled.div`
     }
 `;
 
-export const FormCheckbox = styled(Checkbox)`
-  text-align: left;
-  margin: 24px 0;
-  vertical-align: top;
-`;
-export const CheckboxGroup = styled(Checkbox.Group)`
-  width: 100%;
-  height: auto;
-  text-align: left;
-  margin: 24px 0 5px;
-`;
 export const FormWrapper = styled(Form)`
     display: flex;
     flex-wrap: wrap;
@@ -40,17 +29,18 @@ export const FormWrapper = styled(Form)`
 export const FormTitle = styled(Title)`
 display: block;
   &.ant-typography {
-    margin-bottom: 12px;
+    
     color: ${theme.colors.primary};
-    font-size: 3rem;
+    font-size: 1.5rem;
     font-weight: 700;
     text-align: left;
+    margin-bottom:0;
+    
   }
 `;
 
 export const FormDescription = styled(Text)`
   display: flex;
-  // display: block;
   text-align: left;
 
   column-gap: 8px;
@@ -70,32 +60,17 @@ export const CommentInput = styled(TextArea)`
 
   &.ant-input-affix-wrapper textarea.ant-input {
     padding: 12px 16px;
-    font-size: 1.6rem;
+    // font-size: ;
     background: ${theme.colors.white};
   }
 `;
-export const NumberInput = styled(InputNumber)`
-  &.ant-input-affix-wrapper {
-    border-radius: 2px;
-    border: 1px solid ${theme.colors.borderInput};
-    background: ${theme.colors.white};
-  }
 
-  &.ant-input-affix-wrapper textarea.ant-input {
-    padding: 12px 16px;
-    font-size: 1.6rem;
-    background: ${theme.colors.white};
-  }
-`;
 export const ButtonDiv = styled.div`
         // display: flex; 
         // justifyContent: flex-end;
-        // alignSelf: flex-end; 
+        alignSelf: flex-end; 
         width: 100%; 
         marginTop: 20px;
-        display: flex; 
-        align-items: center;
-        justify-content: center;
  `;
 export const FormItem = styled(Form.Item)<{$width?: string;}>`
 
@@ -148,16 +123,14 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
 
     & .ant-form-item-control {
         position: relative;
-        // display: flex; 
-        // align-items: center;
-        // justify-content: center;
+
         & .ant-form-item-control-input + div {
             position: relative;
             top: 100%;
             left: 0;
         }
     }
-    
+
     & .ant-select-selector,
     & .ant-select,
     & .ant-picker{
@@ -169,8 +142,9 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
     & .ant-input-number-input,
     & .ant-input-password,
      {  
-        padding: 12px 20px;
-        font-size: 1rem;
+        padding: 12px;
+        font-size: 1.6rem;
+        
         border-radius: 6px;
         border-color: ${theme.colors.border};
 
@@ -217,12 +191,7 @@ export const ReviewContainer = styled(Card)`
   }
   `
 
-export const TimeslotStyle = styled.div`
-    width: 45%;
-    ${({ theme }) => theme.breakpoints.down('sm')}{
-      width: 100%;
-    }
-  `
+
 
 
 
