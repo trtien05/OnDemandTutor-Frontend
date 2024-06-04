@@ -12,6 +12,7 @@ const routes = {
         searchClasses: '/search-classes',
         classDetails: '/search-classes/:classId',
         notFound: '/404',
+        createQuestion: '/create-question',
     },
     api: {
         loginGoogle: '/auth/callback/google/redirect',

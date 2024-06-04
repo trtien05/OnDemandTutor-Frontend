@@ -17,7 +17,7 @@ import {
 import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../utils/UploadImg";
 
-export default function FirstPage() {
+const BecomeTutor= () => {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
   const [certificationValues, setCertificationValues] = useState(null);
@@ -713,7 +713,8 @@ export default function FirstPage() {
 
   //----------------------------------------------------------------------------------------
   return (
-    <div style={{background: `white`}}>
+    <>
+    <div style={{background: `white`, padding: `3% ` }}>
       <Title
         style={{
           color: `${theme.colors.primary}`,
@@ -725,7 +726,7 @@ export default function FirstPage() {
       </Title>
       <div
         style={{
-          margin: `30px 0px 20px`,
+          margin: `5%`,
         }}
       >
         {/* disabled={isDisabled(0)} */}
@@ -745,6 +746,8 @@ export default function FirstPage() {
       </div>
 
       {step}
-    </div>
+     </div>
+    </>
   );
-}
+};
+export default BecomeTutor;
