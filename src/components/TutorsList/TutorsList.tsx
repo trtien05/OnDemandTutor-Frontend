@@ -28,12 +28,6 @@ const TutorsList: React.FC<{ list: Tutor[], initLoading: boolean }> = (props) =>
                 <List
                   loading={props.initLoading}
                   itemLayout="horizontal"
-                  pagination={{
-                    onChange: (page) => {
-                      console.log(page);
-                    },
-                    pageSize: 3,
-                  }}
                   dataSource={props.list}
                   renderItem={(item) => (
                     <Styled.TutorItem

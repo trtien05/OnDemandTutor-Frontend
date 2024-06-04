@@ -5,18 +5,18 @@ import Container from '../../components/Container';
 import TutorsList from '../../components/TutorsList/TutorsList'
 import { useDocumentTitle } from '../../hooks';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
+import Pagination from '../../components/Pagination/Pagination';
 const { Option } = Select;
 
-
-const fakeDataUrl = `http://localhost:8080/api/tutors?pageNo=0&pageSize=6`;
 
 const SearchTutors = () => {
   useDocumentTitle("Search Tutors | MyTutor")
 
-  const [specialty, setSpecialty] = useState<string>('Specialties');
-  const [availableTime, setAvailableTime] = useState<string>('Available Time');
-  const [tutorLevel, setTutorLevel] = useState<string>('Tutor Level');
-  const [sortBy, setSortBy] = useState<string>('Sort By');
+  const [specialty, setSpecialty] = useState<string>('');
+  const [availableTime, setAvailableTime] = useState<string>('');
+  const [dateTime, setDateTime] = useState<string>('');
+  const [tutorLevel, setTutorLevel] = useState<string>('');
+  const [sortBy, setSortBy] = useState<string>('');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [priceRange, setPriceRange] = useState<[number, number]>([100000, 500000]);
   const [minPrice, setMinPrice] = useState<number>(priceRange[0]);
@@ -24,29 +24,14 @@ const SearchTutors = () => {
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Tutor[]>([]);
   const [data, setData] = useState<Tutor[]>([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [tutorPerPage] = useState(4);
+  const [totalAmountofTutors, setTotalAmountTutors] = useState(0);
+  const [totalPages, setTotalPages] = useState(0);
+
+  const [searchUrl, setSearchUrl] = useState('');
 
   const handleSave = () => {
-    let isSearchCriteriaSelected = false;
-
-    if (
-      specialty !== 'Specialties' ||
-      availableTime !== 'Available Time' ||
-      tutorLevel !== 'Tutor Level' ||
-      sortBy !== 'Sort By' ||
-      searchKeyword !== ''
-    ) {
-      isSearchCriteriaSelected = true;
-    }
-
-    if (!isSearchCriteriaSelected && (priceRange[0] !== 10000 || priceRange[1] !== 50000)) {
-      isSearchCriteriaSelected = true;
-    }
-
-    if (!isSearchCriteriaSelected) {
-      alert('Please fill in at least one search field.');
-      return;
-    }
-
     const searchCriteria = {
       specialty,
       priceRange: `${priceRange[0]}-${priceRange[1]}`,
@@ -55,18 +40,60 @@ const SearchTutors = () => {
       sortBy,
       searchKeyword,
     };
+    let url = ``;
+
+    if (specialty !== 'Specialties') {
+      url += `&specialty=${specialty}`;
+    }
+    if (availableTime !== 'Available Time') {
+      url += `&availableTime=${availableTime}`;
+    }
+    if (tutorLevel !== 'Tutor Level') {
+      url += `&tutorLevel=${tutorLevel}`;
+    }
+    if (sortBy !== 'Sort By') {
+      url += `&sortBy=${sortBy}`;
+    }
+    if (searchKeyword !== '') {
+      url += `&searchKeyword=${searchKeyword}`;
+    }
+    if (priceRange[0] !== 100000 || priceRange[1] !== 500000) {
+      url += `&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}`;
+    }
+
+    setSearchUrl(url);
+
     console.log(searchCriteria)
+    console.log(searchUrl);
   };
 
+
   useEffect(() => {
-    fetch(fakeDataUrl)
+    const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
+
+    let url: string = '';
+
+    if (searchUrl === '') {
+      url = baseUrl;
+    } else {
+      url = baseUrl + searchUrl
+    }
+
+    fetch(url)
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
         setData(res.content);
         setList(res.content);
+        setTotalAmountTutors(res.totalElements);
+        setTotalPages(res.totalPages);
       });
-  }, []);
+    window.scrollTo(0, 0);
+  }, [currentPage, searchUrl]);
+  console.log(currentPage)
+
+
+  const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const onChangeComplete = (value: number | number[]) => {
     console.log('onChangeComplete: ', value);
@@ -109,12 +136,22 @@ const SearchTutors = () => {
                 </Styled.StyledSelect>
               </Col>
 
-              <Col lg={8}>
-                <Styled.StyledSelect placeholder="Available Time" onChange={setAvailableTime}>
-                  <Option value="Available Time">Available Time</Option>
+              <Col lg={4}>
+                <Styled.StyledSelect mode='multiple' placeholder="Available Time" onChange={setAvailableTime}>
                   <Option value="Morning">Morning</Option>
                   <Option value="Afternoon">Afternoon</Option>
                   <Option value="Evening">Evening</Option>
+                </Styled.StyledSelect>
+              </Col>
+              <Col lg={4}>
+                <Styled.StyledSelect mode='multiple' placeholder="Days of week" onChange={setDateTime}>
+                  <Option value="Mon">Monday</Option>
+                  <Option value="Tue">Tuesday</Option>
+                  <Option value="Wed">Wednesday</Option>
+                  <Option value="Thur">Thursday</Option>
+                  <Option value="Fri">Friday</Option>
+                  <Option value="Sat">Saturday</Option>
+                  <Option value="Sun">Sunday</Option>
                 </Styled.StyledSelect>
               </Col>
 
@@ -132,7 +169,6 @@ const SearchTutors = () => {
               <Col lg={4}>
                 <Styled.StyledSelect placeholder="Sort By" onChange={setSortBy}>
                   <Option value="Price">Price</Option>
-                  <Option value="Rating">Rating</Option>
                 </Styled.StyledSelect>
               </Col>
 
@@ -155,14 +191,14 @@ const SearchTutors = () => {
       <Styled.TitleWrapper>
         <Container>
           <Styled.TotalTutorAvaiable level={1}>
-            [Number] tutors available
+            {totalAmountofTutors} tutors available
           </Styled.TotalTutorAvaiable>
         </Container>
       </Styled.TitleWrapper>
-
-
       <TutorsList initLoading={initLoading} list={list} />
-
+      {totalPages > 1 &&
+        <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+      }
     </>
 
 
