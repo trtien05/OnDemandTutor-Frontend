@@ -1,4 +1,4 @@
-import { Steps, Typography, TimePicker, notification } from "antd";
+import { Steps, Typography, TimePicker, notification, message } from "antd";
 import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs from 'dayjs'
@@ -16,8 +16,9 @@ import {
 } from "../../api/tutorRegisterAPI";
 import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../utils/UploadImg";
+import { useNavigate } from "react-router-dom";
 
-const BecomeTutor= () => {
+const BecomeTutor = () => {
   const [aboutValues, setAboutValues] = useState(null);
   const [educationValues, setEducationValues] = useState(null);
   const [certificationValues, setCertificationValues] = useState(null);
@@ -28,6 +29,9 @@ const BecomeTutor= () => {
   const [diploma, setDiploma] = useState<FieldType[][]>([
     educationForm
   ]);
+  const navigate = useNavigate();
+
+  const [messageApi, contextHolder] = message.useMessage();
   const [certificate, setCertificate] = useState<FieldType[][]>([
     certificateForm,
   ]);
@@ -193,16 +197,20 @@ const BecomeTutor= () => {
       certURL
     );
 
-   // Example tutorId
+    // Example tutorId
 
     await saveData(values, accountId);
+    messageApi.success('Your Form has been Sent.');
+    setTimeout(() => {
+      navigate('/');
+    }, 2000);
 
     next();
   };
 
   const saveToFirebase = async (tutorId: number) => {
     //upload avatar to firebase
-    
+
     const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)
     //upload diploma to firebase
     const numberOfEntries1 = Math.max(
@@ -714,39 +722,40 @@ const BecomeTutor= () => {
   //----------------------------------------------------------------------------------------
   return (
     <>
-    <div style={{background: `white`, padding: `3% ` }}>
-      <Title
-        style={{
-          color: `${theme.colors.primary}`,
-          textTransform: `capitalize`,
-          textAlign: `center`
-        }}
-      >
-        Become our tutor!
-      </Title>
-      <div
-        style={{
-          margin: `5%`,
-        }}
-      >
-        {/* disabled={isDisabled(0)} */}
-        <Steps current={current} onChange={goTo}>
-          <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
-          <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
-          <Steps.Step
-            disabled={isDisabled(2)}
-            title="Certification"
-          ></Steps.Step>
-          <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
-          <Steps.Step
-            disabled={isDisabled(4)}
-            title="Availability & Pricing"
-          ></Steps.Step>
-        </Steps>
-      </div>
+      <div style={{ background: `white`, padding: `3% ` }}>
+        {contextHolder}
+        <Title
+          style={{
+            color: `${theme.colors.primary}`,
+            textTransform: `capitalize`,
+            textAlign: `center`
+          }}
+        >
+          Become our tutor!
+        </Title>
+        <div
+          style={{
+            margin: `5%`,
+          }}
+        >
+          {/* disabled={isDisabled(0)} */}
+          <Steps current={current} onChange={goTo}>
+            <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
+            <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
+            <Steps.Step
+              disabled={isDisabled(2)}
+              title="Certification"
+            ></Steps.Step>
+            <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
+            <Steps.Step
+              disabled={isDisabled(4)}
+              title="Availability & Pricing"
+            ></Steps.Step>
+          </Steps>
+        </div>
 
-      {step}
-     </div>
+        {step}
+      </div>
     </>
   );
 };
