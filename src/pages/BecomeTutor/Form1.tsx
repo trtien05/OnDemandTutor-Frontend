@@ -105,11 +105,11 @@ const Form1: React.FC<Form1Props> = ({
                 name={field.name}
                 rules={field.rules}
                 $width={field.$width ? field.$width : "100%"}
-                initialValue={field.initialValue}
+                
                 validateFirst
               >
-                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
-                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
+                {/* {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)} */}
+                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} readOnly />)}
                 {field.children}
               </FormStyled.FormItem>
             );

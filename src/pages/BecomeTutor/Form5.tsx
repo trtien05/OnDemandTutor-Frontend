@@ -42,7 +42,7 @@ const Form5 = ({ onFinish,
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>Availability</FormStyled.FormTitle>
           <FormStyled.FormDescription style={{ flexDirection: `column` }}>Availability shows your potential working hours. Students can book your lessons at these times.<br />
-            <span style={{ fontWeight: `600` }}>Remember that students can book your available times instantly without messaging you first!</span>
+            <span style={{ fontWeight: `600` }}>Each timeslot represents a study session between you and the student. You can change this later in your profile session. </span>
           </FormStyled.FormDescription>
 
           <FormStyled.FormContainer style={{ margin: '0', columnGap: '5%', width: '100%' }}>
