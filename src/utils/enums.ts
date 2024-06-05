@@ -3,6 +3,7 @@ export enum PageEnum {
     REGISTER = 'Register',
     FORGOT_PASSWORD = 'ForgotPassword',
     SET_PASSWORD = 'SetPassword',
+    VERIFY_EMAIL = 'VerifyCode',
 }
 
 export const Role: { [key: string]: string } = {
