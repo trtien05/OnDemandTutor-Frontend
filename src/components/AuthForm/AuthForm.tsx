@@ -116,7 +116,7 @@ const AuthForm = ({
                                         htmlType="submit"
                                         disabled={isSubmitting}
                                     >
-                                        {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : buttonTitle}
+                                        {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} /> : buttonTitle}
                                     </FormStyled.FormButton>
 
                                     {page === PageEnum.VERIFY_EMAIL && (
@@ -126,7 +126,7 @@ const AuthForm = ({
                                             onClick={onResend}
                                             disabled={isSubmitting}
                                         >
-                                            {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : 'Resend OTP Code'}
+                                            {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} /> : 'Resend OTP Code'}
                                         </FormStyled.FormButtonResendCode>
                                     )}
                                 </FormStyled.FormItem>

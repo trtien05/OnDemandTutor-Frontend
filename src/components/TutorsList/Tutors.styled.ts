@@ -4,6 +4,7 @@ import { List, Row } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { FaRegHeart, FaStar } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const FilterSection = styled.section`
     border-radius: 0px 0px 100px 100px;
@@ -13,6 +14,7 @@ export const FilterSection = styled.section`
 export const FilterWrapper = styled.div``;
 export const TutorItem = styled(List.Item)`
     &.ant-list-item {
+        display: block;
         border-block-end: none;
     }
 `;

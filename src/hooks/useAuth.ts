@@ -2,7 +2,7 @@ import { AccountStatus, Gender, Role } from '../utils/enums';
 import { useCallback, useEffect, useState } from 'react';
 
 import cookieUtils from '../utils/cookieUtils';
-// import { getInfoCurrentUser } from '../utils/accountAPI';
+import { getInfoCurrentUser } from '../utils/accountAPI';
 
 type PayloadType = {
     id: number;
@@ -19,17 +19,14 @@ type JwtType = {
 export type UserType = {
     avatar: string;
     emailAddress: string;
-    emailValidationStatus: boolean;
     fullName: string;
     phoneNumber: string | null;
     role: string;
     userId: number;
     address: string | null;
-    // proficiencyScore: number;
     avgRating: number;
     accountStatus: AccountStatus;
     createdAt: Date | string;
-    // identityCard: string | null;
     dateOfBirth: Date | string | null;
     gender: Gender;
 };
@@ -81,8 +78,8 @@ const useAuth = () => {
 
             // Fetch API to get info user
             const getInfo = async () => {
-                // const { data } = await getInfoCurrentUser();
-                // setUser(data);
+                const { data } = await getInfoCurrentUser();
+                setUser(data);
             };
 
             getInfo();

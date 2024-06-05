@@ -14,34 +14,15 @@ import { Role } from '../../utils/enums';
 // import { cartSlice } from './slice';
 
 const HomeLayout = () => {
-    // const dispatch = useAppDispatch();
-    // const cartLength = useAppSelector((state) => state.cart.cartLength);
-    // const { role, user } = useAuth();
+    const { role, user } = useAuth();
 
     // Show toast
     // const [api, contextHolder] = notification.useNotification({
     //     top: 100,
     // });
 
-    // const menu = role ? menuLogged(user as PIIProps) : menuUnLogged();
+    const menu = role ? menuLogged(user as PIIProps) : menuUnLogged();
 
-    // Call api to get cart list
-    // const getCartLength = useCallback(async () => {
-    //     try {
-    //         if (role !== Role.CUSTOMER) return;
-    //         const { data }: { data: CartType[] } = await getCart();
-    //         dispatch(cartSlice.actions.setLength(data.length));
-    //     } catch (error: any) {
-    //         api.error({
-    //             message: 'Lỗi',
-    //             description: error.response ? error.response.data : error.message,
-    //         });
-    //     }
-    // }, []);
-
-    // useEffect(() => {
-    //     getCartLength();
-    // }, []);
 
     return (
         <>
