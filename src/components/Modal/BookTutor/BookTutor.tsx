@@ -24,6 +24,8 @@ const BookTutor: React.FC = () => {
   const [schedule, setSchedule] = useState<Schedule[]>([]);
   const [selectedId, setSelectedId] = useState<string[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
+  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -161,8 +163,13 @@ const BookTutor: React.FC = () => {
   };
 
   const handleOk = () => {
-    setIsFormOpen(false);
-  };
+    setLoading(true); // Set loading state to true when form is submitted
+    const values = form.getFieldValue('description')
+    console.log(values);
+          console.log(selectedId)
+          setLoading(false); // Set loading state back to false when form submission is complete
+
+};
 
   const handleCancel = () => {
     setIsFormOpen(false);
@@ -179,15 +186,28 @@ const BookTutor: React.FC = () => {
         open={isFormOpen}
         onOk={handleOk}
         onCancel={handleCancel}
-        footer={[
-          <Button key='cancel' type='default' onClick={handleCancel}>Cancel</Button>,
-          <Button key='book' type='default' onClick={handleOk}>Book</Button>
-        ]}
+        footer={[<FormStyled.ButtonDiv>
+          <Button key="Cancel" type="default" onClick={handleCancel} style={{marginRight:'5%', width:'45%'}}>
+              Cancel
+          </Button>
+          <Button
+              key="submit"
+              type="primary"
+              htmlType="submit"
+              onClick={handleOk}
+              loading={loading}
+              form="myForm" //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
+              style={{marginRight:'2%', width:'45%'}}
+          >
+              Send
+          </Button>
+      </FormStyled.ButtonDiv>,]}
       >
         <FormStyled.FormWrapper
           labelAlign='left'
           layout="vertical"
           requiredMark={false}
+          form={form}
           size="middle"
           style={{ rowGap: `10px` }}
           initialValues={{ selectedSlots: new Set<number>() }}
@@ -215,7 +235,7 @@ const BookTutor: React.FC = () => {
             </ScheduleComponent>
           </ScheduleStyle.ScheduleWrapper>
           <FormStyled.FormItem
-            name="subject"
+            name="description"
             rules={[
               {
                 required: false,
@@ -225,8 +245,20 @@ const BookTutor: React.FC = () => {
             $width="100%"
             validateFirst
           >
-            <TextArea rows={2} name='description' placeholder="Input the subject" />
+            <TextArea rows={2} name='description' placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
           </FormStyled.FormItem>
+          {/* <FormStyled.ButtonDiv>
+          <Button type="default" onClick={handleCancel}>
+            Cancel
+          </Button>
+          <Button
+            type="primary"
+            htmlType="submit"
+            style={{ marginLeft: `24px` }}
+          >
+            Book
+          </Button>
+        </FormStyled.ButtonDiv> */}
         </FormStyled.FormWrapper>
       </Modal>
     </>
