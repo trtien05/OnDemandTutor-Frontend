@@ -1,177 +1,236 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Checkbox, Form, Modal, Select, message } from 'antd';
-import * as FormStyled from '../../../pages/BecomeTutor/Form.styled'
-import Table, { ColumnsType } from 'antd/lib/table';
-import { format } from 'date-fns';
+import { Button, Form, Modal } from 'antd';
+import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
+import { Day, EventRenderedArgs, EventSettingsModel, Inject, PopupOpenEventArgs, ScheduleComponent, ViewDirective, ViewsDirective } from '@syncfusion/ej2-react-schedule';
+import TextArea from 'antd/es/input/TextArea';
+// Registering Syncfusion license key
+import { registerLicense } from '@syncfusion/ej2-base';
+import * as ScheduleStyle from './BookTutor.styled';
+
+registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
 interface Schedule {
-    id: number;
-    schedule_date: string;
-    start_time: string;
-    end_time: string;
-    tutor_id: number;
+  id: number;
+  scheduleDate: string;
+  startTime: string;
+  endTime: string;
+  tutorId: number;
+  isSelected: boolean;
 }
 
 const BookTutor: React.FC = () => {
-    const [isFormOpen, setIsFormOpen] = useState(false);
-    const [schedule, setSchedule] = useState<Schedule[]>([]);
-    const [form] = Form.useForm();
-    const tutorId = 1;
+  const tutorId = 1;
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [schedule, setSchedule] = useState<Schedule[]>([]);
+  const [selectedId, setSelectedId] = useState<string[]>([]);
+  const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
+
+  useEffect(() => {
+    const fetchSchedule = async () => {
+      try {
+        const response = {
+          data: [
+            { id: 1, scheduleDate: '2024-06-09', startTime: '07:00', endTime: '10:00', tutorId: 1, isSelected: false },
+            { id: 2, scheduleDate: '2024-06-07', startTime: '12:00', endTime: '13:00', tutorId: 1, isSelected: false },
+            { id: 3, scheduleDate: '2024-06-08', startTime: '14:00', endTime: '15:00', tutorId: 1, isSelected: false },
+            { id: 4, scheduleDate: '2024-06-07', startTime: '16:00', endTime: '17:00', tutorId: 1, isSelected: false },
+          ],
+        };
+        setSchedule(response.data);
+      } catch (error) {
+        console.error('Failed to fetch schedule', error);
+      }
+    };
+
+    fetchSchedule();
+  }, []);
+
+  const convertTimeToDate = (time: string): Date => {
+    const [hours, minutes] = time.split(':').map(Number);
+    const date = new Date();
+    date.setHours(hours, minutes, 0, 0);
+    return date;
+  };
+
+  const [start, setStart] = useState<string>('');
+  const [end, setEnd] = useState<string>('');
 
     useEffect(() => {
-        const fetchSchedule = async () => {
-          try {
-            const response = {
-              data: [
-                { id: 1, schedule_date: '2024-06-04', start_time: '10:00:00', end_time: '11:00:00', tutor_id: 1 },
-                { id: 2, schedule_date: '2024-06-04', start_time: '12:00:00', end_time: '13:00:00', tutor_id: 1 },
-                { id: 3, schedule_date: '2024-06-05', start_time: '14:00:00', end_time: '15:00:00', tutor_id: 1 },
-                { id: 4, schedule_date: '2024-06-06', start_time: '16:00:00', end_time: '17:00:00', tutor_id: 1 },
-              ],
-            };
-            setSchedule(response.data);
-          } catch (error) {
-            console.error('Failed to fetch schedule', error);
+      if (schedule.length === 0) return;
+  
+      const timeRange = () => {
+        let earliest: string = '23:59';
+        let latest: string = '00:00';
+  
+        schedule.forEach(s => {
+          if (s.startTime < earliest) {
+            earliest = s.startTime;
           }
-        };
-    
-        fetchSchedule();
-      }, []);
-    
-      const handleSlotSelect = (slotId: number) => {
-        const selectedSlots = form.getFieldValue('selectedSlots') || new Set<number>();
-        if (selectedSlots.has(slotId)) {
-          selectedSlots.delete(slotId);
-        } else {
-          if (selectedSlots.size < 5) {
-            selectedSlots.add(slotId);
-          } else {
-            message.warning('You can only select up to 5 time slots');
+  
+          if (s.endTime > latest) {
+            latest = s.endTime;
           }
-        }
-        form.setFieldsValue({ selectedSlots: new Set(selectedSlots) });
+        });
+  
+        setStart(earliest);
+        setEnd(latest);
       };
-    
-      const columns: ColumnsType<Schedule> = [];
-  const days = Array.from({ length: 7 }, (_, i) => {
-    const date = new Date();
-    date.setDate(date.getDate() + i + 1);
-    const formattedDate = format(date, 'EEE, MMM d');
-    const dateKey = format(date, 'yyyy-MM-dd');
-    return {
-      title: formattedDate,
-      dataIndex: dateKey,
-      key: dateKey,
-      render: () => {
-        const timeSlots = schedule.filter(slot => slot.schedule_date === dateKey);
-        return (
-          <>
-            {timeSlots.map(slot => (
-              <div key={slot.id} style={{ marginBottom: 8 }}>
-                <Checkbox
-                  checked={form.getFieldValue('selectedSlots')?.has(slot.id) || false}
-                  onChange={() => handleSlotSelect(slot.id)}
-                >
-                  {format(new Date(`${slot.schedule_date}T${slot.start_time}`), 'HH:mm')} - {format(new Date(`${slot.schedule_date}T${slot.end_time}`), 'HH:mm')}
-                </Checkbox>
-              </div>
-            ))}
-          </>
-        );
-      },
-    };
-  });
-    
+  
+      timeRange();
+      console.log(end)
+    }, [schedule]);
+  
 
-    columns.push(...days);
-    const handleFinish = (values: any) => {
+  useEffect(() => {
+    setEventSettings({
+      dataSource: schedule.map(s => ({
+        Subject: s.startTime,
+        Description: `- ${s.endTime}`,
+        Id: s.id.toString(),
+        StartTime: new Date(`${s.scheduleDate}T${s.startTime}`),
+        EndTime: new Date(`${s.scheduleDate}T${s.endTime}`),
+        isSelected: s.isSelected,
+      })),
+    });
+  }, [schedule]);
 
-    }
+  const today = new Date();
+  const next7Days = new Date();
+  next7Days.setDate(today.getDate() + 6);
 
-    //fetch api to select tutor's subject
-    const subjects = [
-        { label: "Mathematics", value: "Mathematics" },
-        { label: "Chemistry", value: "Chemistry" },
-        { label: "Biology", value: "Biology" },
-        { label: "Literature", value: "Literature" },
-        { label: "English", value: "English" },
-        { label: "IELTS", value: "IELTS" },
-        { label: "TOEFL", value: "TOEFL" },
-        { label: "TOEIC", value: "TOEIC" },
-        { label: "Physics", value: "Physics" },
-        { label: "Geography", value: "Geography" },
-        { label: "History", value: "History" },
-        { label: "Coding", value: "Coding" },
-    ];
+  const onEventRendered = (args: EventRenderedArgs) => {
+    const element = args.element as HTMLElement;
+    const eventId = args.data.Id;
+    const isSelected = selectedId.includes(eventId);
 
-    const showModal = () => {
-        setIsFormOpen(true);
-    };
+    element.style.border = '1px solid #B94AB7'; // Add border to event
+    element.style.backgroundColor = isSelected ? '#B94AB7' : '#FFF'; // Change background color if selected
+    element.style.color = isSelected ? '#FFF' : '#000'; // Change text color if selected
+    element.style.width = '100%';
+  };
 
-    const handleOk = () => {
-        setIsFormOpen(false);
-    };
+  const onEventClick = (args: any) => {
+    const id = args.event.Id;
 
-    const handleCancel = () => {
-        setIsFormOpen(false);
-    };
-
-
-    return (
-        <>
-            <Button type="primary" onClick={showModal}>
-                Book this tutor
-            </Button>
-            <Modal
-                centered
-                open={isFormOpen}
-                onOk={handleOk}
-                onCancel={handleCancel}
-                footer={[
-                    <Button key='cancel' type='default'>Cancel</Button>,
-                    <Button key='book' type='default'>Book</Button>
-                ]}
-            >
-                <FormStyled.FormWrapper
-                    labelAlign='left'
-                    layout="vertical"
-                    requiredMark={false}
-                    size="middle"
-                    onFinish={handleFinish}
-                    initialValues={{ selectedSlots: new Set<number>() }}>
-                    <FormStyled.FormTitle style={{ margin: `auto` }}>Tutor Booking</FormStyled.FormTitle>
-                    <Table
-                        dataSource={[]}// We use an empty object since we don't use row data
-                        columns={columns}
-                        pagination={false}
-                        rowKey={() => 'dummy'}
-                    />
-
-                    <FormStyled.FormItem
-                        name="subject"
-                        rules={[
-                            {
-                                required: true,
-                                message: "Please select the subject",
-                            },
-                        ]}
-                        $width="50%"
-                        //initialValue={field.initialValue}
-                        validateFirst
-                    >
-                        <Select size="large" placeholder="Select subject">
-                            {subjects.map((subject) => (
-                                <Select.Option value={subject.value}>{subject.label}</Select.Option>
-                            ))}
-                        </Select>
-
-                    </FormStyled.FormItem>
-
-                </FormStyled.FormWrapper>
-
-            </Modal>
-        </>
+    setSchedule(prevSchedule =>
+      prevSchedule.map(s =>
+        s.id.toString() === id ? { ...s, isSelected: !s.isSelected } : s
+      )
     );
+
+    setSelectedId(prevIds =>
+      prevIds.includes(id)
+        ? prevIds.filter(i => i !== id)
+        : [...prevIds, id]
+    );
+    console.log(args.event);
+    console.log(schedule);
+    console.log(selectedId);
+  };
+
+  const onPopupOpen = (args: PopupOpenEventArgs) => {
+    args.cancel = true; // Disable the event popup
+  };
+
+  const eventTemplate = (props: any) => {
+    return (
+      <div className="e-template-wrap">
+        <div className="e-subject">{props.Subject}</div>
+        <div className="e-description">{props.Description}</div>
+      </div>
+    );
+  };
+
+  const subjects = [
+    { label: "Mathematics", value: "Mathematics" },
+    { label: "Chemistry", value: "Chemistry" },
+    { label: "Biology", value: "Biology" },
+    { label: "Literature", value: "Literature" },
+    { label: "English", value: "English" },
+    { label: "IELTS", value: "IELTS" },
+    { label: "TOEFL", value: "TOEFL" },
+    { label: "TOEIC", value: "TOEIC" },
+    { label: "Physics", value: "Physics" },
+    { label: "Geography", value: "Geography" },
+    { label: "History", value: "History" },
+    { label: "Coding", value: "Coding" },
+  ];
+
+  const showModal = () => {
+    setIsFormOpen(true);
+  };
+
+  const handleOk = () => {
+    setIsFormOpen(false);
+  };
+
+  const handleCancel = () => {
+    setIsFormOpen(false);
+  };
+
+  return (
+    <>
+      <Button type="primary" onClick={showModal}>
+        Book this tutor
+      </Button>
+      <Modal
+        centered
+        width={'700px'}
+        open={isFormOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[
+          <Button key='cancel' type='default' onClick={handleCancel}>Cancel</Button>,
+          <Button key='book' type='default' onClick={handleOk}>Book</Button>
+        ]}
+      >
+        <FormStyled.FormWrapper
+          labelAlign='left'
+          layout="vertical"
+          requiredMark={false}
+          size="middle"
+          style={{ rowGap: `10px` }}
+          initialValues={{ selectedSlots: new Set<number>() }}
+        >
+          <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle>
+          <ScheduleStyle.ScheduleWrapper>
+            <ScheduleComponent
+              key={JSON.stringify(eventSettings.dataSource)} // Add key to force re-render
+              height="350px"
+              selectedDate={today}
+              minDate={today}
+              maxDate={next7Days}
+              startHour={start}
+              endHour={end}
+              eventSettings={{ ...eventSettings, template: eventTemplate }}
+              actionComplete={() => { }}
+              eventRendered={onEventRendered}
+              eventClick={onEventClick}
+              popupOpen={onPopupOpen}
+            >
+              <ViewsDirective>
+                <ViewDirective option="Day" interval={7} />
+              </ViewsDirective>
+              <Inject services={[Day]} />
+            </ScheduleComponent>
+          </ScheduleStyle.ScheduleWrapper>
+          <FormStyled.FormItem
+            name="subject"
+            rules={[
+              {
+                required: false,
+                message: "Please select the subject",
+              },
+            ]}
+            $width="100%"
+            validateFirst
+          >
+            <TextArea rows={2} name='description' placeholder="Input the subject" />
+          </FormStyled.FormItem>
+        </FormStyled.FormWrapper>
+      </Modal>
+    </>
+  );
 };
 
 export default BookTutor;

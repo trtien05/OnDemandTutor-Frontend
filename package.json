@@ -13,6 +13,8 @@
     "@ant-design/compatible": "^5.1.2",
     "@ant-design/icons": "^5.2.6",
     "@reduxjs/toolkit": "^1.9.6",
+    "@syncfusion/ej2-data": "^25.2.3",
+    "@syncfusion/ej2-react-schedule": "^25.2.7",
     "antd": "^5.18.0",
     "antd-img-crop": "^4.22.0",
     "axios": "^1.5.0",

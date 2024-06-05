@@ -4,6 +4,7 @@ import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
+import BecomeTutor from '../pages/BecomeTutor';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -35,6 +36,7 @@ const MainRouter = () => {
 const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
+        { path: config.routes.public.registerTutor, element: <BecomeTutor /> }
         //...
     ],
 };
