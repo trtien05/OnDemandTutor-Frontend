@@ -13,14 +13,12 @@ const SearchTutors = () => {
   useDocumentTitle("Search Tutors | MyTutor")
 
   const [specialty, setSpecialty] = useState<string>('');
-  const [availableTime, setAvailableTime] = useState<string>('');
-  const [dateTime, setDateTime] = useState<string>('');
   const [tutorLevel, setTutorLevel] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [priceRange, setPriceRange] = useState<[number, number]>([100000, 500000]);
-  const [minPrice, setMinPrice] = useState<number>(priceRange[0]);
-  const [maxPrice, setMaxPrice] = useState<number>(priceRange[1]);
+  const minPrice = priceRange[0];
+  const maxPrice = priceRange[1];
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Tutor[]>([]);
   const [data, setData] = useState<Tutor[]>([]);
@@ -59,8 +57,6 @@ const SearchTutors = () => {
 
     setSearchUrl(url);
 
-    console.log(searchCriteria)
-    console.log(searchUrl);
   };
 
 
@@ -85,10 +81,7 @@ const SearchTutors = () => {
         setTotalPages(res.totalPages);
       });
     window.scrollTo(0, 0);
-    console.log(url);
-
   }, [currentPage, searchUrl]);
-  console.log(currentPage)
 
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);

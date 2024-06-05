@@ -4,16 +4,12 @@ import { useCallback, useEffect, useState } from 'react';
 import cookieUtils from '../utils/cookieUtils';
 import { getInfoCurrentUser } from '../utils/accountAPI';
 
-type PayloadType = {
+type JwtType = {
+    exp: number;
     id: number;
     role: string;
     fullname: string;
     email: string;
-};
-
-type JwtType = {
-    exp: number;
-    payload: PayloadType;
 };
 
 export type UserType = {
@@ -23,8 +19,6 @@ export type UserType = {
     phoneNumber: string | null;
     role: string;
     userId: number;
-    address: string | null;
-    avgRating: number;
     accountStatus: AccountStatus;
     createdAt: Date | string;
     dateOfBirth: Date | string | null;
@@ -35,9 +29,9 @@ export type UserType = {
 const getRole = () => {
     const decoded = cookieUtils.decodeJwt() as JwtType;
 
-    if (!decoded || !decoded.payload || !decoded.payload.role) return null;
+    if (!decoded || !decoded.role) return null;
 
-    return Role[decoded.payload.role];
+    return Role[decoded.role];
 };
 
 const useAuth = () => {
