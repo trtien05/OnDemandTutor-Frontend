@@ -41,7 +41,7 @@ const normFile = (e: any) => {
       <FormStyled.FormWrapper
         labelAlign="left"
         layout="vertical"
-        requiredMark="optional"
+        requiredMark={false}
         size="middle"
         onFinish={onFinish}
         initialValues={initialValues}

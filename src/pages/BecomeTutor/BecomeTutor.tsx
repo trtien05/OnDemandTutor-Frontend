@@ -159,7 +159,7 @@ const BecomeTutor= () => {
           format={'HH:mm'}
           minuteStep={15}
           value={initialValue}
-          placeholder={['','']}
+          placeholder={['From','To']}
           onChange={(times) => handleInputChange(day, index, times)}
           disabledTime={() => getDisabledTime(day, index, timeslotForm)}
           style={{ width: `100%` }} />
@@ -380,37 +380,37 @@ const BecomeTutor= () => {
   );
 
   const { current, back, step, next, goTo } = MultipleSteps([
-    // <Form1
-    //   onFinish={onFinishAboutForm}
-    //   initialValues={aboutValues}
-    //   dataSource={dataSource}
-    //   agreement={agreement}
-    //   onAgreementChange={handleAgreementChange}
-    // />,
-    // <Form2
-    //   onFinish={onFinishEducationForm}
-    //   initialValues={educationValues}
-    //   onClickBack={onClickBack}
-    //   diploma={diploma}
-    //   onAddDiploma={handleAddDiploma}
-    //   onRemoveDiploma={handleRemoveDiploma}
-    // />,
-    // <Form3
-    //   onFinish={onFinishCertificationForm}
-    //   initialValues={certificationValues}
-    //   onClickBack={onClickBack}
-    //   isTicked={isTicked}
-    //   onTickChange={handleTickChange}
-    //   certificate={certificate}
-    //   onAddCertificate={handleAddCertificate}
-    //   onRemoveCertificate={handleRemoveCertificate}
-    //   certificateURL={certURL}
-    // />,
-    // <Form4
-    //   onFinish={onFinishDescriptionForm}
-    //   initialValues={descriptionValues}
-    //   onClickBack={onClickBack}
-    // />,
+    <Form1
+      onFinish={onFinishAboutForm}
+      initialValues={aboutValues}
+      dataSource={dataSource}
+      agreement={agreement}
+      onAgreementChange={handleAgreementChange}
+    />,
+    <Form2
+      onFinish={onFinishEducationForm}
+      initialValues={educationValues}
+      onClickBack={onClickBack}
+      diploma={diploma}
+      onAddDiploma={handleAddDiploma}
+      onRemoveDiploma={handleRemoveDiploma}
+    />,
+    <Form3
+      onFinish={onFinishCertificationForm}
+      initialValues={certificationValues}
+      onClickBack={onClickBack}
+      isTicked={isTicked}
+      onTickChange={handleTickChange}
+      certificate={certificate}
+      onAddCertificate={handleAddCertificate}
+      onRemoveCertificate={handleRemoveCertificate}
+      certificateURL={certURL}
+    />,
+    <Form4
+      onFinish={onFinishDescriptionForm}
+      initialValues={descriptionValues}
+      onClickBack={onClickBack}
+    />,
     <Form5
       onFinish={onFinishTimePriceForm}
       initialValues={timePriceValues}

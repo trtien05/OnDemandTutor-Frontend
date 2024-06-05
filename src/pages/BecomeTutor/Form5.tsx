@@ -107,7 +107,7 @@ const Form5 = ({ onFinish,
               $width={'100%'}
               validateFirst
             >
-              <Input placeholder='3' type='number' max='8' min='1' />
+              <Input placeholder='Max 8' type='number' max='8' min='1' />
             </FormStyled.FormItem>
           </FormStyled.FormContainer>
 
