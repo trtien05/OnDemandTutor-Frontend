@@ -10,8 +10,6 @@ import Footer from '../../layouts/MainLayout/Footer';
 
 const HomeLayout = () => {
     const { role, user } = useAuth();
-    console.log(role);
-
     const menu = role ? menuLogged(user as PIIProps) : menuUnLogged();
 
     return (
