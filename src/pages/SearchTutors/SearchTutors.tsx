@@ -35,7 +35,6 @@ const SearchTutors = () => {
     const searchCriteria = {
       specialty,
       priceRange: `${priceRange[0]}-${priceRange[1]}`,
-      availableTime,
       tutorLevel,
       sortBy,
       searchKeyword,
@@ -44,9 +43,6 @@ const SearchTutors = () => {
 
     if (specialty !== 'Specialties') {
       url += `&specialty=${specialty}`;
-    }
-    if (availableTime !== 'Available Time') {
-      url += `&availableTime=${availableTime}`;
     }
     if (tutorLevel !== 'Tutor Level') {
       url += `&tutorLevel=${tutorLevel}`;
@@ -96,13 +92,10 @@ const SearchTutors = () => {
 
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-
   const onChangeComplete = (value: number | number[]) => {
-    console.log('onChangeComplete: ', value);
     setPriceRange(value as [number, number]);
-    console.log(priceRange);
-
   };
+
 
   const priceDropdownRender = () => (
     <div style={{ padding: 8 }}>
@@ -111,9 +104,9 @@ const SearchTutors = () => {
         step={10000}
         min={minPrice}
         max={maxPrice}
-        onAfterChange={onChangeComplete}
+        onChangeComplete={onChangeComplete}
       />
-      <p>Selected price range: {priceRange[0]} - {priceRange[1]}</p>
+      <p>Selected price range: {priceRange[0].toLocaleString() + 'đ'} - {priceRange[1].toLocaleString() + 'đ'}</p>
     </div>
   );
 
@@ -122,43 +115,26 @@ const SearchTutors = () => {
       <Styled.FilterSection>
         <Container>
           <Styled.SearchWrapper>
-            <Row justify='space-between' align='middle' gutter={[20, 20]}>
-              <Col lg={4}>
+            <Row justify='center' align='middle' gutter={[20, 20]}>
+              <Col xl={8} lg={8} xs={24}>
                 <Styled.StyledSelect placeholder="Specialties" onChange={setSpecialty}>
+                  <Option value="Specialties">Specialties</Option>
                   <Option value="Ielts">Ielts</Option>
                   <Option value="Toeic">Toeic</Option>
                   <Option value="Cambridge">Cambridge</Option>
                 </Styled.StyledSelect>
               </Col>
 
-              <Col lg={8}>
+              <Col xl={8} lg={8} xs={24}>
                 <Styled.StyledSelect
                   dropdownRender={priceDropdownRender}
-                  value={`Price range: ${priceRange[0]}đ - ${priceRange[1]}đ`} >
+                  value={`Price range: ${priceRange[0].toLocaleString() + 'đ'} - ${priceRange[1].toLocaleString() + 'đ'}`} >
                 </Styled.StyledSelect>
               </Col>
 
-              <Col lg={4}>
-                <Styled.StyledSelect mode='multiple' placeholder="Available Time" onChange={setAvailableTime}>
-                  <Option value="Morning">Morning</Option>
-                  <Option value="Afternoon">Afternoon</Option>
-                  <Option value="Evening">Evening</Option>
-                </Styled.StyledSelect>
-              </Col>
-              <Col lg={4}>
-                <Styled.StyledSelect mode='multiple' placeholder="Days of week" onChange={setDateTime}>
-                  <Option value="Mon">Monday</Option>
-                  <Option value="Tue">Tuesday</Option>
-                  <Option value="Wed">Wednesday</Option>
-                  <Option value="Thur">Thursday</Option>
-                  <Option value="Fri">Friday</Option>
-                  <Option value="Sat">Saturday</Option>
-                  <Option value="Sun">Sunday</Option>
-                </Styled.StyledSelect>
-              </Col>
-
-              <Col lg={4}>
+              <Col xl={8} lg={8} xs={24}>
                 <Styled.StyledSelect placeholder="Tutor Level" onChange={setTutorLevel}>
+                  <Option value="Tutor Level">Tutor Level</Option>
                   <Option value="Associate">Associate</Option>
                   <Option value="Bachelor">Bachelor</Option>
                   <Option value="Master">Master</Option>
@@ -168,13 +144,14 @@ const SearchTutors = () => {
             </Row>
 
             <Styled.RowWrapper justify='center' align='middle' gutter={[20, 20]}>
-              <Col lg={4}>
+              <Col xl={4} lg={4} xs={24}>
                 <Styled.StyledSelect placeholder="Sort By" onChange={setSortBy}>
+                  <Option value="Sort By">Sort By</Option>
                   <Option value="Price">Price</Option>
                 </Styled.StyledSelect>
               </Col>
 
-              <Col lg={8}>
+              <Col xl={8} lg={8} xs={24}>
                 <Styled.InputStyled
                   placeholder="Search by name or keyword"
                   value={searchKeyword}
@@ -182,7 +159,7 @@ const SearchTutors = () => {
                 />
               </Col>
 
-              <Col lg={2}>
+              <Col xl={2} lg={2} xs={24}>
                 <Styled.ButtonStyled type="primary" onClick={handleSave}>Save</Styled.ButtonStyled>
               </Col>
             </Styled.RowWrapper>
