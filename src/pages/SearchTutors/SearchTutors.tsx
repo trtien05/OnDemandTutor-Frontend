@@ -89,6 +89,8 @@ const SearchTutors = () => {
         setTotalPages(res.totalPages);
       });
     window.scrollTo(0, 0);
+    console.log(url);
+
   }, [currentPage, searchUrl]);
   console.log(currentPage)
 
@@ -195,7 +197,9 @@ const SearchTutors = () => {
           </Styled.TotalTutorAvaiable>
         </Container>
       </Styled.TitleWrapper>
+
       <TutorsList initLoading={initLoading} list={list} />
+
       {totalPages > 1 &&
         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
       }

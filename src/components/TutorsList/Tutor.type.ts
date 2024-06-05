@@ -10,6 +10,6 @@ export interface Tutor {
     teachingPricePerHour?: number;
     educations: Education[];
     backgroundDescription?: string;
-
+    videoIntroductionLink?: string;
     loading: boolean;
 }

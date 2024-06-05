@@ -9,6 +9,11 @@ const TutorsList: React.FC<{ list: Tutor[], initLoading: boolean }> = (props) =>
   const [hoveredTutor, setHoveredTutor] = useState<Tutor>();
   const [translateY, setTranslateY] = useState<number>(0);
 
+  const getEmbedUrl = (url: string): string => {
+    const videoIdMatch = url.match(/v=([^&]+)/);
+    return videoIdMatch ? `https://www.youtube.com/embed/${videoIdMatch[1]}` : url;
+  };
+
   const handleMouseEnter = (event: { currentTarget: any; }, item: Tutor) => {
     const tutorItem = event.currentTarget;
     const itemRect = tutorItem.getBoundingClientRect();
@@ -40,14 +45,22 @@ const TutorsList: React.FC<{ list: Tutor[], initLoading: boolean }> = (props) =>
               </Col>
               <Col lg={6} md={0} sm={0} xs={0} >
                 <Styled.TurtorVideo translate={typeof translateY === 'number' ? translateY : 0}>
-                  {hoveredTutor && (
-                    <>
-                      <h2>{hoveredTutor.fullName}</h2>
-                    </>
+                  {hoveredTutor && hoveredTutor.videoIntroductionLink && (
+                    <iframe
+                      width="100%"
+                      height="100%"
+                      style={{ 'borderRadius': '12px' }}
+                      src={getEmbedUrl(hoveredTutor.videoIntroductionLink)}
+                      title="YouTube video player"
+                      frameBorder="0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    ></iframe>
                   )}
                 </Styled.TurtorVideo>
               </Col>
             </Row>
+
           </Styled.TutorFiltered>
         </Container>
       </Styled.TutorFilteredSection>
