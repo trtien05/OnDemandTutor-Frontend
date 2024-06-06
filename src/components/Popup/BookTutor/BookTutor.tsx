@@ -21,6 +21,7 @@ interface Schedule {
 
 const BookTutor: React.FC = () => {
   const tutorId = 1;
+  const accountId = 2;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [schedule, setSchedule] = useState<Schedule[]>([]);
   const [selectedId, setSelectedId] = useState<string[]>([]);
@@ -37,7 +38,7 @@ const BookTutor: React.FC = () => {
             .catch(error => {
               console.error('Error saving account details:', error);
             });;
-            
+
         //format data    
         const startDate = new Date(response.data.startDate);
         let newSchedule: Schedule[] = [];
@@ -59,7 +60,6 @@ const BookTutor: React.FC = () => {
         });
 
         setSchedule(newSchedule); // Set state once, after processing all schedules
-        console.log(newSchedule);
 
       } catch (error) {
         console.error('Failed to fetch schedule', error);
@@ -69,6 +69,15 @@ const BookTutor: React.FC = () => {
     fetchSchedule();
   }, []);
 
+  function convertBookingData(description: string ) {
+    return {
+      createdAt: new Date().toISOString(),
+      description: description,
+      tutorId: tutorId,
+      studentId: accountId,
+      timeslotIds: selectedId
+    }
+  }
   const [start, setStart] = useState<string>('');
   const [end, setEnd] = useState<string>('');
 
@@ -94,7 +103,6 @@ const BookTutor: React.FC = () => {
     };
 
     timeRange();
-    console.log(end)
   }, [schedule]);
 
 
@@ -139,9 +147,6 @@ const BookTutor: React.FC = () => {
         ? prevIds.filter(i => i !== id)
         : [...prevIds, id]
     );
-    console.log(args.event);
-    console.log(schedule);
-    console.log(selectedId);
   };
 
   const onPopupOpen = (args: PopupOpenEventArgs) => {
@@ -183,11 +188,11 @@ const BookTutor: React.FC = () => {
     setIsFormOpen(true);
   };
 
-  const handleOk = () => {
+  const handleOk = async () => {
     setLoading(true); // Set loading state to true when form is submitted
     const values = form.getFieldValue('description')
-    console.log(values);
-    console.log(selectedId)
+    const bookingData = await convertBookingData(values);
+    console.log(bookingData)
     setLoading(false); // Set loading state back to false when form submission is complete
 
   };
