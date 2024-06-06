@@ -202,6 +202,9 @@ const BookTutor: React.FC = () => {
               Send
           </Button>
       </FormStyled.ButtonDiv>,]}
+      styles={
+        { content: { borderRadius: '100px', padding: '50px', boxShadow:'-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+    } }}
       >
         <FormStyled.FormWrapper
           labelAlign='left'
@@ -216,7 +219,7 @@ const BookTutor: React.FC = () => {
           <ScheduleStyle.ScheduleWrapper>
             <ScheduleComponent
               key={JSON.stringify(eventSettings.dataSource)} // Add key to force re-render
-              height="350px"
+              height="300px"
               selectedDate={today}
               minDate={today}
               maxDate={next7Days}

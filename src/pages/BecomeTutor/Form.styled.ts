@@ -170,7 +170,7 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
     & .ant-input-password,
      {  
         padding: 12px 20px;
-        font-size: 1rem;
+        font-size: 1.6rem;
         border-radius: 6px;
         border-color: ${theme.colors.border};
 
