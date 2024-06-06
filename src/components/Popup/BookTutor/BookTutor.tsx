@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import { Button, Form, Modal } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
-import { Day, EventRenderedArgs, EventSettingsModel, Inject, PopupOpenEventArgs, ScheduleComponent, ViewDirective, ViewsDirective } from '@syncfusion/ej2-react-schedule';
+import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, PopupOpenEventArgs, ScheduleComponent, ViewDirective, ViewsDirective } from '@syncfusion/ej2-react-schedule';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
 import * as ScheduleStyle from './BookTutor.styled';
+import { get } from '../../../utils/apiCaller';
+import moment from 'moment';
+import { getTutorSchedule } from '../../../api/tutorBookingAPI';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -14,8 +17,6 @@ interface Schedule {
   scheduleDate: string;
   startTime: string;
   endTime: string;
-  tutorId: number;
-  isSelected: boolean;
 }
 
 const BookTutor: React.FC = () => {
@@ -30,15 +31,36 @@ const BookTutor: React.FC = () => {
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-        const response = {
-          data: [
-            { id: 1, scheduleDate: '2024-06-09', startTime: '07:00', endTime: '10:00', tutorId: 1, isSelected: false },
-            { id: 2, scheduleDate: '2024-06-07', startTime: '12:00', endTime: '13:00', tutorId: 1, isSelected: false },
-            { id: 3, scheduleDate: '2024-06-08', startTime: '14:00', endTime: '15:00', tutorId: 1, isSelected: false },
-            { id: 4, scheduleDate: '2024-06-07', startTime: '16:00', endTime: '17:00', tutorId: 1, isSelected: false },
-          ],
-        };
-        setSchedule(response.data);
+
+        const response =
+          await getTutorSchedule(tutorId)
+            .catch(error => {
+              console.error('Error saving account details:', error);
+            });;
+            
+        //format data    
+        const startDate = new Date(response.data.startDate);
+        let newSchedule: Schedule[] = [];
+        response.data.schedules.forEach((day, dayIndex: number) => {
+          const currentDate = new Date(startDate);
+          currentDate.setDate(startDate.getDate() + dayIndex);
+          if (day.timeslots.length > 0) {
+            day.timeslots.forEach((timeslot) => {
+              const value = {
+                id: timeslot.id,
+                scheduleDate: currentDate.toISOString().split('T')[0],
+                startTime: timeslot.startTime.slice(0, 5),
+                endTime: timeslot.endTime.slice(0, 5),
+              };
+
+              newSchedule.push(value);
+            });
+          }
+        });
+
+        setSchedule(newSchedule); // Set state once, after processing all schedules
+        console.log(newSchedule);
+
       } catch (error) {
         console.error('Failed to fetch schedule', error);
       }
@@ -47,41 +69,34 @@ const BookTutor: React.FC = () => {
     fetchSchedule();
   }, []);
 
-  const convertTimeToDate = (time: string): Date => {
-    const [hours, minutes] = time.split(':').map(Number);
-    const date = new Date();
-    date.setHours(hours, minutes, 0, 0);
-    return date;
-  };
-
   const [start, setStart] = useState<string>('');
   const [end, setEnd] = useState<string>('');
 
-    useEffect(() => {
-      if (schedule.length === 0) return;
-  
-      const timeRange = () => {
-        let earliest: string = '23:59';
-        let latest: string = '00:00';
-  
-        schedule.forEach(s => {
-          if (s.startTime < earliest) {
-            earliest = s.startTime;
-          }
-  
-          if (s.endTime > latest) {
-            latest = s.endTime;
-          }
-        });
-  
-        setStart(earliest);
-        setEnd(latest);
-      };
-  
-      timeRange();
-      console.log(end)
-    }, [schedule]);
-  
+  useEffect(() => {
+    if (schedule.length === 0) return;
+
+    const timeRange = () => {
+      let earliest: string = '23:59';
+      let latest: string = '00:00';
+
+      schedule.forEach(s => {
+        if (s.startTime < earliest) {
+          earliest = s.startTime;
+        }
+
+        if (s.endTime > latest) {
+          latest = s.endTime;
+        }
+      });
+
+      setStart(earliest);
+      setEnd(latest);
+    };
+
+    timeRange();
+    console.log(end)
+  }, [schedule]);
+
 
   useEffect(() => {
     setEventSettings({
@@ -91,7 +106,6 @@ const BookTutor: React.FC = () => {
         Id: s.id.toString(),
         StartTime: new Date(`${s.scheduleDate}T${s.startTime}`),
         EndTime: new Date(`${s.scheduleDate}T${s.endTime}`),
-        isSelected: s.isSelected,
       })),
     });
   }, [schedule]);
@@ -134,6 +148,13 @@ const BookTutor: React.FC = () => {
     args.cancel = true; // Disable the event popup
   };
 
+  const onActionBegin = (args: ActionEventArgs) => {
+    // Cancel new event creation
+    if (args.requestType === 'eventCreate' || args.requestType === 'eventChange') {
+      args.cancel = true;
+    }
+  };
+
   const eventTemplate = (props: any) => {
     return (
       <div className="e-template-wrap">
@@ -166,10 +187,10 @@ const BookTutor: React.FC = () => {
     setLoading(true); // Set loading state to true when form is submitted
     const values = form.getFieldValue('description')
     console.log(values);
-          console.log(selectedId)
-          setLoading(false); // Set loading state back to false when form submission is complete
+    console.log(selectedId)
+    setLoading(false); // Set loading state back to false when form submission is complete
 
-};
+  };
 
   const handleCancel = () => {
     setIsFormOpen(false);
@@ -187,24 +208,27 @@ const BookTutor: React.FC = () => {
         onOk={handleOk}
         onCancel={handleCancel}
         footer={[<FormStyled.ButtonDiv>
-          <Button key="Cancel" type="default" onClick={handleCancel} style={{marginRight:'5%', width:'45%'}}>
-              Cancel
+          <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '45%' }}>
+            Cancel
           </Button>
           <Button
-              key="submit"
-              type="primary"
-              htmlType="submit"
-              onClick={handleOk}
-              loading={loading}
-              form="myForm" //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
-              style={{marginRight:'2%', width:'45%'}}
+            key="submit"
+            type="primary"
+            htmlType="submit"
+            onClick={handleOk}
+            loading={loading}
+            form="myForm" //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
+            style={{ marginRight: '2%', width: '45%' }}
           >
-              Send
+            Send
           </Button>
-      </FormStyled.ButtonDiv>,]}
-      styles={
-        { content: { borderRadius: '100px', padding: '50px', boxShadow:'-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
-    } }}
+        </FormStyled.ButtonDiv>,]}
+        styles={
+          {
+            content: {
+              borderRadius: '100px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+            }
+          }}
       >
         <FormStyled.FormWrapper
           labelAlign='left'
@@ -229,6 +253,7 @@ const BookTutor: React.FC = () => {
               actionComplete={() => { }}
               eventRendered={onEventRendered}
               eventClick={onEventClick}
+              actionBegin={onActionBegin}
               popupOpen={onPopupOpen}
             >
               <ViewsDirective>

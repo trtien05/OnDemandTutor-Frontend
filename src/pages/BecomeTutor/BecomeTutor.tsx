@@ -700,8 +700,8 @@ const BecomeTutor = () => {
         const timeslot = formData[`${day}_timeslot_${i}`];
         if (timeslot && timeslot.length === 2) {
           // for (let i = timeslot[0].$H; i < timeslot[1].$H; i++) {
-          const startTime = timeslot[0].format("HH:mm:ss");
-          const endTime = timeslot[1].format("HH:mm:ss");
+          const startTime = timeslot[0].format("HH:mm");
+          const endTime = timeslot[1].format("HH:mm");
           // const start = moment().set({ hour: i, minute: 0, second: 0 });
           // const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
           // const startTime = start.format("HH:mm:ss");

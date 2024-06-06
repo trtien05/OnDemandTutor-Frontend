@@ -21,9 +21,15 @@ export const ScheduleWrapper = styled.div`
     margin: 0 !important;
   }
 
+  .e-schedule .e-new-event,
+  .e-schedule .e-toolbar-right {
+        display: none !important;
+      }
+
   .e-schedule .e-header-cells,
   .e-schedule .e-current-day,
-  .e-schedule .e-header-row {
+  .e-schedule .e-header-row,
+  .e-schedule .e-schedule-toolbar-container {
     line-height: 20px !important;
     text-align: center !important;
     padding: 0 !important;
