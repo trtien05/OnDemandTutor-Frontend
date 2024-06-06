@@ -1,4 +1,4 @@
-import { Navigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import config from '../config';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
