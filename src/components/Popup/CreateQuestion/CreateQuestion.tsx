@@ -3,7 +3,7 @@ import { Button, Modal, Input, Select, UploadFile, Typography, message, Form } f
 import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
-import { theme } from '../../themes';
+import { theme } from '../../../themes';
 
 const Question: React.FC = () => {
     const [form] = Form.useForm();

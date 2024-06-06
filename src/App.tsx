@@ -2,7 +2,7 @@
 
 import { BrowserRouter as Router } from 'react-router-dom';
 import RoutesComponent from './routes';
-import BookTutor from './components/Modal/BookTutor/BookTutor';
+import BookTutor from './components/Popup/BookTutor/BookTutor';
 
 function App() {
 

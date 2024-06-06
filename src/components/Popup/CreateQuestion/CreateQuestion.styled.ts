@@ -1,7 +1,7 @@
 import { Form, Typography, Input, Button, Card } from "antd";
 import styled from "styled-components";
 
-import { theme } from '../../themes';
+import { theme } from '../../../themes';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;

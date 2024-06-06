@@ -5,7 +5,7 @@ import NotFound from '../pages/404/404';
 import Home from '../pages/Home';
 import Login from '../pages/Login';
 import BecomeTutor from '../pages/BecomeTutor';
-import Question from '../components/Popup/CreateQuestion';
+import Question from '../components/Popup/CreateQuestion/CreateQuestion';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
