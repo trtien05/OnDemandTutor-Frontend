@@ -19,7 +19,7 @@ const routes = {
         profile: '/profile',
     },
     api: {
-        loginGoogle: '/auth/callback/google/redirect',
+        loginGoogle: '/api/auth/callback/google/redirect',
     },
 };
 

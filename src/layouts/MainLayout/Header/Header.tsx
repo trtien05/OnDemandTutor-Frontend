@@ -47,6 +47,8 @@ const Header = ({ role, navbar, menu, avatar }: HeaderProps) => {
         navigate(config.routes.public.home);
     }, [location.search]);
 
+    const navigate = useNavigate();
+    const [show, setShow] = useState(false);
     const transitionNavBar = () => {
         if (window.scrollY > 0) {
             setShow(true);

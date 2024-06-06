@@ -6,6 +6,7 @@ import Home from '../pages/Home';
 import Login from '../pages/Login';
 import BecomeTutor from '../pages/BecomeTutor';
 import Question from '../components/Popup/CreateQuestion';
+import SearchTutors from '../pages/SearchTutors/SearchTutors';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -21,6 +22,8 @@ const publicRoutes = {
         { path: config.routes.public.registerTutor, element: <BecomeTutor /> },
         
         //
+        { path: config.routes.public.searchTutors, element: <SearchTutors /> },
+
     ],
 };
 

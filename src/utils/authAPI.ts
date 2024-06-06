@@ -1,4 +1,4 @@
-import { post } from './apiCaller';
+import { post, put } from './apiCaller';
 
 export const register = (account: object) => {
     return post('/api/auth/register', account);
@@ -14,7 +14,7 @@ export const forgotPassword = (emailObj: { email: string }) => {
 
 export const resetPassword = (password: string, email: string) => {
     const params = new URLSearchParams({ email, password });
-    return post(`/api/auth/reset-password?${params.toString()}`);
+    return put(`/api/auth/reset-password?${params.toString()}`);
 };
 
 export const resendOTP = (email: string) => {

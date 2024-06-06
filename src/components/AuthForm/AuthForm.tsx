@@ -1,5 +1,5 @@
 import * as FormStyled from './AuthForm.styled';
-import { Col } from 'antd';
+import { Col, Typography } from 'antd';
 import images, { fallbackImg } from './AuthForm.images';
 import Container from '../../components/Container';
 import { FieldType, OTPFieldType } from './AuthForm.fields';
@@ -7,7 +7,9 @@ import Link from '../../components/Link';
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { PageEnum } from '../../utils/enums';
 import config from '../../config'
-import GoogleLogin from '../../components/AuthForm/GoogleLogin';
+import { FcGoogle } from 'react-icons/fc';
+import { LOGIN_GOOGLE_URL } from '../../config/constants';
+const { Text } = Typography;
 
 type RedirectType = {
     description: string;
@@ -26,7 +28,6 @@ type AuthFormProps = {
     redirect: RedirectType;
     onFinish?: (values: unknown) => void;
     onResend?: (values: unknown) => void;
-    onGoogleSignIn?: (values: unknown) => void;
     onFinishFailed?: (values: unknown) => void;
     reverse?: boolean;
     isSubmitting?: boolean;
@@ -43,7 +44,6 @@ const AuthForm = ({
     redirect,
     onFinish,
     onResend,
-    onGoogleSignIn,
     onFinishFailed,
     reverse = false,
     isSubmitting = false,
@@ -134,9 +134,10 @@ const AuthForm = ({
 
 
 
-                            {page === PageEnum.LOGIN && (
-                                < GoogleLogin onGoogleSignIn={onGoogleSignIn} />
-                            )}
+                            <FormStyled.FormGoogleButton to={LOGIN_GOOGLE_URL}>
+                                <FcGoogle />
+                                <Text>Tiếp Tục Với Google</Text>
+                            </FormStyled.FormGoogleButton>
 
 
 

@@ -5,13 +5,18 @@ import { theme } from '../../themes';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-
+export const StyledModal = styled.div`
+  width:1000px;
+`;
 export const FormContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
     column-gap: 5%;
     margin: 0 auto;
+    // width: 100%; 
+    // height: 100%; 
+    // position: relative"
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
         width: 100%;
@@ -66,11 +71,11 @@ export const CommentInput = styled(TextArea)`
 `;
 
 export const ButtonDiv = styled.div`
-        // display: flex; 
-        // justifyContent: flex-end;
-        alignSelf: flex-end; 
-        width: 100%; 
-        marginTop: 20px;
+      width: 100%; 
+      marginTop: 20px;
+      display: flex; 
+      align-items: center;
+      justify-content: center;
  `;
 export const FormItem = styled(Form.Item)<{$width?: string;}>`
 
@@ -158,7 +163,7 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
         margin-top: 2px;
         margin-bottom: 5px;
         color: ${theme.colors.error};
-        font-size: 0.8rem;
+        font-size: 1.4rem;
         text-align: left;
         line-height: 1.6;
     }
