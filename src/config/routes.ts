@@ -3,6 +3,7 @@ const routes = {
         home: '/',
         login: '/login',
         register: '/register',
+        verifyCode: '/verify-code',
         forgotPassword: '/forgot-password',
         setPassword: '/set-password',
         contact: '/contact',
@@ -13,8 +14,11 @@ const routes = {
         classDetails: '/search-classes/:classId',
         notFound: '/404',
     },
+    student: {
+        profile: '/profile',
+    },
     api: {
-        loginGoogle: '/auth/callback/google/redirect',
+        loginGoogle: '/api/auth/callback/google/redirect',
     },
 };
 

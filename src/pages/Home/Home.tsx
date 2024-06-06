@@ -1,14 +1,11 @@
 import * as Styled from './Home.styled';
 
-import { Avatar, Button, Carousel, Col, Collapse, theme, Empty, List, Rate, Row, Skeleton, Space, Typography, notification } from 'antd';
+import { Col, Collapse, theme, Row, Skeleton, List } from 'antd';
 import { CSSProperties, useEffect, useState } from 'react';
 
 import Container from '../../components/Container';
 import { FaStar } from "react-icons/fa";
 import { FaRegHeart } from "react-icons/fa";
-
-// import DefaultBanner from '../../components/Banner/DefaultBanner';
-import { IoIosArrowForward } from 'react-icons/io';
 import ieltsImg from '../../assets/images/image5.png';
 import mathImg from '../../assets/images/image6.png';
 import programImg from '../../assets/images/image7.png';
@@ -17,20 +14,13 @@ import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
 import iconPerson from "../../assets/images/image14.png";
 import feedbackImg from "../../assets/images/image17.png";
-import Link from '../../components/Link';
-// import { ServiceType } from '@/components/ServiceList/ServiceItem';
-import config from '../../config';
-
-// import { getServiceTopSale } from '../../utils/serviceAPI';
-// import { FeedbackListItem } from '../../pages/ServiceDetail/Feedback/Feedback.type';
-// import { getTopFeedback } from '../../utils/feedbackAPI';
-import { CategoryLabel } from '../../utils/enums';
 import { useDocumentTitle } from '../../hooks';
 import DefaultBanner from '../../components/Banner/DefaultBanner';
 import { RightOutlined } from '@ant-design/icons';
 import { CollapseProps } from 'antd/lib';
+import Link from '../../components/Link';
+import config from '../../config';
 
-const { Panel } = Collapse;
 
 interface DataType {
     gender?: string;
@@ -64,6 +54,7 @@ A dog is a type of domesticated animal.
 `;
 
 const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelStyle) => [
+
     {
         key: '1',
         label: <Styled.QuestionTitle level={3}>Flexible Scheduling</Styled.QuestionTitle>,
@@ -90,9 +81,20 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
     },
 ];
 const Home = () => {
+    useDocumentTitle('Home | MyTutor');
+    const [translateY, setTranslateY] = useState<number>(0);
+    const [hoveredTutor, setHoveredTutor] = useState<DataType>();
+
+    const handleMouseEnter = (event: { currentTarget: any; }, item: DataType) => {
+        const tutorItem = event.currentTarget;
+        const itemRect = tutorItem.getBoundingClientRect();
+        const containerRect = tutorItem.parentElement.getBoundingClientRect();
+        const newTranslateY = itemRect.top - containerRect.top;
+        setHoveredTutor(item);
+        setTranslateY(newTranslateY);
+    };
     const listCategory = [ieltsImg, mathImg, programImg, toeicImg];
     const [initLoading, setInitLoading] = useState(true);
-    const [loading, setLoading] = useState(false);
     const [data, setData] = useState<DataType[]>([]);
     const [list, setList] = useState<DataType[]>([]);
     const { token } = theme.useToken();
@@ -113,41 +115,6 @@ const Home = () => {
                 setList(res.results);
             });
     }, []);
-    const onLoadMore = () => {
-        setLoading(true);
-        setList(
-            data.concat([...new Array(count)].map(() => ({ loading: true, name: {}, picture: {} }))),
-        );
-        fetch(fakeDataUrl)
-            .then((res) => res.json())
-            .then((res) => {
-                const newData = data.concat(res.results);
-                setData(newData);
-                setList(newData);
-                setLoading(false);
-                // Resetting window's offsetTop so as to display react-virtualized demo underfloor.
-                // In real scene, you can using public method of react-virtualized:
-                // https://stackoverflow.com/questions/46700726/how-to-use-public-method-updateposition-of-react-virtualized
-                window.dispatchEvent(new Event('resize'));
-            });
-    };
-    const loadMore =
-        !initLoading && !loading ? (
-            <div
-                style={{
-                    textAlign: 'center',
-                    marginTop: 50,
-                    height: 32,
-                    lineHeight: '32px',
-                }}
-            >
-                <Styled.SeeMoreButton onClick={onLoadMore}>
-                    See More {'>'}
-                </Styled.SeeMoreButton>
-            </div>
-        ) : null;
-
-
     return (
         <>
 
@@ -174,9 +141,12 @@ const Home = () => {
                                 <Styled.BestServiceImageDiv>
                                     <Styled.BestServiceImage src={listCategory[0]} alt="Ielts" />
                                 </Styled.BestServiceImageDiv>
-                                <Styled.BestServiceButton>
-                                    See More {'>'}
-                                </Styled.BestServiceButton>
+
+                                <Link to={config.routes.public.searchTutors}>
+                                    <Styled.BestServiceButton>
+                                        See More {'>'}
+                                    </Styled.BestServiceButton>
+                                </Link>
                             </Styled.BestServiceItem>
                         </Col>
                         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
@@ -185,9 +155,11 @@ const Home = () => {
                                     <Styled.BestServiceImageMath src={listCategory[1]} alt="Ielts" />
 
                                 </Styled.BestServiceImageDiv>
-                                <Styled.BestServiceButton>
-                                    See More {'>'}
-                                </Styled.BestServiceButton>
+                                <Link to={config.routes.public.searchTutors}>
+                                    <Styled.BestServiceButton>
+                                        See More {'>'}
+                                    </Styled.BestServiceButton>
+                                </Link>
                             </Styled.BestServiceItem>
                         </Col>
                         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
@@ -196,9 +168,11 @@ const Home = () => {
                                     <Styled.BestServiceImageProgram src={listCategory[2]} alt="Ielts" />
 
                                 </Styled.BestServiceImageDiv>
-                                <Styled.BestServiceButton>
-                                    See More {'>'}
-                                </Styled.BestServiceButton>
+                                <Link to={config.routes.public.searchTutors}>
+                                    <Styled.BestServiceButton>
+                                        See More {'>'}
+                                    </Styled.BestServiceButton>
+                                </Link>
                             </Styled.BestServiceItem>
                         </Col>
                         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
@@ -207,9 +181,12 @@ const Home = () => {
                                     <Styled.BestServiceImage src={listCategory[3]} alt="Ielts" />
 
                                 </Styled.BestServiceImageDiv>
-                                <Styled.BestServiceButton>
-                                    See More {'>'}
-                                </Styled.BestServiceButton>
+                                <Link to={config.routes.public.searchTutors}>
+                                    <Styled.BestServiceButton>
+                                        See More {'>'}
+                                    </Styled.BestServiceButton>
+                                </Link>
+
                             </Styled.BestServiceItem>
                         </Col>
                     </Row>
@@ -227,92 +204,120 @@ const Home = () => {
                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
                             </Styled.BestServiceDesc>
                         </Col>
+
                     </Row>
 
+                    <Row justify='space-between'>
+                        <Col lg={17} md={24} xs={24} sm={24}>
+                            <List
+                                loading={initLoading}
+                                itemLayout="horizontal"
+                                dataSource={list}
+                                renderItem={(item) => (
+                                    <Styled.TutorItem
+                                        onMouseEnter={(event) => handleMouseEnter(event, item)}
+                                        translate={typeof translateY === 'number' ? "no" : translateY}>
+                                        <Skeleton avatar title={false} loading={item.loading} active>
+                                            <Col lg={24} md={24} sm={24} xs={24}>
+                                                <Styled.BoxHover>
+                                                    <Styled.BestTutorItem justify='space-between'>
+                                                        <Col lg={7} md={8} sm={9} xs={24}>
+                                                            <Styled.BestTutorImage src={item.picture.large} alt="Ielts" />
+                                                        </Col>
+                                                        <Col lg={9} md={8} sm={6} xs={0}>
+                                                            <Styled.BestTutorContent>
+                                                                <Styled.BestTutorName level={2}>{item.name?.last}</Styled.BestTutorName>
+                                                                <Styled.BestTutorEducation>
+                                                                    <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
+                                                                    <Styled.BestTutorEducationBachelor>
+                                                                        Bachelor, Math
+                                                                    </Styled.BestTutorEducationBachelor>
+                                                                    <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
+                                                                    <Styled.BestTutorEducationBachelor>
+                                                                        Math Physic
+                                                                    </Styled.BestTutorEducationBachelor>
+                                                                </Styled.BestTutorEducation>
+                                                                <Styled.BestTutorStudent>
+                                                                    <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
+                                                                    <Styled.BestTutorEducationBachelor>
+                                                                        55 students taught
+                                                                    </Styled.BestTutorEducationBachelor>
+                                                                </Styled.BestTutorStudent>
+                                                                <Styled.BestTutorDescription>
+                                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex
+                                                                </Styled.BestTutorDescription>
 
-                    <List
-                        loading={initLoading}
-                        itemLayout="horizontal"
-                        loadMore={loadMore}
-                        dataSource={list}
-                        renderItem={(item) => (
-                            <Styled.TutorItem>
-                                <Skeleton avatar title={false} loading={item.loading} active>
-                                    <Col lg={20}>
-                                        <Styled.BestTutorItem>
-                                            <Col lg={6} sm={12} xs={24}>
-                                                <Styled.BestTutorImage src={item.picture.large} alt="Ielts" />
+
+                                                            </Styled.BestTutorContent>
+                                                        </Col>
+
+                                                        <Col lg={8} md={8} sm={8} xs={24}>
+                                                            <Styled.BestTutorBooking>
+                                                                <Styled.BookingInformation>
+                                                                    <div style={{ 'textAlign': 'center' }}>
+                                                                        <div style={{ 'display': 'flex', 'height': '' }}>
+                                                                            <span><FaStar style={{ 'width': '31px', 'height': '31px', 'color': '#FFCC4D', 'marginRight': '5px' }} /></span>
+                                                                            <Styled.BookingRatingAndPrice >5</Styled.BookingRatingAndPrice>
+                                                                        </div>
+                                                                        <div>
+                                                                            x view
+                                                                        </div>
+                                                                    </div>
+                                                                    <div>
+                                                                        <Styled.BookingRatingAndPrice>Price</Styled.BookingRatingAndPrice>
+                                                                    </div>
+                                                                    <div>
+                                                                        <span><FaRegHeart style={{ 'width': '20px', 'height': '20px', 'color': '#B94AB7', 'marginTop': '10px' }} /></span>
+
+                                                                    </div>
+                                                                </Styled.BookingInformation>
+                                                                <Styled.BookingThisTutor>
+                                                                    <Styled.BookingTutorButton>
+                                                                        Book This Tutor
+                                                                    </Styled.BookingTutorButton>
+                                                                </Styled.BookingThisTutor>
+                                                                <Styled.BookingThisTutor>
+                                                                    <Styled.ViewScheduleTutorButton>
+                                                                        View Full Schedule
+                                                                    </Styled.ViewScheduleTutorButton>
+                                                                </Styled.BookingThisTutor>
+                                                            </Styled.BestTutorBooking>
+                                                        </Col>
+                                                    </Styled.BestTutorItem>
+                                                </Styled.BoxHover>
                                             </Col>
-                                            <Col lg={9}>
-                                                <Styled.BestTutorContent>
-                                                    <Styled.BestTutorName level={2}>{item.name?.last}</Styled.BestTutorName>
-                                                    <Styled.BestTutorEducation>
-                                                        <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                                                        <Styled.BestTutorEducationBachelor>
-                                                            Bachelor, Math
-                                                        </Styled.BestTutorEducationBachelor>
-                                                        <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                                                        <Styled.BestTutorEducationBachelor>
-                                                            Math Physic
-                                                        </Styled.BestTutorEducationBachelor>
-                                                    </Styled.BestTutorEducation>
-                                                    <Styled.BestTutorStudent>
-                                                        <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
-                                                        <Styled.BestTutorEducationBachelor>
-                                                            55 students taught
-                                                        </Styled.BestTutorEducationBachelor>
-                                                    </Styled.BestTutorStudent>
-                                                    <Styled.BestTutorDescription>
-                                                        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex
-                                                    </Styled.BestTutorDescription>
+                                        </Skeleton>
 
+                                    </Styled.TutorItem>
+                                )}
+                            />
+                        </Col>
+                        <Col lg={6} md={0} sm={0} xs={0} >
+                            <Styled.TurtorVideo translate={typeof translateY === 'number' ? translateY : 0}>
+                                {hoveredTutor && (
+                                    <>
+                                        <h2>{hoveredTutor.name.last}</h2>
+                                    </>
+                                )}
+                            </Styled.TurtorVideo>
+                        </Col>
+                    </Row>
 
-                                                </Styled.BestTutorContent>
-                                            </Col>
+                    <Row>
+                        <Col lg={24} md={24} xs={24} sm={24} >
+                            <Styled.ButtonWrapper>
+                                <Link to={config.routes.public.searchTutors}>
+                                    <Styled.SeeMoreButton>
+                                        See More {'>'}
+                                    </Styled.SeeMoreButton>
+                                </Link>
+                            </Styled.ButtonWrapper>
+                        </Col>
+                    </Row>
 
-                                            <Col lg={9} sm={12} xs={24}>
-                                                <Styled.BestTutorBooking>
-                                                    <Styled.BookingInformation>
-                                                        <div style={{ 'textAlign': 'center' }}>
-                                                            <div style={{ 'display': 'flex', 'height': '' }}>
-                                                                <span><FaStar style={{ 'width': '31px', 'height': '31px', 'color': '#FFCC4D', 'marginRight': '5px' }} /></span>
-                                                                <Styled.BookingRatingAndPrice >5</Styled.BookingRatingAndPrice>
-                                                            </div>
-                                                            <div>
-                                                                x view
-                                                            </div>
-                                                        </div>
-                                                        <div>
-                                                            <Styled.BookingRatingAndPrice>Price</Styled.BookingRatingAndPrice>
-                                                        </div>
-                                                        <div>
-                                                            <span><FaRegHeart style={{ 'width': '20px', 'height': '20px', 'color': '#B94AB7', 'marginTop': '10px' }} /></span>
-
-                                                        </div>
-                                                    </Styled.BookingInformation>
-                                                    <Styled.BookingThisTutor>
-                                                        <Styled.BookingTutorButton>
-                                                            Book This Tutor
-                                                        </Styled.BookingTutorButton>
-                                                    </Styled.BookingThisTutor>
-                                                    <Styled.BookingThisTutor>
-                                                        <Styled.ViewScheduleTutorButton>
-                                                            View Full Schedule
-                                                        </Styled.ViewScheduleTutorButton>
-                                                    </Styled.BookingThisTutor>
-                                                </Styled.BestTutorBooking>
-                                            </Col>
-
-                                        </Styled.BestTutorItem>
-                                    </Col>
-
-                                </Skeleton>
-
-                            </Styled.TutorItem>
-                        )}
-                    />
                 </Container>
             </Styled.BestTutorSection>
+
 
 
             <Styled.QuestionSection>
@@ -352,6 +357,7 @@ const Home = () => {
                             </Styled.QuestionWrapper>
                         </Col>
                     </Row>
+
                 </Container>
             </Styled.QuestionSection >
 

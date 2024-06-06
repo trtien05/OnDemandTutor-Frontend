@@ -91,14 +91,14 @@ const Header = ({ navbar }: HeaderProps) => {
     // }, [reload, userId]);
 
     // Re-render component when login with Google
-    // const location = useLocation();
-    // useEffect(() => {
-    //     if (location.pathname !== config.routes.public.home) return;
+    const location = useLocation();
+    useEffect(() => {
+        if (location.pathname !== config.routes.public.home) return;
 
-    //     navigate(config.routes.public.home);
-    // }, [location.search]);
+        navigate(config.routes.public.home);
+    }, [location.search]);
 
-    // const navigate = useNavigate();
+    const navigate = useNavigate();
     const [show, setShow] = useState(false);
     const transitionNavBar = () => {
         if (window.scrollY > 0) {
