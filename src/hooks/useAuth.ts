@@ -10,16 +10,15 @@ type JwtType = {
     role: string;
     fullname: string;
     email: string;
+    accountStatus: AccountStatus;
 };
 
 export type UserType = {
-    avatar: string;
-    emailAddress: string;
+    avatarUrl: string;
+    email: string;
     fullName: string;
     phoneNumber: string | null;
-    role: string;
-    userId: number;
-    accountStatus: AccountStatus;
+    id: number;
     createdAt: Date | string;
     dateOfBirth: Date | string | null;
     gender: Gender;
@@ -73,7 +72,9 @@ const useAuth = () => {
             // Fetch API to get info user
             const getInfo = async () => {
                 const { data } = await getInfoCurrentUser();
+                console.log(data);
                 setUser(data);
+                console.log(user);
             };
 
             getInfo();

@@ -15,7 +15,7 @@ const HomeLayout = () => {
                 role={role}
                 navbar={navbar}
                 menu={menu}
-                avatar={user?.avatar}
+                avatarUrl={user?.avatarUrl}
             />
 
             <main>

@@ -17,8 +17,8 @@ const SearchTutors = () => {
   const [sortBy, setSortBy] = useState<string>('');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [priceRange, setPriceRange] = useState<[number, number]>([100000, 500000]);
-  const minPrice = priceRange[0];
-  const maxPrice = priceRange[1];
+  const [minPrice, setMinPrice] = useState<number>(priceRange[0]);
+  const [maxPrice, setMaxPrice] = useState<number>(priceRange[1]);
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Tutor[]>([]);
   const [data, setData] = useState<Tutor[]>([]);
@@ -97,6 +97,7 @@ const SearchTutors = () => {
         step={10000}
         min={minPrice}
         max={maxPrice}
+
         onChangeComplete={onChangeComplete}
       />
       <p>Selected price range: {priceRange[0].toLocaleString() + 'đ'} - {priceRange[1].toLocaleString() + 'đ'}</p>
@@ -140,7 +141,7 @@ const SearchTutors = () => {
               <Col xl={4} lg={4} xs={24}>
                 <Styled.StyledSelect placeholder="Sort By" onChange={setSortBy}>
                   <Option value="Sort By">Sort By</Option>
-                  <Option value="Price">Price</Option>
+                  <Option value="Rating">Rating</Option>
                 </Styled.StyledSelect>
               </Col>
 

@@ -8,7 +8,7 @@ export type MenuType = {
 
 // Personal Identifiable Information
 export type PIIProps = {
-    avatar?: string;
+    avatarUrl?: string;
     fullName: string;
 };
 
@@ -16,5 +16,5 @@ export type HeaderProps = {
     role: string | null;
     navbar: MenuType[];
     menu: ItemType[];
-    avatar?: string;
+    avatarUrl?: string;
 };

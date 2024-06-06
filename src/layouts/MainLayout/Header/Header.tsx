@@ -29,7 +29,7 @@ const items: MenuProps['items'] = [
     },
 ];
 
-const Header = ({ role, navbar, menu, avatar }: HeaderProps) => {
+const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
 
@@ -77,7 +77,7 @@ const Header = ({ role, navbar, menu, avatar }: HeaderProps) => {
                         <Col lg={3} md={0} sm={0} xs={0}>
                             <Toolbar
                                 menu={items}
-                                avatar={avatar}
+                                avatar={avatarUrl}
                             />
                         </Col>
                     ) : (
