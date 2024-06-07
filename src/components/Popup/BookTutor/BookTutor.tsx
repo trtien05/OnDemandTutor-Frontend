@@ -24,7 +24,8 @@ const BookTutor: React.FC = () => {
   const accountId = 2;
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [schedule, setSchedule] = useState<Schedule[]>([]);
-  const [selectedId, setSelectedId] = useState<string[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<Schedule[]>([]);
+  const [selectedId, setSelectedId] = useState<number[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -143,11 +144,19 @@ const BookTutor: React.FC = () => {
       )
     );
 
+    setSelectedSchedule(prevSchedule =>
+      prevSchedule.includes(args.event)
+      ? prevSchedule.filter(schedule => schedule !== args.event)
+      : [...prevSchedule, args.event]
+    );
+
+
     setSelectedId(prevIds =>
       prevIds.includes(id)
         ? prevIds.filter(i => i !== id)
         : [...prevIds, id]
     );
+
   };
 
   const onPopupOpen = (args: PopupOpenEventArgs) => {
@@ -179,11 +188,21 @@ const BookTutor: React.FC = () => {
     setLoading(true); // Set loading state to true when form is submitted
     const values = form.getFieldValue('description')
     const bookingData = await convertBookingData(values);
+
+    let select: Schedule[] = [];
+    await schedule.map((schedule) => {
+      if (selectedId.includes(schedule.id)) {
+          select.push(schedule)
+      }
+    })
+    setSelectedSchedule(await select);
+
     await createBooking(accountId, bookingData)
       .catch(error => {
         console.error('Error creating booking: ', error);
       });
     console.log(bookingData)
+    console.log(selectedSchedule)
     setLoading(false); // Set loading state back to false when form submission is complete
 
   };
