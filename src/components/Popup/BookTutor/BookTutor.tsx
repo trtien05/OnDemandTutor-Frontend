@@ -8,7 +8,7 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import * as ScheduleStyle from './BookTutor.styled';
 import { get } from '../../../utils/apiCaller';
 import moment from 'moment';
-import { getTutorSchedule } from '../../../api/tutorBookingAPI';
+import { createBooking, getTutorSchedule } from '../../../api/tutorBookingAPI';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -36,7 +36,7 @@ const BookTutor: React.FC = () => {
         const response =
           await getTutorSchedule(tutorId)
             .catch(error => {
-              console.error('Error saving account details:', error);
+              console.error('Error getting schedule: ', error);
             });;
 
         //format data    
@@ -73,6 +73,7 @@ const BookTutor: React.FC = () => {
     return {
       createdAt: new Date().toISOString(),
       description: description,
+      status: "PROCESSING",
       tutorId: tutorId,
       studentId: accountId,
       timeslotIds: selectedId
@@ -169,20 +170,6 @@ const BookTutor: React.FC = () => {
     );
   };
 
-  const subjects = [
-    { label: "Mathematics", value: "Mathematics" },
-    { label: "Chemistry", value: "Chemistry" },
-    { label: "Biology", value: "Biology" },
-    { label: "Literature", value: "Literature" },
-    { label: "English", value: "English" },
-    { label: "IELTS", value: "IELTS" },
-    { label: "TOEFL", value: "TOEFL" },
-    { label: "TOEIC", value: "TOEIC" },
-    { label: "Physics", value: "Physics" },
-    { label: "Geography", value: "Geography" },
-    { label: "History", value: "History" },
-    { label: "Coding", value: "Coding" },
-  ];
 
   const showModal = () => {
     setIsFormOpen(true);
@@ -192,6 +179,10 @@ const BookTutor: React.FC = () => {
     setLoading(true); // Set loading state to true when form is submitted
     const values = form.getFieldValue('description')
     const bookingData = await convertBookingData(values);
+    await createBooking(accountId, bookingData)
+      .catch(error => {
+        console.error('Error creating booking: ', error);
+      });
     console.log(bookingData)
     setLoading(false); // Set loading state back to false when form submission is complete
 
