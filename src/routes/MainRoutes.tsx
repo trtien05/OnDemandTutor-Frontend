@@ -3,31 +3,14 @@ import config from '../config';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
 import Home from '../pages/Home';
-import Login from '../pages/Login';
+// import Login from '../pages/Login';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
+import BecomeTutor from '../pages/BecomeTutor';
+// import Question from '../components/Popup/CreateQuestion';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
-    // const { pathname } = useLocation();
-    // const { role } = useAuth();
-
-    // if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
-    // if (role === Role.STAFF) return <Navigate to={config.routes.staff.home} />;
-
-    // if (
-    //     !role &&
-    //     (pathname.includes(config.routes.customer.purchased) ||
-    //         pathname.includes(config.routes.customer.schedule))
-    // )
-    //     return <Outlet />;
-
-    // if (pathname === config.routes.customer.orderSuccess) {
-    //     const payment = cookieUtils.getItem(config.cookies.payment);
-
-    //     if (!payment) {
-    //         return <Navigate to={config.routes.public.home} />;
-    //     }
-    // }
+    
     return <MainLayout />;
 };
 
@@ -38,6 +21,9 @@ const publicRoutes = {
         { path: config.routes.public.home, element: <Home /> },
         { path: config.routes.public.searchTutors, element: <SearchTutors /> },
 
+        { path: config.routes.public.registerTutor, element: <BecomeTutor /> },
+        
+        //
     ],
 };
 

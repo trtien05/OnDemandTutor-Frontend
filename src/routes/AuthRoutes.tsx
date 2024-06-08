@@ -24,6 +24,7 @@ const AuthRoutes = {
         { path: config.routes.public.verifyCode, element: <VerifyCode /> },
         { path: config.routes.public.forgotPassword, element: <ForgotPassword /> },
         { path: config.routes.public.setPassword, element: <SetPassword /> },
+        
     ],
 };
 
