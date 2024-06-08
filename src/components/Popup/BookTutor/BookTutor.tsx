@@ -6,8 +6,6 @@ import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
 import * as ScheduleStyle from './BookTutor.styled';
-import { get } from '../../../utils/apiCaller';
-import moment from 'moment';
 import { createBooking, getTutorSchedule } from '../../../api/tutorBookingAPI';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');

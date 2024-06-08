@@ -21,6 +21,66 @@ ${({ theme }) => theme.breakpoints.down('sm')} {
     }
 `;
 
+export const PriceCalculation = styled.div`
+    margin: 24px;
+    background-color: ${theme.colors.white};
+
+    & h3.ant-typography {
+        margin-bottom: 12px;
+        color: ${theme.colors.textSecondary};
+        font-size: 1.6rem;
+        font-weight: 400;
+        line-height: 1.5;
+
+        & span.ant-typography {
+            font-size: 1.6rem;
+            margin: 0 4px;
+        }
+    }
+
+    & span.ant-typography {
+        color: ${theme.colors.textPrimary};
+        font-size: 2rem;
+        font-weight: 500;
+        line-height: 1.4;
+    }
+
+    & .ant-space:last-of-type h3.ant-typography {
+        color: ${theme.colors.textPrimary};
+        font-size: 1.6rem;
+        font-weight: 400;
+        line-height: 1.5;
+    }
+
+    & .ant-space {
+        justify-content: space-between;
+        width: 100%;
+    }
+
+    & .ant-divider {
+        margin: 32px 0;
+    }
+
+    & .ant-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        margin-top: 32px;
+        padding: 0 100px;
+        height: 50px;
+        line-height: 50px;
+        border-radius: 2px;
+
+        color: ${theme.colors.white};
+        font-size: 1.6rem;
+        font-weight: 400;
+        line-height: 1.57143;
+
+        box-shadow: 0px 2px 0px 0px ${theme.colors.shadowButton};
+    }
+`;
+
 
 export const CheckoutPayment = styled.div`
     margin-top: 36px;
@@ -144,7 +204,7 @@ export const CheckoutTotalWrapper = styled.div`
 `;
 
 export const TutorContent = styled.div`
-    margin-top: 30px;
+    margin-top: 20px;
     color: ${theme.colors.primary};
 `;
 
@@ -152,14 +212,14 @@ export const BorderLine = styled.hr`
     border: ${theme.colors.primary} 1px solid;
     opacity: 20%;
     width: 100%;
-    margin: auto;
+    margin: 20px 0;
 `
 
 export const TutorItem = styled(Row)`
     display: flex;
     background-color: #fff;
     border-radius: 50px;
-    margin-bottom: 5%;
+    margin-bottom: 2%;
     & .ant-list-item {
         border-block-end: none;
     }
@@ -179,10 +239,11 @@ export const TutorImage = styled.img`
 export const ResponsiveStyle = styled.div`
     display: flex;
     align-items: center;
+    justify-content: center;
+    margin: auto;
     max-width: 75%;
     ${({ theme }) => theme.breakpoints.down('md')} {
         width: 100%;
-        margin: auto;
         justify-content: center;
     }
 `
@@ -194,7 +255,6 @@ export const TutorName = styled(Title)`
         font-style: normal;
         font-weight: 700;
         line-height: 100%;
-        text-transform: uppercase;
     }
 `;
 export const TutorEducation = styled.div`

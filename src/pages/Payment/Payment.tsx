@@ -1,4 +1,4 @@
-import { Col, message, Grid } from 'antd';
+import { Col, message, Grid, Space, Typography } from 'antd';
 import React from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -6,6 +6,15 @@ import iconBachelor from "../../assets/images/image13.png";
 import tutorAva from "../../assets/images/image17.png"
 import rating from "../../assets/images/star.webp"
 import { theme } from '../../themes';
+
+const { Title, Text } = Typography;
+
+interface Schedule {
+  id: number;
+  scheduleDate: string;
+  startTime: string;
+  endTime: string;
+}
 
 interface Education {
   degreeType?: string;
@@ -15,21 +24,57 @@ interface Education {
 
 interface Tutor {
   fullName?: string;
-  teachingPricePerHour?: number;
+  teachingPricePerHour: number;
   educations: Education;
   subjects: string[],
   averageRating?: number;
   loading: boolean;
 };
 
-const Checkout = () => {
+const Payment = () => {
   const [messageApi, contextHolder] = message.useMessage();
   const screens = Grid.useBreakpoint();
+
+  const ScheduleMockup: Schedule[] = [
+    { id: 1, scheduleDate: '2024-06-09', startTime: '07:00', endTime: '10:00' },
+    { id: 2, scheduleDate: '2024-06-07', startTime: '12:00', endTime: '13:00' },
+    { id: 3, scheduleDate: '2024-06-08', startTime: '14:00', endTime: '15:00' },
+    { id: 4, scheduleDate: '2024-06-07', startTime: '16:00', endTime: '17:00' },
+  ];
+
+  function toScheduleString(schedule: Schedule) {
+    let scheduleString = '';
+    const dateString = new Date(schedule.scheduleDate).toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+    scheduleString = dateString + " at " + schedule.startTime + " - " + schedule.endTime;
+    return scheduleString;
+  }
+
+  function formatMoney(number: number) {
+    return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  function calculateTotalHour(schedule: Schedule[]) {
+    let sum = 0;
+    let start = 0;
+    let end = 0;
+    schedule.map((time: Schedule) => {
+      start = Number.parseInt(time.startTime.slice(0, 3));
+      end = Number.parseInt(time.endTime.slice(0, 3));
+      sum += end - start;
+    })
+    return sum;
+  }
 
   const EducationMockup: Education = {
     degreeType: 'Bachelor',
     majorName: 'Software Engineering'
   };
+
   const TutorMockup: Tutor = {
     fullName: 'Alice',
     teachingPricePerHour: 130000,
@@ -42,7 +87,7 @@ const Checkout = () => {
   return (
     <>
       {contextHolder}
-      <Col xl={14} lg={14} sm={24} xs={24}>
+      <Col xl={14} lg={14} sm={24} xs={24} >
         <Styled.CheckoutWrapper>
 
           <Styled.TutorItem justify='space-between'>
@@ -72,7 +117,60 @@ const Checkout = () => {
               <span style={{ fontSize: `2rem`, color: `${theme.colors.primary}` }}>{TutorMockup.averageRating}</span>
             </Styled.ResponsiveStyle>
           </Styled.TutorItem>
-          <Styled.BorderLine/>
+          {/* <Styled.ResponsiveStyle>
+            <Styled.TutorName style={{ fontWeight: `500` }}>{formatMoney(TutorMockup.teachingPricePerHour)}</Styled.TutorName>
+            <span style={{ margin: `5px`, color: `${theme.colors.primary}` }}>/hour</span>
+          </Styled.ResponsiveStyle> */}
+          <Styled.BorderLine />
+          <div style={{ marginLeft: `20px` }}>
+            {ScheduleMockup.map((schedule, index) => (
+              <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule)}</p>
+            )
+            )}
+          </div>
+          <Styled.BorderLine />
+          <Styled.PriceCalculation>
+          <Space>
+            <Title level={3}>Tutor's price per hour</Title>
+            <Text> {formatMoney(TutorMockup.teachingPricePerHour)} VND</Text>
+          </Space>
+
+          <Space>
+            <Title level={3}>Total hour</Title>
+            <Text>
+            {calculateTotalHour(ScheduleMockup)} hour{calculateTotalHour(ScheduleMockup)>1 && 's'}
+            </Text>
+          </Space>
+
+          <Space>
+            <Title level={3}>Tutoring price</Title>
+            <Text>
+            {formatMoney(calculateTotalHour(ScheduleMockup)*TutorMockup.teachingPricePerHour)} VND
+            </Text>
+          </Space>
+
+          <Space>
+            <Title level={3}>Processing fee (10%)</Title>
+            <Text>
+            {formatMoney(calculateTotalHour(ScheduleMockup)*TutorMockup.teachingPricePerHour*0.1)} VND
+            </Text>
+          </Space>
+
+            <Styled.BorderLine/>
+
+          <Space>
+            <Title level={3}>
+              TOTAL
+              <Text>
+                
+              </Text>
+            </Title>
+            <Text>
+              
+            </Text>
+          </Space>
+          <p></p>
+          </Styled.PriceCalculation>
         </Styled.CheckoutWrapper>
       </Col>
 
@@ -82,4 +180,4 @@ const Checkout = () => {
   )
 }
 
-export default Checkout
+export default Payment
