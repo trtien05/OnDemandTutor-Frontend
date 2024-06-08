@@ -26,3 +26,4 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
   }
 
 }
+

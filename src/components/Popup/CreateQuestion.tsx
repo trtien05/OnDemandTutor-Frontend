@@ -4,7 +4,7 @@ import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
-
+import { uploadCreateQuestionFiles } from '../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
 const Question: React.FC = () => {
     const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
@@ -16,25 +16,48 @@ const Question: React.FC = () => {
     const showModal = () => {
         setOpen(true);
     };
-    const handleOk = () => {
-        setLoading(true); // Set loading state to true when form is submitted
-        form.validateFields()
-            .then((values) => {
-                values.questionFile = fileList; // Add the file list to the form values
-                setModalData(values);
-                console.log('Clicked OK with values:', values);
-                setConfirmLoading(true);
-                setTimeout(() => {
-                    setOpen(false);
-                    setConfirmLoading(false);
-                    setLoading(false); // Set loading state back to false when form submission is complete
-                    form.resetFields(); // Reset the form fields
-                }, 2000);
-            })
-            .catch((info) => {
-                console.log('Validate Failed:', info);
-                setLoading(false); // Set loading state back to false when form submission is complete
-            });
+    const handleOk = async() => {
+        // setLoading(true); // Set loading state to true when form is submitted
+        // form.validateFields()
+        //     .then((values) => {
+        //         values.questionFile = fileList; // Add the file list to the form values
+        //         setModalData(values);
+        //         console.log('Clicked OK with values:', values);
+        //         setConfirmLoading(true);
+        //         setTimeout(() => {
+        //             setOpen(false);
+        //             setConfirmLoading(false);
+        //             setLoading(false); // Set loading state back to false when form submission is complete
+        //             form.resetFields(); // Reset the form fields
+        //         }, 2000);
+        //     })
+        //     .catch((info) => {
+        //         console.log('Validate Failed:', info);
+        //         setLoading(false); // Set loading state back to false when form submission is complete
+        //     });
+        setLoading(true);
+        try {
+            const values = await form.validateFields();
+            const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+            const uploadedFiles = await Promise.all(fileList.map(async (file, index) => {
+                const url = await uploadCreateQuestionFiles(1, file.originFileObj, 'CreateQuestion', dateCreated, index, (url) => url);
+                return { ...file, url };
+            }));
+            values.questionFile = uploadedFiles.map(file => file.url); // Add the file URLs to the form values
+            setModalData(values);
+            console.log('Clicked OK with values:', values);
+            setConfirmLoading(true);
+            setTimeout(() => {
+                setOpen(false);
+                setConfirmLoading(false);
+                setLoading(false);
+                form.resetFields();
+                setFileList([]);
+            }, 1000);
+        } catch (info) {
+            console.log('Validate Failed:', info);
+            setLoading(false);
+        }
     };
 
     const handleCancel = () => {
