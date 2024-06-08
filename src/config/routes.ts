@@ -17,6 +17,7 @@ const routes = {
     },
     student: {
         profile: '/profile',
+        makePayment: '/make-payment'
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',

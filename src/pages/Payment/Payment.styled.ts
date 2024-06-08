@@ -19,6 +19,7 @@ ${({ theme }) => theme.breakpoints.down('sm')} {
         font-weight: 500;
         line-height: 1.5;
     }
+
 `;
 
 export const PriceCalculation = styled.div`
@@ -30,7 +31,7 @@ export const PriceCalculation = styled.div`
         color: ${theme.colors.textSecondary};
         font-size: 1.6rem;
         font-weight: 400;
-        line-height: 1.5;
+        line-height: 1.4;
 
         & span.ant-typography {
             font-size: 1.6rem;
@@ -40,7 +41,7 @@ export const PriceCalculation = styled.div`
 
     & span.ant-typography {
         color: ${theme.colors.textPrimary};
-        font-size: 2rem;
+        font-size: 1.8rem;
         font-weight: 500;
         line-height: 1.4;
     }

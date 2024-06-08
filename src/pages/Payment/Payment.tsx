@@ -1,10 +1,12 @@
-import { Col, message, Grid, Space, Typography } from 'antd';
-import React from 'react'
+import { Col, message, Grid, Space, Typography, Row, Button } from 'antd';
+import React, { useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
 import tutorAva from "../../assets/images/image17.png"
 import rating from "../../assets/images/star.webp"
+import vnpayLogo from "../../assets/svg/vnpay-logo.svg"
+import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
 
 const { Title, Text } = Typography;
@@ -33,6 +35,7 @@ interface Tutor {
 
 const Payment = () => {
   const [messageApi, contextHolder] = message.useMessage();
+  const [loading, setLoading] = useState<boolean>(true);
   const screens = Grid.useBreakpoint();
 
   const ScheduleMockup: Schedule[] = [
@@ -87,94 +90,125 @@ const Payment = () => {
   return (
     <>
       {contextHolder}
-      <Col xl={14} lg={14} sm={24} xs={24} >
-        <Styled.CheckoutWrapper>
+      {/* <Row> */}
+      <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
+        <Col xl={13} lg={13} sm={24} xs={24} >
 
-          <Styled.TutorItem justify='space-between'>
-            <Styled.ResponsiveStyle>
-              <Styled.TutorImage src={tutorAva} alt="tutor" />
-              <Styled.TutorContent>
-                <Styled.TutorName level={2}>{TutorMockup.fullName}</Styled.TutorName>
-                <Styled.TutorEducation>
-                  <Styled.TutorEducationBachelorImage src={iconEducation} alt="education" />
-                  <Styled.TutorEducationBachelor>
-                    {EducationMockup.degreeType}, {EducationMockup.majorName}
-                  </Styled.TutorEducationBachelor>
+          <Styled.CheckoutWrapper>
 
-                  <div>
-                    <Styled.TutorEducationBachelorImage src={iconBachelor} alt="subject" />
-                    {TutorMockup.subjects.map((subject, index) => (
-                      <Styled.TutorEducationBachelor key={index}>
-                        {subject}{index < TutorMockup.subjects.length - 1 && ','}
-                      </Styled.TutorEducationBachelor>
-                    ))}
-                  </div>
-                </Styled.TutorEducation>
-              </Styled.TutorContent>
-            </Styled.ResponsiveStyle>
-            <Styled.ResponsiveStyle>
-              <img src={rating} style={{ maxWidth: `30px`, margin: `10px` }} />
-              <span style={{ fontSize: `2rem`, color: `${theme.colors.primary}` }}>{TutorMockup.averageRating}</span>
-            </Styled.ResponsiveStyle>
-          </Styled.TutorItem>
-          {/* <Styled.ResponsiveStyle>
+            <Styled.TutorItem justify='space-between'>
+              <Styled.ResponsiveStyle>
+                <Styled.TutorImage src={tutorAva} alt="tutor" />
+                <Styled.TutorContent>
+                  <Styled.TutorName level={2}>{TutorMockup.fullName}</Styled.TutorName>
+                  <Styled.TutorEducation>
+                    <Styled.TutorEducationBachelorImage src={iconEducation} alt="education" />
+                    <Styled.TutorEducationBachelor>
+                      {EducationMockup.degreeType}, {EducationMockup.majorName}
+                    </Styled.TutorEducationBachelor>
+
+                    <div>
+                      <Styled.TutorEducationBachelorImage src={iconBachelor} alt="subject" />
+                      {TutorMockup.subjects.map((subject, index) => (
+                        <Styled.TutorEducationBachelor key={index}>
+                          {subject}{index < TutorMockup.subjects.length - 1 && ','}
+                        </Styled.TutorEducationBachelor>
+                      ))}
+                    </div>
+                  </Styled.TutorEducation>
+                </Styled.TutorContent>
+              </Styled.ResponsiveStyle>
+              <Styled.ResponsiveStyle>
+                <img src={rating} style={{ maxWidth: `30px`, margin: `10px` }} />
+                <span style={{ fontSize: `2rem`, color: `${theme.colors.primary}` }}>{TutorMockup.averageRating}</span>
+              </Styled.ResponsiveStyle>
+            </Styled.TutorItem>
+            {/* <Styled.ResponsiveStyle>
             <Styled.TutorName style={{ fontWeight: `500` }}>{formatMoney(TutorMockup.teachingPricePerHour)}</Styled.TutorName>
             <span style={{ margin: `5px`, color: `${theme.colors.primary}` }}>/hour</span>
           </Styled.ResponsiveStyle> */}
-          <Styled.BorderLine />
-          <div style={{ marginLeft: `20px` }}>
-            {ScheduleMockup.map((schedule, index) => (
-              <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule)}</p>
-            )
-            )}
-          </div>
-          <Styled.BorderLine />
-          <Styled.PriceCalculation>
-          <Space>
-            <Title level={3}>Tutor's price per hour</Title>
-            <Text> {formatMoney(TutorMockup.teachingPricePerHour)} VND</Text>
-          </Space>
+            <Styled.BorderLine />
+            <div style={{ marginLeft: `20px` }}>
+              {ScheduleMockup.map((schedule, index) => (
+                <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule)}</p>
+              )
+              )}
+            </div>
+            <Styled.BorderLine />
+            <Styled.PriceCalculation>
+              <Space>
+                <Title level={3}>Tutor's price per hour</Title>
+                <Text> {formatMoney(TutorMockup.teachingPricePerHour)} VND</Text>
+              </Space>
 
-          <Space>
-            <Title level={3}>Total hour</Title>
-            <Text>
-            {calculateTotalHour(ScheduleMockup)} hour{calculateTotalHour(ScheduleMockup)>1 && 's'}
-            </Text>
-          </Space>
+              <Space>
+                <Title level={3}>Total hour</Title>
+                <Text>
+                  {calculateTotalHour(ScheduleMockup)} hour{calculateTotalHour(ScheduleMockup) > 1 && 's'}
+                </Text>
+              </Space>
 
-          <Space>
-            <Title level={3}>Tutoring price</Title>
-            <Text>
-            {formatMoney(calculateTotalHour(ScheduleMockup)*TutorMockup.teachingPricePerHour)} VND
-            </Text>
-          </Space>
+              <Space>
+                <Title level={3}>Tutoring price</Title>
+                <Text>
+                  {formatMoney(calculateTotalHour(ScheduleMockup) * TutorMockup.teachingPricePerHour)} VND
+                </Text>
+              </Space>
 
-          <Space>
-            <Title level={3}>Processing fee (10%)</Title>
-            <Text>
-            {formatMoney(calculateTotalHour(ScheduleMockup)*TutorMockup.teachingPricePerHour*0.1)} VND
-            </Text>
-          </Space>
+              <Space>
+                <Title level={3}>Processing fee (10%)</Title>
+                <Text>
+                  {formatMoney(calculateTotalHour(ScheduleMockup) * TutorMockup.teachingPricePerHour * 0.1)} VND
+                </Text>
+              </Space>
 
-            <Styled.BorderLine/>
+              <Styled.BorderLine />
 
-          <Space>
-            <Title level={3}>
-              TOTAL
-              <Text>
-                
-              </Text>
-            </Title>
-            <Text>
-              
-            </Text>
-          </Space>
-          <p></p>
-          </Styled.PriceCalculation>
-        </Styled.CheckoutWrapper>
-      </Col>
+              <Space>
+                <Title level={3} >
+                  Total
+                </Title>
+                <Text>
+                  {formatMoney((calculateTotalHour(ScheduleMockup) * TutorMockup.teachingPricePerHour) * 1.1).split('.')[0]} VND
+                </Text>
+              </Space>
+              <p></p>
+            </Styled.PriceCalculation>
+          </Styled.CheckoutWrapper>
 
-
+        </Col>
+        {/* </Row> */}
+        {/* <Row> */}
+        <Col xl={11} lg={11} sm={24} xs={24}>
+          <Styled.CheckoutWrapper >
+            <Title level={3}>Payment method</Title>
+            <Styled.CheckoutPaymentImgWrapper>
+              <img
+                src={vnpayLogo}
+                loading="lazy"
+                decoding="async"
+                alt="VNPAY"
+              />
+            </Styled.CheckoutPaymentImgWrapper>
+            <Button
+              block
+              type="primary"
+              size="large"
+              htmlType="submit"
+            >
+              {loading ? (
+                <Loading3QuartersOutlined
+                  spin
+                  style={{ fontSize: '1.6rem' }}
+                />
+              ) : (
+                'Đặt hàng'
+              )}
+            </Button>
+          </Styled.CheckoutWrapper>
+        </Col>
+        {/* </Row> */}
+      </div>
 
     </>
   )
