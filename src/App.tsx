@@ -1,18 +1,14 @@
 
-
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter as Router, Routes } from 'react-router-dom';
 import RoutesComponent from './routes';
-import BookTutor from './components/Popup/BookTutor/BookTutor';
-import Payment from './pages/Payment/Payment'
 
 function App() {
 
   return (
-    // <Router>
-    //   <RoutesComponent />
-    // </Router>
-        <Payment></Payment>
+    <Router>
+      <RoutesComponent />
+    </Router>
   )
 }
 
-export default App
+export default App;

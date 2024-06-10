@@ -9,9 +9,9 @@ import vnpayLogo from "../../assets/svg/vnpay-logo.svg"
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
 import { useLocation } from 'react-router-dom';
-import { getTutorEducation, getTutorInfo } from '../../api/paymentAPI';
-import { set } from 'date-fns';
-
+import { getPaymentUrl, getTutorEducation, getTutorInfo } from '../../api/paymentAPI';
+import cookieUtils from '../../utils/cookieUtils';
+import config from '../../config';
 const { Title, Text } = Typography;
 
 interface Schedule {
@@ -29,6 +29,7 @@ interface Education {
 };
 
 interface Tutor {
+  id: number;
   fullName?: string;
   teachingPricePerHour: number;
   educations?: Education;
@@ -36,6 +37,18 @@ interface Tutor {
   averageRating?: number;
   loading: boolean;
 };
+
+export function toScheduleString(schedule: Schedule) {
+  let scheduleString = '';
+  const dateString = new Date(schedule.scheduleDate).toLocaleDateString('en-US', {
+    weekday: 'long',
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric'
+  });
+  scheduleString = dateString + " at " + schedule.startTime + " - " + schedule.endTime;
+  return scheduleString;
+}
 
 const MakePayment = () => {
   const [api, contextHolder] = notification.useNotification({
@@ -46,15 +59,11 @@ const MakePayment = () => {
   const screens = Grid.useBreakpoint();
   const location = useLocation();
   const [schedule, setSchedule] = useState<Schedule[]>();
-  const tutorId = location.state.tutorId;
+  const appointmentData = location.state.appointmentData;
+  const tutorId = appointmentData.tutorId;
   const selectedSchedule = location.state.selectedSchedule;
+  const fee = 0.1;
 
-  const ScheduleMockup: Schedule[] = [
-    { id: 1, scheduleDate: '2024-06-09', startTime: '07:00', endTime: '10:00' },
-    { id: 2, scheduleDate: '2024-06-07', startTime: '12:00', endTime: '13:00' },
-    { id: 3, scheduleDate: '2024-06-08', startTime: '14:00', endTime: '15:00' },
-    { id: 4, scheduleDate: '2024-06-07', startTime: '16:00', endTime: '17:00' },
-  ];
 
   useEffect(() => {
     const fetchTutor = async () => {
@@ -79,20 +88,22 @@ const MakePayment = () => {
               });
             });
 
-        let selectSchedule:Schedule[] = []; 
+        let selectSchedule: Schedule[] = [];
         selectedSchedule.map((scd, index) => {
           if (scd) {
-          selectSchedule[index] = {
-            scheduleDate: scd.StartTime.toLocaleDateString('en-US'),
-            startTime: scd.StartTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-            endTime: scd.EndTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
-          }}
+            selectSchedule[index] = {
+              scheduleDate: scd.StartTime.toLocaleDateString('en-US'),
+              startTime: scd.StartTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+              endTime: scd.EndTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+            }
+          }
         })
 
         setSchedule(selectSchedule);
 
         //format data    
         const tutorData: Tutor = {
+          id: response.data.id,
           fullName: response.data.fullName,
           teachingPricePerHour: response.data.teachingPricePerHour,
           educations: await selectTutorEducation(educations.data),
@@ -128,17 +139,6 @@ const MakePayment = () => {
     return selectedEdu;
   }
 
-  function toScheduleString(schedule: Schedule) {
-    let scheduleString = '';
-    const dateString = new Date(schedule.scheduleDate).toLocaleDateString('en-US', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-    scheduleString = dateString + " at " + schedule.startTime + " - " + schedule.endTime;
-    return scheduleString;
-  }
 
   function formatMoney(number: number) {
     return number.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
@@ -156,18 +156,32 @@ const MakePayment = () => {
     return sum;
   }
 
-  const EducationMockup: Education = {
-    degreeType: 'Bachelor',
-    majorName: 'Software Engineering'
-  };
-
-  const TutorMockup: Tutor = {
-    fullName: 'Alice',
-    teachingPricePerHour: 130000,
-    educations: EducationMockup,
-    subjects: ['Math', 'IELTS'],
-    averageRating: 5,
-    loading: false
+  
+  const handleOrder = async () => {
+    try {
+      // Call API to create order
+      // If success, show success message
+      setLoading(true);
+      const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
+      const totalHour = calculateTotalHour(schedule);
+      const price = totalHour * tutor.teachingPricePerHour * (1 + fee)
+        await cookieUtils.setItem('bookingData', JSON.stringify({
+          tutor: tutor,
+          schedule: schedule,
+          totalHour: totalHour,
+          price: price,
+        }));
+        window.open(data.paymentUrl, '_blank')
+        //window.location.href = data.paymentUrl;
+      
+    } catch (error) {
+      api.error({
+        message: 'Error',
+        description: error.response ? error.response.data : error.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   }
 
   if (loading) {
@@ -190,7 +204,7 @@ const MakePayment = () => {
                     <Styled.TutorEducation>
                       <Styled.TutorEducationBachelorImage src={iconEducation} alt="education" />
                       <Styled.TutorEducationBachelor>
-                        {tutor?.educations?.degreeType?.slice(0,1)}{tutor?.educations?.degreeType?.slice(1).toLowerCase()}, {tutor?.educations?.majorName}
+                        {tutor?.educations?.degreeType?.slice(0, 1)}{tutor?.educations?.degreeType?.slice(1).toLowerCase()}, {tutor?.educations?.majorName}
                       </Styled.TutorEducationBachelor>
 
                       <div>
@@ -245,7 +259,7 @@ const MakePayment = () => {
                 <Space>
                   <Title level={3}>Processing fee (10%)</Title>
                   <Text>
-                    {formatMoney(Math.round(calculateTotalHour(schedule) * tutor.teachingPricePerHour * 0.1))} VND
+                    {formatMoney(Math.round(calculateTotalHour(schedule) * tutor.teachingPricePerHour * (1+fee)))} VND
                   </Text>
                 </Space>
 
@@ -266,9 +280,9 @@ const MakePayment = () => {
           </Col>
           {/* </Row> */}
           {/* <Row> */}
-          <Col xl={11} lg={11} sm={24} xs={24}>
+          <Col xl={10} lg={10} sm={24} xs={24}>
             <Styled.CheckoutWrapper >
-              <Title level={3}>Payment method</Title>
+              <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600` }} >Payment</Styled.TutorName>
               <Styled.CheckoutPaymentImgWrapper>
                 <img
                   src={vnpayLogo}
@@ -281,7 +295,7 @@ const MakePayment = () => {
                 block
                 type="primary"
                 size="large"
-                htmlType="submit"
+                onClick={handleOrder}
               >
                 {loading ? (
                   <Loading3QuartersOutlined
@@ -289,7 +303,7 @@ const MakePayment = () => {
                     style={{ fontSize: '1.6rem' }}
                   />
                 ) : (
-                  'Đặt hàng'
+                  'Pay'
                 )}
               </Button>
             </Styled.CheckoutWrapper>
