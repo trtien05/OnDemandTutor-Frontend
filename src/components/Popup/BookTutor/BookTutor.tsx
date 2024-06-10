@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { Button, Form, Modal } from 'antd';
+import { useNavigate } from 'react-router-dom';
+import { Button, Form, Modal, notification } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, PopupOpenEventArgs, ScheduleComponent, ViewDirective, ViewsDirective } from '@syncfusion/ej2-react-schedule';
 import TextArea from 'antd/es/input/TextArea';
@@ -9,6 +10,8 @@ import * as ScheduleStyle from './BookTutor.styled';
 import { get } from '../../../utils/apiCaller';
 import moment from 'moment';
 import { createBooking, getTutorSchedule } from '../../../api/tutorBookingAPI';
+import config from '../../../config';
+import { is } from 'date-fns/locale';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -17,11 +20,15 @@ interface Schedule {
   scheduleDate: string;
   startTime: string;
   endTime: string;
+  isSelected?: boolean;
 }
 
 const BookTutor: React.FC = () => {
   const tutorId = 1;
   const accountId = 2;
+  const [api, contextHolder] = notification.useNotification({
+    top: 100,
+  });
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [schedule, setSchedule] = useState<Schedule[]>([]);
   const [selectedSchedule, setSelectedSchedule] = useState<Schedule[]>([]);
@@ -29,6 +36,7 @@ const BookTutor: React.FC = () => {
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchSchedule = async () => {
@@ -37,9 +45,11 @@ const BookTutor: React.FC = () => {
         const response =
           await getTutorSchedule(tutorId)
             .catch(error => {
-              console.error('Error getting schedule: ', error);
-            });;
-
+              api.error({
+                message: 'Lỗi',
+                description: error.response ? error.response.data : error.message,
+              });
+            });
         //format data    
         const startDate = new Date(response.data.startDate);
         let newSchedule: Schedule[] = [];
@@ -53,6 +63,7 @@ const BookTutor: React.FC = () => {
                 scheduleDate: currentDate.toISOString().split('T')[0],
                 startTime: timeslot.startTime.slice(0, 5),
                 endTime: timeslot.endTime.slice(0, 5),
+                isSelected: false
               };
 
               newSchedule.push(value);
@@ -63,18 +74,19 @@ const BookTutor: React.FC = () => {
         setSchedule(newSchedule); // Set state once, after processing all schedules
 
       } catch (error) {
-        console.error('Failed to fetch schedule', error);
+        api.error({
+          message: 'Lỗi',
+          description: error.response ? error.response.data : error.message,
+        });
       }
     };
 
     fetchSchedule();
   }, []);
 
-  function convertBookingData(description: string ) {
+  function convertBookingData(description: string) {
     return {
-      createdAt: new Date().toISOString(),
       description: description,
-      status: "PROCESSING",
       tutorId: tutorId,
       studentId: accountId,
       timeslotIds: selectedId
@@ -144,11 +156,18 @@ const BookTutor: React.FC = () => {
       )
     );
 
-    setSelectedSchedule(prevSchedule =>
-      prevSchedule.includes(args.event)
-      ? prevSchedule.filter(schedule => schedule !== args.event)
-      : [...prevSchedule, args.event]
-    );
+    setSelectedSchedule(prevSchedule => {
+      if (args && args.event && args.event.Id) {
+        if (prevSchedule.some(s => s.id.toString() === args.event.Id.toString())) {
+          // If the schedule is already selected, remove it from the selection
+          return prevSchedule.filter(schedule => schedule.id.toString() !== args.event.Id.toString());
+        } else {
+          // If the schedule is not selected, add it to the selection
+          return [...prevSchedule, args.event];
+        }
+      }
+      return prevSchedule;
+    });
 
 
     setSelectedId(prevIds =>
@@ -184,27 +203,33 @@ const BookTutor: React.FC = () => {
     setIsFormOpen(true);
   };
 
+  const validateTimeslot = (_: unknown) => {
+    if (selectedSchedule.length === 0) {
+      return Promise.reject("Please select at least one time slot to proceed");
+    }
+    return Promise.resolve();
+  };
+
   const handleOk = async () => {
     setLoading(true); // Set loading state to true when form is submitted
-    const values = form.getFieldValue('description')
-    const bookingData = await convertBookingData(values);
-
-    let select: Schedule[] = [];
-    await schedule.map((schedule) => {
-      if (selectedId.includes(schedule.id)) {
-          select.push(schedule)
-      }
-    })
-    setSelectedSchedule(await select);
-
-    await createBooking(accountId, bookingData)
-      .catch(error => {
-        console.error('Error creating booking: ', error);
+    
+      form.validateFields(['selectedSlots'])
+      .then (async () => {const values = form.getFieldValue('description')
+      const bookingData = await convertBookingData(values);
+  try { 
+      await createBooking(accountId, bookingData);
+      await navigate(config.routes.student.makePayment, { state: { selectedSchedule: selectedSchedule, tutorId: tutorId } });
+    } catch (error) {
+      api.error({
+        message: 'Error create booking',
+        description: error.response ? error.response.data : error.message,
       });
-    console.log(bookingData)
-    console.log(selectedSchedule)
-    setLoading(false); // Set loading state back to false when form submission is complete
-
+    } finally {
+      setLoading(false);
+    }})
+    .finally(() => {
+      setLoading(false);
+    });
   };
 
   const handleCancel = () => {
@@ -232,7 +257,7 @@ const BookTutor: React.FC = () => {
             htmlType="submit"
             onClick={handleOk}
             loading={loading}
-            form="myForm" //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
+            form={form} //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
             style={{ marginRight: '2%', width: '45%' }}
           >
             Send
@@ -255,36 +280,39 @@ const BookTutor: React.FC = () => {
           initialValues={{ selectedSlots: new Set<number>() }}
         >
           <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle>
-          <ScheduleStyle.ScheduleWrapper>
-            <ScheduleComponent
-              key={JSON.stringify(eventSettings.dataSource)} // Add key to force re-render
-              height="300px"
-              selectedDate={today}
-              minDate={today}
-              maxDate={next7Days}
-              startHour={start}
-              endHour={end}
-              eventSettings={{ ...eventSettings, template: eventTemplate }}
-              actionComplete={() => { }}
-              eventRendered={onEventRendered}
-              eventClick={onEventClick}
-              actionBegin={onActionBegin}
-              popupOpen={onPopupOpen}
-            >
-              <ViewsDirective>
-                <ViewDirective option="Day" interval={7} />
-              </ViewsDirective>
-              <Inject services={[Day]} />
-            </ScheduleComponent>
-          </ScheduleStyle.ScheduleWrapper>
           <FormStyled.FormItem
-            name="description"
+            name="selectedSlots"
             rules={[
               {
-                required: false,
-                message: "Please select the subject",
+                validator: validateTimeslot,
+                message: "Please select at least one time slot to proceed",
               },
-            ]}
+            ]}>
+            <ScheduleStyle.ScheduleWrapper>
+              <ScheduleComponent
+                key={JSON.stringify(eventSettings.dataSource)} // Add key to force re-render
+                height="300px"
+                selectedDate={today}
+                minDate={today}
+                maxDate={next7Days}
+                startHour={start}
+                endHour={end}
+                eventSettings={{ ...eventSettings, template: eventTemplate }}
+                actionComplete={() => { }}
+                eventRendered={onEventRendered}
+                eventClick={onEventClick}
+                actionBegin={onActionBegin}
+                popupOpen={onPopupOpen}
+              >
+                <ViewsDirective>
+                  <ViewDirective option="Day" interval={7} />
+                </ViewsDirective>
+                <Inject services={[Day]} />
+              </ScheduleComponent>
+            </ScheduleStyle.ScheduleWrapper>
+          </FormStyled.FormItem>
+          <FormStyled.FormItem
+            name="description"
             $width="100%"
             validateFirst
           >
