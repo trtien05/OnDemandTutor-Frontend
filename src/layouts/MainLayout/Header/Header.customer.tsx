@@ -117,7 +117,7 @@ export const navbar: MenuType[] = [
     createNavbarItem(config.routes.public.searchClasses, 'Classes'),
     createNavbarItem(config.routes.public.searchTutors, 'Tutors'),
     createNavbarItem(config.routes.public.contact, 'Contact'),
-    createNavbarItem(config.routes.public.registerTutor, 'Become A Tutor'),
+    createNavbarItem(config.routes.student.registerTutor, 'Become A Tutor'),
     createNavbarItem(config.routes.public.login, 'Login'),
 
 
