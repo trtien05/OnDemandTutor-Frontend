@@ -7,6 +7,7 @@ import Login from '../pages/Login';
 import BecomeTutor from '../pages/BecomeTutor';
 import Question from '../components/Popup/CreateQuestion/CreateQuestion';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
+import MakePayment from '../pages/Payment/MakePayment';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -27,6 +28,12 @@ const publicRoutes = {
     ],
 };
 
+const studentRoutes = {
+    children: [
+        {path: config.routes.student.makePayment, element: <MakePayment />}
+    ],
+};
+
 
 const notFoundRoutes = { path: '*', element: <NotFound /> };
 
@@ -34,7 +41,7 @@ const notFoundRoutes = { path: '*', element: <NotFound /> };
 const MainRoutes = {
     path: '/',
     element: <MainRouter />,
-    children: [publicRoutes, notFoundRoutes],
+    children: [publicRoutes, studentRoutes, notFoundRoutes],
 };
 
 export default MainRoutes;

@@ -242,7 +242,7 @@ export const ResponsiveStyle = styled.div`
     align-items: center;
     justify-content: center;
     margin: auto;
-    max-width: 75%;
+    max-width: 85%;
     ${({ theme }) => theme.breakpoints.down('md')} {
         width: 100%;
         justify-content: center;
