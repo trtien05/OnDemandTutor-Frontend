@@ -6,10 +6,10 @@ import CreateQuestion from './components/Popup/CreateQuestion';
 function App() {
 
   return (
-    // <Router>
-    //   <RoutesComponent />
-    // </Router>
-    <CreateQuestion/>
+    <Router>
+      <RoutesComponent />
+    </Router>
+    // <CreateQuestion/>
   )
 }
 

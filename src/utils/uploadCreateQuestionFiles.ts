@@ -1,7 +1,7 @@
 import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
 import { storage } from "../utils/firebase";
-
-export const uploadCreateQuestionFiles = async (userId: number, file: File | null, sectionName: string, dateCreated: string, index: number, handleChange: (url: string) => void) => {
+// , handleChange: (url: string) => void
+export const uploadCreateQuestionFiles = async (userId: number, file: File | null, sectionName: string, dateCreated: string, index: number) => {
     console.log(file);
     if (!file) {
         console.log("No file selected for upload.");
@@ -14,10 +14,12 @@ export const uploadCreateQuestionFiles = async (userId: number, file: File | nul
 
         const url = await getDownloadURL(uploadResult.ref);
         console.log(`File available at: ${url}`);
-        if (url) {
-            handleChange(url);
-        }
+        // if (url) {
+        //     handleChange(url);
+        // }
+        return url;
     } catch (error) {
         console.log(`Upload failed: ${error}`);
+        return null;
     }
 };

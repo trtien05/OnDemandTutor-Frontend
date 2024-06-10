@@ -6,7 +6,7 @@ import Home from '../pages/Home';
 // import Login from '../pages/Login';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import BecomeTutor from '../pages/BecomeTutor';
-// import Question from '../components/Popup/CreateQuestion';
+import SearchQuestion from '../pages/Questions/SearchQuestions';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -20,9 +20,8 @@ const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
         { path: config.routes.public.searchTutors, element: <SearchTutors /> },
-
         { path: config.routes.public.registerTutor, element: <BecomeTutor /> },
-        
+        { path: config.routes.public.searchQuestions, element: <SearchQuestion /> },
         //
     ],
 };
