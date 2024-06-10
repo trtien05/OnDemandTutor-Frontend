@@ -11,7 +11,6 @@ import { useState } from "react";
 import { aboutForm } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { useAuth } from "../../hooks";
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -35,7 +34,7 @@ const Form1: React.FC<Form1Props> = ({
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string| null>(null);
   const [imageUrl, setImageUrl] = useState<string | null >(initialValues?.imageUrl || null);
-  const { user } = useAuth();
+
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
@@ -43,7 +42,6 @@ const Form1: React.FC<Form1Props> = ({
       newFileList[index].status='done'
       
     }
-    console.log(user)
   };
   const getBase64 = (file:RcFile) =>
   new Promise<string>((resolve, reject) => {
@@ -110,8 +108,8 @@ const Form1: React.FC<Form1Props> = ({
                 initialValue={field.initialValue}
                 validateFirst
               >
-                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null? dataSource[field.name] : "0123456789"} />)}
-                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)} 
+                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
+                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );

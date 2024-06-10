@@ -5,7 +5,7 @@ import * as Enum from '../../utils/enums';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 
-
+const format = 'HH';
 const { RangePicker } = DatePicker;
 const { TextArea } = Input;
 type RangePickerProps = GetProps<typeof DatePicker.RangePicker>;
