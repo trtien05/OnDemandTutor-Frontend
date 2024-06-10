@@ -184,7 +184,7 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
         margin-top: 2px;
         margin-bottom: 5px;
         color: ${theme.colors.error};
-        font-size: 0.8rem;
+        font-size: 1.2rem;
         text-align: left;
         line-height: 1.6;
     }

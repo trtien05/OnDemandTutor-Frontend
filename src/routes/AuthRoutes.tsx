@@ -23,7 +23,6 @@ const AuthRoutes = {
         { path: config.routes.public.register, element: <Register /> },
         { path: config.routes.public.forgotPassword, element: <ForgotPassword /> },
         { path: config.routes.public.setPassword, element: <SetPassword /> },
-        
     ],
 };
 
