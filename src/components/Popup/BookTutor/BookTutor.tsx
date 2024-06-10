@@ -9,7 +9,6 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import * as ScheduleStyle from './BookTutor.styled';
 import { createBooking, getTutorSchedule } from '../../../api/tutorBookingAPI';
 import config from '../../../config';
-import { is } from 'date-fns/locale';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -132,7 +131,7 @@ const BookTutor: React.FC = () => {
 
   const today = new Date();
   const next7Days = new Date();
-  next7Days.setDate(today.getDate() + 6);
+  next7Days.setDate(today.getDate() + 7);
 
   const onEventRendered = (args: EventRenderedArgs) => {
     const element = args.element as HTMLElement;
@@ -210,24 +209,25 @@ const BookTutor: React.FC = () => {
 
   const handleOk = async () => {
     setLoading(true); // Set loading state to true when form is submitted
-    
-      form.validateFields(['selectedSlots'])
-      .then (async () => {const values = form.getFieldValue('description')
-      const bookingData = await convertBookingData(values);
-  try { 
-      await createBooking(accountId, bookingData);
-      await navigate(config.routes.student.makePayment, { state: { selectedSchedule: selectedSchedule, tutorId: tutorId } });
-    } catch (error) {
-      api.error({
-        message: 'Error create booking',
-        description: error.response ? error.response.data : error.message,
+    form.validateFields(['selectedSlots'])
+      .then(async () => {
+        const values = form.getFieldValue('description')
+        const bookingData = await convertBookingData(values);
+        try {
+          const response = await createBooking(accountId, bookingData);
+          await navigate(config.routes.student.makePayment, { state: { selectedSchedule: selectedSchedule, appointmentData: response.data } });
+        } catch (error) {
+          api.error({
+            message: 'Error create booking',
+            description: error.response ? error.response.data : error.message,
+          });
+        } finally {
+          setLoading(false);
+        }
+      })
+      .finally(() => {
+        setLoading(false);
       });
-    } finally {
-      setLoading(false);
-    }})
-    .finally(() => {
-      setLoading(false);
-    });
   };
 
   const handleCancel = () => {
@@ -308,6 +308,7 @@ const BookTutor: React.FC = () => {
                 <Inject services={[Day]} />
               </ScheduleComponent>
             </ScheduleStyle.ScheduleWrapper>
+            {schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
           </FormStyled.FormItem>
           <FormStyled.FormItem
             name="description"
@@ -316,18 +317,6 @@ const BookTutor: React.FC = () => {
           >
             <TextArea rows={2} name='description' placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
           </FormStyled.FormItem>
-          {/* <FormStyled.ButtonDiv>
-          <Button type="default" onClick={handleCancel}>
-            Cancel
-          </Button>
-          <Button
-            type="primary"
-            htmlType="submit"
-            style={{ marginLeft: `24px` }}
-          >
-            Book
-          </Button>
-        </FormStyled.ButtonDiv> */}
         </FormStyled.FormWrapper>
       </Modal>
     </>
