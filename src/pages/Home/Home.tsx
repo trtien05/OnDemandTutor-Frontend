@@ -20,6 +20,7 @@ import { RightOutlined } from '@ant-design/icons';
 import { CollapseProps } from 'antd/lib';
 import Link from '../../components/Link';
 import config from '../../config';
+import BookTutor from '../../components/Popup/BookTutor';
 
 
 interface DataType {
@@ -124,6 +125,7 @@ const Home = () => {
                 <Container>
                     <Row align="middle" justify='center'>
                         <Col lg={12}>
+                        <BookTutor />
                             <Styled.BestServiceTitle level={2}>
                                 Popular Categories
                             </Styled.BestServiceTitle>

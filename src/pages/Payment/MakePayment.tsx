@@ -1,4 +1,4 @@
-import { Col, message, Grid, Space, Typography, Row, Button, notification } from 'antd';
+import { Col, message, Grid, Typography, Space, Button, notification, Statistic } from 'antd';
 import React, { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -8,11 +8,19 @@ import rating from "../../assets/images/star.webp"
 import vnpayLogo from "../../assets/svg/vnpay-logo.svg"
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import { getPaymentUrl, getTutorEducation, getTutorInfo } from '../../api/paymentAPI';
 import cookieUtils from '../../utils/cookieUtils';
+import moment from 'moment';
 import config from '../../config';
+
 const { Title, Text } = Typography;
+const { Countdown } = Statistic;
+
+interface CountdownTimerProps {
+  duration: number; // in seconds
+  onExpire: () => void;
+}
 
 interface Schedule {
   id?: number;
@@ -62,6 +70,8 @@ const MakePayment = () => {
   const appointmentData = location.state.appointmentData;
   const tutorId = appointmentData.tutorId;
   const selectedSchedule = location.state.selectedSchedule;
+  const [deadline, setDeadline] = useState(moment().add(15, 'minutes'));
+  const navigate = useNavigate();
   const fee = 0.1;
 
 
@@ -122,6 +132,25 @@ const MakePayment = () => {
     fetchTutor();
   }, [])
 
+// for countdown clock
+
+  useEffect(() => {
+    const timer = setInterval(() => {
+      if (moment().isAfter(deadline)) {
+        clearInterval(timer);
+        handleTimerEnd();
+      }
+    }, 1000);
+
+    return () => clearInterval(timer);
+  }, [deadline]);
+
+  const handleTimerEnd = () => {
+    // Clear user data here
+    navigate(config.routes.student.paymentSuccess)
+    // Redirect or reset state as needed
+  };
+
   function selectTutorEducation(education: []) {
     let selectedEdu: Education = null;
     if (education.length > 0) {
@@ -171,8 +200,8 @@ const MakePayment = () => {
           totalHour: totalHour,
           price: price,
         }));
-        window.open(data.paymentUrl, '_blank')
-        //window.location.href = data.paymentUrl;
+        // window.open(data.paymentUrl)
+        window.location.href = data.paymentUrl;
       
     } catch (error) {
       api.error({
@@ -306,6 +335,10 @@ const MakePayment = () => {
                   'Pay'
                 )}
               </Button>
+              <Styled.BorderLine />
+              
+              <Countdown style={{width: `fit-content`, margin: `auto`}} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
+              
             </Styled.CheckoutWrapper>
           </Col>
           {/* </Row> */}

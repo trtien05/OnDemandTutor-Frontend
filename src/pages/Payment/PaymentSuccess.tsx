@@ -75,7 +75,7 @@ const PaymentSuccess = () => {
                                     </Styled.PaymentMainPrice>
 
                                     <Styled.BorderLine />
-                                    <Styled.PaymentMainPrice>
+                                    <Styled.PaymentMainPrice style = {{marginBottom:`20px`}}>
                                         <Title level={3}>Tutor profile</Title>
                                         <Text>
                                         <a href={`/search-tutors/${bookingData.tutor.id}`}>{bookingData.tutor.fullName}</a>
