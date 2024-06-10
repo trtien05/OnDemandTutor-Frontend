@@ -13,19 +13,19 @@ type JwtType = {
 };
 
 export type UserType = {
-    avatarUrl: string;
-    emai: string;
-    emailValidationStatus: boolean;
-    fullName: string;
-    phoneNumber: string | null;
+    avatarUrl?: string;
+    email: string;
+    emailValidationStatus?: boolean;
+    fullName?: string;
+    phoneNumber?: string | null;
     role: string;
-    userId: number;
-    address: string | null;
-    avgRating: number | null;
-    accountStatus: AccountStatus;
-    createdAt: Date | string;
-    dateOfBirth: Date | string | null;
-    gender: boolean;
+    id: number;
+    address?: string | null;
+    avgRating?: number | null;
+    accountStatus?: AccountStatus;
+    createdAt?: Date | string;
+    dateOfBirth?: Date | string | null;
+    gender?: boolean;
 };
 
 // Function to get the role from the decoded JWT
@@ -75,8 +75,18 @@ const useAuth = () => {
             // Fetch API to get info user
             const getInfo = async () => {
                 const { data } = await getInfoCurrentUser();
-                setUser(data);
-                console.log(data);
+                // setUser(data);
+                setUser({
+                    id: data.id,
+                    role: data.role,
+                    email: data.email,
+                    fullName: data.fullName?data.fullName:data.email.split('@')[0],
+                    phoneNumber: data.phoneNumber?data.phoneNumber:null,
+                    address: data.address?data.address:null,
+                    dateOfBirth: data.dateOfBirth?data.dateOfBirth:null,
+                    avatarUrl: data.avatarUrl?data.avatarUrl:null,
+                    gender: data.gender,
+                } as UserType)
             };
 
             getInfo();

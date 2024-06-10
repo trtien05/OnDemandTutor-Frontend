@@ -42,7 +42,8 @@ const BecomeTutor = () => {
     top: 100,
   });
 
-  const accountId = 1;
+  const { user } = useAuth()
+  const accountId = user?.id || 0;
   const [dataSource, setDataSource] = useState([])
   const { Title } = Typography;
 
@@ -160,7 +161,6 @@ const BecomeTutor = () => {
   //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
-    console.log(values);
     saveBecomeTutor(accountId);
 
     next();
@@ -186,16 +186,16 @@ const BecomeTutor = () => {
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
-    console.log(
-      aboutValues,
-      educationValues,
-      certificationValues,
-      descriptionValues,
-      values,
-      avatarURL,
-      diplomaURL,
-      certURL
-    );
+    // console.log(
+    //   aboutValues,
+    //   educationValues,
+    //   certificationValues,
+    //   descriptionValues,
+    //   values,
+    //   avatarURL,
+    //   diplomaURL,
+    //   certURL
+    // );
 
     // Example tutorId
 
@@ -457,7 +457,6 @@ const BecomeTutor = () => {
     try {
       const response = await getAccountById(tutorId);
       setDataSource(response.data)
-      console.log(response.data)
     } catch (error: any) {
       api.error({
         message: 'Lỗi',
@@ -512,7 +511,6 @@ const BecomeTutor = () => {
   }
   //------------------------------------FETCH EDUCATION API----------------------------
   async function saveEducations(tutorId: number, formData: any, url: any) {
-    console.log(url)
     // Get JSON body from form data
     const jsonRequestBody = convertEducationFormData(formData, url);
 
@@ -666,7 +664,6 @@ const BecomeTutor = () => {
     // Get JSON body from form data
     const jsonRequestBody = convertTimeslotsToJSON(formData);
     const noOfWeeks = formData[`noOfWeek`];
-    console.log(noOfWeeks);
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau

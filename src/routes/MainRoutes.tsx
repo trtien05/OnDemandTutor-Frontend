@@ -8,6 +8,7 @@ import BecomeTutor from '../pages/BecomeTutor';
 import Question from '../components/Popup/CreateQuestion/CreateQuestion';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import MakePayment from '../pages/Payment/MakePayment';
+import PaymentSuccess from '../pages/Payment/PaymentSuccess';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -20,7 +21,6 @@ const MainRouter = () => {
 const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
-        { path: config.routes.public.registerTutor, element: <BecomeTutor /> },
         
         //
         { path: config.routes.public.searchTutors, element: <SearchTutors /> },
@@ -30,7 +30,9 @@ const publicRoutes = {
 
 const studentRoutes = {
     children: [
-        {path: config.routes.student.makePayment, element: <MakePayment />}
+        { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
+        {path: config.routes.student.makePayment, element: <MakePayment />},
+        {path: config.routes.student.paymentSuccess, element: <PaymentSuccess />}
     ],
 };
 

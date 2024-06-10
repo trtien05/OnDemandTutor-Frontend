@@ -7,7 +7,6 @@ const routes = {
         forgotPassword: '/forgot-password',
         setPassword: '/set-password',
         contact: '/contact',
-        registerTutor: '/register-tutor',
         searchTutors: '/search-tutors',
         tutorDetails: '/search-tutors/:tutorId',
         searchClasses: '/search-classes',
@@ -17,7 +16,9 @@ const routes = {
     },
     student: {
         profile: '/profile',
-        makePayment: '/make-payment'
+        makePayment: '/make-payment',
+        paymentSuccess: '/check-payment',
+        registerTutor: '/register-tutor',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
