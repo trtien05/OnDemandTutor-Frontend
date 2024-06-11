@@ -1,78 +1,234 @@
-import React from 'react';
-import { Col, Skeleton } from 'antd';
-import iconBachelor from "../../../assets/images/image13.png";
+import React, { useState } from 'react';
+import { Col, Skeleton, Avatar, Modal } from 'antd';
+import iconBachelor from '../../../assets/images/image13.png';
 import * as Styled from '../Question.styled';
 import { Question } from '../../QuestionList/Question.type';
+import { UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
 
 interface QuestionItemProps {
-  item: Question;
+    item: Question;
 }
 
 const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
-  return (
-    <Skeleton avatar title={false} loading={item.loading} active>
-      <Col lg={24} md={24} sm={24} xs={24}>
-        <Styled.BoxHover>
-          <Styled.BestTutorItem justify='space-between'>
-            <Col lg={7} md={8} sm={9} xs={24}>
-              {/* <Styled.BestTutorImage src={item.picture.large} alt="Ielts" /> */}
-            </Col>
-            <Col lg={9} md={8} sm={6} xs={0}>
-              <Styled.BestTutorContent>
-                <Styled.BestTutorName level={2}>{item.customerName}</Styled.BestTutorName>
-                <Styled.BestTutorEducation>
-                  {/* <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                  {item.educations.map((education, index) => (
-                    <Styled.BestTutorEducationBachelor key={index}>
-                      {education.majorName}{index < item.educations.length - 1 && ','}
-                    </Styled.BestTutorEducationBachelor>
-                  ))} */}
+    const [open, setOpen] = useState(false);
+    const truncateContent = (content: string, maxLength: number) => {
+        if (content.length <= maxLength) {
+            return content;
+        }
+        return content.substring(0, maxLength) + '...';
+    };
+    const showModal = () => {
+        setOpen(true);
+    };
+    const handleCancel = () => {
+        console.log('Clicked cancel button');
+        setOpen(false);
+    };
+    //This function extracts the file extension from the URL correctly
+    //by using the URL constructor, which handles query parameters.
+    const getFileExtension = (url: string) => {
+        const path = new URL(url).pathname;
+        const ext = path.split('.').pop();
+        return ext ? ext.toLowerCase() : '';
+    };
+    //This function now uses getFileExtension
+    //to determine the file type and render the image or link accordingly.
+    const renderQuestionFile = (url: string) => {
+        const fileExtension = getFileExtension(url);
+        console.log(fileExtension); // for debugging
 
-                  <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                  <Styled.BestTutorEducationBachelor>
-                    {item.subject}
-                  </Styled.BestTutorEducationBachelor>
-                  <Styled.BestTutorEducationBachelor>
-                    {item.createDate?.toISOString().split('T')[0]}
-                  </Styled.BestTutorEducationBachelor>
-                  <Styled.BestTutorEducationBachelor>
-                    {item.modifiedDate?.toISOString().split('T')[0]}
-                  </Styled.BestTutorEducationBachelor>
-                </Styled.BestTutorEducation>
-                <Styled.BestTutorStudent>
-                {item.questionFile?.map((file, index) => (
-                    <Styled.BestTutorEducationBachelor key={index}>
-                      <a href={file.url} target="_blank" rel="noopener noreferrer">
-                        {file.name}
-                      </a>
-                      {index < item.questionFile.length - 1 && ', '}
-                    </Styled.BestTutorEducationBachelor>
-                  ))}
-                </Styled.BestTutorStudent>
-                <Styled.BestTutorDescription>
-                  {item.content}
-                </Styled.BestTutorDescription>
-              </Styled.BestTutorContent>
+        if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
+            return <Styled.QuestionImage src={url} alt="Question Image" />;
+        } else if (fileExtension === 'pdf') {
+            return (
+                <a
+                    href={url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{ fontStyle: 'italic', textDecoration: 'underline' }}
+                >
+                    Click to download PDF file
+                </a>
+            );
+        }
+        return null;
+    };
+    return (
+        <Skeleton avatar title={false} loading={item.loading} active>
+            <Col lg={24} md={24} sm={24} xs={24}>
+                <Styled.BoxHover>
+                    {/* justify="space-between" */}
+                    <Styled.QuestionItem>
+                        {/* <Col lg={2} md={4} sm={4} xs={24}> */}
+                        {/* <Styled.BestTutorImage src={item.picture.large} alt="avatar" /> */}
+                        {item.account.avatarUrl ? (
+                            <Avatar
+                                size={64}
+                                src={item.account.avatarUrl}
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    borderRadius: '15px',
+                                    left: '-30px',
+                                    top: '-30px',
+                                    
+                                }}
+                                
+                                
+                            />
+                        ) : (
+                            <Avatar
+                                size={64}
+                                icon={<UserOutlined/>}
+                                style={{
+                                    width: '100px',
+                                    height: '100px',
+                                    borderRadius: '15px',
+                                    left: '-30px',
+                                    top: '-30px',
+                                    
+                                }}
+                                
+                            />
+                        )}
+                        {/* </Col> */}
+                        <Col lg={21} md={20} sm={19} xs={16}>
+                            <Styled.QuestionContent>
+                                <Styled.QuestionRow>
+                                    <Styled.Name
+                                        level={2}
+                                        onClick={showModal}
+                                        style={{ cursor: 'pointer' }}
+                                    >
+                                        {item.title}
+                                    </Styled.Name>
+                                </Styled.QuestionRow>
+                                <Styled.QuestionRow>
+                                    <Styled.QuestionRowSpan
+                                        style={{
+                                            fontSize: '16px',
+                                            fontWeight: 'bold',
+                                            fontStyle: 'italic',
+                                        }}
+                                    >
+                                        {item.account.fullName}
+                                    </Styled.QuestionRowSpan>
+                                    <Styled.BachelorImage src={iconBachelor} alt="bachelor" />
+                                    <Styled.QuestionRowSpan>
+                                        {item.subjectName}
+                                    </Styled.QuestionRowSpan>
+                                    {/* <Styled.QuestionRowSpan>
+                                        Uploaded:{' '}
+                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
+                                    </Styled.QuestionRowSpan> */}
+                                    <Styled.QuestionRowSpan>
+                                        Modified:{' '}
+                                        {new Date(item.modifiedAt!).toISOString().split('T')[0]}
+                                    </Styled.QuestionRowSpan>
+                                    <Styled.QuestionRowSpan>
+                                        <Styled.Button>{item.status}</Styled.Button>
+                                    </Styled.QuestionRowSpan>
+                                </Styled.QuestionRow>
+                                <Styled.Description>
+                                    {truncateContent(item.content || '', 250)}
+                                </Styled.Description>
+                            </Styled.QuestionContent>
+                        </Col>
+                    </Styled.QuestionItem>
+                </Styled.BoxHover>
             </Col>
-            <Col lg={8} md={8} sm={8} xs={24}>
-              <Styled.BestTutorBooking>
-                <Styled.BookingThisTutor>
-                  <Styled.BookingTutorButton>
-                    Send Message
-                  </Styled.BookingTutorButton>
-                </Styled.BookingThisTutor>
-                <Styled.BookingThisTutor>
-                  <Styled.ViewScheduleTutorButton>
-                    {item.status}
-                  </Styled.ViewScheduleTutorButton>
-                </Styled.BookingThisTutor>
-              </Styled.BestTutorBooking>
-            </Col>
-          </Styled.BestTutorItem>
-        </Styled.BoxHover>
-      </Col>
-    </Skeleton>
-  );
-}
+            <Modal
+                open={open}
+                onCancel={handleCancel}
+                width={700}
+                closeIcon={null}
+                styles={{
+                    content: {
+                        borderRadius: '100px',
+                        padding: '50px',
+                        boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)',
+                    },
+                }}
+                footer={null}
+            >
+                <Col sm={24}>
+                    <Styled.ModalStudentInfo>
+                        <Col sm={3}>
+                        {item.account.avatarUrl ? (
+                            <Avatar
+                            size={55}
+                                src={item.account.avatarUrl}
+                                style={{
+                                    borderRadius: '15px',
+                                }}
+                            />
+                        ) : (
+                            <Avatar
+                            size={55}
+                                icon={<UserOutlined />}
+                                style={{
+                                    borderRadius: '15px',
+                                }}
+                                
+                            />
+                        )}
+                            
+                        </Col>
+                        <Col sm={21}>
+                            <div>
+                                <Styled.ModalStudentInfo
+                                    style={{
+                                        fontSize: '16px',
+                                        fontWeight: 'bold',
+                                        fontStyle: 'italic',
+                                    }}
+                                >
+                                    {item.account.fullName}
+                                </Styled.ModalStudentInfo>
+                                <Styled.ModalStudentInfo
+                                    style={{
+                                        display: 'inline',
+                                    }}
+                                >
+                                    <Styled.BachelorImage src={iconBachelor} alt="bachelor" />
+                                    <Styled.QuestionRowSpan>
+                                        {item.subjectName}
+                                    </Styled.QuestionRowSpan>
+                                    {/* <Styled.QuestionRowSpan>
+                                        Uploaded:{' '}
+                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
+                                    </Styled.QuestionRowSpan> */}
+                                    <Styled.QuestionRowSpan>
+                                        Modified:{' '}
+                                        {new Date(item.modifiedAt!).toISOString().split('T')[0]}
+                                    </Styled.QuestionRowSpan>
+                                    <Styled.QuestionRowSpan>
+                                        <Styled.Button>{item.status}</Styled.Button>
+                                    </Styled.QuestionRowSpan>
+                                    <Styled.QuestionRowSpan>
+                                        <Styled.BookingTutorButton>
+                                            Send Message
+                                        </Styled.BookingTutorButton>
+                                    </Styled.QuestionRowSpan>
+                                </Styled.ModalStudentInfo>
+                            </div>
+                        </Col>
+                    </Styled.ModalStudentInfo>
+                </Col>
+                <Styled.QuestionRow>
+                    <Styled.Name level={2}>{item.title}</Styled.Name>
+                </Styled.QuestionRow>
+                <Styled.Description>{item.content}</Styled.Description>
+                <Styled.QuestionRow>
+                    {item.questionUrl && (
+                        <Styled.QuestionRowSpan>
+                            {renderQuestionFile(item.questionUrl)}
+                        </Styled.QuestionRowSpan>
+                    )}
+                </Styled.QuestionRow>
+            </Modal>
+        </Skeleton>
+    );
+};
 
 export default QuestionItem;

@@ -1,12 +1,19 @@
 import { UploadFile } from "antd";
 
 export interface Question {
-    content?: string;
-    questionFile?: (UploadFile & { url?: string })[];
-    subject?: string;
-    customerName?:string;
-    createDate?:Date;
-    modifiedDate?:Date;
-    status?:string;
-    loading: boolean;
+        id: number;
+        content?: string;
+        createdAt?: string;
+        modifiedAt?: string;
+        questionUrl?: string | null;
+        status?: string;
+        subjectName?: string;
+        account: {
+            id: number;
+            avatarUrl?: string | null;
+            email: string;
+            fullName: string;
+        };
+        title?:string;
+        loading: boolean;
 }

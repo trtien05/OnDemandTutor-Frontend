@@ -3,8 +3,9 @@ import { Button, Modal, Input, Select, UploadFile, Typography, message, Form, Co
 import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
-import { theme } from '../../themes';
-import { uploadCreateQuestionFiles } from '../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
+import { theme } from '../../../themes';
+import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
+import { createQuestion } from '../../../api/questionAPI';
 const Question: React.FC = () => {
     const [form] = Form.useForm();
     const [open, setOpen] = useState(false);
@@ -16,6 +17,34 @@ const Question: React.FC = () => {
     const showModal = () => {
         setOpen(true);
     };
+    async function saveQuestion(studentId: number, formData: any) {
+        const jsonBody = convertQuestionData(formData);
+
+        try {
+            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+            const responseData = await createQuestion(studentId, jsonBody);
+
+            // Check response status
+
+            // Get response data
+            console.log('Question saved successfully:', responseData);
+            // Return success response
+            return responseData;
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    function convertQuestionData(formData: any) {
+        const questionData = {
+            content: formData[`content`],
+            questionUrl: '' || formData[`questionFile`][0],
+            subjectName: formData[`subject`],
+            title: formData[`title`]
+        };
+        return questionData;
+    }
+
     const handleOk = async () => {
         setLoading(true);
         try {
@@ -28,10 +57,10 @@ const Question: React.FC = () => {
                         file.originFileObj,
                         'CreateQuestion',
                         dateCreated,
-                        index
+                        index,
                         // (url) => url,
                     );
-                    console.log(`Uploaded file ${index} URL:`, url)
+                    console.log(`Uploaded file ${index} URL:`, url);
                     return { ...file, url };
                 }),
             );
@@ -39,6 +68,7 @@ const Question: React.FC = () => {
             setModalData(values);
             console.log('Clicked OK with values:', values);
             setConfirmLoading(true);
+            await saveQuestion(2, values);
             setTimeout(() => {
                 setOpen(false);
                 setConfirmLoading(false);
@@ -57,21 +87,8 @@ const Question: React.FC = () => {
         form.resetFields(); // Reset the form fields
         setOpen(false);
     };
-    
-    // const handleFileSizeCheck = (info) => {
-    //     const isLt5M = info.file.size / 1024 / 1024 < 5;
-    //     if (!isLt5M) {
-    //         message.error('Image must smaller than 5MB!');
-    //         // Remove the file from the list
-    //         const index = info.fileList.indexOf(info.file);
-    //         const newFileList = info.fileList.slice();
-    //         newFileList.splice(index, 1);
-    //         return newFileList;
-    //     } else {
-    //         // If file size is less than 5MB, return the new file list
-    //         return info.fileList;
-    //     }
-    // };
+
+
     const handleFileSizeCheck = (file) => {
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
@@ -79,12 +96,7 @@ const Question: React.FC = () => {
         }
         return isLt5M;
     };
-    // const onChange = (info) => {
-    //     const newFileList = handleFileSizeCheck(info);
-    //     setFileList(newFileList);
-    //     form.setFieldsValue({ questionFile: newFileList }); // Update the form value
-    //     console.log('File List:', newFileList);
-    // };
+    
     const onChange = (info) => {
         let newFileList = info.fileList;
 
@@ -189,9 +201,24 @@ const Question: React.FC = () => {
                                 ))}
                             </Select>
                         </FormStyled.FormItem>
+                        <FormStyled.FormTitle>Title</FormStyled.FormTitle>
+                        <FormStyled.FormItem name="title" rules={[{ required: true }]}>
+                            <Input
+                                count={{
+                                    show: true,
+                                    max: 80,
+                                }}
+                                type="text"
+                                placeholder="Enter your title here"
+                            ></Input>
+                        </FormStyled.FormItem>
                         <FormStyled.FormTitle>Enter your question</FormStyled.FormTitle>
                         <FormStyled.FormItem name="content" rules={[{ required: true }]}>
                             <FormStyled.CommentInput
+                                count={{
+                                    show: true,
+                                    max: 1000,
+                                }}
                                 placeholder="Type your question here"
                                 style={{ height: '200px' }}
                             ></FormStyled.CommentInput>
@@ -200,7 +227,7 @@ const Question: React.FC = () => {
                         <FormStyled.FormItem
                             name="questionFile"
                             valuePropName="fileList"
-                            getValueFromEvent={e => {
+                            getValueFromEvent={(e) => {
                                 console.log('Get value from event:', e); // Log the event to debug
                                 return Array.isArray(e) ? e : e && e.fileList;
                             }}

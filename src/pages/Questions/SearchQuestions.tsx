@@ -6,7 +6,7 @@ import QuestionList from '../../components/QuestionList/QuestionList'
 import { useDocumentTitle } from '../../hooks';
 import { Question } from '../../components/QuestionList/Question.type';
 import Pagination from '../../components/Pagination/Pagination';
-import CreateQuestion from '../../components/Popup/CreateQuestion';
+import CreateQuestion from '../../components/Popup/CreateQuestion/CreateQuestion';
 const { Option } = Select;
 
 
@@ -24,7 +24,7 @@ const SearchQuestions = () => {
   const [totalPages, setTotalPages] = useState(0);
 
   const [searchUrl, setSearchUrl] = useState('');
-
+  
   const handleSave = () => {
     const searchCriteria = {
       subject,
@@ -32,22 +32,20 @@ const SearchQuestions = () => {
     };
     let url = ``;
 
-    if (subject !== 'Subject') {
-      url += `&specialty=${subject}`;
+    if (subject !== 'all') {
+      url += `&subjects=${subject}`;
     }
     if (searchKeyword !== '') {
-      url += `&searchKeyword=${searchKeyword}`;
+      url += `&questionContent=${searchKeyword}`;
     }
     setSearchUrl(url);
-
     console.log(searchCriteria)
     console.log(searchUrl);
   };
 
-
   useEffect(() => {
-    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}`;
-
+    
+    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     let url: string = '';
 
     if (searchUrl === '') {
@@ -64,6 +62,7 @@ const SearchQuestions = () => {
         setList(res.content);
         setTotalAmountQuestions(res.totalElements);
         setTotalPages(res.totalPages);
+        console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
       })
       .catch((err) => console.error('Failed to fetch questions:', err));
     window.scrollTo(0, 0);

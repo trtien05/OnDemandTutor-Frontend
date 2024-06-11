@@ -6,7 +6,7 @@ import { Question } from '../QuestionList/Question.type';
 import QuestionItem from '../QuestionList/QuestionItem/QuestionItem'
 
 const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (props) => {
-  const [hoveredTutor, setHoveredTutor] = useState<Question[]>();
+  const [hoveredTutor, setHoveredTutor] = useState<Question>();
   const [translateY, setTranslateY] = useState<number>(0);
 
 
@@ -45,7 +45,7 @@ const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (prop
         </Container>
       </Styled.TutorFilteredSection>
     </>
-
+  
   );
 }
 
