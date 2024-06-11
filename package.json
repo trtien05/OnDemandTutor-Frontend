@@ -10,7 +10,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ant-design/charts": "^1.4.2",
     "@ant-design/compatible": "^5.1.2",
     "@ant-design/icons": "^5.2.6",
     "@reduxjs/toolkit": "^1.9.6",
