@@ -30,13 +30,6 @@ const SearchTutors = () => {
   const [searchUrl, setSearchUrl] = useState('');
 
   const handleSave = () => {
-    const searchCriteria = {
-      specialty,
-      priceRange: `${priceRange[0]}-${priceRange[1]}`,
-      tutorLevel,
-      sortBy,
-      searchKeyword,
-    };
     let url = ``;
 
     if (specialty !== 'Specialties') {
@@ -70,7 +63,6 @@ const SearchTutors = () => {
     } else {
       url = baseUrl + searchUrl
     }
-
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
@@ -97,8 +89,7 @@ const SearchTutors = () => {
         step={10000}
         min={minPrice}
         max={maxPrice}
-
-        onChangeComplete={onChangeComplete}
+        onAfterChange={onChangeComplete}
       />
       <p>Selected price range: {priceRange[0].toLocaleString() + 'đ'} - {priceRange[1].toLocaleString() + 'đ'}</p>
     </div>

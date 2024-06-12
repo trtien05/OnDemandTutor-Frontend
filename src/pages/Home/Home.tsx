@@ -220,7 +220,7 @@ const Home = () => {
                                                 'alignItems': 'center',
                                             }
                                         }>
-                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} />
+                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
                                         </div>
                                     }
                                     style={{ background: token.colorBgContainer }}

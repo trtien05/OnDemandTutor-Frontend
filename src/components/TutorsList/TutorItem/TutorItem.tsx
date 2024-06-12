@@ -23,7 +23,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
   const route: string = `${config.routes.public.searchTutors}/${item.id}`;
 
   return (
-    <Skeleton avatar title={false} loading={item.loading} active>
+    <Skeleton avatar title={true} loading={item.loading} active>
       <Col lg={24} md={24} sm={24} xs={24}>
         <Styled.BoxHover>
           <Styled.BestTutorItem justify='space-between'>
