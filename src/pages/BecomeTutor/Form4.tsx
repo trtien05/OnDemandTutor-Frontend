@@ -126,8 +126,8 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             </FormStyled.NumberInput>
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
-            Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take.
-            Automatic recurring payment takes place every 28 days.
+            We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
+            The remaining will be transferred automatically to your bank account every 28 days.
           </FormStyled.FormDescription>
 
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>
