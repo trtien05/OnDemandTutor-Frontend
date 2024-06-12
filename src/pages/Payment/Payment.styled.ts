@@ -379,9 +379,9 @@ export const CheckErrorMsg = styled.section`
 
 export const PaymentMainPrice = styled.section`
     display: flex;
-    align-items: center;
     justify-content: space-between;
     padding: 0 22px;
+    margin: 16px 0;
 
     & h3.ant-typography {
         ${ConfirmPrimaryText}

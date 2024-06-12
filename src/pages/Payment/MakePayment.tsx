@@ -113,7 +113,6 @@ const MakePayment = () => {
         })
 
         setSchedule(selectSchedule);
-
         //format data    
         const tutorData: Tutor = {
           id: response.data.id,
@@ -202,6 +201,7 @@ const MakePayment = () => {
       // If success, show success message
       setLoading(true);
       const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
+      console.log(data)
       const totalHour = calculateTotalHour(schedule);
       const price = totalHour * tutor.teachingPricePerHour;
       await cookieUtils.setItem('bookingData', JSON.stringify({
@@ -266,10 +266,6 @@ const MakePayment = () => {
                 </Styled.ResponsiveStyle>)}
 
               </Styled.TutorItem>
-              {/* <Styled.ResponsiveStyle>
-            <Styled.TutorName style={{ fontWeight: `500` }}>{formatMoney(tutor.teachingPricePerHour)}</Styled.TutorName>
-            <span style={{ margin: `5px`, color: `${theme.colors.primary}` }}>/hour</span>
-          </Styled.ResponsiveStyle> */}
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
                 {schedule.map((schedule: Schedule, index: number) => (
@@ -282,7 +278,7 @@ const MakePayment = () => {
               <Styled.PriceCalculation>
                 <Space>
                   <Title level={3}>Tutor's price per hour</Title>
-                  <Text> {formatMoney(tutor.teachingPricePerHour)} VND</Text>
+                  <Text> {(tutor.teachingPricePerHour).toLocaleString()} VND</Text>
                 </Space>
 
                 <Space>
@@ -302,7 +298,7 @@ const MakePayment = () => {
                     Total
                   </Title>
                   <Text>
-                    {formatMoney(Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour)))} VND
+                    {(Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString()} VND
                   </Text>
                 </Space>
                 <p></p>
