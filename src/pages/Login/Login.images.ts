@@ -1,7 +1,7 @@
-import loginImg01 from '@/assets/images/form-img-01.png';
-import loginImg02 from '@/assets/images/form-img-02.png';
-import loginImg03 from '@/assets/images/form-img-03.png';
-export { default as fallbackImg } from '@/assets/images/fallback-img.jpg';
+import loginImg01 from '../../assets/images/form-img-01.png';
+import loginImg02 from '../../assets/images/form-img-02.png';
+import loginImg03 from '../../assets/images/form-img-03.png';
+export { default as fallbackImg } from '../../assets/images/fallback-img.jpg';
 
 const images = [
     {
