@@ -9,6 +9,7 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import * as ScheduleStyle from './BookTutor.styled';
 import { createBooking, getTutorSchedule } from '../../../api/tutorBookingAPI';
 import config from '../../../config';
+import useAuth from '../../../hooks/useAuth';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -22,7 +23,8 @@ interface Schedule {
 
 const BookTutor: React.FC = () => {
   const tutorId = 1;
-  const accountId = 2;
+  const {user}  = useAuth();
+  const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
@@ -196,8 +198,10 @@ const BookTutor: React.FC = () => {
   };
 
 
-  const showModal = () => {
+  function showModal (){
+    if (user)
     setIsFormOpen(true);
+  else navigate(config.routes.public.login);
   };
 
   const validateTimeslot = (_: unknown) => {

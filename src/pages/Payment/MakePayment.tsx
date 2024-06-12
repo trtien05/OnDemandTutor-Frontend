@@ -64,22 +64,25 @@ const MakePayment = () => {
     top: 100,
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const [tutor, setTutor] = useState<Tutor>();
+  const [tutor, setTutor] = useState<Tutor | null>();
   const screens = Grid.useBreakpoint();
   const location = useLocation();
   const [schedule, setSchedule] = useState<Schedule[]>();
-  const appointmentData = location.state.appointmentData;
-  const tutorId = appointmentData.tutorId;
+  const [appointmentData, setAppointmentData] = useState<any>(location.state.appointmentData); // [TODO] Replace any with the correct type
+ 
+  const [tutorId, setTutorId] = useState<number>(appointmentData.tutorId); // [TODO] Replace any with the correct type
   const selectedSchedule = location.state.selectedSchedule;
   const [deadline, setDeadline] = useState(moment().add(15, 'minutes'));
   const navigate = useNavigate();
 
 
   useEffect(() => {
+    if (location.state.appointmentData && appointmentData.tutorId) {
     const fetchTutor = async () => {
       setLoading(true);
       try {
-
+        await setAppointmentData(location.state.appointmentData);
+        await setTutorId(appointmentData.tutorId);
         const response =
           await getTutorInfo(tutorId)
             .catch(error => {
@@ -131,7 +134,13 @@ const MakePayment = () => {
     };
 
     fetchTutor();
-  }, [])
+  }
+  }, [location.state.appointmentData, appointmentData.tutorId])
+
+  useEffect(() => {
+    setAppointmentData(location.state.appointmentData);
+    setTutorId(appointmentData.tutorId);
+  }, []);
 
   // for countdown clock
 
@@ -202,6 +211,7 @@ const MakePayment = () => {
         price: price,
       }));
       // window.open(data.paymentUrl)
+      setTutor(null);
       window.location.href = data.paymentUrl;
 
     } catch (error) {
@@ -216,7 +226,7 @@ const MakePayment = () => {
 
   if (loading) {
     return <div>Loading...</div>; // Or your custom loading spinner
-  } else {
+  } else if (!loading && appointmentData && tutor !== null) {
     return (
       <>
         {contextHolder}
@@ -339,6 +349,8 @@ const MakePayment = () => {
 
       </>
     )
+  } else {
+    navigate(config.routes.public.notFound);
   }
 }
 

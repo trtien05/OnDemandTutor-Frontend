@@ -26,7 +26,7 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-    <ConfigProvider locale={viVN} theme={AntdThemeConfig}>
+    <ConfigProvider theme={AntdThemeConfig}>
         <AppAntd>
     <App />
         </AppAntd>
