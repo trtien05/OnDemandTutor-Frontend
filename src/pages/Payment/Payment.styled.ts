@@ -46,13 +46,6 @@ export const PriceCalculation = styled.div`
         line-height: 1.4;
     }
 
-    & .ant-space:last-of-type h3.ant-typography {
-        color: ${theme.colors.textPrimary};
-        font-size: 1.6rem;
-        font-weight: 400;
-        line-height: 1.5;
-    }
-
     & .ant-space {
         justify-content: space-between;
         width: 100%;

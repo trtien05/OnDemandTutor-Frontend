@@ -71,10 +71,10 @@ const PaymentSuccess = () => {
                                 <Styled.PaymentMainPrice>
                                     <Title level={3}>Booked schedule</Title>
                                     <Text>
-                                        {bookingData.schedule.map((schedule: Schedule, index: number) => (
-                                            <span key={index} >{toScheduleString(schedule)}</span>
-                                        )
-                                        )}
+                                            {bookingData.schedule.map((schedule, index: number) => (
+                                                <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color:`${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                                            )
+                                            )}
                                     </Text>
                                 </Styled.PaymentMainPrice>
 

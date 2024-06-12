@@ -39,6 +39,7 @@ interface Education {
 interface Tutor {
   id: number;
   fullName?: string;
+  avatarUrl?: string;
   teachingPricePerHour: number;
   educations?: Education;
   subjects: string[],
@@ -72,7 +73,6 @@ const MakePayment = () => {
   const selectedSchedule = location.state.selectedSchedule;
   const [deadline, setDeadline] = useState(moment().add(15, 'minutes'));
   const navigate = useNavigate();
-  const fee = 0.1;
 
 
   useEffect(() => {
@@ -115,6 +115,7 @@ const MakePayment = () => {
         const tutorData: Tutor = {
           id: response.data.id,
           fullName: response.data.fullName,
+          avatarUrl: response.data.avatarUrl,
           teachingPricePerHour: response.data.teachingPricePerHour,
           educations: await selectTutorEducation(educations.data),
           subjects: response.data.subjects,
@@ -193,7 +194,7 @@ const MakePayment = () => {
       setLoading(true);
       const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
       const totalHour = calculateTotalHour(schedule);
-      const price = totalHour * tutor.teachingPricePerHour * (1 + fee)
+      const price = totalHour * tutor.teachingPricePerHour;
       await cookieUtils.setItem('bookingData', JSON.stringify({
         tutor: tutor,
         schedule: schedule,
@@ -227,7 +228,7 @@ const MakePayment = () => {
 
               <Styled.TutorItem justify='space-between'>
                 <Styled.ResponsiveStyle>
-                  <Styled.TutorImage src={tutorAva} alt="tutor" />
+                  <Styled.TutorImage src={tutor.avatarUrl} alt="tutor" />
                   <Styled.TutorContent>
                     <Styled.TutorName level={2}>{tutor.fullName}</Styled.TutorName>
                     <Styled.TutorEducation>
@@ -238,11 +239,13 @@ const MakePayment = () => {
 
                       <div>
                         <Styled.TutorEducationBachelorImage src={iconBachelor} alt="subject" />
+                        <Styled.TutorEducationBachelor>
                         {tutor.subjects.map((subject, index) => (
-                          <Styled.TutorEducationBachelor key={index}>
-                            {subject}{index < tutor.subjects.length - 1 && ','}
-                          </Styled.TutorEducationBachelor>
+                          <span key = {index}>
+                            {subject}{index < tutor.subjects.length - 1 && ', '}
+                            </span>
                         ))}
+                        </Styled.TutorEducationBachelor>
                       </div>
                     </Styled.TutorEducation>
                   </Styled.TutorContent>
@@ -260,9 +263,10 @@ const MakePayment = () => {
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
                 {schedule.map((schedule: Schedule, index: number) => (
-                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule)}</p>
+                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold`}}>{toScheduleString(schedule).split('at')[1]} </span></p>
                 )
                 )}
+                <p>Description: {appointmentData.description}</p>
               </div>
               <Styled.BorderLine />
               <Styled.PriceCalculation>
@@ -278,24 +282,13 @@ const MakePayment = () => {
                   </Text>
                 </Space>
 
-                {/* <Space>
-                  <Title level={3}>Tutoring price</Title>
-                  <Text>
-                    {formatMoney(calculateTotalHour(schedule) * tutor.teachingPricePerHour)} VND
-                  </Text>
-                </Space> */}
-
-                {/* <Space>
-                  <Title level={3}>Processing fee (10%)</Title>
-                  <Text>
-                    {formatMoney(Math.round(calculateTotalHour(schedule) * tutor.teachingPricePerHour * (1+fee)))} VND
-                  </Text>
-                </Space> */}
-
+                </Styled.PriceCalculation>
                 <Styled.BorderLine />
 
+                <Styled.PriceCalculation>
+
                 <Space>
-                  <Title level={3} >
+                  <Title level={3} style={{color: `${theme.colors.textPrimary}`}} >
                     Total
                   </Title>
                   <Text>

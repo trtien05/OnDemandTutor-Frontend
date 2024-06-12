@@ -1,5 +1,5 @@
 
-import { get, post, request } from '../utils/apiCaller';
+import { get } from '../utils/apiCaller';
 
 export const getPaymentUrl = (appointment: any) => {
     return get(`/api/payment/create-payment`, appointment);
