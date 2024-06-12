@@ -236,7 +236,7 @@ const BookTutor: React.FC = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal}>
+      <Button type="primary" onClick={showModal} style={{borderRadius:`50px`, fontWeight:`bold`}}>
         Book this tutor
       </Button>
       <Modal
