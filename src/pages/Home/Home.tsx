@@ -272,9 +272,7 @@ const Home = () => {
                                                                     </div>
                                                                 </Styled.BookingInformation>
                                                                 <Styled.BookingThisTutor>
-                                                                    <Styled.BookingTutorButton>
-                                                                        Book This Tutor
-                                                                    </Styled.BookingTutorButton>
+                                                                    <BookTutor/>
                                                                 </Styled.BookingThisTutor>
                                                                 <Styled.BookingThisTutor>
                                                                     <Styled.ViewScheduleTutorButton>
