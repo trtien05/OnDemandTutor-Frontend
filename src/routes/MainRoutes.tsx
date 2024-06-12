@@ -36,6 +36,14 @@ const studentRoutes = {
     ],
 };
 
+const studentRoutes = {
+    children: [
+        { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
+        {path: config.routes.student.makePayment, element: <MakePayment />},
+        {path: config.routes.student.paymentSuccess, element: <PaymentSuccess />}
+    ],
+};
+
 
 const notFoundRoutes = { path: '*', element: <NotFound /> };
 
