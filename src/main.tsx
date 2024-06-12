@@ -22,12 +22,13 @@ export const breakpoints = {
 const theme: DefaultTheme = createStyledBreakpointsTheme({
   breakpoints,
 });
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
     <ThemeProvider theme={theme}>
-      <ConfigProvider locale={viVN} theme={AntdThemeConfig}>
+    <ConfigProvider theme={AntdThemeConfig}>
         <AppAntd>
-          <App />
+    <App />
         </AppAntd>
         <GlobalStyles />
       </ConfigProvider>
