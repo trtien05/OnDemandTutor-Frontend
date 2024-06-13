@@ -1,7 +1,7 @@
 import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
 import { storage } from "../utils/firebase";
 // , handleChange: (url: string) => void
-export const uploadCreateQuestionFiles = async (userId: number, file: File | null, sectionName: string, dateCreated: string, index: number) => {
+export const uploadCreateQuestionFiles = async (userId: number, file: File, sectionName: string, dateCreated: string, index: number) => {
     console.log(file);
     if (!file) {
         console.log("No file selected for upload.");
