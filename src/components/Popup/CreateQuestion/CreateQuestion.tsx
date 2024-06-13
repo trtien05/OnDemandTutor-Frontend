@@ -6,16 +6,27 @@ import { InboxOutlined } from '@ant-design/icons';
 import { theme } from '../../../themes';
 import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
 import { createQuestion } from '../../../api/questionAPI';
+import { useAuth } from '../../../hooks';
+import { useNavigate } from 'react-router-dom';
+import config from '../../../config';
+import { RcFile } from 'antd/es/upload';
 const Question: React.FC = () => {
     const [form] = Form.useForm();
+    const {user} = useAuth();
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
     const [modalData, setModalData] = useState(null);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
-        setOpen(true);
+        if(user?.role === 'STUDENT'){
+            setOpen(true);
+        }else{
+            navigate(config.routes.public.login);
+        }
     };
     async function saveQuestion(studentId: number, formData: any) {
         const jsonBody = convertQuestionData(formData);
@@ -51,20 +62,21 @@ const Question: React.FC = () => {
             const values = await form.validateFields();
             const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
             const uploadedFiles = await Promise.all(
-                fileList.map(async (file, index) => {
-                    const url = await uploadCreateQuestionFiles(
-                        1,
-                        file.originFileObj,
-                        'CreateQuestion',
-                        dateCreated,
-                        index,
-                        // (url) => url,
-                    );
-                    console.log(`Uploaded file ${index} URL:`, url);
-                    return { ...file, url };
+                fileList.map(async (file: UploadFile, index) => {
+                    if (file.originFileObj) {
+                        const url = await uploadCreateQuestionFiles(
+                            1,
+                            file.originFileObj,
+                            'CreateQuestion',
+                            dateCreated,
+                            index,
+                        );
+                        console.log(`Uploaded file ${index} URL:`, url);
+                        return { ...file, url };
+                    }
                 }),
             );
-            values.questionFile = uploadedFiles.map((file) => file.url).filter(Boolean); // Add the file URLs to the form values
+            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
             setModalData(values);
             console.log('Clicked OK with values:', values);
             setConfirmLoading(true);
@@ -89,7 +101,7 @@ const Question: React.FC = () => {
     };
 
 
-    const handleFileSizeCheck = (file) => {
+    const handleFileSizeCheck = (file:any) => {
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
             message.error('File must be smaller than 5MB!');
@@ -97,7 +109,7 @@ const Question: React.FC = () => {
         return isLt5M;
     };
     
-    const onChange = (info) => {
+    const onChange = (info: any) => {
         let newFileList = info.fileList;
 
         // Limit the file list to one file
@@ -106,7 +118,7 @@ const Question: React.FC = () => {
         }
 
         // Check the file size
-        newFileList = newFileList.filter((file) => handleFileSizeCheck(file));
+        newFileList = newFileList.filter((file: any) => handleFileSizeCheck(file));
 
         setFileList(newFileList);
         form.setFieldsValue({ questionFile: newFileList }); // Update the form value
