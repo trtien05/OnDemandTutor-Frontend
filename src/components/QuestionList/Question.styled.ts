@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '../../themes';
-import { List, Row,Image,Avatar } from 'antd';
+import { List, Row,Image } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 

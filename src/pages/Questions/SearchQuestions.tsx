@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Select, Row, Col, Slider } from 'antd';
+import { Select, Row, Col, message } from 'antd';
 import * as Styled from './SearchQuestions.styled';
 import Container from '../../components/Container';
 import QuestionList from '../../components/QuestionList/QuestionList'
@@ -22,7 +22,7 @@ const SearchQuestions = () => {
   const [questionPerPage] = useState(4);
   const [totalAmountQuestions, setTotalAmountQuestions] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
-
+  const [messageApi, contextHolder] = message.useMessage();
   const [searchUrl, setSearchUrl] = useState('');
   
   const handleSave = () => {
@@ -40,7 +40,7 @@ const SearchQuestions = () => {
     }
     setSearchUrl(url);
     console.log(searchCriteria)
-    console.log(searchUrl);
+    // console.log(searchUrl);
   };
 
   useEffect(() => {
@@ -62,7 +62,7 @@ const SearchQuestions = () => {
         setList(res.content);
         setTotalAmountQuestions(res.totalElements);
         setTotalPages(res.totalPages);
-        console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
+        // console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
       })
       .catch((err) => console.error('Failed to fetch questions:', err));
     window.scrollTo(0, 0);
@@ -90,6 +90,7 @@ const options = [
     ];
   return (
     <>
+    {contextHolder}
       <Styled.FilterSection>
         <Container>
           <Styled.SearchWrapper>
@@ -116,7 +117,7 @@ const options = [
                 <Styled.ButtonStyled type="primary" onClick={handleSave} style={{width:'100%'}}>Save</Styled.ButtonStyled>
               </Col>
               <Col xs={24} sm={12} md={8} lg={6}>
-                <CreateQuestion/>
+                <CreateQuestion messageApi={messageApi}/>
               </Col>
               
             </Row>

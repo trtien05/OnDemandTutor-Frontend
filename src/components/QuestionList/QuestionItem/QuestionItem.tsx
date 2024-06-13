@@ -144,7 +144,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                 closeIcon={null}
                 styles={{
                     content: {
-                        borderRadius: '100px',
+                        borderRadius: '50px',
                         padding: '50px',
                         boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)',
                     },
