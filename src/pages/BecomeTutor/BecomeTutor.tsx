@@ -210,9 +210,11 @@ const BecomeTutor = () => {
 
   const saveToFirebase = async (tutorId: number) => {
     //upload avatar to firebase
-
+    
     const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)
     //upload diploma to firebase
+    const diplomaUploadPromises = [];
+    if (educationValues != null) {
     const numberOfEntries1 = Math.max(
       ...Object.keys(educationValues)
         .filter(key => key.includes('_'))
@@ -221,13 +223,13 @@ const BecomeTutor = () => {
           return lastPart ? parseInt(lastPart, 10) : 0;
         })
     ) + 1;
-    const diplomaUploadPromises = [];
     for (let i = 0; i < numberOfEntries1; i++) {
       diplomaUploadPromises.push(uploadImage(tutorId, educationValues[`diplomaVerification_${i}`][0].originFileObj, 'diploma', i, handleDiplomaURLChange));
     }
-
+  }
     //upload cert to firebase
-    const certificateUploadPromises = []
+    const certificateUploadPromises = [];
+    if (certificationValues != null ){
     if (certificationValues[`certificateVerification_0`]) {
       const numberOfEntries2 = Math.max(
         ...Object.keys(certificationValues)
@@ -241,10 +243,11 @@ const BecomeTutor = () => {
         certificateUploadPromises.push(uploadImage(tutorId, certificationValues[`certificateVerification_${i}`][0].originFileObj, 'certificate', i, handleCertificateURLChange));
       }
     }
+  }
     if (certificateUploadPromises.length > 0) {
       await Promise.all([avatarUploadPromise, ...diplomaUploadPromises, ...certificateUploadPromises]);
     } else { await Promise.all([avatarUploadPromise, ...diplomaUploadPromises]); }
-
+  
   }
 
   const saveData = async (values: any, tutorId: number) => {
