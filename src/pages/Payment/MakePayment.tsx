@@ -11,6 +11,7 @@ import { theme } from '../../themes';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { getPaymentUrl, getTutorEducation, getTutorInfo } from '../../api/paymentAPI';
 import cookieUtils from '../../utils/cookieUtils';
+import { Schedule, ScheduleEvent } from '../../components/Schedule/Schedule.type';
 import moment from 'moment';
 import config from '../../config';
 
@@ -22,19 +23,24 @@ interface CountdownTimerProps {
   onExpire: () => void;
 }
 
-interface Schedule {
-  id?: number;
-  scheduleDate: string;
-  startTime: string;
-  endTime: string;
-}
-
 interface Education {
   degreeType?: string;
   majorName?: string;
   specialization?: string;
   verified?: boolean;
 };
+
+interface EducationRaw {
+  degreeType: string;
+  diplomaUrl: string;
+  endYear: number;
+  id: number;
+  majorName: string;
+  specialization: string;
+  startYear: number;
+  universityName: string;
+  verified: boolean;
+}
 
 interface Tutor {
   id: number;
@@ -64,76 +70,64 @@ const MakePayment = () => {
     top: 100,
   });
   const [loading, setLoading] = useState<boolean>(true);
-  const [tutor, setTutor] = useState<Tutor | null>();
-  const screens = Grid.useBreakpoint();
+  const [tutor, setTutor] = useState<Tutor>();
   const location = useLocation();
   const [schedule, setSchedule] = useState<Schedule[]>();
   const [appointmentData, setAppointmentData] = useState<any>(location.state.appointmentData); // [TODO] Replace any with the correct type
- 
+
   const [tutorId, setTutorId] = useState<number>(appointmentData.tutorId); // [TODO] Replace any with the correct type
   const selectedSchedule = location.state.selectedSchedule;
-  const [deadline, setDeadline] = useState(moment().add(15, 'minutes'));
+  const [deadline, setDeadline] = useState(new Date().getTime() + 15 * 60 * 1000); // 15 minutes
   const navigate = useNavigate();
 
 
   useEffect(() => {
     if (location.state.appointmentData && appointmentData.tutorId) {
-    const fetchTutor = async () => {
-      setLoading(true);
-      try {
-        await setAppointmentData(location.state.appointmentData);
-        await setTutorId(appointmentData.tutorId);
-        const response =
-          await getTutorInfo(tutorId)
-            .catch(error => {
-              api.error({
-                message: 'Lỗi',
-                description: error.response ? error.response.data : error.message,
-              });
-            });
+      const fetchTutor = async () => {
+        setLoading(true);
+        try {
+          await setAppointmentData(location.state.appointmentData);
+          await setTutorId(appointmentData.tutorId);
+          const response = await getTutorInfo(tutorId)
 
-        const educations =
-          await getTutorEducation(tutorId)
-            .catch(error => {
-              api.error({
-                message: 'Lỗi',
-                description: error.response ? error.response.data : error.message,
-              });
-            });
+          const educations = await getTutorEducation(tutorId)
 
-        let selectSchedule: Schedule[] = [];
-        selectedSchedule.map((scd, index) => {
-          if (scd) {
-            selectSchedule[index] = {
-              scheduleDate: scd.StartTime.toLocaleDateString('en-US'),
-              startTime: scd.StartTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
-              endTime: scd.EndTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+          let selectSchedule: Schedule[] = [];
+          selectedSchedule.map((scd: ScheduleEvent, index: number) => {
+            if (scd) {
+              selectSchedule[index] = {
+                scheduleDate: scd.StartTime.toLocaleDateString('en-US'),
+                startTime: scd.StartTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false }),
+                endTime: scd.EndTime.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })
+              }
             }
+          })
+
+          setSchedule(selectSchedule);
+          const tutorEdu = await selectTutorEducation(educations.data);
+          if (tutorEdu !== null){
+          //format data    
+          const tutorData: Tutor = {
+            id: response.data.id,
+            fullName: response.data.fullName,
+            avatarUrl: response.data.avatarUrl,
+            teachingPricePerHour: response.data.teachingPricePerHour,
+            educations: tutorEdu,
+            subjects: response.data.subjects,
+            averageRating: response.data.averageRating,
+            loading: false
           }
-        })
-
-        setSchedule(selectSchedule);
-        //format data    
-        const tutorData: Tutor = {
-          id: response.data.id,
-          fullName: response.data.fullName,
-          avatarUrl: response.data.avatarUrl,
-          teachingPricePerHour: response.data.teachingPricePerHour,
-          educations: await selectTutorEducation(educations.data),
-          subjects: response.data.subjects,
-          averageRating: response.data.averageRating,
-          loading: false
+          await setTutor(tutorData); // Set state once, after processing all schedules
         }
-        await setTutor(tutorData); // Set state once, after processing all schedules
-        setLoading(false);
-      } catch (error) {
-        console.error('Failed to fetch tutor info ', error);
-        setLoading(false);
-      }
-    };
+          setLoading(false);
+        } catch (error) {
+          console.error('Failed to fetch tutor info ', error);
+          setLoading(false);
+        }
+      };
 
-    fetchTutor();
-  }
+      fetchTutor();
+    }
   }, [location.state.appointmentData, appointmentData.tutorId])
 
   useEffect(() => {
@@ -160,8 +154,8 @@ const MakePayment = () => {
     // Redirect or reset state as needed
   };
 
-  function selectTutorEducation(education: []) {
-    let selectedEdu: Education = null;
+  function selectTutorEducation(education: EducationRaw[]) {
+    let selectedEdu: Education | null = null;
     if (education.length > 0) {
       education.map((edu) => {
         if (edu.verified && selectedEdu === null) {
@@ -197,7 +191,7 @@ const MakePayment = () => {
       // If success, show success message
       setLoading(true);
       const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
-      console.log(data)
+      if (schedule !== undefined && tutor !== undefined && tutor !== null) {
       const totalHour = calculateTotalHour(schedule);
       const price = totalHour * tutor.teachingPricePerHour;
       await cookieUtils.setItem('bookingData', JSON.stringify({
@@ -205,12 +199,12 @@ const MakePayment = () => {
         schedule: schedule,
         totalHour: totalHour,
         price: price,
-      }));
+      }));} else throw new Error("Can't send Tutor and Schedule data")
       // window.open(data.paymentUrl)
-      setTutor(null);
+      setTutor(undefined);
       window.location.href = data.paymentUrl;
 
-    } catch (error) {
+    } catch (error:any) {
       api.error({
         message: 'Error',
         description: error.response ? error.response.data : error.message,
@@ -234,9 +228,9 @@ const MakePayment = () => {
 
               <Styled.TutorItem justify='space-between'>
                 <Styled.ResponsiveStyle>
-                  <Styled.TutorImage src={tutor.avatarUrl} alt="tutor" />
+                  <Styled.TutorImage src={tutor?.avatarUrl} alt="tutor" />
                   <Styled.TutorContent>
-                    <Styled.TutorName level={2}>{tutor.fullName}</Styled.TutorName>
+                    <Styled.TutorName level={2}>{tutor?.fullName}</Styled.TutorName>
                     <Styled.TutorEducation>
                       <Styled.TutorEducationBachelorImage src={iconEducation} alt="education" />
                       <Styled.TutorEducationBachelor>
@@ -246,11 +240,11 @@ const MakePayment = () => {
                       <div>
                         <Styled.TutorEducationBachelorImage src={iconBachelor} alt="subject" />
                         <Styled.TutorEducationBachelor>
-                        {tutor.subjects.map((subject, index) => (
-                          <span key = {index}>
-                            {subject}{index < tutor.subjects.length - 1 && ', '}
+                          {tutor?.subjects.map((subject, index) => (
+                            <span key={index}>
+                              {subject}{index < tutor?.subjects.length - 1 && ', '}
                             </span>
-                        ))}
+                          ))}
                         </Styled.TutorEducationBachelor>
                       </div>
                     </Styled.TutorEducation>
@@ -264,37 +258,37 @@ const MakePayment = () => {
               </Styled.TutorItem>
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
-                {schedule.map((schedule: Schedule, index: number) => (
-                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold`}}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                {schedule?.map((schedule: Schedule, index: number) => (
+                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
                 )
                 )}
-                <p>Description: {appointmentData.description}</p>
+                <p>{appointmentData.description?`Description: ${appointmentData.description}`:''}</p>
               </div>
               <Styled.BorderLine />
               <Styled.PriceCalculation>
                 <Space>
                   <Title level={3}>Tutor's price per hour</Title>
-                  <Text> {(tutor.teachingPricePerHour).toLocaleString()} VND</Text>
+                  <Text> {(tutor)?(tutor.teachingPricePerHour).toLocaleString():''} VND</Text>
                 </Space>
 
                 <Space>
                   <Title level={3}>Total hour</Title>
                   <Text>
-                    {calculateTotalHour(schedule)} hour{calculateTotalHour(schedule) > 1 && 's'}
+                    {schedule? calculateTotalHour(schedule):''} hour{schedule &&calculateTotalHour(schedule) > 1 && 's'}
                   </Text>
                 </Space>
 
-                </Styled.PriceCalculation>
-                <Styled.BorderLine />
+              </Styled.PriceCalculation>
+              <Styled.BorderLine />
 
-                <Styled.PriceCalculation>
+              <Styled.PriceCalculation>
 
                 <Space>
-                  <Title level={3} style={{color: `${theme.colors.textPrimary}`}} >
+                  <Title level={3} style={{ color: `${theme.colors.textPrimary}` }} >
                     Total
                   </Title>
                   <Text>
-                    {(Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString()} VND
+                    {(schedule && tutor)? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString():''} VND
                   </Text>
                 </Space>
                 <p></p>
