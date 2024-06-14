@@ -10,7 +10,7 @@ import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
 import { theme } from '../../themes';
 import { toScheduleString } from './MakePayment';
 import config from '../../config';
-import { Schedule } from '../../components/Schedule/Schedule.type';
+import React from 'react';
 const { Title, Text } = Typography;
 
 const PaymentSuccess = () => {
@@ -77,7 +77,7 @@ const PaymentSuccess = () => {
                                 <Styled.PaymentMainPrice>
                                     <Title level={3}>Booked schedule</Title>
                                     <Text>
-                                            {bookingData.schedule.map((schedule:Schedule, index: number) => (
+                                            {bookingData.schedule.map((schedule, index: number) => (
                                                 <p key={index} style={{ lineHeight: `100%`, textAlign:`right` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color:`${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
                                             )
                                             )}

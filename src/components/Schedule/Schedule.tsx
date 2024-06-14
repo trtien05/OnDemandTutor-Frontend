@@ -4,21 +4,32 @@ import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
 import { getTutorSchedule } from '../../api/tutorBookingAPI';
 import { notification } from 'antd';
-import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
+interface Schedule {
+    id: number;
+    scheduleDate: string;
+    startTime: string;
+    endTime: string;
+    isSelected?: boolean;
+}
+
+interface Event {
+    Id: number;
+    [key: string]: any;
+}
 
 interface ScheduleProps {
     tutorId: number;
-    setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
+    setSelectedSchedule?: React.Dispatch<React.SetStateAction<Schedule[]>>;
     setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
     selectedId?: number[];
-    selectedSchedule?: ScheduleEvent[];
+    selectedSchedule?: Schedule[];
 }
 
 const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule }) => {
-    const [schedule, setSchedule] = useState<ScheduleData[]>([]);
+    const [schedule, setSchedule] = useState<Schedule[]>([]);
     const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
     const [api, contextHolder] = notification.useNotification({
         top: 100,
@@ -41,9 +52,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
                     const start = new Date(response.data.startDate);
                     const today = new Date();
                     const startDate = (start.getTime() < today.getTime()) ? today : start;
-                    let newSchedule: ScheduleData[] = [];
+                    let newSchedule: Schedule[] = [];
 
-                    response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
+                    response.data.schedules.forEach((day, dayIndex: number) => {
                         const currentDate = new Date(startDate);
                         currentDate.setDate(startDate.getDate() + dayIndex);
 
@@ -151,7 +162,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
 
 
 
-    const onEventClick = (args: any) => {
+    const onEventClick = (args: {event:Event}) => {
         const id = args.event.Id;
 
         setSchedule(prevSchedule =>
