@@ -2,35 +2,27 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Modal, notification } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
-import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, PopupOpenEventArgs, ScheduleComponent, ViewDirective, ViewsDirective } from '@syncfusion/ej2-react-schedule';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
-import * as ScheduleStyle from './BookTutor.styled';
-import { createBooking, getTutorSchedule } from '../../../api/tutorBookingAPI';
+import { createBooking } from '../../../api/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
+import { Schedule as ScheduleData, ScheduleEvent } from '../../Schedule/Schedule.type'; 
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
-interface Schedule {
-  id: number;
-  scheduleDate: string;
-  startTime: string;
-  endTime: string;
-  isSelected?: boolean;
-}
 
 const BookTutor: React.FC = () => {
   const tutorId = 1;
-  const {user}  = useAuth();
+  const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState<[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
   const [selectedId, setSelectedId] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -46,10 +38,10 @@ const BookTutor: React.FC = () => {
   }
 
 
-  function showModal (){
+  function showModal() {
     if (user)
-    setIsFormOpen(true);
-  else navigate(config.routes.public.login);
+      setIsFormOpen(true);
+    else navigate(config.routes.public.login);
   };
 
   const validateTimeslot = (_: unknown) => {
@@ -66,9 +58,11 @@ const BookTutor: React.FC = () => {
         const values = form.getFieldValue('description')
         const bookingData = await convertBookingData(values);
         try {
-          const response = await createBooking(accountId, bookingData);
-          await navigate(config.routes.student.makePayment, { state: { selectedSchedule: selectedSchedule, appointmentData: response.data } });
-        } catch (error) {
+          if (accountId !== undefined) {
+            const response = await createBooking(accountId, bookingData);
+            await navigate(config.routes.student.makePayment, { state: { selectedSchedule: selectedSchedule, appointmentData: response.data } });
+          } else { console.error("Account ID is undefined") }
+        } catch (error: any) {
           api.error({
             message: 'Error create booking',
             description: error.response ? error.response.data : error.message,
@@ -88,7 +82,7 @@ const BookTutor: React.FC = () => {
 
   return (
     <>
-      <Button type="primary" onClick={showModal} style={{borderRadius:`50px`, fontWeight:`bold`}}>
+      <Button type="primary" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
         Book this tutor
       </Button>
       <Modal
@@ -107,7 +101,7 @@ const BookTutor: React.FC = () => {
             htmlType="submit"
             onClick={handleOk}
             loading={loading}
-            form={form} //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
+            form='bookTutorForm'
             style={{ marginRight: '2%', width: '45%' }}
           >
             Send
@@ -121,6 +115,7 @@ const BookTutor: React.FC = () => {
           }}
       >
         <FormStyled.FormWrapper
+          id='bookTutorForm'
           labelAlign='left'
           layout="vertical"
           requiredMark={false}
