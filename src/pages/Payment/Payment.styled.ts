@@ -224,19 +224,22 @@ export const TutorImage = styled.img`
     border-radius: 10px;
     display: flex;
     ${({ theme }) => theme.breakpoints.down('sm')} {
-    margin: 0;
-        margin-right: 15px;
+ 
+    margin-right: 15px;
+    max-width: 100%;
+    max-height: 100%;
+    
     }
 `;
 export const ResponsiveStyle = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    margin: auto;
     max-width: 85%;
     ${({ theme }) => theme.breakpoints.down('md')} {
         width: 100%;
         justify-content: center;
+        flex-wrap: wrap;
     }
 `
 

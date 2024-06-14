@@ -9,16 +9,10 @@ import { createBooking } from '../../../api/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
+import { Schedule as ScheduleData, ScheduleEvent } from '../../Schedule/Schedule.type'; 
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
-interface ScheduleData {
-  id: number;
-  scheduleDate: string;
-  startTime: string;
-  endTime: string;
-  isSelected?: boolean;
-}
 
 const BookTutor: React.FC = () => {
   const tutorId = 1;
@@ -28,7 +22,7 @@ const BookTutor: React.FC = () => {
     top: 100,
   });
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleData[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
   const [selectedId, setSelectedId] = useState<number[]>([]);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
