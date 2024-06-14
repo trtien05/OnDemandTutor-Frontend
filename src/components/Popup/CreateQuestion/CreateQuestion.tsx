@@ -10,7 +10,10 @@ import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../config';
 import { RcFile } from 'antd/es/upload';
-const Question: React.FC = () => {
+interface CreateQuestionProps {
+    messageApi: any;
+}
+const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
     const {user} = useAuth();
     const [open, setOpen] = useState(false);
@@ -20,7 +23,7 @@ const Question: React.FC = () => {
 
     const [modalData, setModalData] = useState(null);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [messageApi, contextHolder] = message.useMessage();
+    // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
         if(user?.role === 'STUDENT'){
             setOpen(true);
@@ -40,6 +43,7 @@ const Question: React.FC = () => {
             // Get response data
             console.log('Question saved successfully:', responseData);
             // Return success response
+            messageApi.success('Question saved successfully'); // Display success message
             return responseData;
         } catch (error: any) {
             console.log(error);
@@ -71,14 +75,14 @@ const Question: React.FC = () => {
                             dateCreated,
                             index,
                         );
-                        console.log(`Uploaded file ${index} URL:`, url);
+                        // console.log(`Uploaded file ${index} URL:`, url);
                         return { ...file, url };
                     }
                 }),
             );
             values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
             setModalData(values);
-            console.log('Clicked OK with values:', values);
+            // console.log('Clicked OK with values:', values);
             setConfirmLoading(true);
             await saveQuestion(2, values);
             setTimeout(() => {
@@ -95,7 +99,7 @@ const Question: React.FC = () => {
     };
 
     const handleCancel = () => {
-        console.log('Clicked cancel button');
+        // console.log('Clicked cancel button');
         form.resetFields(); // Reset the form fields
         setOpen(false);
     };
@@ -122,7 +126,7 @@ const Question: React.FC = () => {
 
         setFileList(newFileList);
         form.setFieldsValue({ questionFile: newFileList }); // Update the form value
-        console.log('File List:', newFileList);
+        // console.log('File List:', newFileList);
     };
     const options = [
         { label: 'Mathematics', value: 'Mathematics' },
@@ -271,4 +275,4 @@ const Question: React.FC = () => {
     );
 };
 
-export default Question;
+export default CreateQuestion;

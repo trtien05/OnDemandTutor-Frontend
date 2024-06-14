@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Col, List, Row } from 'antd';
 import * as Styled from './Question.styled';
 import Container from '../Container';
@@ -6,18 +6,7 @@ import { Question } from '../QuestionList/Question.type';
 import QuestionItem from '../QuestionList/QuestionItem/QuestionItem'
 
 const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (props) => {
-  const [hoveredTutor, setHoveredTutor] = useState<Question>();
-  const [translateY, setTranslateY] = useState<number>(0);
 
-
-  const handleMouseEnter = (event: { currentTarget: any }, item: Question) => {
-    const tutorItem = event.currentTarget;
-    const itemRect = tutorItem.getBoundingClientRect();
-    const containerRect = tutorItem.parentElement.getBoundingClientRect();
-    const newTranslateY = itemRect.top - containerRect.top;
-    setHoveredTutor(item);
-    setTranslateY(newTranslateY);
-  };
 
   return (
     <>
@@ -32,8 +21,9 @@ const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (prop
                   dataSource={props.list}
                   renderItem={(item) => (
                     <Styled.TutorItem
-                      onMouseEnter={(event) => handleMouseEnter(event, item)}
-                      translate={typeof translateY === 'number' ? "no" : translateY}>
+                      // onMouseEnter={(event) => handleMouseEnter(event, item)}
+                      // translate={typeof translateY === 'number' ? "no" : translateY}
+                      >
                       <QuestionItem item={item} />
                     </Styled.TutorItem>
                   )}
