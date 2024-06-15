@@ -14,14 +14,14 @@ type JwtType = {
 };
 
 export type UserType = {
-    id: number;
-    dateOfBirth: Date | string | null;
-    gender: Gender;
-    address: string;
     avatarUrl: string;
     email: string;
     fullName: string;
     phoneNumber: string | null;
+    id: number;
+    createdAt: Date | string;
+    dateOfBirth: Date | string | null;
+    gender: Gender;
 };
 
 // Function to get the role from the decoded JWT
@@ -73,8 +73,6 @@ const useAuth = () => {
             const getInfo = async () => {
                 const { data } = await getInfoCurrentUser();
                 setUser(data);
-                // console.log(data);
-                console.log(user);
             };
 
             getInfo();

@@ -44,17 +44,18 @@ const BecomeTutor = () => {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
-  const { user } = useAuth();
-  console.log(user);
-  console.log(user?.id);
+  const { user, role } = useAuth();
+  console.log(role);
+  // console.log(user?.id);
   //Check User is it Student 
   useEffect(() => {
-    if (!user?.id) {
+    if (role !== 'STUDENT') {
       navigate(config.routes.public.login);
     } else {
-      setAccountId(user.id);
+      setAccountId(user?.id);
     }
-  }, [user]);
+  }, []);
+  console.log(accountId);
 
   async function fetchAccount(tutorId: number) {
     try {
@@ -668,12 +669,12 @@ const BecomeTutor = () => {
   async function saveTutorAvailableTimeslots(tutorId: number, formData: any) {
 
     // Get JSON body from form data
-    const jsonRequestBody = convertTimeslotsToJSON(formData);
+    // const jsonRequestBody = convertTimeslotsToJSON(formData);
     const noOfWeeks = formData[`noOfWeek`];
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addAvailableSchedule(noOfWeeks, tutorId, jsonRequestBody);
+      const responseData = await addAvailableSchedule(noOfWeeks, tutorId);
 
       // Check response status
       if (!api.success) {
@@ -695,7 +696,7 @@ const BecomeTutor = () => {
 
   function convertTimeslotsToJSON(formData: any) {
     const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-    const jsonResult = [];
+    const jsonResult: { startTime: any; endTime: any; dayOfWeek: number; }[] = [];
 
     daysOfWeek.forEach((day, index) => {
       // Check for timeslots for the current day
