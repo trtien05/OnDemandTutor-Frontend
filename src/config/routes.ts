@@ -3,18 +3,23 @@ const routes = {
         home: '/',
         login: '/login',
         register: '/register',
+        verifyCode: '/verify-code',
         forgotPassword: '/forgot-password',
         setPassword: '/set-password',
         contact: '/contact',
-        regiterTutor: '/regiter-tutor',
+        registerTutor: '/register-tutor',
         searchTutors: '/search-tutors',
         tutorDetails: '/search-tutors/:tutorId',
         searchClasses: '/search-classes',
         classDetails: '/search-classes/:classId',
         notFound: '/404',
+        searchQuestions: '/search-questions',
+    },
+    student: {
+        profile: '/profile',
     },
     api: {
-        loginGoogle: '/auth/callback/google/redirect',
+        loginGoogle: '/api/auth/callback/google/redirect',
     },
 };
 

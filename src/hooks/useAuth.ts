@@ -1,4 +1,4 @@
-import { AccountStatus, Gender, Role } from '../utils/enums';
+import { AccountStatus, Role } from '../utils/enums';
 import { useCallback, useEffect, useState } from 'react';
 
 import cookieUtils from '../utils/cookieUtils';
@@ -17,21 +17,19 @@ type JwtType = {
 };
 
 export type UserType = {
-    avatar: string;
-    emailAddress: string;
+    avatarUrl: string;
+    emai: string;
     emailValidationStatus: boolean;
     fullName: string;
     phoneNumber: string | null;
     role: string;
     userId: number;
     address: string | null;
-    // proficiencyScore: number;
-    avgRating: number;
+    avgRating: number | null;
     accountStatus: AccountStatus;
     createdAt: Date | string;
-    // identityCard: string | null;
     dateOfBirth: Date | string | null;
-    gender: Gender;
+    gender: boolean;
 };
 
 // Function to get the role from the decoded JWT

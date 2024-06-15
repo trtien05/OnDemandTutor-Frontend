@@ -10,6 +10,7 @@ import Footer from '../../layouts/MainLayout/Footer';
 // import { CartType } from '@/pages/Customer/Cart/Cart.type';
 // import { getCart } from '@/utils/cartAPI';
 import { Role } from '../../utils/enums';
+import BecomeTutor from '../../pages/BecomeTutor';
 
 // import { cartSlice } from './slice';
 
