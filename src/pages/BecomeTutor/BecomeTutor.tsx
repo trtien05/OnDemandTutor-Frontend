@@ -18,6 +18,7 @@ import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../utils/UploadImg";
 import { useNavigate } from "react-router-dom";
 import config from "../../config";
+import moment from "moment";
 const { Title } = Typography;
 
 const BecomeTutor = () => {
@@ -45,8 +46,6 @@ const BecomeTutor = () => {
     top: 100,
   });
   const { user, role } = useAuth();
-  console.log(role);
-  // console.log(user?.id);
   //Check User is it Student 
   useEffect(() => {
     if (role !== 'STUDENT') {
@@ -54,8 +53,7 @@ const BecomeTutor = () => {
     } else {
       setAccountId(user?.id);
     }
-  }, []);
-  console.log(accountId);
+  }, [user]);
 
   async function fetchAccount(tutorId: number) {
     try {
@@ -168,10 +166,10 @@ const BecomeTutor = () => {
           size='small'
           format={'HH'}
           value={initialValue}
-          // id = {{
-          //   start: `${day}_${index}_startTime`,
-          //   end: `${day}_${index}_endTime`,
-          // }}
+          id={{
+            start: `${day}_${index}_startTime`,
+            end: `${day}_${index}_endTime`,
+          }}
           onChange={(times) => handleInputChange(day, index, times)}
           disabledTime={() => getDisabledHours(day, index, timeslotForm)}
           style={{ width: `100%` }} />
@@ -669,12 +667,13 @@ const BecomeTutor = () => {
   async function saveTutorAvailableTimeslots(tutorId: number, formData: any) {
 
     // Get JSON body from form data
-    // const jsonRequestBody = convertTimeslotsToJSON(formData);
+    const jsonRequestBody = convertTimeslotsToJSON(formData);
+    console.log(jsonRequestBody);
     const noOfWeeks = formData[`noOfWeek`];
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addAvailableSchedule(noOfWeeks, tutorId);
+      const responseData = await addAvailableSchedule(noOfWeeks, tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
@@ -703,12 +702,11 @@ const BecomeTutor = () => {
       for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
         const timeslot = formData[`${day}_timeslot_${i}`];
         if (timeslot && timeslot.length === 2) {
-          // for (let i = timeslot[0].$H; i < timeslot[1].$H; i++) {
-          const startTime = timeslot[0].format("HH:mm");
-          const endTime = timeslot[1].format("HH:mm");
-          // const start = moment().set({ hour: i, minute: 0, second: 0 });
-          // const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
-          // const startTime = start.format("HH:mm:ss");
+          const start = moment().set({ hour: i, minute: 0, second: 0 });
+          const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
+          const startTime = start.format("HH:mm:ss");
+          console.log(startTime);
+          console.log(endTime);
 
           jsonResult.push({
             startTime,
