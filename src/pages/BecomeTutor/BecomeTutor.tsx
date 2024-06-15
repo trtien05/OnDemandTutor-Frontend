@@ -17,9 +17,12 @@ import {
 import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../utils/UploadImg";
 import { useNavigate } from "react-router-dom";
+import config from "../../config";
+const { Title } = Typography;
 
 const BecomeTutor = () => {
   const [aboutValues, setAboutValues] = useState(null);
+  const [accountId, setAccountId] = useState<number>();
   const [educationValues, setEducationValues] = useState(null);
   const [certificationValues, setCertificationValues] = useState(null);
   const [descriptionValues, setDescriptionValues] = useState(null);
@@ -41,11 +44,37 @@ const BecomeTutor = () => {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+  const { user } = useAuth();
+  console.log(user);
+  console.log(user?.id);
+  //Check User is it Student 
+  useEffect(() => {
+    if (!user?.id) {
+      navigate(config.routes.public.login);
+    } else {
+      setAccountId(user.id);
+    }
+  }, [user]);
 
-  const { user } = useAuth()
-  const accountId = user?.id || 0;
+  async function fetchAccount(tutorId: number) {
+    try {
+      const response = await getAccountById(tutorId);
+      setDataSource(response.data)
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (accountId) {
+      fetchAccount(accountId);
+    }
+  }, [accountId])
+
   const [dataSource, setDataSource] = useState([])
-  const { Title } = Typography;
 
   const handleAvatarURL = (url: string) => {
     setAvatarURL(url)
@@ -161,13 +190,13 @@ const BecomeTutor = () => {
   //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
-    saveBecomeTutor(accountId);
-
+    if (accountId) {
+      saveBecomeTutor(accountId);
+    }
     next();
   };
 
   const onFinishEducationForm = (values: any) => {
-
     setEducationValues(values);
     next();
   };
@@ -179,27 +208,19 @@ const BecomeTutor = () => {
   //-----------------------------------FINISH DESCRIPTION FORM---------------------------
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
-    saveToFirebase(accountId)
+    if (accountId) {
+      saveToFirebase(accountId)
+    }
     next();
   };
 
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
-    // console.log(
-    //   aboutValues,
-    //   educationValues,
-    //   certificationValues,
-    //   descriptionValues,
-    //   values,
-    //   avatarURL,
-    //   diplomaURL,
-    //   certURL
-    // );
+    if (accountId) {
+      await saveData(values, accountId);
 
-    // Example tutorId
-
-    await saveData(values, accountId);
+    }
     messageApi.success('Your Form has been Sent.');
     setTimeout(() => {
       navigate('/');
@@ -453,21 +474,6 @@ const BecomeTutor = () => {
   }
   //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
 
-  async function fetchAccount(tutorId: number) {
-    try {
-      const response = await getAccountById(tutorId);
-      setDataSource(response.data)
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
-
-  useEffect(() => {
-    fetchAccount(accountId);
-  }, [accountId])
 
   async function saveAccountDetails(tutorId: number, formData: any, url: any) {
 

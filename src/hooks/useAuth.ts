@@ -1,4 +1,4 @@
-import { AccountStatus, Role } from '../utils/enums';
+import { AccountStatus, Gender, Role } from '../utils/enums';
 import { useCallback, useEffect, useState } from 'react';
 
 import cookieUtils from '../utils/cookieUtils';
@@ -10,27 +10,24 @@ type JwtType = {
     role: string;
     fullname: string;
     email: string;
+    accountStatus: AccountStatus;
 };
 
 export type UserType = {
-    avatarUrl?: string;
-    email: string;
-    emailValidationStatus?: boolean;
-    fullName?: string;
-    phoneNumber?: string | null;
-    role: string;
     id: number;
-    address?: string | null;
-    avgRating?: number | null;
-    accountStatus?: AccountStatus;
-    createdAt?: Date | string;
-    dateOfBirth?: Date | string | null;
-    gender?: boolean;
+    dateOfBirth: Date | string | null;
+    gender: Gender;
+    address: string;
+    avatarUrl: string;
+    email: string;
+    fullName: string;
+    phoneNumber: string | null;
 };
 
 // Function to get the role from the decoded JWT
 const getRole = () => {
     const decoded = cookieUtils.decodeJwt() as JwtType;
+
     if (!decoded || !decoded.role) return null;
 
     return Role[decoded.role];
@@ -75,18 +72,9 @@ const useAuth = () => {
             // Fetch API to get info user
             const getInfo = async () => {
                 const { data } = await getInfoCurrentUser();
-                // setUser(data);
-                setUser({
-                    id: data.id,
-                    role: data.role,
-                    email: data.email,
-                    fullName: data.fullName?data.fullName:data.email.split('@')[0],
-                    phoneNumber: data.phoneNumber?data.phoneNumber:null,
-                    address: data.address?data.address:null,
-                    dateOfBirth: data.dateOfBirth?data.dateOfBirth:null,
-                    avatarUrl: data.avatarUrl?data.avatarUrl:null,
-                    gender: data.gender,
-                } as UserType)
+                setUser(data);
+                // console.log(data);
+                console.log(user);
             };
 
             getInfo();
