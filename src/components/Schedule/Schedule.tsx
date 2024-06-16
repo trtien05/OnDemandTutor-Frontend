@@ -17,7 +17,7 @@ interface ScheduleProps {
     selectedSchedule?: ScheduleEvent[];
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule }) => {
+const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelectedSchedule, selectedId }) => {
     const [schedule, setSchedule] = useState<ScheduleData[]>([]);
     const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
     const [api, contextHolder] = notification.useNotification({
@@ -35,7 +35,8 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
         const fetchSchedule = async () => {
             try {
 
-                const response = await getTutorSchedule(tutorId)
+                const response = await getTutorSchedule(tutorId);
+                console.log(response);
                 if (response) {
                     //format data    
                     const start = new Date(response.data.startDate);
@@ -68,12 +69,13 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
                     });
 
                     setSchedule(newSchedule);
+                    console.log(schedule);
                 } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
             } catch (error: any) {
                 api.error({
                     message: 'Error',
-                    description: error.response ? error.response.data : error.message,
+                    description: error.message || 'Fail to fetch schedule. Please try again later.',
                 });
             }
         };
@@ -208,6 +210,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
 
     if (isScheduleLoaded) return (
         <div>
+            {contextHolder}
             <ScheduleStyle.ScheduleWrapper>
                 <ScheduleComponent
                     key={tutorId} // Add key to force re-render
