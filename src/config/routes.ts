@@ -17,7 +17,7 @@ const routes = {
     student: {
         profile: '/profile',
         makePayment: '/make-payment',
-        paymentSuccess: '/check-payment',
+        paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
     },
     api: {

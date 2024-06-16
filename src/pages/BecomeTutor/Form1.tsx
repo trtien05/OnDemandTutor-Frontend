@@ -4,6 +4,7 @@ import {
   Button,
   Image,
   Input,
+  Row,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Upload, { RcFile } from "antd/es/upload";
@@ -110,58 +111,68 @@ const Form1: React.FC<Form1Props> = ({
 
                 validateFirst
               >
-                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null ? dataSource[field.name] : "0123456789"} />)}
+                {/* {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null ? dataSource[field.name] : "0123456789"} />)} */}
                 {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );
           })}
-          <FormStyled.FormTitle style={{ display: `block` }}>
-            Profile picture
-          </FormStyled.FormTitle>{" "}
-          <br />
-          <FormStyled.FormDescription>
-            Make a great first impression!
-            <br />
-            Tutors who look friendly and professional get the most students
-          </FormStyled.FormDescription>
-          <br />
-          {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
-          <Col style={{ margin: `auto` }}>
+          <div style={{ 'margin': '20px 0', 'width': '100%' }}>
+            <div>
+              <FormStyled.FormTitle style={{ display: `block` }}>
+                Profile picture
+              </FormStyled.FormTitle>
+            </div>
+
+            <div style={{ 'marginTop': '30px' }}>
+              <FormStyled.FormDescription>
+                Make a great first impression!
+                <br />
+                Tutors who look friendly and professional get the most students
+              </FormStyled.FormDescription>
+            </div>
+
+            <div>
+              <Row align='middle' justify='center'>
+                <Col style={{ margin: `0 auto` }}>
+                  <FormStyled.FormItem
+                    name="avatar"
+                    valuePropName="fileList"
+                    getValueFromEvent={(e) => e && e.fileList}
+                    rules={[{ required: false, message: "Please upload an avatar!" }]}
+
+                  >
+                    <ImgCrop
+                      rotationSlider
+                      quality={1}
+                      showReset
+                      showGrid
+                    >
+                      <Upload
+                        name="avatar"
+                        // action=''
+                        listType="picture-card"
+                        fileList={fileList}
+                        onChange={onChange}
+                        onPreview={handlePreview}
+                        accept=".jpg,.jpeg,.png"
+                      // beforeUpload={() => false} // Prevent upload by return false
+                      // beforeUpload={beforeUpload} 
+                      >
+                        {fileList.length < 1 && "+ Upload"}
+                      </Upload>
+                    </ImgCrop>
+
+                  </FormStyled.FormItem>
+                </Col>
+              </Row>
+
+            </div>
+          </div>
 
 
-            <FormStyled.FormItem
-              name="avatar"
-              valuePropName="fileList"
-              getValueFromEvent={(e) => e && e.fileList}
-              rules={[{ required: false, message: "Please upload an avatar!" }]}
 
-            >
-              <ImgCrop
-                rotationSlider
-                quality={1}
-                showReset
-                showGrid
-              >
-                <Upload
-                  name="avatar"
-                  // action=''
-                  listType="picture-card"
-                  fileList={fileList}
-                  onChange={onChange}
-                  onPreview={handlePreview}
-                  accept=".jpg,.jpeg,.png"
-                // beforeUpload={() => false} // Prevent upload by return false
-                // beforeUpload={beforeUpload} 
 
-                >
-                  {fileList.length < 1 && "+ Upload"}
-                </Upload>
-              </ImgCrop>
-
-            </FormStyled.FormItem>
-            {/* </FormStyled.FormContainer> */}
-          </Col>
           {previewImage && (
             <Image
               wrapperStyle={{
@@ -211,7 +222,7 @@ const Form1: React.FC<Form1Props> = ({
           </FormStyled.ButtonDiv>
         )}
       </FormStyled.FormWrapper>
-    </Col>
+    </Col >
   );
 };
 
