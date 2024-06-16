@@ -1,12 +1,14 @@
 import {
-    AiOutlineCalendar,
     AiOutlineHome,
     AiOutlineLogin,
     AiOutlineLogout,
-    AiOutlineShopping,
-    AiOutlineShoppingCart,
-    AiOutlineTag,
 } from 'react-icons/ai';
+import { SiGoogleclassroom } from "react-icons/si";
+import { PiStudentDuotone } from "react-icons/pi";
+import { GrContact } from "react-icons/gr";
+import { FaChalkboardTeacher } from "react-icons/fa";
+import { IoChatboxOutline } from "react-icons/io5";
+
 import { Avatar, Divider, Typography } from 'antd';
 import { HeaderAvatarWrapper, NavbarLink } from './Header.styled';
 import { MenuType, PIIProps } from './Header.type';
@@ -37,17 +39,22 @@ const createMenuItem = (
 
 export const menuUnLogged = () => {
     const menu: MenuType[] = [
-        createMenuItem(config.routes.public.home, <AiOutlineHome size={20} />, 'Trang chủ'),
-        createMenuItem(config.routes.student.profile, <AiOutlineShopping size={20} />, 'Cửa hàng'),
+        createMenuItem(config.routes.public.home, <AiOutlineHome size={20} />, 'Home'),
+        createMenuItem(config.routes.public.searchClasses, <SiGoogleclassroom size={20} />, 'Classes'),
         createMenuItem(
-            config.routes.student.profile,
-            <AiOutlineTag size={20} />,
-            'Dịch vụ của tôi',
+            config.routes.public.searchTutors,
+            <PiStudentDuotone size={20} />,
+            'Tutors',
         ),
         createMenuItem(
-            config.routes.student.profile,
-            <AiOutlineCalendar size={20} />,
-            'Lịch sử dụng',
+            config.routes.public.contact,
+            <GrContact size={20} />,
+            'Contact',
+        ),
+        createMenuItem(
+            config.routes.public.regiterTutor,
+            <FaChalkboardTeacher size={20} />,
+            'Become A Tutor',
         ),
         createMenuItem(config.routes.public.login, <AiOutlineLogin size={20} />, 'Login'),
     ];
@@ -82,8 +89,8 @@ export const menuLogged = (user: PIIProps) => {
 
         createMenuItem(
             config.routes.student.profile,
-            <AiOutlineShoppingCart size={20} />,
-            'Giỏ hàng của tôi',
+            <IoChatboxOutline size={20} />,
+            'Chat room',
         ),
         createMenuItem(
             config.routes.public.login,

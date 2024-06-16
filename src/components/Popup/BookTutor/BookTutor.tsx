@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Modal, notification } from 'antd';
@@ -10,6 +11,20 @@ import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
 import { Schedule as ScheduleEvent } from '../../Schedule/Schedule.type';
+=======
+import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { Button, Form, Modal, notification } from 'antd';
+import * as FormStyled from '../BookTutor/Form.styled';
+import TextArea from 'antd/es/input/TextArea';
+// Registering Syncfusion license key
+import { registerLicense } from '@syncfusion/ej2-base';
+import { createBooking } from '../../../utils/tutorBookingAPI';
+import config from '../../../config';
+import useAuth from '../../../hooks/useAuth';
+import Schedule from '../../Schedule/Schedule';
+import { Schedule as ScheduleData, ScheduleEvent } from '../../Schedule/Schedule.type';
+>>>>>>> feature/search-tutor
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -65,7 +80,11 @@ const BookTutor: React.FC = () => {
         } catch (error: any) {
           api.error({
             message: 'Error create booking',
+<<<<<<< HEAD
             description: error.message || 'There was an issue with creating your booking. Please try again later.',
+=======
+            description: error.response ? error.response.data : error.message,
+>>>>>>> feature/search-tutor
           });
         } finally {
           setLoading(false);
@@ -82,7 +101,10 @@ const BookTutor: React.FC = () => {
 
   return (
     <>
+<<<<<<< HEAD
       {contextHolder}
+=======
+>>>>>>> feature/search-tutor
       <Button type="primary" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
         Book this tutor
       </Button>

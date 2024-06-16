@@ -17,7 +17,7 @@ const AuthRouter = () => {
     return !role ? <Outlet /> : <Navigate to="/" />;
 };
 
-// Define routes for customer
+// Define routes for student
 const AuthRoutes = {
     element: <AuthRouter />,
     children: [

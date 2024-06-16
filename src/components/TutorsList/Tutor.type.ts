@@ -5,8 +5,10 @@ export interface Education {
 }
 
 export interface Tutor {
+    id?: number;
     fullName?: string;
     averageRating?: number;
+    avatarUrl?: string;
     teachingPricePerHour?: number;
     educations: Education[];
     backgroundDescription?: string;
