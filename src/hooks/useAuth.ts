@@ -72,9 +72,7 @@ const useAuth = () => {
             // Fetch API to get info user
             const getInfo = async () => {
                 const { data } = await getInfoCurrentUser();
-                console.log(data);
                 setUser(data);
-                console.log(user);
             };
 
             getInfo();

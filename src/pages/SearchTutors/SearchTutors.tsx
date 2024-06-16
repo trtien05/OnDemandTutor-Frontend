@@ -29,6 +29,18 @@ const SearchTutors = () => {
 
   const [searchUrl, setSearchUrl] = useState('');
 
+  const handleSpecialtyChange = (value: unknown) => {
+    setSpecialty(value as string);
+    console.log(specialty);
+  };
+  const handleTutorLevelChange = (value: unknown) => {
+    setTutorLevel(value as string);
+    console.log(tutorLevel);
+  };
+  const handleSortChange = (value: unknown) => {
+    setSortBy(value as string);
+    console.log(sortBy);
+  };
   const handleSave = () => {
     let url = ``;
 
@@ -102,7 +114,7 @@ const SearchTutors = () => {
           <Styled.SearchWrapper>
             <Row justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect placeholder="Specialties" onChange={setSpecialty}>
+                <Styled.StyledSelect placeholder="Specialties" onChange={handleSpecialtyChange}>
                   <Option value="Specialties">Specialties</Option>
                   <Option value="Ielts">Ielts</Option>
                   <Option value="Toeic">Toeic</Option>
@@ -118,7 +130,7 @@ const SearchTutors = () => {
               </Col>
 
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect placeholder="Tutor Level" onChange={setTutorLevel}>
+                <Styled.StyledSelect placeholder="Tutor Level" onChange={handleTutorLevelChange}>
                   <Option value="Tutor Level">Tutor Level</Option>
                   <Option value="Associate">Associate</Option>
                   <Option value="Bachelor">Bachelor</Option>
@@ -130,7 +142,7 @@ const SearchTutors = () => {
 
             <Styled.RowWrapper justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={4} lg={4} xs={24}>
-                <Styled.StyledSelect placeholder="Sort By" onChange={setSortBy}>
+                <Styled.StyledSelect placeholder="Sort By" onChange={handleSortChange}>
                   <Option value="Sort By">Sort By</Option>
                   <Option value="Rating">Rating</Option>
                 </Styled.StyledSelect>

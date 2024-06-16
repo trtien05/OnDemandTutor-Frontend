@@ -76,7 +76,7 @@ const TutorDetail: React.FC = () => {
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
   const [reviews, setReviews] = useState<Reviews[]>([]);
-  const [education, setEducation] = useState<Education | null>(null);
+  const [educations, setEducations] = useState<Education | null>(null);
   const [certification, setCertification] = useState<Certification[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -99,9 +99,10 @@ const TutorDetail: React.FC = () => {
         const educationResponse = await getTutorEducation(tutorId);
         const educationArray: Education[] = educationResponse.data;
         if (educationArray.length > 0) {
-          setEducation(educationArray[0]);
+          setEducations(educationArray[0]);
         }
-
+        // console.log(educationResponse.data);
+        // setEducations(educationResponse.data)
 
       } catch (err) {
         setError("Failed to fetch tutor details");
@@ -161,15 +162,15 @@ const TutorDetail: React.FC = () => {
                     <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
                     <Styled.BestTutorEducation>
                       <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                      {tutor.educations.map((education, index) => (
-                        index === 0 && <Styled.BestTutorEducationBachelor key={index}>{education.majorName}</Styled.BestTutorEducationBachelor>
-                      ))}
+                      {educations && (
+                        <Styled.BestTutorEducationBachelor>{educations.majorName}</Styled.BestTutorEducationBachelor>
+                      )}
                     </Styled.BestTutorEducation>
                     <Styled.BestTutorEducation>
                       <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                      {tutor.educations.map((education, index) => (
-                        index === 0 && <Styled.BestTutorEducationBachelor key={index}>{education.degreeType}</Styled.BestTutorEducationBachelor>
-                      ))}
+                      {educations && (
+                        <Styled.BestTutorEducationBachelor>{educations.degreeType}</Styled.BestTutorEducationBachelor>
+                      )}
                     </Styled.BestTutorEducation>
                     <Styled.BestTutorStudent>
                       <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
@@ -230,7 +231,7 @@ const TutorDetail: React.FC = () => {
                   <Styled.TitleWrapper>
                     <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
                   </Styled.TitleWrapper>
-                  {education && (
+                  {educations && (
                     <Styled.Section>
                       <Col lg={4} md={4} sm={4} xs={4}>
                         <Styled.SectionHeader>Education</Styled.SectionHeader>
@@ -238,10 +239,10 @@ const TutorDetail: React.FC = () => {
                       <Col lg={20} md={20} sm={20} xs={20}>
                         <Styled.SectionContent>
                           <Styled.Item>
-                            <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
+                            <Styled.Year>{educations.startYear} - {educations.endYear}</Styled.Year>
                             <Styled.Description>
-                              {education.universityName}<br />
-                              {education.degreeType}
+                              {educations.universityName}<br />
+                              {educations.degreeType}
                             </Styled.Description>
                           </Styled.Item>
                         </Styled.SectionContent>

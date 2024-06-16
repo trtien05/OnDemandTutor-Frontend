@@ -5,11 +5,11 @@ import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
-import { createBooking } from '../../../api/tutorBookingAPI';
+import { createBooking } from '../../../utils/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
-import { Schedule as ScheduleData, ScheduleEvent } from '../../Schedule/Schedule.type'; 
+import { Schedule as ScheduleData, ScheduleEvent } from '../../Schedule/Schedule.type';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
