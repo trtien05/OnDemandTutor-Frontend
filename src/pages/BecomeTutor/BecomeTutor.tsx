@@ -1,7 +1,7 @@
 import { Steps, Typography, TimePicker, notification, message } from "antd";
 import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import Form1 from "./Form1";
 import Form2 from "./Form2";
 import MultipleSteps from "./MultipleSteps";
@@ -123,29 +123,50 @@ const BecomeTutor = () => {
     });
   };
 
-  const getDisabledHours = (day: string, index: number, form: FormState) => {
+  const getDisabledTime = (day: string, index: number, form: FormState) => {
     const existingTimes = form[day]
       .filter((_, i) => i !== index)
       .map(field => field.initialValue)
-      .filter(Boolean);
+      .filter(Boolean) as [Dayjs, Dayjs][];
 
-    let latestEndHour = -1;
+    let latestEndTime: Dayjs | null = null;
 
     existingTimes.forEach(timeslot => {
       if (timeslot && timeslot[1]) {
-        const endHour = timeslot[1].hour();
-        if (endHour > latestEndHour) {
-          latestEndHour = endHour;
+        if (!latestEndTime || timeslot[1].isAfter(latestEndTime)) {
+          latestEndTime = timeslot[1];
         }
       }
     });
 
     return {
       disabledHours: () => {
-        if (latestEndHour === -1) return [];
-        return Array.from({ length: latestEndHour + 1 }, (_, i) => i);
-      }
+        const hours = Array.from({ length: 24 }, (_, i) => i);
+        if (!latestEndTime) {
+          return hours.filter(hour => hour < 5 || hour > 22);
+        } else {
+          return hours.filter(hour => hour < 5 || hour > 22 || hour < latestEndTime.hour());
+        }
+      },
+      disabledMinutes: (selectedHour: number) => {
+        const minutes = Array.from({ length: 60 }, (_, i) => i);
+        if (!latestEndTime || selectedHour > latestEndTime.hour()) {
+          return minutes.filter(minute => minute % 15 !== 0);
+        }
+        if (selectedHour === latestEndTime.hour()) {
+          return minutes.filter(minute => minute < latestEndTime.minute() || minute % 15 !== 0);
+        }
+        return minutes.filter(minute => minute % 15 !== 0);
+      },
     };
+  };
+
+  const validateRange = (_: unknown, value: [Dayjs, Dayjs]) => {
+    const [start, end] = value;
+    if (end.diff(start, 'minutes') > 240 || end.diff(start, 'hours') < 1) {
+      return Promise.reject('The time range cannot exceed 4 hours');
+    }
+    return Promise.resolve();
   };
 
 
@@ -160,18 +181,20 @@ const BecomeTutor = () => {
           required: true,
           message: 'Please select your timeslot for this day.',
         },
+        {
+          validator: validateRange,
+          message: 'A timeslot must be at least 1 hour and must not exceed 4 hours.',
+        },
       ],
       children: (
         <TimePicker.RangePicker
           size='small'
-          format={'HH'}
+          format={'HH:mm'}
+          minuteStep={15}
           value={initialValue}
-          id={{
-            start: `${day}_${index}_startTime`,
-            end: `${day}_${index}_endTime`,
-          }}
+          placeholder={['From', 'To']}
           onChange={(times) => handleInputChange(day, index, times)}
-          disabledTime={() => getDisabledHours(day, index, timeslotForm)}
+          disabledTime={() => getDisabledTime(day, index, timeslotForm)}
           style={{ width: `100%` }} />
       ),
       $width: `90%`,

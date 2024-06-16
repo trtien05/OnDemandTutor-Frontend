@@ -91,13 +91,16 @@ const Question: React.FC = () => {
                 onCancel={handleCancel}
                 width={700}
                 styles={
-                    { content: { borderRadius: '100px', padding: '50px', boxShadow:'-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
-                } }}
-                
+                    {
+                        content: {
+                            borderRadius: '100px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+                        }
+                    }}
+
                 closeIcon={null}
                 footer={[
                     <FormStyled.ButtonDiv>
-                        <Button key="Cancel" type="default" onClick={handleCancel} style={{marginRight:'5%', width:'50%'}}>
+                        <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '50%' }}>
                             Cancel
                         </Button>
                         <Button
@@ -106,7 +109,7 @@ const Question: React.FC = () => {
                             htmlType="submit"
                             loading={loading}
                             form="myForm" //because not the direct descendant of the Form component, so the htmlType="submit" won't work.
-                            style={{width:'50%'}}
+                            style={{ width: '50%' }}
                         >
                             Send
                         </Button>

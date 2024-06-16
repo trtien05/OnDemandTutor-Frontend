@@ -86,7 +86,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Full name must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder="Nguyen Van A" />,
+        children: <Input placeholder='Nguyen Van An'/>,
     },
     {
         key: '2',
@@ -94,7 +94,7 @@ export const aboutForm: FieldType[] = [
         name: 'phoneNumber',
         rules: [
             {
-                required: false,
+                required: true,
 
                 message: 'Please input your phone number.',
             },
@@ -103,7 +103,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid phone number.',
             },
         ],
-        children: <></>,
+        children: <Input placeholder='0908777777'/>,
         $width: '40%',
     },
     {
@@ -185,7 +185,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Address must not exceed 50 characters.',
             },
         ],
-        children: <Input name='address' placeholder="Phuong 7, Quan Phu Nhuan, TP.HCM" />,
+        children: <Input name='address' placeholder="Phuong 7, Ho Van Hue, Phu Nhuan" />,
     },
 ];
 
@@ -293,6 +293,7 @@ export const educationForm: FieldType[] = [
                     start: 'startYear',
                     end: 'endYear',
                 }}
+                placeholder={['Start year','End year']}
 
                 style={{ width: `100%` }}
             />
@@ -370,7 +371,7 @@ export const certificateForm: FieldType[] = [
                 message: 'Description must not exceed 100 characters.',
             },
         ],
-        children: <TextArea rows={3} name='description' placeholder="Teaching English as a second or foreign language" />,
+        children: <TextArea rows={3} name='description' placeholder="This field is optional" />,
     },
     {
         key: '4',
@@ -408,6 +409,7 @@ export const certificateForm: FieldType[] = [
             <DatePicker
                 size='large'
                 picker="year"
+                placeholder="Year"
                 disabledDate={disabledDate}
                 style={{ width: `100%` }}
             />

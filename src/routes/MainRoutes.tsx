@@ -9,6 +9,7 @@ import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import MakePayment from '../pages/Payment/MakePayment';
 import TutorDetail from '../pages/TutorDetail';
 import PaymentSuccess from './../pages/Payment/PaymentSuccess';
+import SearchQuestions from '../pages/Questions/SearchQuestions';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -21,7 +22,9 @@ const MainRouter = () => {
 const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
-
+        { path: config.routes.public.searchTutors, element: <SearchTutors /> },
+        { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
+        { path: config.routes.public.searchQuestions, element: <SearchQuestions /> },
         //
         { path: config.routes.public.searchTutors, element: <SearchTutors /> },
         { path: config.routes.public.tutorDetails, element: <TutorDetail /> },

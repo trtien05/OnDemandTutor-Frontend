@@ -8,6 +8,8 @@ export const FilterSection = styled.section`
     border-radius: 0px 0px 100px 100px;
     background: #ffff;
     padding: 20px;
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
 `;
 export const FilterWrapper = styled.div``;
 export const TutorItem = styled(List.Item)`
@@ -132,41 +134,8 @@ export const BookingTutorButton = styled.button`
         padding: 10px;
     }
 `;
-export const ViewScheduleTutorButton = styled.button`
-    cursor: pointer;
-    width: 197px;
-    height: 41px;
-    color: ${theme.colors.primary};
-    font-size: 18px;
-    font-style: normal;
-    font-weight: 700;
-    border: 3px solid ${theme.colors.primary};
-    border-radius: 50px;
-    background-color: #fff;
-    font-size: 12px;
-    ${({ theme }) => theme.breakpoints.down('md')} {
-        width: 150px;
-    }
-    ${({ theme }) => theme.breakpoints.down('sm')} {
-        width: 250px;
-    }
-    ${({ theme }) => theme.breakpoints.down('xs')} {
-        width: 100%;
-        padding: 10px;
-    }
-`;
-export const TurtorVideo = styled.div<{ translate?: number }>`
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Chú ý là "align-items", không phải "align-item" */
-    background: #fff;
-    height: 171px;
-    border-radius: 15px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    transition: transform 0.3s ease;
-    transform: translateY(${(props) => props.translate}px); /* Sử dụng template literals và props */
-`;
+
+
 
 export const TutorFilteredSection = styled.section`
     margin-top: 20px;
@@ -183,19 +152,25 @@ export const TotalTutorAvaiable = styled(Title)`
     }
 `;
 export const TutorFiltered = styled.div``;
-export const SearchWrapper = styled.div``;
+export const SearchWrapper = styled.div`
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
+    align-items: center; /* Center the content vertically */
+    width: 100%;`;
 
 export const RowWrapper = styled(Row)`
     margin-top: 20px;
 `;
 
 export const InputStyled = styled(Input)`
+    width:100%;
     border-radius: 15px;
     border-width: 2px !important;
 `;
 
 export const ButtonStyled = styled(Button)`
     border-radius: 15px;
+    width:100%;
 `;
 
 export const StyledSelect = styled(Select)`

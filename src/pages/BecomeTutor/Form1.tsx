@@ -33,27 +33,27 @@ const Form1: React.FC<Form1Props> = ({
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string| null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null >(initialValues?.imageUrl || null);
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [imageUrl, setImageUrl] = useState<string | null>(initialValues?.imageUrl || null);
   const { user } = useAuth();
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
     for (let index = 0; index < newFileList.length; index++) {
-      newFileList[index].status='done'
-      
+      newFileList[index].status = 'done'
+
     }
     console.log(user)
   };
-  const getBase64 = (file:RcFile) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-  const handlePreview = async (file:UploadFile) => {
-    
+  const getBase64 = (file: RcFile) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  const handlePreview = async (file: UploadFile) => {
+
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -64,15 +64,15 @@ const Form1: React.FC<Form1Props> = ({
   const handleFinish = (values: any) => {
     onFinish({ ...values, fileList, imageUrl });
   };
-  const beforeUpload = (file:RcFile) => {
+  const beforeUpload = (file: RcFile) => {
     const reader = new FileReader();
     reader.readAsDataURL(file);
     reader.onload = () => {
-    //   // setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
+      //   // setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
       setImageUrl(reader.result as string);
       setFileList((prev) => [...prev, file]);
     };
-  
+
     // then upload `file` from the argument manually
     return false;
   };
@@ -107,11 +107,11 @@ const Form1: React.FC<Form1Props> = ({
                 name={field.name}
                 rules={field.rules}
                 $width={field.$width ? field.$width : "100%"}
-                initialValue={field.initialValue}
+
                 validateFirst
               >
-                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null? dataSource[field.name] : "0123456789"} />)}
-                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)} 
+                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null ? dataSource[field.name] : "0123456789"} />)}
+                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );
@@ -128,39 +128,39 @@ const Form1: React.FC<Form1Props> = ({
           <br />
           {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
           <Col style={{ margin: `auto` }}>
-                    
-                  
+
+
             <FormStyled.FormItem
               name="avatar"
               valuePropName="fileList"
               getValueFromEvent={(e) => e && e.fileList}
               rules={[{ required: false, message: "Please upload an avatar!" }]}
-              
+
             >
-              <ImgCrop 
-                rotationSlider 
+              <ImgCrop
+                rotationSlider
                 quality={1}
                 showReset
                 showGrid
-                >
-              <Upload
-                name="avatar"
-                // action=''
-                listType="picture-card"
-                fileList={fileList}
-                onChange={onChange}
-                onPreview={handlePreview}
-                accept=".jpg,.jpeg,.png"
+              >
+                <Upload
+                  name="avatar"
+                  // action=''
+                  listType="picture-card"
+                  fileList={fileList}
+                  onChange={onChange}
+                  onPreview={handlePreview}
+                  accept=".jpg,.jpeg,.png"
                 // beforeUpload={() => false} // Prevent upload by return false
                 // beforeUpload={beforeUpload} 
-                
-              >
-                {fileList.length < 1 && "+ Upload"}
-              </Upload>
-            </ImgCrop>
-          
+
+                >
+                  {fileList.length < 1 && "+ Upload"}
+                </Upload>
+              </ImgCrop>
+
             </FormStyled.FormItem>
-          {/* </FormStyled.FormContainer> */}
+            {/* </FormStyled.FormContainer> */}
           </Col>
           {previewImage && (
             <Image
@@ -191,8 +191,8 @@ const Form1: React.FC<Form1Props> = ({
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
-              // checked={isCheckedBox.current}
-              // onChange={(e) => setAgreement(e.target.checked)}
+            // checked={isCheckedBox.current}
+            // onChange={(e) => setAgreement(e.target.checked)}
             >
               By clicking Save and continue, I confirm that I’m over 18 years
               old. I also have read and agreed with the{" "}

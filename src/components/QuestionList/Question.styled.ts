@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '../../themes';
-import { List, Row } from 'antd';
+import { List, Row,Image } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 
@@ -17,10 +17,12 @@ export const TutorItem = styled(List.Item)`
 `;
 export const BoxHover = styled.div`
     position: relative;
+    margin-bottom: 30px;
+    
 `;
 
-export const BestTutorItem = styled(Row)`
-    cursor: pointer;
+export const QuestionItem = styled(Row)`
+    // cursor: pointer;
     background-color: #fff;
     border-radius: 50px;
     & .ant-list-item {
@@ -28,45 +30,43 @@ export const BestTutorItem = styled(Row)`
     }
 `;
 
-export const BestTutorImage = styled.img`
-    width: 210px;
+export const QuestionImage = styled(Image)`
+    width: 100%;
     border-radius: 25px;
-    box-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px,
-        rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px,
-        rgba(0, 0, 0, 0.09) 0px -3px 5px;
     ${({ theme }) => theme.breakpoints.down('sm')} {
         width: 100%;
     }
 `;
 
-export const BestTutorContent = styled.div`
-    margin-top: 30px;
-    color: ${theme.colors.primary};
+export const QuestionContent = styled.div`
+    margin: 24px 0;
+    // color: ${theme.colors.primary};
 `;
 
-export const BestTutorName = styled(Title)`
+export const Name = styled(Title)`
     &.ant-typography {
         color: ${theme.colors.primary};
         font-size: 24px;
         font-style: normal;
         font-weight: 700;
         line-height: 140.625%; /* 33.75px */
-        text-transform: uppercase;
+        // text-transform: capitalize;
+        margin: 0;
     }
 `;
-export const BestTutorEducation = styled.div`
+export const QuestionRow = styled.div`
     display: flex;
-    justify-content: space-between;
-    margin: 10px 0;
+    align-items: center;
+    margin: 8px 0;
 `;
-export const BestTutorEducationBachelorImage = styled.img`
+export const BachelorImage = styled.img`
     width: 22px;
     height: 16px;
 `;
-export const BestTutorEducationBachelor = styled.span`
-    margin: 0 5px;
-    line-height: 1.5;
-    margin: 0 3px;
+export const QuestionRowSpan = styled.span`
+    text-transform: capitalize;
+    line-height: 1;
+    margin-right: 3%;
 `;
 export const BestTutorStudent = styled.div`
     display: flex;
@@ -76,9 +76,9 @@ export const BestTutorStudentImage = styled.img`
     width: 17px;
     height: 17px;
 `;
-export const BestTutorDescription = styled(Paragraph)`
+export const Description = styled(Paragraph)`
    &.ant-typography{
-        color: ${theme.colors.primary};
+        // color: ${theme.colors.primary};
         font-family: 'Roboto';
 `;
 export const BestTutorBooking = styled.div`
@@ -112,30 +112,30 @@ export const BookingThisTutor = styled.div`
 `;
 export const BookingTutorButton = styled.button`
     cursor: pointer;
-    width: 197px;
-    height: 41px;
+    width: 120px;
+    height: 30px;
     color: #fff;
     font-size: 18px;
     font-style: normal;
-    font-weight: 900;
+    font-weight: 700;
     border-radius: 50px;
     background-color: ${theme.colors.primary};
     font-size: 12px;
     ${({ theme }) => theme.breakpoints.down('md')} {
-        width: 150px;
+        // width: 150px;
     }
     ${({ theme }) => theme.breakpoints.down('sm')} {
-        width: 250px;
+        // width: 250px;
     }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
         padding: 10px;
     }
 `;
-export const ViewScheduleTutorButton = styled.button`
-    cursor: pointer;
-    width: 197px;
-    height: 41px;
+export const Button = styled.button`
+    // cursor: pointer;
+    width: 100px;
+    height: 30px;
     color: ${theme.colors.primary};
     font-size: 18px;
     font-style: normal;
@@ -145,27 +145,15 @@ export const ViewScheduleTutorButton = styled.button`
     background-color: #fff;
     font-size: 12px;
     ${({ theme }) => theme.breakpoints.down('md')} {
-        width: 150px;
+        // width: 150px;
     }
     ${({ theme }) => theme.breakpoints.down('sm')} {
-        width: 250px;
+        // width: 250px;
     }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
         padding: 10px;
     }
-`;
-export const TurtorVideo = styled.div<{ translate?: number }>`
-    display: flex;
-    justify-content: center;
-    align-items: center; /* Chú ý là "align-items", không phải "align-item" */
-    background: #fff;
-    height: 171px;
-    border-radius: 15px;
-    margin-top: 30px;
-    margin-bottom: 30px;
-    transition: transform 0.3s ease;
-    transform: translateY(${(props) => props.translate}px); /* Sử dụng template literals và props */
 `;
 
 export const TutorFilteredSection = styled.section`
@@ -183,3 +171,11 @@ export const TotalTutorAvaiable = styled(Title)`
     }
 `;
 export const TutorFiltered = styled.div``;
+
+export const ModalStudentInfo = styled.div`
+    // font-size: 16px;
+    // font-weight: bold;
+    // font-style: italic;
+    display: flex;
+`;
+
