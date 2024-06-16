@@ -6,10 +6,12 @@ import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import Title from "antd/es/typography/Title";
 import * as Styled from './TutorDetail.styled';
+import { Schedule as ScheduleData, ScheduleEvent } from '../../components/Schedule/Schedule.type';
 
 import iconEducation from "../../assets/images/image12.png";
 import iconPerson from "../../assets/images/image14.png";
 import iconBachelor from "../../assets/images/image13.png";
+import Schedule from "../../components/Schedule/Schedule";
 
 const { TabPane } = Tabs;
 
@@ -40,6 +42,9 @@ interface Certification {
 
 const TutorDetail: React.FC = () => {
   useDocumentTitle("Tutor Detail | MyTutor");
+
+  const [selectedId, setSelectedId] = useState<number[]>([]);
+  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
 
   const aboutRef = useRef<HTMLDivElement>(null);
   const scheduleRef = useRef<HTMLDivElement>(null);
@@ -197,6 +202,10 @@ const TutorDetail: React.FC = () => {
                   <Styled.TitleWrapper>
                     <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
                   </Styled.TitleWrapper>
+                  {/* <Styled.Section> */}
+                  <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
+                  {/* </Styled.Section> */}
+
                 </Styled.SectionInfor>
                 <Styled.SectionInfor ref={reviewRef}>
                   <Styled.TitleWrapper>
@@ -250,24 +259,25 @@ const TutorDetail: React.FC = () => {
                     </Styled.Section>
                   )}
 
+                  {educations && (
+                    <Styled.Section>
+                      <Col lg={4} md={4} sm={4} xs={4}>
+                        <Styled.SectionHeader>Certification</Styled.SectionHeader>
+                      </Col>
+                      <Col lg={20} md={20} sm={20} xs={20}>
+                        <Styled.SectionContent>
+                          <Styled.Item>
+                            <Styled.Year>{educations.startYear} - {educations.endYear}</Styled.Year>
+                            <Styled.Description>
+                              {educations.specialization}<br />
+                              {educations.degreeType}
+                            </Styled.Description>
+                          </Styled.Item>
+                        </Styled.SectionContent>
+                      </Col>
+                    </Styled.Section>
+                  )}
 
-                  <Styled.Section>
-                    <Col lg={4} md={4} sm={4} xs={4}>
-                      <Styled.SectionHeader>Certification</Styled.SectionHeader>
-                    </Col>
-                    <Col lg={20} md={20} sm={20} xs={20}>
-                      <Styled.SectionContent>
-                        <Styled.Item>
-                          <Styled.Year>Year - Year</Styled.Year>
-                          <Styled.Description>
-                            University name<br />
-                            Degree
-                          </Styled.Description>
-                        </Styled.Item>
-                      </Styled.SectionContent>
-                    </Col>
-
-                  </Styled.Section>
                 </Styled.ResumeSection>
               </div>
             </Col>
