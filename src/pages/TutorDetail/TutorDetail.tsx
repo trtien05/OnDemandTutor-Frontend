@@ -12,6 +12,7 @@ import iconEducation from "../../assets/images/image12.png";
 import iconPerson from "../../assets/images/image14.png";
 import iconBachelor from "../../assets/images/image13.png";
 import Schedule from "../../components/Schedule/Schedule";
+import BookTutor from "../../components/Popup/BookTutor";
 
 const { TabPane } = Tabs;
 
@@ -202,9 +203,7 @@ const TutorDetail: React.FC = () => {
                   <Styled.TitleWrapper>
                     <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
                   </Styled.TitleWrapper>
-                  {/* <Styled.Section> */}
                   <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
-                  {/* </Styled.Section> */}
 
                 </Styled.SectionInfor>
                 <Styled.SectionInfor ref={reviewRef}>
@@ -307,7 +306,9 @@ const TutorDetail: React.FC = () => {
                     <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
                   </div>
                 </Styled.BookingInformation>
-                <Styled.BookingTutorButton>Book this Tutor</Styled.BookingTutorButton>
+                {/* <Styled.BookingTutorButton> */}
+                <BookTutor />
+                {/* </Styled.BookingTutorButton> */}
                 <Styled.SendMessageButton>Send message</Styled.SendMessageButton>
                 <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
               </Styled.TutorVideoCard>

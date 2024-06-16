@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Modal, notification } from 'antd';
-import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
+import * as FormStyled from '../BookTutor/Form.styled';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
