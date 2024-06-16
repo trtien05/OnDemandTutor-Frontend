@@ -1,5 +1,4 @@
 import { Col, Row, List, Flex } from 'antd';
-import { Col, Row, List, Flex } from 'antd';
 import { MenuProps } from 'antd/lib';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
@@ -90,13 +89,11 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
                             </Styled.NavbarLink>
                         </Col>
                     )}
-                    )}
 
                     <Col lg={0}>
                         <Flex gap={16}>
 
 
-                            <MobileMenu menu={menu} />
                             <MobileMenu menu={menu} />
                         </Flex>
                     </Col>

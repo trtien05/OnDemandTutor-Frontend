@@ -13,7 +13,7 @@ import config from '../../config';
 import { Schedule } from '../../components/Schedule/Schedule.type';
 const { Title, Text } = Typography;
 
-const PaymentSuccess = () => {
+const abc = () => {
     useDocumentTitle('Payment Status');
     const [api, contextHolder] = notification.useNotification({
         top: 100,
@@ -32,9 +32,10 @@ const PaymentSuccess = () => {
                 const response = await checkPaymentStatus(location.search);
                 console.log(response)
                 if (response.status === 200) {
-                setPaymentResponse(response);
-                setBookingData(cookieUtils.getItem('bookingData'));
-                cookieUtils.removeItem('bookingData');}
+                    setPaymentResponse(response);
+                    setBookingData(cookieUtils.getItem('bookingData'));
+                    cookieUtils.removeItem('bookingData');
+                }
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -43,16 +44,17 @@ const PaymentSuccess = () => {
                 setPaymentResponse(error.response)
             } finally {
                 setTimeout(() => {
-                setLoading(false);},2000);
+                    setLoading(false);
+                }, 2000);
             }
         })();
     }, [])
 
 
 
-    
+
     return (
-        paymentResponse? ( <Styled.CheckSection>
+        paymentResponse ? (<Styled.CheckSection>
             <Container>
                 <Styled.CheckInner>
                     <Skeleton loading={loading}>
@@ -77,10 +79,10 @@ const PaymentSuccess = () => {
                                 <Styled.PaymentMainPrice>
                                     <Title level={3}>Booked schedule</Title>
                                     <Text>
-                                            {bookingData.schedule.map((schedule:Schedule, index: number) => (
-                                                <p key={index} style={{ lineHeight: `100%`, textAlign:`right` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color:`${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
-                                            )
-                                            )}
+                                        {bookingData.schedule.map((schedule: Schedule, index: number) => (
+                                            <p key={index} style={{ lineHeight: `100%`, textAlign: `right` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color: `${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                                        )
+                                        )}
                                     </Text>
                                 </Styled.PaymentMainPrice>
 
@@ -101,7 +103,7 @@ const PaymentSuccess = () => {
                 </Styled.CheckInner>
             </Container>
         </Styled.CheckSection>
-        ): navigate(config.routes.public.notFound))
+        ) : navigate(config.routes.public.notFound))
 }
 
-export default PaymentSuccess;
+export default abc;

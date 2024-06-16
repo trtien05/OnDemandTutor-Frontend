@@ -52,7 +52,7 @@ export const menuUnLogged = () => {
             'Contact',
         ),
         createMenuItem(
-            config.routes.public.regiterTutor,
+            config.routes.student.registerTutor,
             <FaChalkboardTeacher size={20} />,
             'Become A Tutor',
         ),
@@ -73,8 +73,8 @@ export const menuLogged = (user: PIIProps) => {
             label: (
                 <HeaderAvatarWrapper>
                     <Link to={config.routes.student.profile}>
-                        {user?.avatar ? (
-                            <Avatar size={90} src={user.avatar} alt={user.fullName} />
+                        {user?.avatarUrl ? (
+                            <Avatar size={90} src={user.avatarUrl} alt={user.fullName} />
                         ) : (
                             <Avatar size={90} icon={<UserOutlined />} />
                         )}
@@ -126,6 +126,4 @@ export const navbar: MenuType[] = [
     createNavbarItem(config.routes.public.contact, 'Contact'),
     createNavbarItem(config.routes.student.registerTutor, 'Become A Tutor'),
     createNavbarItem(config.routes.public.login, 'Login'),
-
-
 ];
