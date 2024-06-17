@@ -172,17 +172,22 @@ const MakePayment = () => {
   }
 
 
-  function calculateTotalHour(schedule: Schedule[]) {
-    let sum = 0;
-    let start = 0;
-    let end = 0;
-    schedule.map((time: Schedule) => {
-      start = Number.parseInt(time.startTime.slice(0, 3));
-      end = Number.parseInt(time.endTime.slice(0, 3));
-      sum += end - start;
-    })
-    return sum;
-  }
+  function calculateTotalHour(schedule: Schedule[]):number {
+    let totalMinutes = 0;
+
+  schedule.forEach((time: Schedule) => {
+    const [startHour, startMinute] = time.startTime.split(':').map(Number);
+    const [endHour, endMinute] = time.endTime.split(':').map(Number);
+
+    // Convert start and end times to minutes
+    const startTimeInMinutes = startHour * 60 + startMinute;
+    const endTimeInMinutes = endHour * 60 + endMinute;
+
+    // Calculate the difference in minutes
+    totalMinutes += endTimeInMinutes - startTimeInMinutes;
+  })
+  return totalMinutes / 60;
+}
 
 
   const handleOrder = async () => {
@@ -202,6 +207,7 @@ const MakePayment = () => {
       }));} else throw new Error("Can't send Tutor and Schedule data")
       // window.open(data.paymentUrl)
       setTutor(undefined);
+      console.log(data.paymentUrl)
       window.location.href = data.paymentUrl;
 
     } catch (error:any) {
