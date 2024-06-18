@@ -195,7 +195,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
           </FormStyled.FormItem>
           {url && (
             // style={{ width: "100%", height: "100%", display: "flex" }}
-            <div style={{ width: "100%", marginTop: "10px" }}>
+            <div style={{ width: "100%", margin: "10px 0 20px 0" }}>
               <ReactPlayer url={url} controls={true} width="100%" />
             </div>
           )}
