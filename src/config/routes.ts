@@ -20,6 +20,11 @@ const routes = {
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
     },
+    tutor: {
+        tutorProfile: '/tutor-profile',
+        makePayment: '/make-payment',
+        paymentSuccess: '/confirm-payment'
+    },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
     },
