@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Modal, notification } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
@@ -9,15 +9,13 @@ import { createBooking } from '../../../api/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
-import { ScheduleEvent } from '../../Schedule/Schedule.type';
+import { Schedule as ScheduleData, ScheduleEvent } from '../../Schedule/Schedule.type'; 
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
-interface BookTutorProps {
-  tutorId: number;
-}
 
-const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
+const BookTutor: React.FC = () => {
+  const tutorId = 1;
   const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
@@ -67,7 +65,7 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
         } catch (error: any) {
           api.error({
             message: 'Error create booking',
-            description: error.message || 'There was an issue with creating your booking. Please try again later.',
+            description: error.response ? error.response.data : error.message,
           });
         } finally {
           setLoading(false);
@@ -84,7 +82,6 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
 
   return (
     <>
-      {contextHolder}
       <Button type="primary" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
         Book this tutor
       </Button>
