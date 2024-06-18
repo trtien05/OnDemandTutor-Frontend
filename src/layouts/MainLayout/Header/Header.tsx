@@ -68,9 +68,10 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
                         <Styled.Navbar
                             split={false}
                             dataSource={navbar}
-                            renderItem={(item: MenuType) => (
-                                <List.Item key={item.key}>{item.label}</List.Item>
-                            )}
+                            renderItem={(item: unknown) => {
+                                const menuItem = item as MenuType;
+                                return <List.Item key={menuItem.key}>{menuItem.label}</List.Item>;
+                            }}
                         />
                     </Col>
 

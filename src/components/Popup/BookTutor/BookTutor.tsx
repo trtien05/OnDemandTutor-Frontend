@@ -15,7 +15,7 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHV
 
 
 const BookTutor: React.FC = () => {
-  const tutorId = 1;
+  const tutorId: number = parseInt(window.location.pathname.split('/')[2]);
   const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
@@ -39,8 +39,10 @@ const BookTutor: React.FC = () => {
 
 
   function showModal() {
-    if (user)
+    if (user) {
       setIsFormOpen(true);
+      console.log(tutorId);
+    }
     else navigate(config.routes.public.login);
   };
 

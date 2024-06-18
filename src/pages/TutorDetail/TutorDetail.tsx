@@ -306,9 +306,7 @@ const TutorDetail: React.FC = () => {
                     <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
                   </div>
                 </Styled.BookingInformation>
-                {/* <Styled.BookingTutorButton> */}
                 <BookTutor />
-                {/* </Styled.BookingTutorButton> */}
                 <Styled.SendMessageButton>Send message</Styled.SendMessageButton>
                 <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
               </Styled.TutorVideoCard>

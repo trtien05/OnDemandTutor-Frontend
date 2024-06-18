@@ -107,7 +107,7 @@ export const FormItem = styled(Form.Item)`
     & .ant-form-item-label {
         position: absolute;
         z-index: 10;
-        top: 50%;
+        top: 58%;
         left: 20px;
         transform: translateY(-50%);
         padding: 0;

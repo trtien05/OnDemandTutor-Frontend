@@ -46,9 +46,7 @@ const PaymentSuccess = () => {
                 setPaymentResponse(error.response);
             }
         })();
-    }, [location.search, api]);
-
-    console.log(paymentResponse);
+    }, []);
     return (
         paymentResponse ? (
             <Styled.CheckSection>

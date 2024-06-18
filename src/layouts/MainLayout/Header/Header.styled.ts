@@ -1,4 +1,4 @@
-import { Button, Col, List } from 'antd';
+import { Col, List } from 'antd';
 import styled, { css } from 'styled-components';
 
 import Link from '../../../components/Link';
@@ -24,7 +24,7 @@ export const Navbar = styled(List)`
         align-items: center;
         justify-content: center;
 
-        column-gap: 76px;
+        column-gap: 100px;
     }
 `;
 
