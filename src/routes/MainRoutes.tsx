@@ -12,14 +12,7 @@ import TutorDetail from '../pages/TutorDetail/TutorDetail';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
-    // const { pathname } = useLocation();
-    // if (pathname === config.routes.student.paymentSuccess) {
-    //     const payment = cookieUtils.getItem(config.cookies.payment);
 
-    //     if (!payment) {
-    //         return <Navigate to={config.routes.public.home} />;
-    //     }
-    // }
     return <MainLayout />;
 };
 

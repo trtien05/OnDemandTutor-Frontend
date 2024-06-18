@@ -17,7 +17,6 @@ import { RightOutlined } from '@ant-design/icons';
 import { CollapseProps } from 'antd/lib';
 import Link from '../../components/Link';
 import config from '../../config';
-import BookTutor from '../../components/Popup/BookTutor';
 import TutorsList from '../../components/TutorsList/TutorsList';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
 
@@ -97,7 +96,6 @@ const Home = () => {
                 <Container>
                     <Row align="middle" justify='center'>
                         <Col lg={12}>
-                            <BookTutor />
                             <Styled.BestServiceTitle level={2}>
                                 Popular Categories
                             </Styled.BestServiceTitle>
@@ -222,7 +220,7 @@ const Home = () => {
                                                 'alignItems': 'center',
                                             }
                                         }>
-                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} />
                                         </div>
                                     }
                                     style={{ background: token.colorBgContainer }}

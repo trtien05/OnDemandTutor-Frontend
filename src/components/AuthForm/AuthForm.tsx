@@ -136,7 +136,7 @@ const AuthForm = ({
 
                             <FormStyled.FormGoogleButton to={LOGIN_GOOGLE_URL}>
                                 <FcGoogle />
-                                <Text>Tiếp Tục Với Google</Text>
+                                <Text>Login with Google</Text>
                             </FormStyled.FormGoogleButton>
 
 
