@@ -30,33 +30,39 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
           <Styled.BestTutorItem justify='space-between'>
             <Col lg={7} md={8} sm={9} xs={24}>
               {item.avatarUrl ? (
-                <Avatar
-                  size={64}
-                  src={item.avatarUrl}
-                  style={{
-                    width: '210px',
-                    height: '100%',
-                    borderRadius: '50px',
-                    left: '-5px',
-                    bottom: '2px',
-                    boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
-                  }}
-                />
+                <Link to={route}>
+                  <Avatar
+                    size={64}
+                    src={item.avatarUrl}
+                    style={{
+                      cursor: 'pointer',
+                      width: '210px',
+                      height: '100%',
+                      borderRadius: '50px',
+                      left: '-5px',
+                      bottom: '2px',
+                      boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
+                    }}
+                  />
+                </Link>
+
               ) : (
-                <Avatar
-                  size={64}
-                  icon={<UserOutlined />}
-                  style={{
-                    width: '210px',
-                    height: '100%',
-                    borderRadius: '50px',
-                    left: '-5px',
-                    bottom: '2px',
-                    boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
+                <Link to={route}>
+                  <Avatar
+                    size={64}
+                    icon={<UserOutlined />}
+                    style={{
+                      cursor: 'pointer',
+                      width: '210px',
+                      height: '100%',
+                      borderRadius: '50px',
+                      left: '-5px',
+                      bottom: '2px',
+                      boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
+                    }}
+                  />
+                </Link>
 
-                  }}
-
-                />
               )}
             </Col>
             <Col lg={8} md={8} sm={6} xs={0}>

@@ -107,8 +107,6 @@ const TutorDetail: React.FC = () => {
         if (educationArray.length > 0) {
           setEducations(educationArray[0]);
         }
-        // console.log(educationResponse.data);
-        // setEducations(educationResponse.data)
 
       } catch (err) {
         setError("Failed to fetch tutor details");

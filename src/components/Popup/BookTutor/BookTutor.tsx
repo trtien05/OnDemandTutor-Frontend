@@ -94,6 +94,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
       </Button>
       <Modal
         centered
+        closable={false}
         width={'700px'}
         open={isFormOpen}
         onOk={handleOk}
@@ -117,7 +118,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
         styles={
           {
             content: {
-              borderRadius: '100px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+              borderRadius: '50px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
             }
           }}
       >

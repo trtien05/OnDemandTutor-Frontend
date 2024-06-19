@@ -22,23 +22,18 @@ export const pages: DataType[] = [
 
     {
         key: 2,
-        title: 'Classes',
-        to: config.routes.public.searchClasses,
-    },
-    {
-        key: 3,
         title: 'Tutor',
         to: config.routes.public.searchTutors,
     },
     {
-        key: 4,
-        title: 'Contact',
-        to: config.routes.public.contact,
+        key: 2,
+        title: 'Questions',
+        to: config.routes.public.searchQuestions,
     },
     {
-        key: 5,
+        key: 3,
         title: 'Become a tutor',
-        to: config.routes.public.regiterTutor,
+        to: config.routes.student.registerTutor,
     },
 ];
 
