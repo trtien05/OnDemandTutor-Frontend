@@ -1,5 +1,5 @@
-import { Skeleton, notification, Typography } from 'antd';
-import { useEffect, useRef, useState } from 'react'
+import { notification, Typography } from 'antd';
+import { useEffect, useState } from 'react'
 import { checkPaymentStatus } from '../../../api/paymentAPI';
 import { useLocation, useNavigate } from 'react-router-dom';
 import cookieUtils from '../../../utils/cookieUtils';
