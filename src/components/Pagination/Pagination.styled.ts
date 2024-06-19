@@ -21,6 +21,8 @@ export const PageItem = styled.li`
 export const ButtonItem = styled.button`
     padding: 12px 16px;
     border: none;
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     background: none;
     cursor: pointer;

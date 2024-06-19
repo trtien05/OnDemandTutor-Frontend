@@ -62,7 +62,6 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                     }}
                   />
                 </Link>
-
               )}
             </Col>
             <Col lg={8} md={8} sm={6} xs={0}>
