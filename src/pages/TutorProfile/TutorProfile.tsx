@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuth from '../../hooks/useAuth';
 import { getTutorDetail } from '../../api/tutorProfileAPI';
-import { Details } from './TutorProfile.type';
+import { Details, Education } from './TutorProfile.type';
 import { Avatar, Button, Col, Flex, Input, Row, Skeleton, Space, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../components/Container';
@@ -10,6 +10,7 @@ import { UserOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
 import * as FormStyled from '../BecomeTutor/Form.styled'
 import ReactPlayer from 'react-player';
+import { getTutorEducation } from '../../api/paymentAPI';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -17,6 +18,7 @@ const { Title, Paragraph, Text } = Typography;
 const TutorProfile = () => {
     useDocumentTitle('Tutor Profile');
     const [tutorDetails, setTutorDetails] = useState<Details>();
+    const [tutorEducation, setTutorEducation] = useState<Education>();
     const [api, contextHolderNotification] = notification.useNotification({
         top: 100,
     });
@@ -25,6 +27,7 @@ const TutorProfile = () => {
     const [reload, setReload] = useState<boolean>(false);
     const [url, setUrl] = useState<string>("");
     const [priceValue, setPriceValue] = useState<string>("");
+    const [initialValues, setInitialValues] = useState<Details>();
 
     useEffect(() => {
         (async () => {
@@ -34,13 +37,9 @@ const TutorProfile = () => {
                 if (!user || !(role == "TUTOR")) return;
 
                 const { data } = await getTutorDetail(user.id);
-
-                setTutorDetails(data);
-
-                // setPurchaseHistory(data.purchaseHistory.slice(0, 9));
-                // setUsageHistory(data.usageHistory.slice(0, 9));
-                // setCustomer(data);
-                // setImageUrl(data.userInfo.avatar);
+                const education = (await getTutorEducation(user.id)).data;
+                await setTutorDetails(data);
+                await setTutorEducation(education);
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -69,37 +68,50 @@ const TutorProfile = () => {
 
     const onChange = (value: number | string | null) => {
         if (typeof value === "string") {
-          setPriceValue(value);
+            setPriceValue(value);
         } else if (value === null) {
-          setPriceValue("");
+            setPriceValue("");
         } else {
-          setPriceValue(value.toString());
+            setPriceValue(value.toString());
         }
-      };
+    };
 
-      const formatNumberValue = (value: number | string): number => {
+    const formatNumberValue = (value: number | string): number => {
         if (typeof value === "string") {
-          // Remove non-digit characters from the string
-          const numericString = value.replace(/\D/g, "");
-          // Convert the cleaned string to a number
-          return parseFloat(numericString);
+            // Remove non-digit characters from the string
+            const numericString = value.replace(/\D/g, "");
+            // Convert the cleaned string to a number
+            return parseFloat(numericString);
         } else {
-          // If the value is already a number, return it directly
-          return value;
+            // If the value is already a number, return it directly
+            return value;
         }
-      };
-      const formatter = (value: number | string | undefined) => {
+    };
+    const formatter = (value: number | string | undefined) => {
         if (!value) return "";
         // Use the helper function to ensure value is a number
         const numberValue = formatNumberValue(value);
         // Use Intl.NumberFormat for Vietnamese locale
         const formattedValue = new Intl.NumberFormat("vi-VN").format(numberValue);
         return formattedValue;
-      };
-      const parser = (value: string | undefined) => {
+    };
+    const parser = (value: string | undefined) => {
         // Remove non-digit characters (commas, spaces, etc.)
         return value ? value.replace(/\D/g, "") : "";
-      };
+    };
+
+    useEffect(() => {
+        if (tutorDetails) {
+            setReload(true);
+            setInitialValues({
+                teachingPricePerHour: tutorDetails.teachingPricePerHour,
+                backgroundDescription: tutorDetails.backgroundDescription,
+                meetingLink: tutorDetails.meetingLink,
+                videoIntroductionLink: tutorDetails.videoIntroductionLink,
+            });
+            setReload(false);
+        }
+    }, [tutorDetails])
 
 
 
@@ -196,17 +208,19 @@ const TutorProfile = () => {
 
 
 
-                                        <FormStyled.FormWrapper 
-                                        // onFinish={onFinish}
-                                        // initialValues={initialValues}
-                                        labelAlign="left"
-                                        layout="vertical"
-                                        requiredMark={false}
-                                        size="middle">
-                                            
+                                        <FormStyled.FormWrapper
+                                            // onFinish={onFinish}
+                                            initialValues={tutorDetails}
+                                            labelAlign="left"
+                                            layout="vertical"
+                                            requiredMark={false}
+                                            size="middle"
+                                            style={{rowGap: "0px"}}
+                                            >
+
                                             <FormStyled.FormItem
                                                 $width={"100%"}
-                                                name="amount"
+                                                name="teachingPricePerHour"
                                                 label="Hourly base rate"
                                                 rules={[
                                                     {
@@ -218,7 +232,7 @@ const TutorProfile = () => {
                                                 ]}>
                                                 <FormStyled.NumberInput
                                                     style={{ width: '100%' }}
-                                                    placeholder="100,000"
+                                                    placeholder={tutorDetails?.teachingPricePerHour.toLocaleString()}
                                                     value={priceValue}
                                                     formatter={formatter}
                                                     parser={parser}
@@ -231,15 +245,15 @@ const TutorProfile = () => {
                                                 The remaining will be transferred automatically to your bank account every 28 days.
                                             </FormStyled.FormDescription>
 
-                                            <FormStyled.FormItem 
-                                            name="description" 
-                                            $width={"100%"}
-                                            label="Profile description">
-                                                <FormStyled.CommentInput rows={6} placeholder="Tell us about yourself..." />
+                                            <FormStyled.FormItem
+                                                name="backgroundDescription"
+                                                $width={"100%"}
+                                                label="Profile description">
+                                                <FormStyled.CommentInput rows={4} placeholder="Tell us about yourself..." />
                                             </FormStyled.FormItem>
 
 
-                                        
+
                                             <FormStyled.FormItem
                                                 name="meetingLink"
                                                 label="Google Meet Link"
@@ -261,9 +275,9 @@ const TutorProfile = () => {
                                                     placeholder="Paste your Google Meet link"
                                                 ></Input>
                                             </FormStyled.FormItem>
-                                           
+
                                             <FormStyled.FormItem
-                                                name="youtubeLink"
+                                                name="videoIntroductionLink"
                                                 label="Video introduction"
                                                 $width={"100%"}
                                                 rules={[
@@ -280,13 +294,20 @@ const TutorProfile = () => {
                                                     placeholder="Paste a Youtube link to your video"
                                                 ></Input>
                                             </FormStyled.FormItem>
-                                            {url && (
+                                            {tutorDetails?.videoIntroductionLink && (
                                                 // style={{ width: "100%", height: "100%", display: "flex" }}
-                                                <div style={{ width: "100%", marginTop: "10px" }}>
-                                                    <ReactPlayer url={url} controls={true} width="100%" />
+                                                <div style={{ width: "100%", height: "100%" }}>
+                                                    <ReactPlayer url={tutorDetails?.videoIntroductionLink} controls={true} width="70%" height="70%" />
                                                 </div>
                                             )}
                                         </FormStyled.FormWrapper>
+                                    </Col>
+                                </Row>
+                            </Style.ProfileWrapper>
+
+                            <Style.ProfileWrapper>
+                                <Row gutter={40}>
+                                    <Col xl={12} lg={12} sm={24} xs={24}>
                                     </Col>
                                 </Row>
                             </Style.ProfileWrapper>

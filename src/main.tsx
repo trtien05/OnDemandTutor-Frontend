@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { StrictMode } from 'react'
 import { AntdThemeConfig } from './themes/';
 import viVN from 'antd/es/locale/vi_VN';
 import ReactDOM from 'react-dom/client'
@@ -24,6 +24,7 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
+  <StrictMode>
   <ThemeProvider theme={theme}>
     <ConfigProvider theme={AntdThemeConfig}>
       <AppAntd>
@@ -32,4 +33,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       <GlobalStyles />
     </ConfigProvider>
   </ThemeProvider>
+  </StrictMode>
 )
