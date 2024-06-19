@@ -13,6 +13,8 @@ export const ProfileWrapper = styled.section`
     box-shadow: 0px 17px 55px 0px ${theme.colors.shadowCart};
     transition: ${theme.transition.primary};
 
+    
+
     & .ant-row {
         width: 100%;
     }
@@ -42,17 +44,9 @@ export const ProfileContent = styled(Flex)`
         line-height: 1.57143;
     }
 
-    & .ant-avatar {
-        border: 1px solid ${theme.colors.borderSchedule};
-    }
-
-    & .ant-upload-wrapper {
-        text-align: center;
-
-        & .ant-upload.ant-upload-select {
-            width: 137px;
-            height: 137px;
-        }
+    & .ant-space {
+        justify-content: space-between;
+        width: 100%;
     }
 `;
 
