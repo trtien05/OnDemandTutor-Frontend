@@ -57,10 +57,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
         <Skeleton avatar title={false} loading={item.loading} active>
             <Col lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
-                    {/* justify="space-between" */}
                     <Styled.QuestionItem>
-                        {/* <Col lg={2} md={4} sm={4} xs={24}> */}
-                        {/* <Styled.BestTutorImage src={item.picture.large} alt="avatar" /> */}
                         {item.account.avatarUrl ? (
                             <Avatar
                                 size={64}
@@ -71,27 +68,24 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     borderRadius: '15px',
                                     left: '-30px',
                                     top: '-30px',
-                                    
+
                                 }}
-                                
-                                
                             />
                         ) : (
                             <Avatar
                                 size={64}
-                                icon={<UserOutlined/>}
+                                icon={<UserOutlined />}
                                 style={{
                                     width: '100px',
                                     height: '100px',
                                     borderRadius: '15px',
                                     left: '-30px',
                                     top: '-30px',
-                                    
+
                                 }}
-                                
+
                             />
                         )}
-                        {/* </Col> */}
                         <Col lg={21} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow>
@@ -154,25 +148,25 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                 <Col sm={24}>
                     <Styled.ModalStudentInfo>
                         <Col sm={3}>
-                        {item.account.avatarUrl ? (
-                            <Avatar
-                            size={55}
-                                src={item.account.avatarUrl}
-                                style={{
-                                    borderRadius: '15px',
-                                }}
-                            />
-                        ) : (
-                            <Avatar
-                            size={55}
-                                icon={<UserOutlined />}
-                                style={{
-                                    borderRadius: '15px',
-                                }}
-                                
-                            />
-                        )}
-                            
+                            {item.account.avatarUrl ? (
+                                <Avatar
+                                    size={55}
+                                    src={item.account.avatarUrl}
+                                    style={{
+                                        borderRadius: '15px',
+                                    }}
+                                />
+                            ) : (
+                                <Avatar
+                                    size={55}
+                                    icon={<UserOutlined />}
+                                    style={{
+                                        borderRadius: '15px',
+                                    }}
+
+                                />
+                            )}
+
                         </Col>
                         <Col sm={21}>
                             <div>

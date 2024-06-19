@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Col, Skeleton } from 'antd';
+import { Avatar, Col, Skeleton } from 'antd';
 import iconEducation from "../../../assets/images/image12.png";
 import iconBachelor from "../../../assets/images/image13.png";
 import iconPerson from "../../../assets/images/image14.png";
@@ -7,6 +7,7 @@ import * as Styled from '../Tutors.styled';
 import { Tutor } from '../Tutor.type';
 import config from '../../../config';
 import { Link } from 'react-router-dom';
+import { UserOutlined } from '@ant-design/icons';
 
 interface TutorItemProps {
   item: Tutor;
@@ -28,7 +29,35 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
         <Styled.BoxHover>
           <Styled.BestTutorItem justify='space-between'>
             <Col lg={7} md={8} sm={9} xs={24}>
-              <Styled.BestTutorImage src={item.avatarUrl} alt="Ielts" />
+              {item.avatarUrl ? (
+                <Avatar
+                  size={64}
+                  src={item.avatarUrl}
+                  style={{
+                    width: '210px',
+                    height: '100%',
+                    borderRadius: '50px',
+                    left: '-5px',
+                    bottom: '2px',
+                    boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
+                  }}
+                />
+              ) : (
+                <Avatar
+                  size={64}
+                  icon={<UserOutlined />}
+                  style={{
+                    width: '210px',
+                    height: '100%',
+                    borderRadius: '50px',
+                    left: '-5px',
+                    bottom: '2px',
+                    boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
+
+                  }}
+
+                />
+              )}
             </Col>
             <Col lg={8} md={8} sm={6} xs={0}>
               <Styled.BestTutorContent>
@@ -54,10 +83,8 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                   </Styled.BestTutorEducationBachelor>
                 </Styled.BestTutorStudent>
                 <Styled.BestTutorDescription>
-                  {descriptionToShow}
-                  {item.backgroundDescription && item.backgroundDescription.length > MAX_DESCRIPTION_LENGTH && (
-                    <Link to={route}>...See More</Link>
-                  )}
+                  {descriptionToShow}...
+
                 </Styled.BestTutorDescription>
               </Styled.BestTutorContent>
             </Col>

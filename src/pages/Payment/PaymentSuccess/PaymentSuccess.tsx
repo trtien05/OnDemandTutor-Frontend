@@ -107,18 +107,6 @@ const PaymentSuccess = () => {
                     </Styled.CheckInner>
                 </Container>
             </Styled.CheckSection>
-            {/* <Styled.CheckSection>
-                <Container>
-                    <Styled.CheckInner>
-                        <Skeleton loading={loading}>
-                            <Styled.CheckErrorMsg>
-                                <AiOutlineCloseCircle size={80} color={theme.colors.error} />
-                                <Title level={2}>No payment data</Title>
-                            </Styled.CheckErrorMsg>
-                        </Skeleton>
-                    </Styled.CheckInner>
-                </Container>
-            </Styled.CheckSection> */}
         </>
     )
 }

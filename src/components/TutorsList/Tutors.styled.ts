@@ -23,7 +23,6 @@ export const BoxHover = styled.div`
 `;
 
 export const BestTutorItem = styled(Row)`
-    cursor: pointer;
     background-color: #fff;
     border-radius: 50px;
     & .ant-list-item {
