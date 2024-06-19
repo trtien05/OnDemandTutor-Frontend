@@ -12,7 +12,15 @@ export interface Education {
     specialization: string;
     universityName: string;
     degreeType: string;
-    startYear: number;
-    endYear: number;
-    verified: boolean;
+    academicYear: string;
+    verified: string;
+}
+
+export interface Certificate {
+    id: number;
+    certificateName: string;
+    description: string;
+    issuedBy: string;
+    issuedYear: number;
+    verified: string;
 }

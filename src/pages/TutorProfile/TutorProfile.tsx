@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuth from '../../hooks/useAuth';
 import { getTutorDetail } from '../../api/tutorProfileAPI';
-import { Details, Education } from './TutorProfile.type';
-import { Avatar, Button, Col, Flex, Input, Row, Skeleton, Space, Spin, Typography, notification } from 'antd';
+import { Certificate, Details, Education } from './TutorProfile.type';
+import { Avatar, Button, Col, Flex, Input, Radio, Row, Skeleton, Space, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -11,6 +11,8 @@ import { theme } from '../../themes';
 import * as FormStyled from '../BecomeTutor/Form.styled'
 import ReactPlayer from 'react-player';
 import { getTutorEducation } from '../../api/paymentAPI';
+import TableComponent from '../../components/Table/Table';
+import { getTutorCertification } from '../../utils/tutorAPI';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -18,7 +20,8 @@ const { Title, Paragraph, Text } = Typography;
 const TutorProfile = () => {
     useDocumentTitle('Tutor Profile');
     const [tutorDetails, setTutorDetails] = useState<Details>();
-    const [tutorEducation, setTutorEducation] = useState<Education>();
+    const [tutorEducation, setTutorEducation] = useState<Education[]>();
+    const [tutorCert, setTutorCert] = useState<Certificate[]>();
     const [api, contextHolderNotification] = notification.useNotification({
         top: 100,
     });
@@ -28,6 +31,7 @@ const TutorProfile = () => {
     const [url, setUrl] = useState<string>("");
     const [priceValue, setPriceValue] = useState<string>("");
     const [initialValues, setInitialValues] = useState<Details>();
+    const [tableDisplay, setTableDisplay] = useState<string>("education");
 
     useEffect(() => {
         (async () => {
@@ -38,8 +42,27 @@ const TutorProfile = () => {
 
                 const { data } = await getTutorDetail(user.id);
                 const education = (await getTutorEducation(user.id)).data;
+                const certificate = (await getTutorCertification(user.id)).data;
                 await setTutorDetails(data);
-                await setTutorEducation(education);
+                await setTutorEducation(
+                    education.map((education: any) => ({
+                        id: education.id,
+                        majorName: education.majorName,
+                        specialization: education.specialization,
+                        universityName: education.universityName,
+                        degreeType: education.degreeType,
+                        academicYear: `${education.startYear} - ${education.endYear}`,
+                        verified: education.verified ? "Yes" : "No",
+                    })));
+                await setTutorCert(
+                    certificate.map((certificate: any) => ({
+                        id: certificate.id,
+                        certificateName: certificate.certificateName,
+                        description: certificate.description,
+                        issuedBy: certificate.issuedBy,
+                        issuedYear: certificate.issuedYear,
+                        verified: certificate.verified ? "Yes" : "No",
+                })));
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -215,8 +238,8 @@ const TutorProfile = () => {
                                             layout="vertical"
                                             requiredMark={false}
                                             size="middle"
-                                            style={{rowGap: "0px"}}
-                                            >
+                                            style={{ rowGap: "0px" }}
+                                        >
 
                                             <FormStyled.FormItem
                                                 $width={"100%"}
@@ -307,7 +330,18 @@ const TutorProfile = () => {
 
                             <Style.ProfileWrapper>
                                 <Row gutter={40}>
-                                    <Col xl={12} lg={12} sm={24} xs={24}>
+                                    <Col span={24}>
+                                    <Flex vertical gap="middle">
+                                        <Radio.Group defaultValue={tableDisplay}
+                                        onChange={(e) => setTableDisplay(e.target.value)}
+                                        buttonStyle="solid">
+                                            <Radio.Button value="education">Diplomas</Radio.Button>
+                                            <Radio.Button value="certificate">Certificates</Radio.Button>
+                                        </Radio.Group>
+                                    </Flex>
+                                        <div style={{ alignItems: `center`, margin: `20px` }}>
+                                        {tableDisplay.includes("education") ? <TableComponent dataType={tableDisplay} EducationData={tutorEducation} />: <TableComponent dataType={tableDisplay} CertificateData={tutorCert} />}
+                                        </div>
                                     </Col>
                                 </Row>
                             </Style.ProfileWrapper>
