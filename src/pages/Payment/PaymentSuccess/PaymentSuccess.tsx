@@ -1,16 +1,15 @@
 import { Skeleton, notification, Typography } from 'antd';
 import { useEffect, useState } from 'react'
-import { checkPaymentStatus } from '../../api/paymentAPI';
+import { checkPaymentStatus } from '../../../api/paymentAPI';
 import { useLocation, useNavigate } from 'react-router-dom';
-import cookieUtils from '../../utils/cookieUtils';
-import useDocumentTitle from '../../hooks/useDocumentTitle';
-import * as Styled from './Payment.styled';
-import Container from '../../components/Container/Container';
+import cookieUtils from '../../../utils/cookieUtils';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import * as Styled from '../Payment.styled';
+import Container from '../../../components/Container/Container';
 import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
-import { theme } from '../../themes';
-import { toScheduleString } from './MakePayment';
-import config from '../../config';
-import { Schedule } from '../../components/Schedule/Schedule.type';
+import { theme } from '../../../themes';
+import { toScheduleString } from '../MakePayment';
+import { Schedule } from '../../../components/Schedule/Schedule.type';
 const { Title, Text } = Typography;
 
 const PaymentSuccess = () => {

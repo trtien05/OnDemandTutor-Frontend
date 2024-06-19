@@ -17,8 +17,8 @@ interface BookTutorProps {
   tutorId: number;
 }
 
-const BookTutor: React.FC = () => {
-  const tutorId: number = parseInt(window.location.pathname.split('/')[2]);
+const BookTutor: React.FC<BookTutorProps> = (props) => {
+  const { tutorId } = props;
   const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
@@ -70,7 +70,6 @@ const BookTutor: React.FC = () => {
         } catch (error: any) {
           api.error({
             message: 'Error create booking',
-            description: error.message || 'There was an issue with creating your booking. Please try again later.',
             description: error.message || 'There was an issue with creating your booking. Please try again later.',
           });
         } finally {
