@@ -15,7 +15,7 @@ interface CreateQuestionProps {
 }
 const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
-    const {user} = useAuth();
+    const { user } = useAuth();
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -25,11 +25,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
-        if(user?.role === 'STUDENT'){
-            setOpen(true);
-        }else{
-            navigate(config.routes.public.login);
-        }
+        setOpen(true);
     };
     async function saveQuestion(studentId: number, formData: any) {
         const jsonBody = convertQuestionData(formData);
@@ -105,14 +101,14 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     };
 
 
-    const handleFileSizeCheck = (file:any) => {
+    const handleFileSizeCheck = (file: any) => {
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
             message.error('File must be smaller than 5MB!');
         }
         return isLt5M;
     };
-    
+
     const onChange = (info: any) => {
         let newFileList = info.fileList;
 
