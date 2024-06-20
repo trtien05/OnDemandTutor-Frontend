@@ -256,7 +256,6 @@ const TutorProfile = () => {
                                                 <FormStyled.NumberInput
                                                     style={{ width: '100%' }}
                                                     placeholder={tutorDetails?.teachingPricePerHour.toLocaleString()}
-                                                    value={priceValue}
                                                     formatter={formatter}
                                                     parser={parser}
                                                     onChange={onChange}
