@@ -23,7 +23,6 @@ export const BoxHover = styled.div`
 `;
 
 export const BestTutorItem = styled(Row)`
-    cursor: pointer;
     background-color: #fff;
     border-radius: 50px;
     & .ant-list-item {
@@ -97,6 +96,7 @@ export const BestTutorBooking = styled.div`
 export const BookingInformation = styled.div`
     display: flex;
     justify-content: space-around;
+    align-items: center;
     margin-bottom: 10px;
 `;
 export const IconStyleStart = styled(FaStar)`
@@ -114,8 +114,8 @@ export const IconStyleStart = styled(FaStar)`
     }
 `;
 export const IconStyleHeart = styled(FaRegHeart)`
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
     color: #b94ab7;
     margintop: 10px;
     ${({ theme }) => theme.breakpoints.down('xl')} {

@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Card, Tabs, Button, Rate, Skeleton, Row, Col, List } from "antd";
+import { Card, Tabs, Button, Rate, Skeleton, Row, Col, List, Avatar } from "antd";
 import { useDocumentTitle } from "../../hooks";
 import { getTutorById, getTutorReviews, getTutorEducation } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
@@ -13,6 +13,7 @@ import iconPerson from "../../assets/images/image14.png";
 import iconBachelor from "../../assets/images/image13.png";
 import Schedule from "../../components/Schedule/Schedule";
 import BookTutor from "../../components/Popup/BookTutor";
+import { UserOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 
@@ -107,8 +108,6 @@ const TutorDetail: React.FC = () => {
         if (educationArray.length > 0) {
           setEducations(educationArray[0]);
         }
-        // console.log(educationResponse.data);
-        // setEducations(educationResponse.data)
 
       } catch (err) {
         setError("Failed to fetch tutor details");
@@ -161,7 +160,29 @@ const TutorDetail: React.FC = () => {
             <Col lg={12} md={12} sm={12} xs={24}>
               <Styled.TutorInfoCard>
                 <Col>
-                  <Styled.TutorImage src={tutor.avatarUrl || '/default-avatar.png'} alt={tutor.fullName} />
+                  {tutor.avatarUrl ? (
+                    <Avatar
+                      src={tutor.avatarUrl}
+                      style={{
+                        width: '210px',
+                        height: '210px',
+                        borderRadius: '50px',
+                        marginRight: '20px'
+
+                      }}
+                    />
+                  ) : (
+                    <Avatar
+                      icon={<UserOutlined />}
+                      style={{
+                        width: '210px',
+                        height: '210px',
+                        borderRadius: '25px',
+                        marginRight: '20px'
+
+                      }}
+                    />
+                  )}
                 </Col>
                 <Col>
                   <Styled.TutorDetails>
@@ -287,7 +308,8 @@ const TutorDetail: React.FC = () => {
                     <iframe
                       width="100%"
                       height="100%"
-                      style={{ borderRadius: '12px' }}
+
+                      style={{ borderRadius: '30px' }}
                       src={getEmbedUrl(tutor.videoIntroductionLink)}
                       title="YouTube video player"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -306,7 +328,9 @@ const TutorDetail: React.FC = () => {
                     <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
                   </div>
                 </Styled.BookingInformation>
-                <BookTutor />
+                {/* <Styled.BookingTutorButton> */}
+                <BookTutor tutorId={tutorId} />
+                {/* </Styled.BookingTutorButton> */}
                 <Styled.SendMessageButton>Send message</Styled.SendMessageButton>
                 <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
               </Styled.TutorVideoCard>

@@ -16,7 +16,7 @@ const SearchTutors = () => {
   const [tutorLevel, setTutorLevel] = useState<string>('');
   const [sortBy, setSortBy] = useState<string>('');
   const [searchKeyword, setSearchKeyword] = useState<string>('');
-  const [priceRange, setPriceRange] = useState<[number, number]>([100000, 500000]);
+  const [priceRange, setPriceRange] = useState<[number, number]>([100000, 1000000]);
   const [minPrice, setMinPrice] = useState<number>(priceRange[0]);
   const [maxPrice, setMaxPrice] = useState<number>(priceRange[1]);
   const [initLoading, setInitLoading] = useState(true);

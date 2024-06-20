@@ -14,6 +14,7 @@ import cookieUtils from '../../utils/cookieUtils';
 import { Schedule, ScheduleEvent } from '../../components/Schedule/Schedule.type';
 import moment from 'moment';
 import config from '../../config';
+import useAuth from '../../hooks/useAuth';
 
 const { Title, Text } = Typography;
 const { Countdown } = Statistic;
@@ -73,16 +74,25 @@ const MakePayment = () => {
   const [tutor, setTutor] = useState<Tutor>();
   const location = useLocation();
   const [schedule, setSchedule] = useState<Schedule[]>();
-  const [appointmentData, setAppointmentData] = useState<any>(location.state.appointmentData); // [TODO] Replace any with the correct type
+  const [appointmentData, setAppointmentData] = useState<any>(location.state?location.state.appointmentData?location.state.appointmentData:null:null); // [TODO] Replace any with the correct type
 
-  const [tutorId, setTutorId] = useState<number>(appointmentData.tutorId); // [TODO] Replace any with the correct type
-  const selectedSchedule = location.state.selectedSchedule;
+  const [tutorId, setTutorId] = useState<number>(appointmentData?appointmentData.tutorId?appointmentData.tutorId:0:0); // [TODO] Replace any with the correct type
+  const selectedSchedule = location.state?location.state.selectedSchedule?location.state.selectedSchedule:null:null; 
   const [deadline, setDeadline] = useState(new Date().getTime() + 15 * 60 * 1000); // 15 minutes
   const navigate = useNavigate();
+  const {user} = useAuth();
+
+  useEffect(() => {(async () => {
+    if (!user) navigate(config.routes.public.login);
+    if (location.state) {
+    await setAppointmentData(location.state.appointmentData);
+    await setTutorId(appointmentData.tutorId);
+      } else navigate(config.routes.public.home)
+  })}, []);
 
 
   useEffect(() => {
-    if (location.state.appointmentData && appointmentData.tutorId) {
+    if (location.state.appointmentData != null && appointmentData.tutorId) {
       const fetchTutor = async () => {
         setLoading(true);
         try {
@@ -127,14 +137,10 @@ const MakePayment = () => {
       };
 
       fetchTutor();
-    }
-  }, [location.state.appointmentData, appointmentData.tutorId])
+    } else navigate(config.routes.public.home);
+  }, [appointmentData, appointmentData.tutorId])
 
-  useEffect(() => {
-    setAppointmentData(location.state.appointmentData);
-    setTutorId(appointmentData.tutorId);
-  }, []);
-
+  
   // for countdown clock
 
   useEffect(() => {
@@ -172,17 +178,22 @@ const MakePayment = () => {
   }
 
 
-  function calculateTotalHour(schedule: Schedule[]) {
-    let sum = 0;
-    let start = 0;
-    let end = 0;
-    schedule.map((time: Schedule) => {
-      start = Number.parseInt(time.startTime.slice(0, 3));
-      end = Number.parseInt(time.endTime.slice(0, 3));
-      sum += end - start;
-    })
-    return sum;
-  }
+  function calculateTotalHour(schedule: Schedule[]):number {
+    let totalMinutes = 0;
+
+  schedule.forEach((time: Schedule) => {
+    const [startHour, startMinute] = time.startTime.split(':').map(Number);
+    const [endHour, endMinute] = time.endTime.split(':').map(Number);
+
+    // Convert start and end times to minutes
+    const startTimeInMinutes = startHour * 60 + startMinute;
+    const endTimeInMinutes = endHour * 60 + endMinute;
+
+    // Calculate the difference in minutes
+    totalMinutes += endTimeInMinutes - startTimeInMinutes;
+  })
+  return totalMinutes / 60;
+}
 
 
   const handleOrder = async () => {

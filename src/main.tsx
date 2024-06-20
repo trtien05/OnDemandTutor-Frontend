@@ -1,8 +1,8 @@
-import React, { StrictMode } from 'react'
 import { AntdThemeConfig } from './themes/';
 import viVN from 'antd/es/locale/vi_VN';
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
+import { StrictMode } from 'react';
 import GlobalStyles from './themes/globalStyles.ts';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
 import { createStyledBreakpointsTheme } from 'styled-breakpoints';

@@ -179,20 +179,6 @@ const Home = () => {
                     </Row>
 
                     <TutorsList initLoading={initLoading} list={list} />
-
-
-                    <Row>
-                        <Col lg={24} md={24} xs={24} sm={24} >
-                            <Styled.ButtonWrapper>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.SeeMoreButton>
-                                        See More {'>'}
-                                    </Styled.SeeMoreButton>
-                                </Link>
-                            </Styled.ButtonWrapper>
-                        </Col>
-                    </Row>
-
                 </Container>
             </Styled.BestTutorSection>
 
@@ -200,6 +186,17 @@ const Home = () => {
 
             <Styled.QuestionSection>
                 <Container>
+                    <Row gutter={[20, 20]} align="middle" justify='center' style={{ marginBottom: '30px' }}>
+                        <Col lg={12}>
+                            <Styled.BestServiceTitle level={2}>
+                                FAQ
+                            </Styled.BestServiceTitle>
+
+                            <Styled.BestServiceDesc>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </Styled.BestServiceDesc>
+                        </Col>
+                    </Row>
                     <Row align="middle">
                         <Col lg={13} md={24} sm={24} xs={24}>
                             <Styled.AnswerWrapper>
@@ -235,7 +232,6 @@ const Home = () => {
                             </Styled.QuestionWrapper>
                         </Col>
                     </Row>
-
                 </Container>
             </Styled.QuestionSection >
 

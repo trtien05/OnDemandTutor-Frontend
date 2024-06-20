@@ -132,12 +132,14 @@ const AuthForm = ({
                                 </FormStyled.FormItem>
                             </FormStyled.FormWrapper>
 
+                            {page === PageEnum.LOGIN && (
+                                <FormStyled.FormGoogleButton to={LOGIN_GOOGLE_URL}>
+                                    <FcGoogle />
+                                    <Text>Login with Google</Text>
+                                </FormStyled.FormGoogleButton>
+                            )}
 
 
-                            <FormStyled.FormGoogleButton to={LOGIN_GOOGLE_URL}>
-                                <FcGoogle />
-                                <Text>Login with Google</Text>
-                            </FormStyled.FormGoogleButton>
 
 
 

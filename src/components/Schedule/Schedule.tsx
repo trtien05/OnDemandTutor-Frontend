@@ -125,7 +125,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
 
   const today = new Date();
   const next7Days = new Date();
-  next7Days.setDate(today.getDate() + 6);
+  next7Days.setDate(today.getDate() + 7);
 
   const onPopupOpen = (args: PopupOpenEventArgs) => {
     args.cancel = true; // Disable the event popup
