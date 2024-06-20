@@ -24,8 +24,8 @@ const PaymentSuccess = () => {
     const [bookingData, setBookingData] = useState<any>();
     const navigate = useNavigate();
 
-     // Ref to prevent double API call
-     const hasFetched = useRef(false);
+    // Ref to prevent double API call
+    const hasFetched = useRef(false);
 
     useEffect(() => {
         if (hasFetched.current) return; // Check the flag
@@ -61,59 +61,71 @@ const PaymentSuccess = () => {
 
 
     return (
-
+        paymentResponse ? (
         <>
             {contextHolder}
-            <Styled.CheckSection>
-                <Container>
-                    <Styled.CheckInner>
-                        <Skeleton loading={loading}>
-                            {(paymentResponse && bookingData) ? (
-                                <>
-                                    <Styled.CheckSuccessMsg>
-                                        <AiOutlineCheckCircle
-                                            size={80}
-                                            color={theme.colors.success}
-                                        />
-                                        <Title level={2}>Thank you for trusting us!</Title>
-                                    </Styled.CheckSuccessMsg>
-                                    <Styled.BorderLine />
+        <Styled.CheckSection>
+            <Container>
+                <Styled.CheckInner>
+                    <Skeleton loading={loading}>
+                        {(paymentResponse.status && bookingData) ? (
+                            <>
+                                <Styled.CheckSuccessMsg>
+                                    <AiOutlineCheckCircle
+                                        size={80}
+                                        color={theme.colors.success}
+                                    />
+                                    <Title level={2}>Thank you for trusting us!</Title>
+                                </Styled.CheckSuccessMsg>
+                                <Styled.BorderLine />
 
-                                    <Styled.PaymentMainPrice>
-                                        <Title level={3}>
-                                            Total payment
-                                        </Title>
-                                        <Text>{Math.round(bookingData.price).toLocaleString()} VND</Text>
-                                    </Styled.PaymentMainPrice>
+                                <Styled.PaymentMainPrice>
+                                    <Title level={3}>
+                                        Total payment
+                                    </Title>
+                                    <Text>{Math.round(bookingData.price).toLocaleString()} VND</Text>
+                                </Styled.PaymentMainPrice>
 
-                                    <Styled.PaymentMainPrice>
-                                        <Title level={3}>Booked schedule</Title>
-                                        <Text>
-                                            {bookingData.schedule.map((schedule: Schedule, index: number) => (
-                                                <p key={index} style={{ lineHeight: `100%`, textAlign: `right` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color: `${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
-                                            )
-                                            )}
-                                        </Text>
-                                    </Styled.PaymentMainPrice>
+                                <Styled.PaymentMainPrice>
+                                    <Title level={3}>Booked schedule</Title>
+                                    <Text>
+                                        {bookingData.schedule.map((schedule: Schedule, index: number) => (
+                                            <p key={index} style={{ lineHeight: `100%`, textAlign: `right` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color: `${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                                        )
+                                        )}
+                                    </Text>
+                                </Styled.PaymentMainPrice>
 
-                                    <Styled.BorderLine />
-                                    <Styled.PaymentMainPrice style={{ marginBottom: `20px` }}>
-                                        <Title level={3}>Tutor profile</Title>
-                                        <Text>
-                                            <a href={`/search-tutors/${bookingData.tutor.id}`}>{bookingData.tutor.fullName}</a>
-                                        </Text>
-                                    </Styled.PaymentMainPrice>
-                                </>) : (
-                                <Styled.CheckErrorMsg>
-                                    <AiOutlineCloseCircle size={80} color={theme.colors.error} />
-                                    <Title level={2}>Payment Failed</Title>
-                                </Styled.CheckErrorMsg>
-                            )}
-                        </Skeleton>
-                    </Styled.CheckInner>
-                </Container>
-            </Styled.CheckSection>
+                                <Styled.BorderLine />
+                                <Styled.PaymentMainPrice style={{ marginBottom: `20px` }}>
+                                    <Title level={3}>Tutor profile</Title>
+                                    <Text>
+                                        <a href={`/search-tutors/${bookingData.tutor.id}`}>{bookingData.tutor.fullName}</a>
+                                    </Text>
+                                </Styled.PaymentMainPrice>
+                            </>) : (
+                            <Styled.CheckErrorMsg>
+                                <AiOutlineCloseCircle size={80} color={theme.colors.error} />
+                                <Title level={2}>{paymentResponse.data}</Title>
+                            </Styled.CheckErrorMsg>
+                        )}
+                    </Skeleton>
+                </Styled.CheckInner>
+            </Container>
+        </Styled.CheckSection>
         </>
+        ) : (
+        <Styled.CheckSection>
+            <Container>
+                <Styled.CheckInner>
+                    <Skeleton loading={loading}><Styled.CheckErrorMsg>
+                        <AiOutlineCloseCircle size={80} color={theme.colors.error} />
+                        <Title level={2}>No payment data</Title>
+                    </Styled.CheckErrorMsg>
+                    </Skeleton>
+                </Styled.CheckInner>
+            </Container>
+        </Styled.CheckSection>)
     )
 }
 
