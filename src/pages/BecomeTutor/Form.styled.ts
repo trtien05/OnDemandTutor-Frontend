@@ -54,7 +54,6 @@ export const FormDescription = styled(Text)`
     text-align: left;
 
     column-gap: 8px;
-    margin-top: -8px;
     margin-bottom: 24px;
     color: ${theme.colors.textPrimary};
     font-size: 1.5rem;

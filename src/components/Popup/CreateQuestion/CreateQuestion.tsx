@@ -155,7 +155,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 width={700}
                 styles={{
                     content: {
-                        borderRadius: '100px',
+                        borderRadius: '50px',
                         padding: '50px',
                         boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)',
                     },
@@ -204,7 +204,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 >
                     <FormStyled.FormContainer>
                         <FormStyled.FormTitle>Subject</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="subject" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="subject" rules={[{ required: true, message: 'Please select a subject' }]}>
                             <Select size="large" placeholder="Select subject">
                                 {options.map((option, index) => (
                                     <Select.Option key={index} value={option.value}>
@@ -214,7 +214,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                             </Select>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Title</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="title" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="title" rules={[{ required: true, message: 'Please enter information for the title field' }]}>
                             <Input
                                 count={{
                                     show: true,
@@ -225,7 +225,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                             ></Input>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Enter your question</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="content" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="content" rules={[{ required: true, message: 'Please enter your question' }]}>
                             <FormStyled.CommentInput
                                 count={{
                                     show: true,

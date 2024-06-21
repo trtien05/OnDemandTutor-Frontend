@@ -53,6 +53,7 @@ export const StyledTabs = styled(Tabs)`
     }
 `;
 export const BestTutorStudentImage = styled.img`
+    margin-right: 5px;
     width: 17px;
     height: 17px;
 `;
@@ -169,6 +170,7 @@ export const BestTutorName = styled(Title)`
 export const BestTutorEducationBachelorImage = styled.img`
     width: 22px;
     height: 16px;
+    margin-right: 5px;
 `;
 export const BestTutorEducation = styled.div`
     display: flex;
@@ -264,7 +266,7 @@ export const SectionHeader = styled.div`
 export const SectionContent = styled.div`
     position: relative;
     background-color: #fff;
-    padding: 20px;
+    padding: 10px;
     border-radius: 0 20px 20px 20px;
     box-shadow: -3px 7px 71px 10px rgb(222 142 220 / 30%);
 
@@ -280,7 +282,10 @@ export const SectionContent = styled.div`
 `;
 
 export const Item = styled.div`
+    display: flex;
     padding-left: 80px;
+    padding-top: 5px;
+    padding-bottom: 5px;
     ${({ theme }) => theme.breakpoints.down('md')} {
         padding-left: 50px;
     }

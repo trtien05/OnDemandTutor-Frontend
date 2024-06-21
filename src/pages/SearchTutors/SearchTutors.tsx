@@ -84,7 +84,7 @@ const SearchTutors = () => {
         setTotalAmountTutors(res.totalElements);
         setTotalPages(res.totalPages);
       });
-    window.scrollTo(0, 0);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage, searchUrl]);
 
 
@@ -106,7 +106,21 @@ const SearchTutors = () => {
       <p>Selected price range: {priceRange[0].toLocaleString() + 'đ'} - {priceRange[1].toLocaleString() + 'đ'}</p>
     </div>
   );
-
+  const options = [
+    { label: 'Specialties', value: 'Specialties' },
+    { label: 'Mathematics', value: 'Mathematics' },
+    { label: 'Chemistry', value: 'Chemistry' },
+    { label: 'Biology', value: 'Biology' },
+    { label: 'Literature', value: 'Literature' },
+    { label: 'English', value: 'English' },
+    { label: 'IELTS', value: 'IELTS' },
+    { label: 'TOEFL', value: 'TOEFL' },
+    { label: 'TOEIC', value: 'TOEIC' },
+    { label: 'Physics', value: 'Physics' },
+    { label: 'Geography', value: 'Geography' },
+    { label: 'History', value: 'History' },
+    { label: 'Coding', value: 'Coding' },
+  ];
   return (
     <>
       <Styled.FilterSection>
@@ -115,10 +129,11 @@ const SearchTutors = () => {
             <Row justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={8} lg={8} xs={24}>
                 <Styled.StyledSelect placeholder="Specialties" onChange={handleSpecialtyChange}>
-                  <Option value="Specialties">Specialties</Option>
-                  <Option value="Ielts">Ielts</Option>
-                  <Option value="Toeic">Toeic</Option>
-                  <Option value="Cambridge">Cambridge</Option>
+                  {options.map((option, index) => (
+                    <Option key={index} value={option.value}>
+                      {option.label}
+                    </Option>
+                  ))}
                 </Styled.StyledSelect>
               </Col>
 

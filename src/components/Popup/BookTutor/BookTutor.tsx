@@ -5,7 +5,7 @@ import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
-import { createBooking } from '../../../api/tutorBookingAPI';
+import { createBooking } from '../../../utils/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';

@@ -2,7 +2,7 @@ import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, Po
 import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
-import { getTutorSchedule } from '../../api/tutorBookingAPI';
+import { getTutorSchedule } from '../../utils/tutorBookingAPI';
 import { notification } from 'antd';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
 
