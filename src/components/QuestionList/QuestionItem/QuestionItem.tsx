@@ -57,7 +57,10 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
         <Skeleton avatar title={false} loading={item.loading} active>
             <Col lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
+                    {/* justify="space-between" */}
                     <Styled.QuestionItem>
+                        {/* <Col lg={2} md={4} sm={4} xs={24}> */}
+                        {/* <Styled.BestTutorImage src={item.picture.large} alt="avatar" /> */}
                         {item.account.avatarUrl ? (
                             <Avatar
                                 size={64}
@@ -70,6 +73,8 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     top: '-30px',
 
                                 }}
+
+
                             />
                         ) : (
                             <Avatar
@@ -86,6 +91,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
 
                             />
                         )}
+                        {/* </Col> */}
                         <Col lg={21} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow>

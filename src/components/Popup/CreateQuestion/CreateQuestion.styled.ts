@@ -1,21 +1,18 @@
-import { Form, Typography, Input, Button, Card } from "antd";
-import styled from "styled-components";
+import { Form, Typography, Input, Button, Card } from 'antd';
+import styled from 'styled-components';
 
 import { theme } from '../../../themes';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
-export const StyledModal = styled.div`
-  width:1000px;
-`;
 export const FormContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     flex-direction: row;
     column-gap: 5%;
     margin: 0 auto;
-    // width: 100%; 
-    // height: 100%; 
+    // width: 100%;
+    // height: 100%;
     // position: relative"
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
@@ -32,53 +29,54 @@ export const FormWrapper = styled(Form)`
 `;
 
 export const FormTitle = styled(Title)`
-display: block;
-  &.ant-typography {
-    
-    color: ${theme.colors.primary};
-    font-size: 1.5rem;
-    font-weight: 700;
-    text-align: left;
-    margin-bottom:0;
-    
-  }
+    display: block;
+    &.ant-typography {
+        color: ${theme.colors.primary};
+        font-size: 1.5rem;
+        font-weight: 700;
+        text-align: left;
+        margin-bottom: 0;
+    }
 `;
 
 export const FormDescription = styled(Text)`
-  display: flex;
-  text-align: left;
+    display: flex;
+    text-align: left;
 
-  column-gap: 8px;
-  margin-top: -8px;
-  margin-bottom: 24px;
-  color: ${theme.colors.textPrimary};
-  font-size: 1.5rem;
+    column-gap: 8px;
+    margin-top: -8px;
+    margin-bottom: 24px;
+    color: ${theme.colors.textPrimary};
+    font-size: 1.5rem;
 `;
 
-
 export const CommentInput = styled(TextArea)`
-  &.ant-input-affix-wrapper {
-    border-radius: 2px;
-    border: 1px solid ${theme.colors.borderInput};
-    background: ${theme.colors.white};
-  }
+    &.ant-input-affix-wrapper {
+        border-radius: 2px;
+        border: 1px solid ${theme.colors.borderInput};
+        background: ${theme.colors.white};
+    }
 
-  &.ant-input-affix-wrapper textarea.ant-input {
-    padding: 12px 16px;
-    // font-size: ;
-    background: ${theme.colors.white};
-  }
+    &.ant-input-affix-wrapper textarea.ant-input {
+        padding: 12px 16px;
+        // font-size: ;
+        background: ${theme.colors.white};
+    }
 `;
 
 export const ButtonDiv = styled.div`
-      width: 100%; 
-      marginTop: 20px;
-      display: flex; 
-      align-items: center;
-      justify-content: center;
- `;
-export const FormItem = styled(Form.Item)<{$width?: string;}>`
-
+    width: 100%;
+    margintop: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    // display: flex;
+    // justifyContent: flex-end;
+    // alignSelf: flex-end;
+    // width: 100%;
+    // marginTop: 20px;
+`;
+export const FormItem = styled(Form.Item)<{ $width?: string }>`
     width: ${({ $width }) => $width || '100%'};
     &.ant-form-item {
         padding: 12px 0 12px 0;
@@ -86,13 +84,11 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
         margin-bottom: 0px;
         ${({ theme }) => theme.breakpoints.down('sm')} {
             margin-bottom: 0px;
-            width: 100%
+            width: 100%;
         }
     }
 
     &.ant-form-item:last-child {
-        
-
         ${({ theme }) => theme.breakpoints.down('xs')} {
             margin-top: 28px;
         }
@@ -124,8 +120,6 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
         }
     }
 
-    
-
     & .ant-form-item-control {
         position: relative;
 
@@ -138,18 +132,17 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
 
     & .ant-select-selector,
     & .ant-select,
-    & .ant-picker{
+    & .ant-picker {
         height: 44px;
         text-align: left;
     }
 
     & .ant-input,
     & .ant-input-number-input,
-    & .ant-input-password,
-     {  
+    & .ant-input-password {
         padding: 12px;
         font-size: 1.6rem;
-        
+
         border-radius: 6px;
         border-color: ${theme.colors.border};
 
@@ -170,34 +163,28 @@ export const FormItem = styled(Form.Item)<{$width?: string;}>`
 `;
 
 export const DeleteButton = styled(Button)`
-    width: 5px; 
-    margin: 16px 0px; 
+    width: 5px;
+    margin: 16px 0px;
     padding: 0;
     align-item: center;
-    ${({ theme }) => theme.breakpoints.down('sm')}{
-      width: 100%;
-      margin: 0px auto;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+        width: 100%;
+        margin: 0px auto;
     }
-  `
+`;
 export const ReviewContainer = styled(Card)`
-  width: 100%;
-  background: ${theme.colors.secondary};
-  padding: 5%;
-  margin-top: 24px;
-  border-radius: 25px;
-  
-    & .ant-card-body{
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    ${({ theme }) => theme.breakpoints.down('xs')}{
-      flex-direction: column;
+    width: 100%;
+    background: ${theme.colors.secondary};
+    padding: 5%;
+    margin-top: 24px;
+    border-radius: 25px;
+
+    & .ant-card-body {
+        display: flex;
+        flex-direction: row;
+        flex-wrap: wrap;
+        ${({ theme }) => theme.breakpoints.down('xs')} {
+            flex-direction: column;
+        }
     }
-  }
-  `
-
-
-
-
-
-
+`;

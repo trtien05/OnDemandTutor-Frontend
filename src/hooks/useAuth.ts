@@ -22,6 +22,8 @@ export type UserType = {
     createdAt: Date | string;
     dateOfBirth: Date | string | null;
     gender: Gender;
+    status: string;
+    role: string;
 };
 
 // Function to get the role from the decoded JWT
