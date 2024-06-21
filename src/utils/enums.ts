@@ -229,7 +229,14 @@ export enum CancelOption {
 }
 
 export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER',
+    MALE = 0,
+    FEMALE = 1,
+    
+}
+export enum AppointmentStatus {
+    PROCESSING = 'PROCESSING',
+    CONFIRMED = 'CONFIRMED',
+    CANCELED = 'CANCELED',
+    SUCCESS = 'SUCCESS',
+    FAILED = 'FAILED',
 }

@@ -32,6 +32,7 @@ export type UserType = {
     // identityCard: string | null;
     dateOfBirth: Date | string | null;
     gender: Gender;
+    
 };
 
 // Function to get the role from the decoded JWT
