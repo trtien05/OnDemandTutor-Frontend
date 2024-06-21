@@ -5,7 +5,7 @@ import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
 import { theme } from '../../../themes';
 import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
-import { createQuestion } from '../../../api/questionAPI';
+import { createQuestion } from '../../../utils/questionAPI';
 import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../config';
@@ -31,6 +31,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         }else{
             navigate(config.routes.public.login);
         }
+        setOpen(true);
     };
     async function saveQuestion(studentId: number, formData: any) {
         const jsonBody = convertQuestionData(formData);

@@ -3,6 +3,7 @@ import RoutesComponent from './routes';
 // import Profile from './pages/Customer/Profile/Profile';
 
 function App() {
+
   return (
     <Router>
       <RoutesComponent />
@@ -13,4 +14,4 @@ function App() {
   )
 }
 
-export default App
+export default App;

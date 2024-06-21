@@ -1,4 +1,3 @@
-import { Navigate } from 'react-router-dom';
 import config from '../config';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
@@ -16,26 +15,7 @@ import Profile from '../pages/Customer/Profile/Profile';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
-    // const { pathname } = useLocation();
-    // const { role } = useAuth();
 
-    // if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
-    // if (role === Role.STAFF) return <Navigate to={config.routes.staff.home} />;
-
-    // if (
-    //     !role &&
-    //     (pathname.includes(config.routes.customer.purchased) ||
-    //         pathname.includes(config.routes.customer.schedule))
-    // )
-    //     return <Outlet />;
-
-    // if (pathname === config.routes.customer.orderSuccess) {
-    //     const payment = cookieUtils.getItem(config.cookies.payment);
-
-    //     if (!payment) {
-    //         return <Navigate to={config.routes.public.home} />;
-    //     }
-    // }
     return <MainLayout />;
 };
 
@@ -68,7 +48,7 @@ const notFoundRoutes = { path: '*', element: <NotFound /> };
 const MainRoutes = {
     path: '/',
     element: <MainRouter />,
-    children: [publicRoutes, notFoundRoutes],
+    children: [publicRoutes, studentRoutes, notFoundRoutes],
 };
 
 export default MainRoutes;
