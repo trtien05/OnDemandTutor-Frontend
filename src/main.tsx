@@ -1,5 +1,5 @@
 import { AntdThemeConfig } from './themes/';
-import viVN from 'antd/es/locale/vi_VN';
+
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
 import { StrictMode } from 'react';
@@ -26,7 +26,7 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <ConfigProvider locale={viVN} theme={AntdThemeConfig}>
+      <ConfigProvider  theme={AntdThemeConfig}>
         <AppAntd>
           <App />
         </AppAntd>

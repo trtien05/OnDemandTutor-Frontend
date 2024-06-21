@@ -11,7 +11,7 @@ import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
 import { Navigate, useLocation } from 'react-router-dom';
 import cookieUtils from '../utils/cookieUtils';
-import Profile from '../pages/Customer/Profile/Profile';
+import Profile from '../pages/Student/Profile/Profile';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {

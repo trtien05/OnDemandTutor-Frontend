@@ -32,14 +32,14 @@ import calendar from 'dayjs/plugin/calendar';
 
 import fallbackImage from '@/assets/images/fallback-img.png';
 import { getProfile, updateProfile } from '../../../api/profileAPI';
-import { Subject, Role } from '../../../utils/enums';
+import { Subject, Role, Gender } from '../../../utils/enums';
 
 // import InfiniteScroll from '@/components/InfiniteScroll';
 import { theme } from '../../../themes';
 import { useAuth, useDocumentTitle } from '../../../hooks';
-import { Student, Tutor, Appointment } from '../../../pages/Admin/UserDetail/UserDetail.type';
+import { Student, Tutor, Appointment } from '../../Admin/UserDetail/UserDetail.type';
 import Container from '../../../components/Container';
-import * as St from '../../../pages/Admin/UserDetail/UserDetail.styled';
+import * as St from '../../Admin/UserDetail/UserDetail.styled';
 
 import { fields } from './Profile.fields';
 import { ProfileContainer, ProfileWrapper } from './Profile.styled';
@@ -92,7 +92,7 @@ const Profile = () => {
                 form.setFieldsValue({
                     fullName: user.fullName,
                     dateOfBirth: user.dateOfBirth && dayjs(user.dateOfBirth),
-                    gender: user.gender ? 'Female' : 'Male',
+                    gender: user.gender===1? Gender.MALE : Gender.FEMALE,
                     phoneNumber: user.phoneNumber,
                     avatarUrl: user.avatarUrl,
                     email: user.email,
@@ -125,12 +125,29 @@ const Profile = () => {
             cancelText: 'Ok',
         });
     };
-
+    const handleFileSizeCheck = (file:any) => {
+        const isLt5M = file.size / 1024 / 1024 < 5;
+        if (!isLt5M) {
+            api.error({
+                message: 'Error',
+                description: 'Image must smaller than 5MB!',
+            });
+        }
+        return isLt5M;
+    };
     const beforeUpload = (file: RcFile) => {
-        return false;
+        const isJpgOrPng = file.type === 'image/jpeg' || file.type === 'image/png';
+        if (!isJpgOrPng) {
+            api.error({
+                message: 'Error',
+                description: 'You can only upload JPG/PNG file!',
+            });
+        }
+        return !(isJpgOrPng && handleFileSizeCheck(file));
       };
 
       const handleUploadAvatar = async (info: UploadChangeParam<UploadFile<any>>) => {
+        
         const file = info.file as RcFile;
         if (!file) return;
 
@@ -164,14 +181,14 @@ const Profile = () => {
             setLoading(true);
 
             if (!user?.id) return;
-            const gender = values.gender==="Female"?false:true;
+            // const gender = values.gender===1?false:true;
             
             
             await updateProfile(user.id, {
                 fullName: values.fullName,
                 dateOfBirth: dayjs(values.dateOfBirth),
                 // .add(7, 'hours')
-                gender,
+                gender: values.gender===Gender.MALE?true:false,
                 phoneNumber: values.phoneNumber,
                 email: user.email,
                 address: values.address,
@@ -195,7 +212,7 @@ const Profile = () => {
     // const handleUpdateProfile = (values: any) => {
     //     console.log(values);
     // };
-    const handleUpdateProfileFailed = (values: any) => {
+    const handleUpdateProfileFailed = (values:any) => {
         console.log(values);
     };
 

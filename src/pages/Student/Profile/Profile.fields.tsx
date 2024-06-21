@@ -7,7 +7,7 @@ type FieldType = {
     key: number;
     label: string;
     name: string;
-    initialValue?: string;
+    initialValue?: string|boolean|number;
     rules?: Rule[];
     component: JSX.Element;
     halfWidth?: boolean;
@@ -96,9 +96,9 @@ export const fields: FieldType[] = [
                 required: true,
                 message: 'Please select gender',
             },
-            {
-                validator: validateWhitespace,
-            },
+            // {
+            //     validator: validateWhitespace,
+            // },
         ],
         component: (
             <Select size="large" placeholder="Select gender" style={{ width: '100%' }}>
