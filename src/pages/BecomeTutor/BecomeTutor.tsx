@@ -48,12 +48,11 @@ const BecomeTutor = () => {
   const { user, role } = useAuth();
   //Check User is it Student 
   useEffect(() => {
-    if (role !== 'STUDENT') {
-      navigate(config.routes.public.login);
-    } else {
-      setAccountId(user?.id);
-    }
+
+    setAccountId(user?.id);
   }, [user]);
+  console.log(user?.id);
+  // setAccountId(user?.id);
 
   async function fetchAccount(tutorId: number) {
     try {
@@ -724,6 +723,7 @@ const BecomeTutor = () => {
       // Check for timeslots for the current day
       for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
         const timeslot = formData[`${day}_timeslot_${i}`];
+        console.log(timeslot);
         if (timeslot && timeslot.length === 2) {
           const start = moment().set({ hour: i, minute: 0, second: 0 });
           const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
