@@ -11,13 +11,14 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHV
 
 interface ScheduleProps {
   tutorId: number;
+  noRestricted?: boolean;
   setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
   setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
   selectedId?: number[];
   selectedSchedule?: ScheduleEvent[];
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule }) => {
+const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
@@ -205,6 +206,13 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
     );
   };
 
+  const restrictedTime = !noRestricted
+    ? {
+      minDate: today,
+      maxDate: next7Days,
+    }
+    : {};
+
 
   if (isScheduleLoaded) return (
     <div>
@@ -213,8 +221,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
           key={tutorId} // Add key to force re-render
           height="300px"
           selectedDate={today}
-          minDate={today}
-          maxDate={next7Days}
+          {...restrictedTime}
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}
@@ -231,7 +238,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
           <Inject services={[Day]} />
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
-      {schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
+      {!noRestricted? schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>): schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
     </div>
   )
 }

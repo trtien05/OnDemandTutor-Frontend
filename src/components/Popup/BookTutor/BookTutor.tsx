@@ -70,7 +70,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
         } catch (error: any) {
           api.error({
             message: 'Error create booking',
-            description: error.message || 'There was an issue with creating your booking. Please try again later.',
+            description: error.response.data.message || 'There was an issue with creating your booking. Please try again later.',
           });
         } finally {
           setLoading(false);

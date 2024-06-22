@@ -3,7 +3,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuth from '../../hooks/useAuth';
 import { getTutorDetail } from '../../api/tutorProfileAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Button, Col, Flex, Input, Radio, Row, Skeleton, Space, Spin, Typography, notification } from 'antd';
+import { Avatar, Button, Col, Flex, Form, Input, Radio, Row, Skeleton, Space, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -13,6 +13,10 @@ import ReactPlayer from 'react-player';
 import { getTutorEducation } from '../../api/paymentAPI';
 import TableComponent from '../../components/Table/Table';
 import { getTutorCertification } from '../../utils/tutorAPI';
+import EducationForm from './FormComponent/EducationForm';
+import Schedule from '../../components/Schedule/Schedule';
+import CertificationForm from './FormComponent/CertificationForm';
+import ScheduleForm from './FormComponent/ScheduleForm';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -32,6 +36,7 @@ const TutorProfile = () => {
     const [priceValue, setPriceValue] = useState<string>("");
     const [initialValues, setInitialValues] = useState<Details>();
     const [tableDisplay, setTableDisplay] = useState<string>("education");
+    const [form] = Form.useForm();
 
     useEffect(() => {
         (async () => {
@@ -41,9 +46,16 @@ const TutorProfile = () => {
                 if (!user || !(role == "TUTOR")) return;
 
                 const { data } = await getTutorDetail(user.id);
+
                 const education = (await getTutorEducation(user.id)).data;
                 const certificate = (await getTutorCertification(user.id)).data;
                 await setTutorDetails(data);
+                await form.setFieldsValue({
+                    teachingPricePerHour: data.teachingPricePerHour,
+                    backgroundDescription: data.backgroundDescription,
+                    meetingLink: data.meetingLink,
+                    videoIntroductionLink: data.videoIntroductionLink,
+                });
                 await setTutorEducation(
                     education.map((education: any) => ({
                         id: education.id,
@@ -62,7 +74,7 @@ const TutorProfile = () => {
                         issuedBy: certificate.issuedBy,
                         issuedYear: certificate.issuedYear,
                         verified: certificate.verified ? "Yes" : "No",
-                })));
+                    })));
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -122,21 +134,6 @@ const TutorProfile = () => {
         // Remove non-digit characters (commas, spaces, etc.)
         return value ? value.replace(/\D/g, "") : "";
     };
-
-    useEffect(() => {
-        if (tutorDetails) {
-            setReload(true);
-            setInitialValues({
-                teachingPricePerHour: tutorDetails.teachingPricePerHour,
-                backgroundDescription: tutorDetails.backgroundDescription,
-                meetingLink: tutorDetails.meetingLink,
-                videoIntroductionLink: tutorDetails.videoIntroductionLink,
-            });
-            setReload(false);
-        }
-    }, [tutorDetails])
-
-
 
     return (
         <>
@@ -223,131 +220,145 @@ const TutorProfile = () => {
                                                     </Skeleton>
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
-                                        </Style.ProfileContent>
-                                    </Col>
+                                            <Style.ProfileInfoItem vertical gap={10}>
+                                            <Title level={3}>Your schedule</Title>
+                                                {user?.id && 
+                                                (<div style={{textAlign:`center`}}>
+                                                    <Schedule tutorId={user?.id} noRestricted={true} />
+                                                <ScheduleForm tutorId={user?.id}/></div>)}
+                                                
+                                            </Style.ProfileInfoItem>
+                                    </Style.ProfileContent>
+                                </Col>
 
-                                    <Col xl={12} lg={12} sm={24} xs={24}>
-                                        <Title level={3}>Tutor details</Title>
+                                <Col xl={12} lg={12} sm={24} xs={24}>
+                                    <Title level={3}>Tutor details</Title>
 
 
 
-                                        <FormStyled.FormWrapper
-                                            // onFinish={onFinish}
-                                            initialValues={tutorDetails}
-                                            labelAlign="left"
-                                            layout="vertical"
-                                            requiredMark={false}
-                                            size="middle"
-                                            style={{ rowGap: "0px" }}
+                                    <FormStyled.FormWrapper
+                                        // onFinish={onFinish}
+                                        form={form}
+                                        labelAlign="left"
+                                        layout="vertical"
+                                        requiredMark={false}
+                                        size="middle"
+                                        style={{ rowGap: "0px" }}
+                                    >
+
+                                        <FormStyled.FormItem
+                                            $width={"100%"}
+                                            name="teachingPricePerHour"
+                                            label="Hourly base rate"
+                                            rules={[
+                                                {
+                                                    required: true,
+                                                    type: 'number',
+                                                    min: 0,
+                                                    max: 1000000
+                                                },
+                                            ]}>
+                                            <FormStyled.NumberInput
+                                                style={{ width: '100%' }}
+                                                placeholder={tutorDetails?.teachingPricePerHour.toLocaleString()}
+                                                formatter={formatter}
+                                                parser={parser}
+                                                onChange={onChange}
+                                            >
+                                            </FormStyled.NumberInput>
+                                        </FormStyled.FormItem>
+                                        <FormStyled.FormDescription>
+                                            We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
+                                            The remaining will be transferred automatically to your bank account every 28 days.
+                                        </FormStyled.FormDescription>
+
+                                        <FormStyled.FormItem
+                                            name="backgroundDescription"
+                                            $width={"100%"}
+                                            label="Profile description">
+                                            <FormStyled.CommentInput rows={4} placeholder="Tell us about yourself..." />
+                                        </FormStyled.FormItem>
+
+
+
+                                        <FormStyled.FormItem
+                                            name="meetingLink"
+                                            label="Google Meet Link"
+                                            $width={"100%"}
+                                            rules={[
+                                                {
+                                                    pattern:
+                                                        /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
+                                                    message: "Invalid Google Meet link.",
+                                                },
+                                                {
+                                                    required: true,
+                                                    message: "Please provide your Google Meet link.",
+                                                },
+                                            ]}
                                         >
+                                            <Input
+                                                type="text"
+                                                placeholder="Paste your Google Meet link"
+                                            ></Input>
+                                        </FormStyled.FormItem>
 
-                                            <FormStyled.FormItem
-                                                $width={"100%"}
-                                                name="teachingPricePerHour"
-                                                label="Hourly base rate"
-                                                rules={[
-                                                    {
-                                                        required: true,
-                                                        type: 'number',
-                                                        min: 0,
-                                                        max: 1000000
-                                                    },
-                                                ]}>
-                                                <FormStyled.NumberInput
-                                                    style={{ width: '100%' }}
-                                                    placeholder={tutorDetails?.teachingPricePerHour.toLocaleString()}
-                                                    formatter={formatter}
-                                                    parser={parser}
-                                                    onChange={onChange}
-                                                >
-                                                </FormStyled.NumberInput>
-                                            </FormStyled.FormItem>
-                                            <FormStyled.FormDescription>
-                                                We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
-                                                The remaining will be transferred automatically to your bank account every 28 days.
-                                            </FormStyled.FormDescription>
+                                        <FormStyled.FormItem
+                                            name="videoIntroductionLink"
+                                            label="Video introduction"
+                                            $width={"100%"}
+                                            rules={[
+                                                {
+                                                    pattern:
+                                                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                                                    message: "Invalid Youtube link.",
+                                                },
+                                            ]}
+                                        >
+                                            <Input
+                                                onChange={handleInputChange}
+                                                type="text"
+                                                placeholder="Paste a Youtube link to your video"
+                                            ></Input>
+                                        </FormStyled.FormItem>
+                                        {tutorDetails?.videoIntroductionLink && (
+                                            // style={{ width: "100%", height: "100%", display: "flex" }}
+                                            <div style={{ width: "100%", height: "100%" }}>
+                                                <ReactPlayer url={tutorDetails?.videoIntroductionLink} controls={true} width="70%" height="70%" />
+                                            </div>
+                                        )}
+                                    </FormStyled.FormWrapper>
+                                </Col>
+                            </Row>
+                        </Style.ProfileWrapper>
 
-                                            <FormStyled.FormItem
-                                                name="backgroundDescription"
-                                                $width={"100%"}
-                                                label="Profile description">
-                                                <FormStyled.CommentInput rows={4} placeholder="Tell us about yourself..." />
-                                            </FormStyled.FormItem>
-
-
-
-                                            <FormStyled.FormItem
-                                                name="meetingLink"
-                                                label="Google Meet Link"
-                                                $width={"100%"}
-                                                rules={[
-                                                    {
-                                                        pattern:
-                                                            /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
-                                                        message: "Invalid Google Meet link.",
-                                                    },
-                                                    {
-                                                        required: true,
-                                                        message: "Please provide your Google Meet link.",
-                                                    },
-                                                ]}
-                                            >
-                                                <Input
-                                                    type="text"
-                                                    placeholder="Paste your Google Meet link"
-                                                ></Input>
-                                            </FormStyled.FormItem>
-
-                                            <FormStyled.FormItem
-                                                name="videoIntroductionLink"
-                                                label="Video introduction"
-                                                $width={"100%"}
-                                                rules={[
-                                                    {
-                                                        pattern:
-                                                            /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-                                                        message: "Invalid Youtube link.",
-                                                    },
-                                                ]}
-                                            >
-                                                <Input
-                                                    onChange={handleInputChange}
-                                                    type="text"
-                                                    placeholder="Paste a Youtube link to your video"
-                                                ></Input>
-                                            </FormStyled.FormItem>
-                                            {tutorDetails?.videoIntroductionLink && (
-                                                // style={{ width: "100%", height: "100%", display: "flex" }}
-                                                <div style={{ width: "100%", height: "100%" }}>
-                                                    <ReactPlayer url={tutorDetails?.videoIntroductionLink} controls={true} width="70%" height="70%" />
-                                                </div>
-                                            )}
-                                        </FormStyled.FormWrapper>
-                                    </Col>
-                                </Row>
-                            </Style.ProfileWrapper>
-
-                            <Style.ProfileWrapper>
-                                <Row gutter={40}>
-                                    <Col span={24}>
+                        <Style.ProfileWrapper>
+                            <Row gutter={40}>
+                                <Col span={24}>
                                     <Flex vertical gap="middle">
                                         <Radio.Group defaultValue={tableDisplay}
-                                        onChange={(e) => setTableDisplay(e.target.value)}
-                                        buttonStyle="solid">
+                                            onChange={(e) => setTableDisplay(e.target.value)}
+                                            buttonStyle="solid">
                                             <Radio.Button value="education">Diplomas</Radio.Button>
                                             <Radio.Button value="certificate">Certificates</Radio.Button>
                                         </Radio.Group>
                                     </Flex>
-                                        <div style={{ alignItems: `center`, margin: `20px` }}>
-                                        {tableDisplay.includes("education") ? <TableComponent dataType={tableDisplay} EducationData={tutorEducation} />: <TableComponent dataType={tableDisplay} CertificateData={tutorCert} />}
-                                        </div>
-                                    </Col>
-                                </Row>
-                            </Style.ProfileWrapper>
-                        </Flex>
-                    </Spin>
-                </Container>
-            </Style.ProfileContainer>
+                                    <div style={{ textAlign: `right`, margin: `20px` }}>
+                                        {tableDisplay.includes("education") ? (<>
+                                            <TableComponent dataType={tableDisplay}
+                                                EducationData={tutorEducation} />
+                                            {user?.id && <EducationForm tutorId={user?.id} />}
+                                        </>) : <><TableComponent dataType={tableDisplay}
+                                            CertificateData={tutorCert} />
+                                            {user?.id && <CertificationForm tutorId={user?.id} />}</>}
+                                    </div>
+                                </Col>
+                            </Row>
+                        </Style.ProfileWrapper>
+                    </Flex>
+                </Spin>
+            </Container>
+        </Style.ProfileContainer >
         </>
     )
 }
