@@ -5,15 +5,18 @@ import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import { FieldType, educationForm } from "../../BecomeTutor/Form.fields";
 import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
-import { addEducations } from "../../../api/tutorRegisterAPI";
+import { addEducations } from "../../../utils/tutorRegisterAPI";
 import { uploadImage } from "../../../utils/UploadImg";
 
 interface EducationProps {
     tutorId: number;
+    lastIndex: number;
+    isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const EducationForm: React.FC<EducationProps> = (props) => {
-    const { tutorId } = props;
+    const tutorId = props.tutorId;
+    const lastIndex = props.lastIndex;
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
@@ -44,7 +47,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
         }
         return e?.fileList;
     };
-    const onChange = ({ fileList: newFileList }) => {
+    const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
         setFileList(newFileList);
     };
     // const handleFinish = (values: any) => {
@@ -92,7 +95,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
         urls.push(url);
     }
         for (let i = 0; i < numberOfEntries1; i++) {
-            diplomaUploadPromises.push(uploadImage(tutorId, values[`diplomaVerification_${i}`][0].originFileObj, 'diploma', i, handleChange));
+            diplomaUploadPromises.push(uploadImage(tutorId, values[`diplomaVerification_${i}`][0].originFileObj, 'diploma', lastIndex + i, handleChange));
         }
         await Promise.all(diplomaUploadPromises);
         return urls;
@@ -106,6 +109,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
             api.success({
                 message: 'Your diploma has been sent',
             });
+            props.isUpdate(true)
         } catch (error: any) {
             api.error({
                 message: 'Error submitting diploma',
@@ -114,9 +118,6 @@ const EducationForm: React.FC<EducationProps> = (props) => {
         } finally {
             setLoading(false);
             setIsFormOpen(false);
-            api.success({
-                message: 'Refresh to see your newly added diploma',
-            })
         }
         
     };
@@ -199,7 +200,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
                         htmlType="submit"
                         loading={loading}
                         form='educationForm'
-                        style={{ marginRight: '2%', width: '45%' }}
+                        style={{ width: '45%' }}
                     >
                         Send
                     </Button>

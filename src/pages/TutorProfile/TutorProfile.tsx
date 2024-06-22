@@ -1,22 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuth from '../../hooks/useAuth';
-import { getTutorDetail } from '../../api/tutorProfileAPI';
+import { getTutorDescription as getTutorDetail } from '../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Button, Col, Flex, Form, Input, Radio, Row, Skeleton, Space, Spin, Typography, notification } from 'antd';
+import { Avatar, Col, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
-import { theme } from '../../themes';
-import * as FormStyled from '../BecomeTutor/Form.styled'
-import ReactPlayer from 'react-player';
-import { getTutorEducation } from '../../api/paymentAPI';
+
+import { getTutorEducation } from '../../utils/tutorAPI';
 import TableComponent from '../../components/Table/Table';
 import { getTutorCertification } from '../../utils/tutorAPI';
 import EducationForm from './FormComponent/EducationForm';
 import Schedule from '../../components/Schedule/Schedule';
 import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
+import DescriptionForm from './FormComponent/DescriptionForm';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -26,17 +25,37 @@ const TutorProfile = () => {
     const [tutorDetails, setTutorDetails] = useState<Details>();
     const [tutorEducation, setTutorEducation] = useState<Education[]>();
     const [tutorCert, setTutorCert] = useState<Certificate[]>();
-    const [api, contextHolderNotification] = notification.useNotification({
+    const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
+    const [update, isUpdate] = useState<boolean>(false);
+    const [updateEducation, isUpdateEducation] = useState<boolean>(false);
+    const [updateCert, isUpdateCert] = useState<boolean>(false);
+    const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
     const { user, role } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
-    const [reload, setReload] = useState<boolean>(false);
-    const [url, setUrl] = useState<string>("");
-    const [priceValue, setPriceValue] = useState<string>("");
-    const [initialValues, setInitialValues] = useState<Details>();
     const [tableDisplay, setTableDisplay] = useState<string>("education");
-    const [form] = Form.useForm();
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setLoading(true);
+                if (!user || !(role == "TUTOR")) return;
+
+                const { data } = await getTutorDetail(user.id);
+                await setTutorDetails(data);
+
+            } catch (error: any) {
+                api.error({
+                    message: 'Error',
+                    description: error.response ? error.response.data : error.message,
+                });
+            } finally {
+                isUpdate(false);
+                setLoading(false);
+            }
+        })();
+    }, [user, update]);
 
     useEffect(() => {
         (async () => {
@@ -44,18 +63,8 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-
-                const { data } = await getTutorDetail(user.id);
-
                 const education = (await getTutorEducation(user.id)).data;
-                const certificate = (await getTutorCertification(user.id)).data;
-                await setTutorDetails(data);
-                await form.setFieldsValue({
-                    teachingPricePerHour: data.teachingPricePerHour,
-                    backgroundDescription: data.backgroundDescription,
-                    meetingLink: data.meetingLink,
-                    videoIntroductionLink: data.videoIntroductionLink,
-                });
+
                 await setTutorEducation(
                     education.map((education: any) => ({
                         id: education.id,
@@ -66,6 +75,27 @@ const TutorProfile = () => {
                         academicYear: `${education.startYear} - ${education.endYear}`,
                         verified: education.verified ? "Yes" : "No",
                     })));
+
+            } catch (error: any) {
+                api.error({
+                    message: 'Error',
+                    description: error.response ? error.response.data : error.message,
+                });
+            } finally {
+                isUpdateEducation(false);
+                setLoading(false);
+            }
+        })();
+    }, [user, updateEducation]);
+
+    useEffect(() => {
+        (async () => {
+            try {
+                setLoading(true);
+
+                if (!user || !(role == "TUTOR")) return;
+                const certificate = (await getTutorCertification(user.id)).data;
+
                 await setTutorCert(
                     certificate.map((certificate: any) => ({
                         id: certificate.id,
@@ -75,70 +105,25 @@ const TutorProfile = () => {
                         issuedYear: certificate.issuedYear,
                         verified: certificate.verified ? "Yes" : "No",
                     })));
+
             } catch (error: any) {
                 api.error({
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
             } finally {
+                isUpdateCert(false);
                 setLoading(false);
             }
         })();
-    }, [reload, user]);
+    }, [user, updateCert]);
 
-    const isValidYouTubeUrl = (url: string): boolean => {
-        const regex =
-            /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
-        return regex.test(url);
-    };
-
-    const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        const url = event.target.value;
-        if (isValidYouTubeUrl(url)) {
-            setUrl(url);
-        } else {
-            setUrl("");
-        }
-    };
-
-    const onChange = (value: number | string | null) => {
-        if (typeof value === "string") {
-            setPriceValue(value);
-        } else if (value === null) {
-            setPriceValue("");
-        } else {
-            setPriceValue(value.toString());
-        }
-    };
-
-    const formatNumberValue = (value: number | string): number => {
-        if (typeof value === "string") {
-            // Remove non-digit characters from the string
-            const numericString = value.replace(/\D/g, "");
-            // Convert the cleaned string to a number
-            return parseFloat(numericString);
-        } else {
-            // If the value is already a number, return it directly
-            return value;
-        }
-    };
-    const formatter = (value: number | string | undefined) => {
-        if (!value) return "";
-        // Use the helper function to ensure value is a number
-        const numberValue = formatNumberValue(value);
-        // Use Intl.NumberFormat for Vietnamese locale
-        const formattedValue = new Intl.NumberFormat("vi-VN").format(numberValue);
-        return formattedValue;
-    };
-    const parser = (value: string | undefined) => {
-        // Remove non-digit characters (commas, spaces, etc.)
-        return value ? value.replace(/\D/g, "") : "";
-    };
 
     return (
         <>
             <Style.ProfileContainer>
                 <Container>
+                    {contextHolder}
                     <Spin spinning={loading} tip="Đang tải...">
                         <Flex vertical gap={44}>
                             <Style.ProfileWrapper>
@@ -221,144 +206,58 @@ const TutorProfile = () => {
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
-                                            <Title level={3}>Your schedule</Title>
-                                                {user?.id && 
-                                                (<div style={{textAlign:`center`}}>
-                                                    <Schedule tutorId={user?.id} noRestricted={true} />
-                                                <ScheduleForm tutorId={user?.id}/></div>)}
-                                                
+                                                <Title level={3}>Your schedule</Title>
+                                                {user?.id &&
+                                                    (<div style={{ textAlign: `center` }}>
+                                                        <Schedule tutorId={user?.id} noRestricted={true} update={updateSchedule} />
+                                                        <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
+
                                             </Style.ProfileInfoItem>
-                                    </Style.ProfileContent>
-                                </Col>
+                                        </Style.ProfileContent>
+                                    </Col>
 
-                                <Col xl={12} lg={12} sm={24} xs={24}>
-                                    <Title level={3}>Tutor details</Title>
+                                    <Col xl={12} lg={12} sm={24} xs={24}>
+                                        <Title level={3}>Tutor details</Title>
 
+                                        {tutorDetails !== undefined && user &&
+                                            <DescriptionForm tutorDetails={tutorDetails} tutorId={user?.id} isUpdate={isUpdate} />}
+                                    </Col>
+                                </Row>
+                            </Style.ProfileWrapper>
 
-
-                                    <FormStyled.FormWrapper
-                                        // onFinish={onFinish}
-                                        form={form}
-                                        labelAlign="left"
-                                        layout="vertical"
-                                        requiredMark={false}
-                                        size="middle"
-                                        style={{ rowGap: "0px" }}
-                                    >
-
-                                        <FormStyled.FormItem
-                                            $width={"100%"}
-                                            name="teachingPricePerHour"
-                                            label="Hourly base rate"
-                                            rules={[
-                                                {
-                                                    required: true,
-                                                    type: 'number',
-                                                    min: 0,
-                                                    max: 1000000
-                                                },
-                                            ]}>
-                                            <FormStyled.NumberInput
-                                                style={{ width: '100%' }}
-                                                placeholder={tutorDetails?.teachingPricePerHour.toLocaleString()}
-                                                formatter={formatter}
-                                                parser={parser}
-                                                onChange={onChange}
-                                            >
-                                            </FormStyled.NumberInput>
-                                        </FormStyled.FormItem>
-                                        <FormStyled.FormDescription>
-                                            We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
-                                            The remaining will be transferred automatically to your bank account every 28 days.
-                                        </FormStyled.FormDescription>
-
-                                        <FormStyled.FormItem
-                                            name="backgroundDescription"
-                                            $width={"100%"}
-                                            label="Profile description">
-                                            <FormStyled.CommentInput rows={4} placeholder="Tell us about yourself..." />
-                                        </FormStyled.FormItem>
-
-
-
-                                        <FormStyled.FormItem
-                                            name="meetingLink"
-                                            label="Google Meet Link"
-                                            $width={"100%"}
-                                            rules={[
-                                                {
-                                                    pattern:
-                                                        /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
-                                                    message: "Invalid Google Meet link.",
-                                                },
-                                                {
-                                                    required: true,
-                                                    message: "Please provide your Google Meet link.",
-                                                },
-                                            ]}
-                                        >
-                                            <Input
-                                                type="text"
-                                                placeholder="Paste your Google Meet link"
-                                            ></Input>
-                                        </FormStyled.FormItem>
-
-                                        <FormStyled.FormItem
-                                            name="videoIntroductionLink"
-                                            label="Video introduction"
-                                            $width={"100%"}
-                                            rules={[
-                                                {
-                                                    pattern:
-                                                        /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-                                                    message: "Invalid Youtube link.",
-                                                },
-                                            ]}
-                                        >
-                                            <Input
-                                                onChange={handleInputChange}
-                                                type="text"
-                                                placeholder="Paste a Youtube link to your video"
-                                            ></Input>
-                                        </FormStyled.FormItem>
-                                        {tutorDetails?.videoIntroductionLink && (
-                                            // style={{ width: "100%", height: "100%", display: "flex" }}
-                                            <div style={{ width: "100%", height: "100%" }}>
-                                                <ReactPlayer url={tutorDetails?.videoIntroductionLink} controls={true} width="70%" height="70%" />
-                                            </div>
-                                        )}
-                                    </FormStyled.FormWrapper>
-                                </Col>
-                            </Row>
-                        </Style.ProfileWrapper>
-
-                        <Style.ProfileWrapper>
-                            <Row gutter={40}>
-                                <Col span={24}>
-                                    <Flex vertical gap="middle">
-                                        <Radio.Group defaultValue={tableDisplay}
-                                            onChange={(e) => setTableDisplay(e.target.value)}
-                                            buttonStyle="solid">
-                                            <Radio.Button value="education">Diplomas</Radio.Button>
-                                            <Radio.Button value="certificate">Certificates</Radio.Button>
-                                        </Radio.Group>
-                                    </Flex>
-                                    <div style={{ textAlign: `right`, margin: `20px` }}>
-                                        {tableDisplay.includes("education") ? (<>
-                                            <TableComponent dataType={tableDisplay}
-                                                EducationData={tutorEducation} />
-                                            {user?.id && <EducationForm tutorId={user?.id} />}
-                                        </>) : <><TableComponent dataType={tableDisplay}
-                                            CertificateData={tutorCert} />
-                                            {user?.id && <CertificationForm tutorId={user?.id} />}</>}
-                                    </div>
-                                </Col>
-                            </Row>
-                        </Style.ProfileWrapper>
-                    </Flex>
-                </Spin>
-            </Container>
-        </Style.ProfileContainer >
+                            <Style.ProfileWrapper>
+                                <Row gutter={40}>
+                                    <Col span={24}>
+                                        <Flex vertical gap="middle">
+                                            <Radio.Group defaultValue={tableDisplay}
+                                                onChange={(e) => setTableDisplay(e.target.value)}
+                                                buttonStyle="solid">
+                                                <Radio.Button value="education">Diplomas</Radio.Button>
+                                                <Radio.Button value="certificate">Certificates</Radio.Button>
+                                            </Radio.Group>
+                                        </Flex>
+                                        <div style={{ textAlign: `right`, margin: `20px` }}>
+                                            {tableDisplay.includes("education") ? (<>
+                                                <TableComponent dataType={tableDisplay}
+                                                    EducationData={tutorEducation} />
+                                                {user?.id && tutorEducation?.length &&
+                                                    <EducationForm tutorId={user?.id}
+                                                        lastIndex={tutorEducation?.length}
+                                                        isUpdate={isUpdateEducation} />}
+                                            </>) : <><TableComponent dataType={tableDisplay}
+                                                CertificateData={tutorCert} />
+                                                {user?.id && tutorCert?.length &&
+                                                    <CertificationForm tutorId={user?.id}
+                                                        lastIndex={tutorCert?.length}
+                                                        isUpdate={isUpdateCert} />}</>}
+                                        </div>
+                                    </Col>
+                                </Row>
+                            </Style.ProfileWrapper>
+                        </Flex>
+                    </Spin>
+                </Container>
+            </Style.ProfileContainer >
         </>
     )
 }

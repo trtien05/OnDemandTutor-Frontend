@@ -4,12 +4,13 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useState } from "react";
 import { FieldType } from "../../BecomeTutor/Form.fields";
 import { theme } from "../../../themes";
-import { addAvailableSchedule } from "../../../api/tutorRegisterAPI";
+import { addAvailableSchedule } from "../../../utils/tutorRegisterAPI";
 import moment from "moment";
 const { useBreakpoint } = Grid;
 
 interface ScheduleProps {
     tutorId: number;
+    isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const ScheduleForm: React.FC<ScheduleProps> = (props) => {
@@ -37,6 +38,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
             api.success({
                 message: 'Your schedule have been updated!',
             });
+            props.isUpdate(true);
         } catch (error: any) {
             api.error({
                 message: 'Error updating schedule',

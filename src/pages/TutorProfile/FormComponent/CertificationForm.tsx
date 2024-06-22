@@ -6,14 +6,17 @@ import { FieldType, certificateForm } from "../../BecomeTutor/Form.fields";
 import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
 import { uploadImage } from "../../../utils/UploadImg";
-import { addCertificates } from "../../../api/tutorRegisterAPI";
+import { addCertificates } from "../../../utils/tutorRegisterAPI";
 
 interface CertProps {
     tutorId: number;
+    lastIndex: number;
+    isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CertificationForm: React.FC<CertProps> = (props) => {
-    const { tutorId } = props;
+    const tutorId = props.tutorId;
+    const lastIndex = props.lastIndex;
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
@@ -44,7 +47,7 @@ const CertificationForm: React.FC<CertProps> = (props) => {
         }
         return e?.fileList;
     };
-    const onChange = ({ fileList: newFileList }) => {
+    const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
         setFileList(newFileList);
     };
     // const handleFinish = (values: any) => {
@@ -94,7 +97,7 @@ const CertificationForm: React.FC<CertProps> = (props) => {
                 })
         ) + 1;
         for (let i = 0; i < numberOfEntries2; i++) {
-            certificateUploadPromises.push(uploadImage(tutorId, values[`certificateVerification_${i}`][0].originFileObj, 'certificate', i, handleChange));
+            certificateUploadPromises.push(uploadImage(tutorId, values[`certificateVerification_${i}`][0].originFileObj, 'certificate', lastIndex+i, handleChange));
         }
         
     await Promise.all(certificateUploadPromises);
@@ -109,6 +112,7 @@ const handleOk = async (values: any) => {
         api.success({
             message: 'Your certificate has been sent',
         });
+        props.isUpdate(true)
     } catch (error: any) {
         api.error({
             message: 'Error submitting certificate',
@@ -117,9 +121,6 @@ const handleOk = async (values: any) => {
     } finally {
         setLoading(false);
         setIsFormOpen(false);
-        api.success({
-            message: 'Refresh to see your newly added certificate',
-        })
     }
 
 };
@@ -203,7 +204,7 @@ return (
                     htmlType="submit"
                     loading={loading}
                     form='certificateForm'
-                    style={{ marginRight: '2%', width: '45%' }}
+                    style={{ width: '45%' }}
                 >
                     Send
                 </Button>

@@ -1,4 +1,4 @@
-import { get, post } from './apiCaller';
+import { get, put } from './apiCaller';
 
 export const getTutorById = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}`);
@@ -13,3 +13,11 @@ export const getTutorEducation = (tutorId: number) => {
 export const getTutorCertification = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}/certificates`);
 };
+
+export const getTutorDescription = (tutorId: number) => {
+    return get(`/api/tutors/${tutorId}/tutor-description`);
+};
+
+export const updateTutorDescription = (tutorId: number, requestBody: any) => {
+    return put(`/api/tutors/${tutorId}/tutor-description`, requestBody);
+}
