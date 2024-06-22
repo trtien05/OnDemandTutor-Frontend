@@ -1,5 +1,9 @@
 import { get } from './apiCaller';
 
+export const getListTutor = () => {
+    return get(`/api/tutors`);
+};
+
 export const getTutorById = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}`);
 };

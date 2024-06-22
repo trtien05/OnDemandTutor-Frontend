@@ -8,12 +8,15 @@ import MakePayment from '../pages/Payment/MakePayment';
 import TutorDetail from '../pages/TutorDetail';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
-import { Navigate, useLocation } from 'react-router-dom';
-import cookieUtils from '../utils/cookieUtils';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks';
+import { Role } from '../utils/enums';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
+    const { role } = useAuth();
 
+    if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
     return <MainLayout />;
 };
 
