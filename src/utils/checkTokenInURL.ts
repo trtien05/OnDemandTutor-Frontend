@@ -18,7 +18,7 @@ const checkTokenInURL = () => {
 
         // Check if success param is true
         if (params.get('success') === 'true') {
-            cookieUtils.setToken(params.get('token') || '');
+            cookieUtils.setToken(params.get('accessToken') || '');
         }
 
         // Decode token from cookie

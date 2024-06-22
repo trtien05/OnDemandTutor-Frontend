@@ -5,13 +5,12 @@ import { useNavigate } from 'react-router-dom';
 import AuthForm from '../../components/AuthForm';
 import { registerFields } from '../../components/AuthForm/AuthForm.fields';
 import config from '../../config';
-// import { register } from '../../utils/authAPI';
-import cookieUtils from '../../utils/cookieUtils';
+import { register } from '../../utils/authAPI';
 import { PageEnum } from '../../utils/enums';
 import { useDocumentTitle } from '../../hooks';
 
 const Register = () => {
-    useDocumentTitle('Đăng Ký | HouseMate');
+    useDocumentTitle('Register | MyTutor');
 
     const [isSubmitting, setIsSubmitting] = useState(false);
     const navigate = useNavigate();
@@ -22,21 +21,30 @@ const Register = () => {
         try {
             setIsSubmitting(true);
 
-            // const { data } = await register(values);
-
-            // cookieUtils.setItem(config.cookies.token, data);
-            navigate(config.routes.public.home);
+            const { data } = await register(values);
+            console.log(data);
+            if (!data) {
+                throw new Error('Network response was not ok');
+            } else {
+                messageApi.success(`Verify your email: ${data.email}`);
+                setTimeout(() => {
+                    navigate(config.routes.public.verifyCode, { state: { email: values.email } });
+                }, 2000);
+            }
         } catch (error: any) {
-            if (error.response) messageApi.error(error.response.data);
-            else messageApi.error(error.message);
+            if (error.response) {
+                messageApi.error(error.response.data);
+            } else {
+                messageApi.error(error.message);
+            }
         } finally {
             setIsSubmitting(false);
         }
     };
 
     const redirect = {
-        description: 'Đã có tài khoản?',
-        title: 'Đăng nhập ngay',
+        description: 'Already have an account?',
+        title: 'Log in',
         url: config.routes.public.login,
     };
 
@@ -45,13 +53,14 @@ const Register = () => {
             {contextHolder}
             <AuthForm
                 page={PageEnum.REGISTER}
-                formTitle="Đăng ký"
-                buttonTitle="Đăng Ký"
+                formTitle="Register"
+                buttonTitle="Register"
                 fields={registerFields}
                 redirect={redirect}
                 onFinish={onFinish}
                 reverse
                 isSubmitting={isSubmitting}
+                OTPFields={[]}
             />
         </>
     );
