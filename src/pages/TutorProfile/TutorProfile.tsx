@@ -16,6 +16,8 @@ import Schedule from '../../components/Schedule/Schedule';
 import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
+import { useNavigate } from 'react-router-dom';
+import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -30,18 +32,22 @@ const TutorProfile = () => {
     });
     const [update, isUpdate] = useState<boolean>(false);
     const [updateEducation, isUpdateEducation] = useState<boolean>(false);
+    // const [checkUser, isCheckUser] = useState<boolean>(false);
     const [updateCert, isUpdateCert] = useState<boolean>(false);
     const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
     const { user, role } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
+    const navigate = useNavigate();
+
+    useEffect(() => {
+    },[user, role])
 
     useEffect(() => {
         (async () => {
             try {
                 setLoading(true);
-                if (!user || !(role == "TUTOR")) return;
-
+        if (!user || !(role == "TUTOR")) return;
                 const { data } = await getTutorDetail(user.id);
                 await setTutorDetails(data);
 
@@ -209,7 +215,7 @@ const TutorProfile = () => {
                                                 <Title level={3}>Your schedule</Title>
                                                 {user?.id &&
                                                     (<div style={{ textAlign: `center` }}>
-                                                        <Schedule tutorId={user?.id} noRestricted={true} update={updateSchedule} />
+                                                        <DisplaySchedule tutorId={user?.id} noRestricted={true} update={updateSchedule} />
                                                         <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
 
                                             </Style.ProfileInfoItem>

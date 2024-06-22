@@ -50,9 +50,6 @@ const EducationForm: React.FC<EducationProps> = (props) => {
     const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
         setFileList(newFileList);
     };
-    // const handleFinish = (values: any) => {
-    //     onFinish({ ...values, fileList })
-    // }
 
     const handleAddDiploma = () => {
         const newFieldKey = diploma.length * educationForm.length;

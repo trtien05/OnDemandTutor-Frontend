@@ -6,6 +6,7 @@ import { FieldType } from "../../BecomeTutor/Form.fields";
 import { theme } from "../../../themes";
 import { addAvailableSchedule } from "../../../utils/tutorRegisterAPI";
 import moment from "moment";
+import { updateSchedule } from "../../../utils/tutorAPI";
 const { useBreakpoint } = Grid;
 
 interface ScheduleProps {
@@ -218,7 +219,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
         try {
     
           // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-          const responseData = await addAvailableSchedule(noOfWeeks, tutorId, jsonRequestBody);
+          const responseData = await updateSchedule(tutorId,noOfWeeks, jsonRequestBody);
     
           // Check response status
           if (!api.success) {
@@ -247,11 +248,8 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
           for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
             const timeslot = formData[`${day}_timeslot_${i}`];
             if (timeslot && timeslot.length === 2) {
-              const start = moment().set({ hour: i, minute: 0, second: 0 });
-              const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
-              const startTime = start.format("HH:mm:ss");
-              console.log(startTime);
-              console.log(endTime);
+                const startTime = timeslot[0].format("HH:mm:ss");
+                const endTime = timeslot[1].format("HH:mm:ss");
     
               jsonResult.push({
                 startTime,
