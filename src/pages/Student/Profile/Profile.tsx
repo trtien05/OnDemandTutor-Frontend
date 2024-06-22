@@ -88,8 +88,7 @@ const Profile = () => {
 
                 if (!user) return;
 
-                // const { data } = await getProfile();
-
+                
                 form.setFieldsValue({
                     fullName: user.fullName,
                     createAt: user.createAt,
@@ -110,11 +109,13 @@ const Profile = () => {
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
+                console.error(`get user: ${error}`);
             } finally {
                 setLoading(false);
             }
         })();
     }, [reload, user]);
+    
     useEffect(() => {
         (async () => {
             try {
@@ -130,6 +131,7 @@ const Profile = () => {
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
+                console.error(`get learn statistic: ${error}`);
             } finally {
                 setLoading(false);
             }
@@ -163,6 +165,7 @@ const Profile = () => {
                 message: 'Error',
                 description: 'You can only upload JPG/PNG file!',
             });
+            
         }
         return !(isJpgOrPng && handleFileSizeCheck(file));
       };
@@ -191,6 +194,7 @@ const Profile = () => {
                 message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
+            console.error(`handle upload avatar: ${error}`);
         } finally {
             // setLoading(false);
         }
