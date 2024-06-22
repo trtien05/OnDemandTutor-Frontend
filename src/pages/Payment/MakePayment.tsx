@@ -209,6 +209,7 @@ const MakePayment = () => {
         await cookieUtils.setItem('bookingData', JSON.stringify({
           tutor: tutor,
           schedule: schedule,
+          subject: appointmentData.subjectName,
           totalHour: totalHour,
           price: price,
         }));
@@ -271,6 +272,7 @@ const MakePayment = () => {
               </Styled.TutorItem>
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
+              <p>Subject: {appointmentData.subjectName}</p>
                 {schedule?.map((schedule: Schedule, index: number) => (
                   <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
                 )
