@@ -2,7 +2,6 @@ import { Col, Row, List, Flex } from 'antd';
 import { MenuProps } from 'antd/lib';
 import { useEffect, useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-
 import Container from '../../../components/Container';
 import Logo from '../../../components/Logo';
 
@@ -14,12 +13,9 @@ import { HeaderProps, MenuType } from './Header.type';
 import * as Styled from './Header.styled';
 import MobileMenu from '../../../components/Mobile/MobileMenu';
 
-
-
-
 const items: MenuProps['items'] = [
     {
-        label: <Link to={config.routes.student.profile}>Trang cá nhân</Link>,
+        label: <Link to={config.routes.student.profile}>My Profile</Link>,
         key: config.routes.student.profile,
     },
     {
@@ -28,14 +24,14 @@ const items: MenuProps['items'] = [
     {
         label: (
             <Link to={config.routes.public.login} onClick={() => cookieUtils.clear()}>
-                Đăng xuất
+                Log Out
             </Link>
         ),
         key: config.routes.public.login,
     },
 ];
 
-const Header = ({ role, navbar, menu, avatar }: HeaderProps) => {
+const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
 
@@ -68,31 +64,30 @@ const Header = ({ role, navbar, menu, avatar }: HeaderProps) => {
                         <Logo to={config.routes.public.home} />
                     </Styled.ColumnStyle>
 
-                    <Col lg={15} md={0} sm={0} xs={0}>
+                    <Col lg={16} md={0} sm={0} xs={0}>
                         <Styled.Navbar
                             split={false}
                             dataSource={navbar}
-                            renderItem={(item: MenuType) => (
-                                <List.Item key={item.key}>{item.label}</List.Item>
-                            )}
+                            renderItem={(item: unknown) => {
+                                const menuItem = item as MenuType;
+                                return <List.Item key={menuItem.key}>{menuItem.label}</List.Item>;
+                            }}
                         />
                     </Col>
 
 
                     {role ? (
-                        <Col lg={4} md={0} sm={0} xs={0}>
+                        <Col lg={3} md={0} sm={0} xs={0}>
                             <Toolbar
                                 menu={items}
-                                avatar={avatar}
+                                avatar={avatarUrl}
                             />
                         </Col>
                     ) : (
-                        <Col lg={4} md={0} sm={0} xs={0}>
-                            <Styled.HeaderButton
-                                onClick={() => navigate(config.routes.public.login)}
-                            >
-                                ĐĂNG NHẬP
-                            </Styled.HeaderButton>
+                        <Col lg={3} md={0} sm={0} xs={0}>
+                            <Styled.NavbarLink to={config.routes.public.login}>
+                                Login
+                            </Styled.NavbarLink>
                         </Col>
                     )}
 

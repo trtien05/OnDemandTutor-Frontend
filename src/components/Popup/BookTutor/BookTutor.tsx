@@ -1,15 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Modal, notification } from 'antd';
+import { Button, Form, Modal, Select, notification } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
-import { createBooking } from '../../../api/tutorBookingAPI';
+import { createBooking } from '../../../utils/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
 import { ScheduleEvent } from '../../Schedule/Schedule.type';
+import { getTutorById } from '../../../utils/tutorAPI';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -17,7 +18,8 @@ interface BookTutorProps {
   tutorId: number;
 }
 
-const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
+const BookTutor: React.FC<BookTutorProps> = (props) => {
+  const { tutorId } = props;
   const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
@@ -26,14 +28,16 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
   const [selectedId, setSelectedId] = useState<number[]>([]);
+  const [subjects, setSubjects] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  function convertBookingData(description: string) {
+  function convertBookingData(values: any) {
     return {
-      description: description,
+      description: values.description,
       tutorId: tutorId,
+      subjectName: values.subjects,
       studentId: accountId,
       timeslotIds: selectedId
     }
@@ -41,10 +45,30 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
 
 
   function showModal() {
-    if (user)
+    if (user) {
       setIsFormOpen(true);
+    }
     else navigate(config.routes.public.login);
   };
+
+  useEffect(() => {
+    (async () => {
+      try {
+        setLoading(true);
+        const response = await getTutorById(tutorId);
+        if (response) {
+          await setSubjects(response.data.subjects);
+        } else throw new Error("Error fetching tutor data");
+      } catch (error: any) {
+        api.error({
+          message: 'Error',
+          description: error.message || 'There was an issue with fetching tutor data. Please try again later.',
+        });
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, [isFormOpen]);
 
   const validateTimeslot = (_: unknown) => {
     if (selectedSchedule.length === 0) {
@@ -53,11 +77,10 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
     return Promise.resolve();
   };
 
-  const handleOk = async () => {
+  const handleOk = async (values: any) => {
     setLoading(true); // Set loading state to true when form is submitted
     form.validateFields(['selectedSlots'])
       .then(async () => {
-        const values = form.getFieldValue('description')
         const bookingData = await convertBookingData(values);
         try {
           if (accountId !== undefined) {
@@ -90,6 +113,7 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
       </Button>
       <Modal
         centered
+        closable={false}
         width={'700px'}
         open={isFormOpen}
         onOk={handleOk}
@@ -102,7 +126,6 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
             key="submit"
             type="primary"
             htmlType="submit"
-            onClick={handleOk}
             loading={loading}
             form='bookTutorForm'
             style={{ marginRight: '2%', width: '45%' }}
@@ -113,7 +136,7 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
         styles={
           {
             content: {
-              borderRadius: '100px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+              borderRadius: '50px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
             }
           }}
       >
@@ -122,6 +145,7 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
           labelAlign='left'
           layout="vertical"
           requiredMark={false}
+          onFinish={handleOk}
           form={form}
           size="middle"
           style={{ rowGap: `10px` }}
@@ -137,6 +161,24 @@ const BookTutor: React.FC<BookTutorProps> = ({tutorId}) => {
               },
             ]}>
             <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
+          </FormStyled.FormItem>
+          <FormStyled.FormItem
+            name="subjects"
+            $width="100%"
+            rules={[
+              {
+                required: true,
+                message: "Please select a subject",
+              },
+            ]}
+            style={{ margin: `-10px 0px` }}
+            validateFirst
+          >
+            <Select size="large" placeholder="Select subject" >
+              {subjects.map((subject) => {
+                return <Select.Option key={subject} value={subject}>{subject}</Select.Option>
+              })}
+            </Select>
           </FormStyled.FormItem>
           <FormStyled.FormItem
             name="description"

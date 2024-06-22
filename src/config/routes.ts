@@ -12,12 +12,12 @@ const routes = {
         searchClasses: '/search-classes',
         classDetails: '/search-classes/:classId',
         notFound: '/404',
-        createQuestion: '/create-question',
+        searchQuestions: '/search-questions',
     },
     student: {
         profile: '/profile',
         makePayment: '/make-payment',
-        paymentSuccess: '/check-payment',
+        paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
     },
     api: {

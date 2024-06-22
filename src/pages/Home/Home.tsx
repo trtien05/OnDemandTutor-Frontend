@@ -4,15 +4,12 @@ import { Col, Collapse, theme, Row, Skeleton, List } from 'antd';
 import { CSSProperties, useEffect, useState } from 'react';
 
 import Container from '../../components/Container';
-import { FaStar } from "react-icons/fa";
-import { FaRegHeart } from "react-icons/fa";
+
 import ieltsImg from '../../assets/images/image5.png';
 import mathImg from '../../assets/images/image6.png';
 import programImg from '../../assets/images/image7.png';
 import toeicImg from '../../assets/images/image8.png';
-import iconEducation from "../../assets/images/image12.png";
-import iconBachelor from "../../assets/images/image13.png";
-import iconPerson from "../../assets/images/image14.png";
+
 import feedbackImg from "../../assets/images/image17.png";
 import { useDocumentTitle } from '../../hooks';
 import DefaultBanner from '../../components/Banner/DefaultBanner';
@@ -20,28 +17,10 @@ import { RightOutlined } from '@ant-design/icons';
 import { CollapseProps } from 'antd/lib';
 import Link from '../../components/Link';
 import config from '../../config';
-import BookTutor from '../../components/Popup/BookTutor';
+import TutorsList from '../../components/TutorsList/TutorsList';
+import { Tutor } from '../../components/TutorsList/Tutor.type';
 
 
-interface DataType {
-    gender?: string;
-    name: {
-        title?: string;
-        first?: string;
-        last?: string;
-    };
-    email?: string;
-    picture: {
-        large?: string;
-        medium?: string;
-        thumbnail?: string;
-    };
-    nat?: string;
-    loading: boolean;
-}
-
-const count = 3;
-const fakeDataUrl = `https://randomuser.me/api/?results=${count}&inc=name,gender,email,nat,picture&noinfo`;
 const text = `
   A dog is a type of domesticated animal.
   Known for its loyalty and faithfulness,
@@ -84,21 +63,12 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
 const Home = () => {
     useDocumentTitle('Home | MyTutor');
     const [translateY, setTranslateY] = useState<number>(0);
-    const [hoveredTutor, setHoveredTutor] = useState<DataType>();
-
-    const handleMouseEnter = (event: { currentTarget: any; }, item: DataType) => {
-        const tutorItem = event.currentTarget;
-        const itemRect = tutorItem.getBoundingClientRect();
-        const containerRect = tutorItem.parentElement.getBoundingClientRect();
-        const newTranslateY = itemRect.top - containerRect.top;
-        setHoveredTutor(item);
-        setTranslateY(newTranslateY);
-    };
+    const [hoveredTutor, setHoveredTutor] = useState<Tutor>();
     const listCategory = [ieltsImg, mathImg, programImg, toeicImg];
     const [initLoading, setInitLoading] = useState(true);
-    const [data, setData] = useState<DataType[]>([]);
-    const [list, setList] = useState<DataType[]>([]);
     const { token } = theme.useToken();
+    const [list, setList] = useState<Tutor[]>([]);
+    const [data, setData] = useState<Tutor[]>([]);
     const panelStyle: React.CSSProperties = {
         marginBottom: 24,
         background: token.colorFillAlter,
@@ -107,25 +77,25 @@ const Home = () => {
         backgroundColor: '#B94AB7',
         padding: '10px',
     };
+
     useEffect(() => {
-        fetch(fakeDataUrl)
+        const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=0&pageSize=3`;
+        fetch(baseUrl)
             .then((res) => res.json())
             .then((res) => {
                 setInitLoading(false);
-                setData(res.results);
-                setList(res.results);
+                setData(res.content);
+                setList(res.content);
             });
     }, []);
     return (
         <>
-
             <DefaultBanner />
 
             <Styled.BestServiceSection>
                 <Container>
                     <Row align="middle" justify='center'>
                         <Col lg={12}>
-                        <BookTutor />
                             <Styled.BestServiceTitle level={2}>
                                 Popular Categories
                             </Styled.BestServiceTitle>
@@ -135,7 +105,6 @@ const Home = () => {
                             </Styled.BestServiceDesc>
                         </Col>
                     </Row>
-
 
                     <Row gutter={[20, 20]} >
                         <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
@@ -209,112 +178,7 @@ const Home = () => {
 
                     </Row>
 
-                    <Row justify='space-between'>
-                        <Col lg={17} md={24} xs={24} sm={24}>
-                            <List
-                                loading={initLoading}
-                                itemLayout="horizontal"
-                                dataSource={list}
-                                renderItem={(item) => (
-                                    <Styled.TutorItem
-                                        onMouseEnter={(event) => handleMouseEnter(event, item)}
-                                        translate={typeof translateY === 'number' ? "no" : translateY}>
-                                        <Skeleton avatar title={false} loading={item.loading} active>
-                                            <Col lg={24} md={24} sm={24} xs={24}>
-                                                <Styled.BoxHover>
-                                                    <Styled.BestTutorItem justify='space-between'>
-                                                        <Col lg={7} md={8} sm={9} xs={24}>
-                                                            <Styled.BestTutorImage src={item.picture.large} alt="Ielts" />
-                                                        </Col>
-                                                        <Col lg={9} md={8} sm={6} xs={0}>
-                                                            <Styled.BestTutorContent>
-                                                                <Styled.BestTutorName level={2}>{item.name?.last}</Styled.BestTutorName>
-                                                                <Styled.BestTutorEducation>
-                                                                    <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                                                                    <Styled.BestTutorEducationBachelor>
-                                                                        Bachelor, Math
-                                                                    </Styled.BestTutorEducationBachelor>
-                                                                    <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                                                                    <Styled.BestTutorEducationBachelor>
-                                                                        Math Physic
-                                                                    </Styled.BestTutorEducationBachelor>
-                                                                </Styled.BestTutorEducation>
-                                                                <Styled.BestTutorStudent>
-                                                                    <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
-                                                                    <Styled.BestTutorEducationBachelor>
-                                                                        55 students taught
-                                                                    </Styled.BestTutorEducationBachelor>
-                                                                </Styled.BestTutorStudent>
-                                                                <Styled.BestTutorDescription>
-                                                                    Lorem ipsum dolor sit amet, consectetur adipisicing elit. Ex
-                                                                </Styled.BestTutorDescription>
-
-
-                                                            </Styled.BestTutorContent>
-                                                        </Col>
-
-                                                        <Col lg={8} md={8} sm={8} xs={24}>
-                                                            <Styled.BestTutorBooking>
-                                                                <Styled.BookingInformation>
-                                                                    <div style={{ 'textAlign': 'center' }}>
-                                                                        <div style={{ 'display': 'flex', 'height': '' }}>
-                                                                            <span><FaStar style={{ 'width': '31px', 'height': '31px', 'color': '#FFCC4D', 'marginRight': '5px' }} /></span>
-                                                                            <Styled.BookingRatingAndPrice >5</Styled.BookingRatingAndPrice>
-                                                                        </div>
-                                                                        <div>
-                                                                            x view
-                                                                        </div>
-                                                                    </div>
-                                                                    <div>
-                                                                        <Styled.BookingRatingAndPrice>Price</Styled.BookingRatingAndPrice>
-                                                                    </div>
-                                                                    <div>
-                                                                        <span><FaRegHeart style={{ 'width': '20px', 'height': '20px', 'color': '#B94AB7', 'marginTop': '10px' }} /></span>
-
-                                                                    </div>
-                                                                </Styled.BookingInformation>
-                                                                <Styled.BookingThisTutor>
-                                                                    <BookTutor/>
-                                                                </Styled.BookingThisTutor>
-                                                                <Styled.BookingThisTutor>
-                                                                    <Styled.ViewScheduleTutorButton>
-                                                                        View Full Schedule
-                                                                    </Styled.ViewScheduleTutorButton>
-                                                                </Styled.BookingThisTutor>
-                                                            </Styled.BestTutorBooking>
-                                                        </Col>
-                                                    </Styled.BestTutorItem>
-                                                </Styled.BoxHover>
-                                            </Col>
-                                        </Skeleton>
-
-                                    </Styled.TutorItem>
-                                )}
-                            />
-                        </Col>
-                        <Col lg={6} md={0} sm={0} xs={0} >
-                            <Styled.TurtorVideo translate={typeof translateY === 'number' ? translateY : 0}>
-                                {hoveredTutor && (
-                                    <>
-                                        <h2>{hoveredTutor.name.last}</h2>
-                                    </>
-                                )}
-                            </Styled.TurtorVideo>
-                        </Col>
-                    </Row>
-
-                    <Row>
-                        <Col lg={24} md={24} xs={24} sm={24} >
-                            <Styled.ButtonWrapper>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.SeeMoreButton>
-                                        See More {'>'}
-                                    </Styled.SeeMoreButton>
-                                </Link>
-                            </Styled.ButtonWrapper>
-                        </Col>
-                    </Row>
-
+                    <TutorsList initLoading={initLoading} list={list} />
                 </Container>
             </Styled.BestTutorSection>
 
@@ -322,6 +186,17 @@ const Home = () => {
 
             <Styled.QuestionSection>
                 <Container>
+                    <Row gutter={[20, 20]} align="middle" justify='center' style={{ marginBottom: '30px' }}>
+                        <Col lg={12}>
+                            <Styled.BestServiceTitle level={2}>
+                                FAQ
+                            </Styled.BestServiceTitle>
+
+                            <Styled.BestServiceDesc>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </Styled.BestServiceDesc>
+                        </Col>
+                    </Row>
                     <Row align="middle">
                         <Col lg={13} md={24} sm={24} xs={24}>
                             <Styled.AnswerWrapper>
@@ -342,7 +217,7 @@ const Home = () => {
                                                 'alignItems': 'center',
                                             }
                                         }>
-                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} />
                                         </div>
                                     }
                                     style={{ background: token.colorBgContainer }}
@@ -357,7 +232,6 @@ const Home = () => {
                             </Styled.QuestionWrapper>
                         </Col>
                     </Row>
-
                 </Container>
             </Styled.QuestionSection >
 

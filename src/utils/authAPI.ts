@@ -26,10 +26,3 @@ export const postOTP = async (email: string, otp: string) => {
         `/api/auth/verify-otp?email=${encodeURIComponent(email)}&otp=${encodeURIComponent(otp)}`,
     );
 };
-
-export const loginGoogle = async (tokenObj: { credential: string }) => {
-    const body = {
-        idToken: tokenObj.credential,
-    };
-    return post('/api/auth/login-with-google', body);
-};

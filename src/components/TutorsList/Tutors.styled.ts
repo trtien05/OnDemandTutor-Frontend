@@ -3,6 +3,8 @@ import { theme } from '../../themes';
 import { List, Row } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
+import { FaRegHeart, FaStar } from 'react-icons/fa';
+import { Link } from 'react-router-dom';
 
 export const FilterSection = styled.section`
     border-radius: 0px 0px 100px 100px;
@@ -12,6 +14,7 @@ export const FilterSection = styled.section`
 export const FilterWrapper = styled.div``;
 export const TutorItem = styled(List.Item)`
     &.ant-list-item {
+        display: block;
         border-block-end: none;
     }
 `;
@@ -20,7 +23,6 @@ export const BoxHover = styled.div`
 `;
 
 export const BestTutorItem = styled(Row)`
-    cursor: pointer;
     background-color: #fff;
     border-radius: 50px;
     & .ant-list-item {
@@ -40,7 +42,7 @@ export const BestTutorImage = styled.img`
 `;
 
 export const BestTutorContent = styled.div`
-    margin-top: 30px;
+    margin: 30px 0;
     color: ${theme.colors.primary};
 `;
 
@@ -56,7 +58,6 @@ export const BestTutorName = styled(Title)`
 `;
 export const BestTutorEducation = styled.div`
     display: flex;
-    justify-content: space-between;
     margin: 10px 0;
 `;
 export const BestTutorEducationBachelorImage = styled.img`
@@ -84,16 +85,47 @@ export const BestTutorDescription = styled(Paragraph)`
 export const BestTutorBooking = styled.div`
     display: flex;
     flex-direction: column;
-    padding: 30px 30px 0 30px;
-    gap: 5px;
+    margin: 30px 10px 0 0;
+    gap: 10px;
 
     ${({ theme }) => theme.breakpoints.down('md')} {
         padding: 30px;
+        margin: 0;
     }
 `;
 export const BookingInformation = styled.div`
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
+    align-items: center;
+    margin-bottom: 10px;
+`;
+export const IconStyleStart = styled(FaStar)`
+    width: 31px;
+    height: 31px;
+    color: #ffcc4d;
+    marginright: 5px;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        width: 25px;
+        height: 25px;
+    }
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        width: 18px;
+        height: 18px;
+    }
+`;
+export const IconStyleHeart = styled(FaRegHeart)`
+    width: 18px;
+    height: 18px;
+    color: #b94ab7;
+    margintop: 10px;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        width: 25px;
+        height: 25px;
+    }
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        width: 18px;
+        height: 18px;
+    }
 `;
 export const BookingRatingAndPrice = styled(Title)`
     &.ant-typography {
@@ -102,8 +134,14 @@ export const BookingRatingAndPrice = styled(Title)`
         font-weight: 700;
         line-height: 1.25;
         margin: 0;
+        ${({ theme }) => theme.breakpoints.down('xl')} {
+            font-size: 20px;
+        }
+        ${({ theme }) => theme.breakpoints.down('lg')} {
+            font-size: 18px;
+        }
         ${({ theme }) => theme.breakpoints.down('md')} {
-            font-size: 25px;
+            font-size: 14px;
         }
     }
 `;
@@ -160,17 +198,17 @@ export const TurtorVideo = styled.div<{ translate?: number }>`
     justify-content: center;
     align-items: center; /* Chú ý là "align-items", không phải "align-item" */
     background: #fff;
-    height: 171px;
+    height: 200px;
     border-radius: 15px;
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 20px;
+    margin-bottom: 20px;
     transition: transform 0.3s ease;
     transform: translateY(${(props) => props.translate}px); /* Sử dụng template literals và props */
 `;
 
 export const TutorFilteredSection = styled.section`
     margin-top: 20px;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 `;
 export const TotalTutorAvaiable = styled(Title)`
     &.ant-typography {

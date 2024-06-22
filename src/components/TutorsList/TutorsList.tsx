@@ -52,7 +52,6 @@ const TutorsList: React.FC<{ list: Tutor[], initLoading: boolean }> = (props) =>
                       style={{ 'borderRadius': '12px' }}
                       src={getEmbedUrl(hoveredTutor.videoIntroductionLink)}
                       title="YouTube video player"
-                      frameBorder="0"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
                     ></iframe>

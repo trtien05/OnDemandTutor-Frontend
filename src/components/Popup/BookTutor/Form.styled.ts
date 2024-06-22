@@ -1,7 +1,7 @@
 import { Form, Typography, Checkbox, Input, InputNumber, Button, Card } from 'antd';
 import styled from 'styled-components';
 
-import { theme } from '../../themes';
+import { theme } from '../../../themes/index';
 
 const { Title, Text } = Typography;
 const { TextArea } = Input;
@@ -54,6 +54,7 @@ export const FormDescription = styled(Text)`
     text-align: left;
 
     column-gap: 8px;
+    margin-top: -8px;
     margin-bottom: 24px;
     color: ${theme.colors.textPrimary};
     font-size: 1.5rem;
@@ -61,7 +62,7 @@ export const FormDescription = styled(Text)`
 
 export const CommentInput = styled(TextArea)`
     &.ant-input-affix-wrapper {
-        border-radius: 30px;
+        border-radius: 2px;
         border: 1px solid ${theme.colors.borderInput};
         background: ${theme.colors.white};
     }
@@ -74,7 +75,7 @@ export const CommentInput = styled(TextArea)`
 `;
 export const NumberInput = styled(InputNumber)`
     &.ant-input-affix-wrapper {
-        border-radius: 30px;
+        border-radius: 2px;
         border: 1px solid ${theme.colors.borderInput};
         background: ${theme.colors.white};
     }
@@ -113,12 +114,6 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
         }
     }
 
-    &.ant-form-item:last-child {
-        ${({ theme }) => theme.breakpoints.down('xs')} {
-            margin-top: 28px;
-        }
-    }
-
     & .ant-form-item-row {
         position: relative;
         width: 100%;
@@ -144,21 +139,12 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
             }
         }
     }
-    & .ant-form-item-label {
-        top: -2px;
-        left: 0px;
-        padding: 0 10px;
-        background-color: ${theme.colors.white};
-
-        & label {
-            color: ${theme.colors.primary};
-            font-size: 1.6rem;
-            font-weight: 400;
-        }
-    }
 
     & .ant-form-item-control {
         position: relative;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
         & .ant-form-item-control-input + div {
             position: relative;
             top: 100%;
@@ -166,13 +152,11 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
         }
     }
 
-    & .ant-select-outlined,
     & .ant-select-selector,
     & .ant-select,
     & .ant-picker {
         height: 44px;
         text-align: left;
-        border-radius: 8px;
     }
 
     & .ant-input,
@@ -193,7 +177,7 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
         margin-top: 2px;
         margin-bottom: 5px;
         color: ${theme.colors.error};
-        font-size: 1.4rem;
+        font-size: 1.2rem;
         text-align: left;
         line-height: 1.6;
     }

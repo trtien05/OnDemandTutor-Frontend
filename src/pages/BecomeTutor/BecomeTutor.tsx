@@ -1,7 +1,7 @@
 import { Steps, Typography, TimePicker, notification, message } from "antd";
 import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
-import dayjs from 'dayjs'
+import dayjs, { Dayjs } from 'dayjs'
 import Form1 from "./Form1";
 import Form2 from "./Form2";
 import MultipleSteps from "./MultipleSteps";
@@ -13,12 +13,14 @@ import {
   addEducations, updateDetails, addCertificates,
   addTutorDescription, becomeTutor, addAvailableSchedule,
   getAccountById
-} from "../../api/tutorRegisterAPI";
+} from "../../utils/tutorRegisterAPI";
 import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../utils/UploadImg";
 import { useNavigate } from "react-router-dom";
-import config from "../../config";
-import moment from "moment";
+import * as Styled from './BecomeTutor.style'
+import Container from "../../components/Container";
+import { AiOutlineCheckCircle, AiOutlineExclamationCircle } from "react-icons/ai";
+
 const { Title } = Typography;
 
 const BecomeTutor = () => {
@@ -35,7 +37,6 @@ const BecomeTutor = () => {
   ]);
   const navigate = useNavigate();
 
-  const [messageApi, contextHolder] = message.useMessage();
   const [certificate, setCertificate] = useState<FieldType[][]>([
     certificateForm,
   ]);
@@ -45,15 +46,13 @@ const BecomeTutor = () => {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
-  const { user, role } = useAuth();
+  const { user } = useAuth();
+
   //Check User is it Student 
   useEffect(() => {
-    if (role !== 'STUDENT') {
-      navigate(config.routes.public.login);
-    } else {
-      setAccountId(user?.id);
-    }
+    setAccountId(user?.id);
   }, [user]);
+  // setAccountId(user?.id);
 
   async function fetchAccount(tutorId: number) {
     try {
@@ -123,29 +122,50 @@ const BecomeTutor = () => {
     });
   };
 
-  const getDisabledHours = (day: string, index: number, form: FormState) => {
+  const getDisabledTime = (day: string, index: number, form: FormState) => {
     const existingTimes = form[day]
       .filter((_, i) => i !== index)
       .map(field => field.initialValue)
-      .filter(Boolean);
+      .filter(Boolean) as [Dayjs, Dayjs][];
 
-    let latestEndHour = -1;
+    let latestEndTime: Dayjs | null = null;
 
     existingTimes.forEach(timeslot => {
       if (timeslot && timeslot[1]) {
-        const endHour = timeslot[1].hour();
-        if (endHour > latestEndHour) {
-          latestEndHour = endHour;
+        if (!latestEndTime || timeslot[1].isAfter(latestEndTime)) {
+          latestEndTime = timeslot[1];
         }
       }
     });
 
     return {
       disabledHours: () => {
-        if (latestEndHour === -1) return [];
-        return Array.from({ length: latestEndHour + 1 }, (_, i) => i);
-      }
+        const hours = Array.from({ length: 24 }, (_, i) => i);
+        if (!latestEndTime) {
+          return hours.filter(hour => hour < 5 || hour > 22);
+        } else {
+          return hours.filter(hour => hour < 5 || hour > 22 || hour < latestEndTime.hour());
+        }
+      },
+      disabledMinutes: (selectedHour: number) => {
+        const minutes = Array.from({ length: 60 }, (_, i) => i);
+        if (!latestEndTime || selectedHour > latestEndTime.hour()) {
+          return minutes.filter(minute => minute % 15 !== 0);
+        }
+        if (selectedHour === latestEndTime.hour()) {
+          return minutes.filter(minute => minute < latestEndTime.minute() || minute % 15 !== 0);
+        }
+        return minutes.filter(minute => minute % 15 !== 0);
+      },
     };
+  };
+
+  const validateRange = (_: unknown, value: [Dayjs, Dayjs]) => {
+    const [start, end] = value;
+    if (end.diff(start, 'minutes') > 240 || end.diff(start, 'hours') < 1) {
+      return Promise.reject('The time range cannot exceed 4 hours');
+    }
+    return Promise.resolve();
   };
 
 
@@ -160,18 +180,20 @@ const BecomeTutor = () => {
           required: true,
           message: 'Please select your timeslot for this day.',
         },
+        {
+          validator: validateRange,
+          message: 'A timeslot must be at least 1 hour and must not exceed 4 hours.',
+        },
       ],
       children: (
         <TimePicker.RangePicker
           size='small'
-          format={'HH'}
+          format={'HH:mm'}
+          minuteStep={15}
           value={initialValue}
-          id={{
-            start: `${day}_${index}_startTime`,
-            end: `${day}_${index}_endTime`,
-          }}
+          placeholder={['From', 'To']}
           onChange={(times) => handleInputChange(day, index, times)}
-          disabledTime={() => getDisabledHours(day, index, timeslotForm)}
+          disabledTime={() => getDisabledTime(day, index, timeslotForm)}
           style={{ width: `100%` }} />
       ),
       $width: `90%`,
@@ -189,9 +211,7 @@ const BecomeTutor = () => {
   //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
-    if (accountId) {
-      saveBecomeTutor(accountId);
-    }
+
     next();
   };
 
@@ -218,9 +238,12 @@ const BecomeTutor = () => {
     setTimePriceValues(values);
     if (accountId) {
       await saveData(values, accountId);
-
+      saveBecomeTutor(accountId);
     }
-    messageApi.success('Your Form has been Sent.');
+    api.success({
+      message: 'Success',
+      description: 'Your form has been Sent',
+    });
     setTimeout(() => {
       navigate('/');
     }, 2000);
@@ -508,7 +531,7 @@ const BecomeTutor = () => {
       fullName: formData[`fullName`],
       phoneNumber: formData[`phoneNumber`],
       email: formData[`email`],
-      dayOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
+      dateOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
       gender: formData[`gender`],
       address: formData[`address`],
       avatarUrl: url,
@@ -701,12 +724,10 @@ const BecomeTutor = () => {
       // Check for timeslots for the current day
       for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
         const timeslot = formData[`${day}_timeslot_${i}`];
+        console.log(timeslot);
         if (timeslot && timeslot.length === 2) {
-          const start = moment().set({ hour: i, minute: 0, second: 0 });
-          const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
-          const startTime = start.format("HH:mm:ss");
-          console.log(startTime);
-          console.log(endTime);
+          const startTime = timeslot[0].format("HH:mm:ss");
+          const endTime = timeslot[1].format("HH:mm:ss");
 
           jsonResult.push({
             startTime,
@@ -724,40 +745,52 @@ const BecomeTutor = () => {
   //----------------------------------------------------------------------------------------
   return (
     <>
-      <div style={{ background: `white`, padding: `3% ` }}>
-        {contextHolder}
-        <Title
-          style={{
-            color: `${theme.colors.primary}`,
-            textTransform: `capitalize`,
-            textAlign: `center`
-          }}
-        >
-          Become our tutor!
-        </Title>
-        <div
-          style={{
-            margin: `5%`,
-          }}
-        >
-          {/* disabled={isDisabled(0)} */}
-          <Steps current={current} onChange={goTo}>
-            <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
-            <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
-            <Steps.Step
-              disabled={isDisabled(2)}
-              title="Certification"
-            ></Steps.Step>
-            <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
-            <Steps.Step
-              disabled={isDisabled(4)}
-              title="Availability & Pricing"
-            ></Steps.Step>
-          </Steps>
+      {user?.role === "STUDENT" ? (
+        <div style={{ background: `white`, padding: `3%` }}>
+          {contextHolderNotification}
+          <Title
+            style={{
+              color: `${theme.colors.primary}`,
+              textTransform: `capitalize`,
+              textAlign: `center`,
+            }}
+          >
+            Become our tutor!
+          </Title>
+          <div style={{ margin: `5%` }}>
+            <Steps current={current} onChange={goTo}>
+              <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
+              <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
+              <Steps.Step disabled={isDisabled(2)} title="Certification"></Steps.Step>
+              <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
+              <Steps.Step disabled={isDisabled(4)} title="Availability & Pricing"></Steps.Step>
+            </Steps>
+          </div>
+          {step}
         </div>
-
-        {step}
-      </div>
+      ) : user?.role === "TUTOR" && user?.status === "PROCESSING" ? (
+        <Styled.CheckSection>
+          <Container>
+            <Styled.CheckInner>
+              <Styled.CheckErrorMsg>
+                <AiOutlineExclamationCircle size={80} color={theme.colors.yellow} />
+                <Title level={2}>Your Tutor Form Is Under Processing</Title>
+              </Styled.CheckErrorMsg>
+            </Styled.CheckInner>
+          </Container>
+        </Styled.CheckSection>
+      ) : user?.role === "TUTOR" && user?.status === "ACTIVE" ? (
+        <Styled.CheckSection>
+          <Container>
+            <Styled.CheckInner>
+              <Styled.CheckErrorMsg>
+                <AiOutlineCheckCircle size={80} color={theme.colors.success} />
+                <Title level={2}>You Are Our Tutor</Title>
+              </Styled.CheckErrorMsg>
+            </Styled.CheckInner>
+          </Container>
+        </Styled.CheckSection>
+      ) : null}
     </>
   );
 };
