@@ -239,7 +239,8 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                 </FormStyled.FormItem>
 
             <FormStyled.ButtonDiv style={{justifyContent:`flex-end`}}>
-                <Button type="primary" htmlType="submit">
+                <Button type="default" htmlType="submit" 
+                style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px` }}>
                     Save profile
                 </Button>
             </FormStyled.ButtonDiv>

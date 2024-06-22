@@ -10,7 +10,7 @@ import { uploadImage } from "../../../utils/UploadImg";
 
 interface EducationProps {
     tutorId: number;
-    lastIndex: number;
+    lastIndex?: number;
     isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
@@ -92,7 +92,8 @@ const EducationForm: React.FC<EducationProps> = (props) => {
         urls.push(url);
     }
         for (let i = 0; i < numberOfEntries1; i++) {
-            diplomaUploadPromises.push(uploadImage(tutorId, values[`diplomaVerification_${i}`][0].originFileObj, 'diploma', lastIndex + i, handleChange));
+            if (lastIndex) 
+                diplomaUploadPromises.push(uploadImage(tutorId, values[`diplomaVerification_${i}`][0].originFileObj, 'diploma', lastIndex ? lastIndex + i : i, handleChange));
         }
         await Promise.all(diplomaUploadPromises);
         return urls;
@@ -177,8 +178,8 @@ const EducationForm: React.FC<EducationProps> = (props) => {
     return (
         <>
             {contextHolder}
-            <Button type="primary" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width:`150px` }}>
-                Add Diploma
+            <Button type="default" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width:`150px` }}>
+                Add diploma
             </Button>
             <Modal
                 centered
@@ -199,7 +200,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
                         form='educationForm'
                         style={{ width: '45%' }}
                     >
-                        Send
+                        Save
                     </Button>
                 </FormStyled.ButtonDiv>,]}
                 styles={

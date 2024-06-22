@@ -48,9 +48,6 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
         } finally {
             setLoading(false);
             setIsFormOpen(false);
-            api.success({
-                message: 'Refresh to see your newly changed schedule',
-            })
         }
 
     };
@@ -60,14 +57,6 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
     const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
     const screens = useBreakpoint()
-    const validateIntegerInRange = (_: unknown, value: number) => {
-        const parsedValue = Number(value);
-        if (!(Number.isInteger(parsedValue)) || value < 1 || value > 8) {
-            return Promise.reject("Please enter a valid integer between 1 and 8");
-        }
-        return Promise.resolve();
-    };
-
     interface VisibilityState {
         [key: string]: boolean;
     }
@@ -233,7 +222,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
           return responseData;
         } catch (error: any) {
           api.error({
-            message: 'Lỗi',
+            message: 'Error',
             description: error.response ? error.response.data : error.message,
           });
         }
@@ -268,7 +257,8 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
     return (
         <>
             {contextHolder}
-            <Button type="primary" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px`, margin:`10px` }}>
+            <Button type="default" onClick={showModal} 
+            style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px`, margin:`10px` }}>
                 Edit schedule
             </Button>
             <Modal
@@ -291,7 +281,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                         form='schedule'
                         style={{ marginRight: '2%', width: '45%' }}
                     >
-                        Send
+                        Save
                     </Button>
                 </FormStyled.ButtonDiv>,]}
                 styles={
@@ -311,7 +301,9 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                     onFinish={handleOk}
                 >
                     <FormStyled.FormContainer>
-                        <FormStyled.FormTitle level={1}>Availability</FormStyled.FormTitle>
+                        <FormStyled.FormTitle level={1} style={{margin:`auto`}}>
+                            Availability
+                            </FormStyled.FormTitle>
                         <FormStyled.FormDescription style={{ flexDirection: `column` }}><br />
                             <span style={{ fontWeight: `600` }}>Each timeslot represents a study session between you and the student. </span>
                         </FormStyled.FormDescription>
@@ -364,22 +356,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                                     )}
                                 </FormStyled.TimeslotStyle>
                             ))}
-                            <FormStyled.FormItem
-                                key='noOfWeek'
-                                label='Number of weeks apply'
-                                name='noOfWeek'
-                                rules={[{
-                                    required: true,
-                                    message: 'You must insert in this field'
-                                }, {
-                                    validator: validateIntegerInRange,
-                                    message: 'Please enter a valid integer between 1 and 8'
-                                }]}
-                                $width={'100%'}
-                                validateFirst
-                            >
-                                <Input placeholder='Max 8' type='number' max='8' min='1' />
-                            </FormStyled.FormItem>
+                            
                         </FormStyled.FormContainer>
 
 

@@ -3,7 +3,7 @@ export interface Details {
     backgroundDescription: string;
     meetingLink: string;
     videoIntroductionLink: string;
-    subjects?: string[];
+    subjects: string[];
 }
 
 export interface Education {

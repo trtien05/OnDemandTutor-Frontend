@@ -81,7 +81,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
     };
 
     fetchSchedule();
-  }, update!=null?[update]: []);
+  }, [update]);
 
 
   const [start, setStart] = useState<string>('');
@@ -209,7 +209,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
 
   const restrictedTime = !noRestricted
     ? {
-      minDate: today,
       maxDate: next7Days,
     }
     : {};
@@ -223,6 +222,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           style={{maxHeight: '500px'}}
           selectedDate={today}
           {...restrictedTime}
+          minDate={today}
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}

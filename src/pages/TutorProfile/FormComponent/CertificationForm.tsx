@@ -9,123 +9,125 @@ import { uploadImage } from "../../../utils/UploadImg";
 import { addCertificates } from "../../../utils/tutorRegisterAPI";
 
 interface CertProps {
-    tutorId: number;
-    lastIndex: number;
-    isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+  tutorId: number;
+  lastIndex?: number;
+  isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const CertificationForm: React.FC<CertProps> = (props) => {
-    const tutorId = props.tutorId;
-    const lastIndex = props.lastIndex;
-    const [api, contextHolder] = notification.useNotification({
-        top: 100,
-    });
-    const [isFormOpen, setIsFormOpen] = useState(false);
-    const [loading, setLoading] = useState(false);
-    const [form] = Form.useForm();
+  const tutorId = props.tutorId;
+  const lastIndex = props.lastIndex;
+  const [api, contextHolder] = notification.useNotification({
+    top: 100,
+  });
+  const [isFormOpen, setIsFormOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [form] = Form.useForm();
 
-    //---------------------------MODAL---------------------------
-    function showModal() {
-        setIsFormOpen(true);
-    };
+  //---------------------------MODAL---------------------------
+  function showModal() {
+    setIsFormOpen(true);
+  };
 
-    const handleCancel = () => {
-        setIsFormOpen(false);
-    };
+  const handleCancel = () => {
+    setIsFormOpen(false);
+  };
 
 
-    //--------------------------FORM--------------------
-    const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [certificate, setCertificate] = useState<FieldType[][]>([
-        certificateForm
-    ]);
+  //--------------------------FORM--------------------
+  const [fileList, setFileList] = useState<UploadFile[]>([]);
+  const [certificate, setCertificate] = useState<FieldType[][]>([
+    certificateForm
+  ]);
 
-    const normFile = (e: any) => {
-        console.log('Upload event:', e);
-        if (Array.isArray(e)) {
-            return e;
-        }
-        return e?.fileList;
-    };
-    const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
-        setFileList(newFileList);
-    };
-    // const handleFinish = (values: any) => {
-    //     onFinish({ ...values, fileList })
-    // }
+  const normFile = (e: any) => {
+    console.log('Upload event:', e);
+    if (Array.isArray(e)) {
+      return e;
+    }
+    return e?.fileList;
+  };
+  const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
+    setFileList(newFileList);
+  };
+  // const handleFinish = (values: any) => {
+  //     onFinish({ ...values, fileList })
+  // }
 
-    const handleAddCertificate = useCallback(() => {
-        const newFieldKey = certificate.length * certificateForm.length;
-        const newForm: FieldType[] = certificateForm.map((field) => ({
-            key: field.key + newFieldKey,
-            label: field.label,
-            name: field.name,
-            rules: field.rules,
-            initialValue: field.initialValue,
-            children: field.children,
-            $width: field.$width,
-        }));
-        setCertificate((prevForm) => [...prevForm, newForm]);
-        // console.log(form)
-    }, [certificate.length]);
+  const handleAddCertificate = useCallback(() => {
+    const newFieldKey = certificate.length * certificateForm.length;
+    const newForm: FieldType[] = certificateForm.map((field) => ({
+      key: field.key + newFieldKey,
+      label: field.label,
+      name: field.name,
+      rules: field.rules,
+      initialValue: field.initialValue,
+      children: field.children,
+      $width: field.$width,
+    }));
+    setCertificate((prevForm) => [...prevForm, newForm]);
+    // console.log(form)
+  }, [certificate.length]);
 
-    const handleRemoveCertificate = useCallback((formIndex: number) => {
-        if (certificate.length > 1) {
-            setCertificate((prevForm) =>
-                prevForm.filter((_, index) => index !== formIndex)
-            );
-        } else {
-            alert("At least one form must be present.");
-        }
-    },
-        [certificate.length]
-    );
+  const handleRemoveCertificate = useCallback((formIndex: number) => {
+    if (certificate.length > 1) {
+      setCertificate((prevForm) =>
+        prevForm.filter((_, index) => index !== formIndex)
+      );
+    } else {
+      alert("At least one form must be present.");
+    }
+  },
+    [certificate.length]
+  );
 
-    const uploadCertificate = async (values: any) => {
-        const urls: string[] = [];
-        const handleChange = (url: string) => {
-            urls.push(url);
-        }
-        //upload cert to firebase
-        const certificateUploadPromises = [];
-        const numberOfEntries2 = Math.max(
-            ...Object.keys(values)
-                .filter(key => key.includes('_'))
-                .map(key => {
-                    const lastPart = key.split('_').pop();
-                    return lastPart ? parseInt(lastPart, 10) : 0;
-                })
-        ) + 1;
-        for (let i = 0; i < numberOfEntries2; i++) {
-            certificateUploadPromises.push(uploadImage(tutorId, values[`certificateVerification_${i}`][0].originFileObj, 'certificate', lastIndex+i, handleChange));
-        }
-        
+  const uploadCertificate = async (values: any) => {
+    const urls: string[] = [];
+    const handleChange = (url: string) => {
+      urls.push(url);
+    }
+    //upload cert to firebase
+    const certificateUploadPromises = [];
+    const numberOfEntries2 = Math.max(
+      ...Object.keys(values)
+        .filter(key => key.includes('_'))
+        .map(key => {
+          const lastPart = key.split('_').pop();
+          return lastPart ? parseInt(lastPart, 10) : 0;
+        })
+    ) + 1;
+    for (let i = 0; i < numberOfEntries2; i++) {
+
+      certificateUploadPromises.push(uploadImage(tutorId, values[`certificateVerification_${i}`][0].originFileObj, 'certificate',
+        lastIndex ? lastIndex + i : i, handleChange));
+    }
+
     await Promise.all(certificateUploadPromises);
     return urls;
-    }
+  }
 
-const handleOk = async (values: any) => {
+  const handleOk = async (values: any) => {
     setLoading(true); // Set loading state to true when form is submitted
     try {
-        const urls: string[] = await uploadCertificate(values)
-        await saveCertificate(tutorId, values, urls)
-        api.success({
-            message: 'Your certificate has been sent',
-        });
-        props.isUpdate(true)
+      const urls: string[] = await uploadCertificate(values)
+      await saveCertificate(tutorId, values, urls)
+      api.success({
+        message: 'Your certificate has been sent',
+      });
+      props.isUpdate(true)
     } catch (error: any) {
-        api.error({
-            message: 'Error submitting certificate',
-            description: error.response.data.message || error.message || 'There was an issue with creating your booking. Please try again later.',
-        });
+      api.error({
+        message: 'Error submitting certificate',
+        description: error.response.data.message || error.message || 'There was an issue with creating your booking. Please try again later.',
+      });
     } finally {
-        setLoading(false);
-        setIsFormOpen(false);
+      setLoading(false);
+      setIsFormOpen(false);
     }
 
-};
-//-----------------------CONVERT FORM DATA-----------------------------
-async function saveCertificate(tutorId: number, formData: any, url: any) {
+  };
+  //-----------------------CONVERT FORM DATA-----------------------------
+  async function saveCertificate(tutorId: number, formData: any, url: any) {
 
     // Get JSON body from form data
     const jsonRequestBody = convertCertificateFormData(formData, url);
@@ -181,54 +183,40 @@ async function saveCertificate(tutorId: number, formData: any, url: any) {
   }
 
 
-return (
+  return (
     <>
-        {contextHolder}
-        <Button type="primary" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px` }}>
-            Add Certificates
-        </Button>
-        <Modal
-            centered
-            closable={false}
-            width={'700px'}
-            open={isFormOpen}
-            onOk={handleOk}
-            onCancel={handleCancel}
-            footer={[<FormStyled.ButtonDiv>
-                <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '45%' }}>
-                    Cancel
-                </Button>
-                <Button
-                    key="submit"
-                    type="primary"
-                    htmlType="submit"
-                    loading={loading}
-                    form='certificateForm'
-                    style={{ width: '45%' }}
-                >
-                    Send
-                </Button>
-            </FormStyled.ButtonDiv>,]}
-            styles={
-                {
-                    content: {
-                        borderRadius: '50px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
-                    }
-                }}
+      {contextHolder}
+      <Button type="default" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px` }}>
+        Add certificates
+      </Button>
+      <Modal
+        centered
+        closable={false}
+        width={'700px'}
+        open={isFormOpen}
+        onOk={handleOk}
+        onCancel={handleCancel}
+        footer={[]}
+        styles={
+          {
+            content: {
+              borderRadius: '50px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+            }
+          }}
+      >
+        <FormStyled.FormWrapper
+          id="certificateForm" //Adding the id to give the form a unique identifier, link the send button to the form
+          form={form}
+          labelAlign="left"
+          layout="vertical"
+          requiredMark="optional"
+          size="middle"
+          onFinish={handleOk}
         >
-            <FormStyled.FormWrapper
-                id="certificateForm" //Adding the id to give the form a unique identifier, link the send button to the form
-                form={form}
-                labelAlign="left"
-                layout="vertical"
-                requiredMark="optional"
-                size="middle"
-                onFinish={handleOk}
-            >
-                <FormStyled.FormContainer>
-                    <FormStyled.FormTitle level={1} style={{ margin: `auto` }}>Certificate</FormStyled.FormTitle>
+          <FormStyled.FormContainer>
+            <FormStyled.FormTitle level={1} style={{ margin: `auto` }}>Certificate</FormStyled.FormTitle>
 
-                    {certificate.map((certificateForm: FieldType[], formIndex: number) => (
+            {certificate.map((certificateForm: FieldType[], formIndex: number) => (
               <div>
                 {formIndex > 0 && (
                   <Button
@@ -240,56 +228,71 @@ return (
                   </Button>
                 )}
                 <FormStyled.FormContainer key={formIndex}>
-                
+
                   {certificateForm.map((field) => {
-                      const certificateVerificationProps = field.name.includes('certificateVerification')
+                    const certificateVerificationProps = field.name.includes('certificateVerification')
                       ? {
                         valuePropName: 'fileList',
                         getValueFromEvent: normFile,
                       }
                       : {};
-                    return(
-                    <FormStyled.FormItem
-                      key={field.key + '_' + formIndex}
-                      label={field.label}
-                      name={field.name + '_' + formIndex}
-                      rules={field.rules}
-                      $width={field.$width ? field.$width : "100%"}
-                      initialValue={field.initialValue}
-                      {...certificateVerificationProps}
-                      validateFirst
-                    >
-                      {field.name.includes(`certificateVerification`) &&
-                        (<Dragger
-                          name={field.name + "_" + formIndex}
-                          fileList={fileList}
-                          listType="picture"
-                          showUploadList={true}
-                          onChange={onChange}
-                          accept=".jpg,.jpeg,.png,.pdf"
-                          beforeUpload={() => false} // Prevent upload by return false
-                        >
-                          <p className="ant-upload-drag-icon">
-                          <InboxOutlined />
-                        </p>
-                        <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                        <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
-                        </Dragger>)}
-                      {field.children}
-                    </FormStyled.FormItem>
-                  )})}
+                    return (
+                      <FormStyled.FormItem
+                        key={field.key + '_' + formIndex}
+                        label={field.label}
+                        name={field.name + '_' + formIndex}
+                        rules={field.rules}
+                        $width={field.$width ? field.$width : "100%"}
+                        initialValue={field.initialValue}
+                        {...certificateVerificationProps}
+                        validateFirst
+                      >
+                        {field.name.includes(`certificateVerification`) &&
+                          (<Dragger
+                            name={field.name + "_" + formIndex}
+                            fileList={fileList}
+                            listType="picture"
+                            showUploadList={true}
+                            onChange={onChange}
+                            accept=".jpg,.jpeg,.png,.pdf"
+                            beforeUpload={() => false} // Prevent upload by return false
+                          >
+                            <p className="ant-upload-drag-icon">
+                              <InboxOutlined />
+                            </p>
+                            <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                            <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
+                          </Dragger>)}
+                        {field.children}
+                      </FormStyled.FormItem>
+                    )
+                  })}
                 </FormStyled.FormContainer>
               </div>
-              ))}
-                    <Button type="dashed" onClick={handleAddCertificate}>
+            ))}
+            <Button type="dashed" onClick={handleAddCertificate}>
               Add another certificate
             </Button>
-                </FormStyled.FormContainer>
-
-            </FormStyled.FormWrapper>
-        </Modal>
+          </FormStyled.FormContainer>
+          <FormStyled.ButtonDiv>
+            <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '45%' }}>
+              Cancel
+            </Button>
+            <Button
+              key="submit"
+              type="primary"
+              htmlType="submit"
+              loading={loading}
+              form='certificateForm'
+              style={{ width: '45%' }}
+            >
+              Save
+            </Button>
+          </FormStyled.ButtonDiv>
+        </FormStyled.FormWrapper>
+      </Modal>
     </>
-);
+  );
 };
 
 export default CertificationForm;

@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuth from '../../hooks/useAuth';
-import { getTutorDescription as getTutorDetail } from '../../utils/tutorAPI';
+import { getTutorById } from '../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
 import { Avatar, Col, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
@@ -12,12 +12,12 @@ import { getTutorEducation } from '../../utils/tutorAPI';
 import TableComponent from '../../components/Table/Table';
 import { getTutorCertification } from '../../utils/tutorAPI';
 import EducationForm from './FormComponent/EducationForm';
-import Schedule from '../../components/Schedule/Schedule';
 import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import { useNavigate } from 'react-router-dom';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
+import SubjectForm from './FormComponent/SubjectForm';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -40,16 +40,20 @@ const TutorProfile = () => {
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const navigate = useNavigate();
 
-    useEffect(() => {
-    },[user, role])
-
+    //---------------------FETCH DATA---------------------
     useEffect(() => {
         (async () => {
             try {
                 setLoading(true);
-        if (!user || !(role == "TUTOR")) return;
-                const { data } = await getTutorDetail(user.id);
-                await setTutorDetails(data);
+                if (!user || !(role == "TUTOR")) return;
+                const { data } = await getTutorById(user.id);
+                await setTutorDetails({
+                    backgroundDescription: data.backgroundDescription,
+                    teachingPricePerHour: data.teachingPricePerHour,
+                    meetingLink: data.meetingLink,
+                    videoIntroductionLink: data.videoIntroductionLink,
+                    subjects: data.subjects,
+                });
 
             } catch (error: any) {
                 api.error({
@@ -81,7 +85,7 @@ const TutorProfile = () => {
                         academicYear: `${education.startYear} - ${education.endYear}`,
                         verified: education.verified ? "Yes" : "No",
                     })));
-
+                
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -212,9 +216,28 @@ const TutorProfile = () => {
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
+                                                <Title level={3}>Teaching subject</Title>
+                                                <Style.ProfileInfoBox vertical gap={6}>
+                                                    <Skeleton loading={loading} paragraph={false}>
+                                                        <Flex wrap='wrap' justify='flex-start' 
+                                                            style={{paddingLeft:`10px`}}>
+                                                            {tutorDetails?.subjects.map(
+                                                                (subject, index) => (
+                                                                <Text key={index}>{subject}</Text>))}   
+                                                        </Flex>
+                                                    </Skeleton>
+                                               </Style.ProfileInfoBox>
+                                               <div style={{textAlign:`right`}}>
+                                             { user?.id && tutorDetails &&
+                                             <SubjectForm tutorId={user?.id} 
+                                                isUpdate={isUpdate}
+                                                tutorDetails={tutorDetails} />}
+                                                </div>
+                                            </Style.ProfileInfoItem>
+                                            <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>
                                                 {user?.id &&
-                                                    (<div style={{ textAlign: `center` }}>
+                                                    (<div style={{ textAlign: `right` }}>
                                                         <DisplaySchedule tutorId={user?.id} noRestricted={true} update={updateSchedule} />
                                                         <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
 
@@ -252,10 +275,11 @@ const TutorProfile = () => {
                                                         isUpdate={isUpdateEducation} />}
                                             </>) : <><TableComponent dataType={tableDisplay}
                                                 CertificateData={tutorCert} />
-                                                {user?.id && tutorCert?.length &&
+                                                {user?.id &&
                                                     <CertificationForm tutorId={user?.id}
                                                         lastIndex={tutorCert?.length}
-                                                        isUpdate={isUpdateCert} />}</>}
+                                                        isUpdate={isUpdateCert} />
+                                                }</>}
                                         </div>
                                     </Col>
                                 </Row>
