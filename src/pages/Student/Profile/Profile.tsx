@@ -31,13 +31,13 @@ import 'dayjs/locale/vi';
 import calendar from 'dayjs/plugin/calendar';
 
 import fallbackImage from '@/assets/images/fallback-img.png';
-import { getProfile, updateProfile } from '../../../api/profileAPI';
+import { getLearnStatistic, getProfile, updateProfile } from '../../../utils/profileAPI';
 import { Subject, Role, Gender } from '../../../utils/enums';
 
 // import InfiniteScroll from '@/components/InfiniteScroll';
 import { theme } from '../../../themes';
 import { useAuth, useDocumentTitle } from '../../../hooks';
-import { Student, Tutor, Appointment } from '../../Admin/UserDetail/UserDetail.type';
+import { Subjects, LearnStatistic } from '../../Admin/UserDetail/UserDetail.type';
 import Container from '../../../components/Container';
 import * as St from '../../Admin/UserDetail/UserDetail.styled';
 
@@ -46,6 +46,7 @@ import { ProfileContainer, ProfileWrapper } from './Profile.styled';
 import { UserType } from '../../../hooks/useAuth';
 import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles';
 import { uploadAvatar } from '../../../utils/UploadImg';
+import React from 'react';
 
 dayjs.locale('vi');
 dayjs.extend(calendar);
@@ -68,7 +69,7 @@ const Profile = () => {
     const [student, setStudent] = useState<UserType>();
     const file = useRef<UploadFile>();
     const [imageUrl, setImageUrl] = useState<string>('');
-    // const [appointmentHistory, setAppoinmentHistory] = useState<Appointment[]>([]);
+    const [learnStatistic, setLearnStatistic] = useState<LearnStatistic>();
     // const [appointmentFuture, setAppoinmentFuture] = useState<Appointment[]>([]);
     // const appointmentHistoryCurrentPage = useRef<number>(0);
     // const [usageHistory, setUsageHistory] = useState<UsageHistoryType[]>([]);
@@ -91,6 +92,7 @@ const Profile = () => {
 
                 form.setFieldsValue({
                     fullName: user.fullName,
+                    createAt: user.createAt,
                     dateOfBirth: user.dateOfBirth && dayjs(user.dateOfBirth),
                     gender: user.gender===1? Gender.MALE : Gender.FEMALE,
                     phoneNumber: user.phoneNumber,
@@ -112,17 +114,36 @@ const Profile = () => {
                 setLoading(false);
             }
         })();
-    }, [reload, user, form]);
+    }, [reload, user]);
+    useEffect(() => {
+        (async () => {
+            try {
+                setLoading(true);
 
+                if (!user) return;
+                // Log the API URL
+                console.log(`Fetching learn statistics for user ID: ${user.id}`);
+                const { data } = await getLearnStatistic(user.id);
+                setLearnStatistic(data);
+            } catch (error: any) {
+                api.error({
+                    message: 'Error',
+                    description: error.response ? error.response.data : error.message,
+                });
+            } finally {
+                setLoading(false);
+            }
+        })();
+    }, [reload, user]);
     const confirm = () => {
         modal.confirm({
             centered: true,
             title: 'Do you want to save changes?',
             content: 'Your profile will be updated with the new information.',
             icon: <ExclamationCircleOutlined />,
-            okText: 'Back',
-            onCancel: form.submit,
-            cancelText: 'Ok',
+            okText: 'Save',
+            onOk: form.submit,
+            cancelText: 'Discharge',
         });
     };
     const handleFileSizeCheck = (file:any) => {
@@ -158,7 +179,8 @@ const Profile = () => {
             if (!user?.id) return;
 
             // setLoading(true);
-
+            // Log the upload URL and user ID
+            console.log(`Uploading avatar for user ID: ${user.id}`);
             const url = await uploadAvatar(user.id, file as File, 'avatar');
             if (!url) return;
 
@@ -256,10 +278,7 @@ const Profile = () => {
                                                             size={125}
                                                         />
                                                     )} 
-                                                    {/* <Avatar
-                                                            icon={<UserOutlined />}
-                                                            size={125}
-                                                        /> */}
+                                                    
                                                 </Upload>
                                             </ImgCrop>
                                             
@@ -268,7 +287,7 @@ const Profile = () => {
                                             
                                             <Text>
                                                 {`Joined date: `}
-                                                {user?.createdAt ? dayjs(user.createdAt).format('DD/MM/YYYY') : ''}
+                                                {user?.createAt ? dayjs(user.createAt).format('DD/MM/YYYY') : ''}
                                             </Text>
 
                                             <St.CustomerInfoItem vertical gap={10}>
@@ -281,8 +300,8 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {/* {customer?.numberOfOrder || 0} */}
-                                                                    12
+                                                                    {learnStatistic?.totalLessons||0}
+                                                                    
                                                                 </Text>
                                                                 <Text>lessons</Text>
                                                             </Paragraph>
@@ -295,9 +314,7 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {/* {customer?.amountSpent.toLocaleString() ||
-                                                                        0} */}
-                                                                    2
+                                                                {learnStatistic?.totalLearntTutor||0}
                                                                 </Text>
                                                                 <Text>tutors</Text>
                                                             </Paragraph>
@@ -309,9 +326,7 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {/* {customer?.amountSpent.toLocaleString() ||
-                                                                        0} */}
-                                                                    IELTS, TOEIC, TOEFL
+                                                                {learnStatistic?.subjects.map((subjects:Subjects)=>subjects.subjectName).join(', ')||0}
                                                                 </Text>
                                                             </Paragraph>
                                                         </Flex>
@@ -421,10 +436,23 @@ const Profile = () => {
                                                     ) : (
                                                         component
                                                     );
+                                                    // return fieldComponents.current.length === 2 ? (
+                                                    //     <Flex gap={12} key={`half-${index}`}>
+                                                    //         {fieldComponents.current.map(
+                                                    //             (component, compIndex) => (
+                                                    //                 <React.Fragment key={`comp-${index}-${compIndex}`}>
+                                                    //                     {component}
+                                                    //                 </React.Fragment>
+                                                    //             ),
+                                                    //         )}
+                                                    //     </Flex>
+                                                    // ) : (
+                                                    //     component
+                                                    // );
                                                 })}
 
-                                                <Flex justify="flex-end">
-                                                    <Button type="primary" onClick={confirm}>
+                                                <Flex justify="flex-end" >
+                                                    <Button type="primary" onClick={confirm} style={{width:'150px', borderRadius:'25px'}}>
                                                         Save
                                                     </Button>
                                                 </Flex>

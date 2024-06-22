@@ -1,7 +1,7 @@
 import { Dayjs } from 'dayjs';
-import { get, post, put, remove } from '../utils/apiCaller';
+import { get, post, put, remove } from './apiCaller';
 
-import { Gender, Role } from '../utils/enums';
+import { Gender, Role } from './enums';
 import { RcFile } from 'antd/es/upload';
 
 interface UpdateAccount {
@@ -14,8 +14,9 @@ interface UpdateAccount {
     avatarUrl?: string;
 }
 
-export const getInfoUser = (accountId: number) => {
-    return get(`/account/info/${accountId}`);
+
+export const getLearnStatistic = (accountId: number) => {
+    return get(`api/appointments/${accountId}/learn-statistics`);
 };
 
 // export const getInfoCurrentUser = () => {

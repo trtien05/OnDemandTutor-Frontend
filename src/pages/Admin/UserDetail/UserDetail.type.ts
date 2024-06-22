@@ -51,4 +51,15 @@ export interface Appointment {
     studentId: number;
     timeslotIds: number[];
 }
+export interface Subjects{
+    id: number;
+    subjectName: string;
 
+}
+export interface LearnStatistic {
+    accountId: number;
+    totalLessons: number;
+    totalLearntTutor: number;
+    totalTaughtStudent: number;
+    subjects: Subjects[];
+}

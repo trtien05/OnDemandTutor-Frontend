@@ -79,7 +79,7 @@ export const CustomerInfoText = css`
 
 export const CustomerInfoBox = styled(Flex)`
     padding: 12px 20px;
-    border-radius: 6px;
+    border-radius: 15px;
     border: 1px solid ${theme.colors.secondary};
 
     & span.ant-typography {
