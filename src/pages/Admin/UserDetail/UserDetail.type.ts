@@ -42,15 +42,7 @@ export interface Student extends UserType {
     status: AccountStatus;
 }
 
-export interface Appointment {
-    id: number;
-    createdAt: string;
-    description: string | null;
-    status: AppointmentStatus;
-    tutorId: number;
-    studentId: number;
-    timeslotIds: number[];
-}
+
 export interface Subjects{
     id: number;
     subjectName: string;

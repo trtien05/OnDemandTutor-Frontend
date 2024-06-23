@@ -16,7 +16,7 @@ interface UpdateAccount {
 
 
 export const getLearnStatistic = (accountId: number) => {
-    return get(`/api/appointments/${accountId}/learn-statistics`);
+    return get(`/api/statistics/${accountId}/learn-statistics`);
 };
 
 // export const getInfoCurrentUser = () => {

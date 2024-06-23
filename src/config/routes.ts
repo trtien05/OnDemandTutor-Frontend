@@ -16,6 +16,7 @@ const routes = {
     },
     student: {
         profile: '/profile',
+        appointment: '/appointment',
         makePayment: '/make-payment',
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',

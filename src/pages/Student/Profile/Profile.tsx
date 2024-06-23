@@ -70,16 +70,9 @@ const Profile = () => {
     const file = useRef<UploadFile>();
     const [imageUrl, setImageUrl] = useState<string>('');
     const [learnStatistic, setLearnStatistic] = useState<LearnStatistic>();
-    // const [appointmentFuture, setAppoinmentFuture] = useState<Appointment[]>([]);
-    // const appointmentHistoryCurrentPage = useRef<number>(0);
-    // const [usageHistory, setUsageHistory] = useState<UsageHistoryType[]>([]);
-    // const appointmentFutureCurrentPage = useRef<number>(0);
     const [loading, setLoading] = useState<boolean>(false);
     const [reload, setReload] = useState<boolean>(false);
-    // const [date, setDate] = useState({
-    //     start: '1990/01',
-    //     end: '3000/12',
-    // });
+    
 
     useEffect(() => {
         (async () => {
@@ -100,8 +93,6 @@ const Profile = () => {
                     address: user.address,
                 });
                 console.log(user);
-                // setPurchaseHistory(data.purchaseHistory.slice(0, 9));
-                // setUsageHistory(data.usageHistory.slice(0, 9));
                 setStudent(user);
                 setImageUrl(user.avatarUrl);
             } catch (error: any) {
