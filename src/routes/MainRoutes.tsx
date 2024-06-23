@@ -8,8 +8,8 @@ import MakePayment from '../pages/Payment/MakePayment';
 import TutorDetail from '../pages/TutorDetail';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
-import { Navigate, useLocation } from 'react-router-dom';
-import cookieUtils from '../utils/cookieUtils';
+import ChatRoom from '../pages/ChatRoom';
+
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -34,7 +34,8 @@ const studentRoutes = {
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
-        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> }
+        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
+        { path: config.routes.student.chatRoom, element: <ChatRoom /> }
     ],
 };
 
