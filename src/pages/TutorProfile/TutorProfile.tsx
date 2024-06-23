@@ -114,6 +114,7 @@ const TutorProfile = () => {
                         issuedBy: certificate.issuedBy,
                         issuedYear: certificate.issuedYear,
                         verified: certificate.verified ? "Yes" : "No",
+                        subject: certificate.subject !== null?certificate.subject:"Other",
                     })));
 
             } catch (error: any) {
@@ -231,7 +232,9 @@ const TutorProfile = () => {
                                              { user?.id && tutorDetails &&
                                              <SubjectForm tutorId={user?.id} 
                                                 isUpdate={isUpdate}
-                                                tutorDetails={tutorDetails} />}
+                                                tutorDetails={tutorDetails} 
+                                                educationData={tutorEducation}
+                                                certificateData={tutorCert} />}
                                                 </div>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>

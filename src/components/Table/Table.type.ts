@@ -56,6 +56,11 @@ export const CertColumns: TableColumnsType<Certificate> = [
         sorter: (a, b) => a.certificateName.localeCompare(b.certificateName),
     },
     {
+        title: 'Related Subject',
+        dataIndex: 'subject',
+        sorter: (a, b) => a.subject.localeCompare(b.subject),
+    },
+    {
         title: 'Issued By',
         dataIndex: 'issuedBy',
         sorter: (a, b) => a.issuedBy.localeCompare(b.issuedBy),

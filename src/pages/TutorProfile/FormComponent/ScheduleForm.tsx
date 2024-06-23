@@ -54,6 +54,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
 
 
     //--------------------------FORM--------------------
+    const [timeslotAgreement, setTimeslotAgreement] = useState<boolean>(false)
     const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
     const screens = useBreakpoint()
@@ -66,25 +67,25 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
 
     const handleDayVisibility = (day: string, checked: boolean) => {
         setVisibilityForDay(day, checked);
-      }
-    
-      const handleAddTimeslot = (day: string) => {
+    }
+
+    const handleAddTimeslot = (day: string) => {
         setTimeslotForm(prevState => {
-          const newIndex = (prevState[day].length);
-          return {
-            ...prevState,
-            [day]: [...prevState[day], timeslotSelection(day, newIndex, null)],
-          };
+            const newIndex = (prevState[day].length);
+            return {
+                ...prevState,
+                [day]: [...prevState[day], timeslotSelection(day, newIndex, null)],
+            };
         });
-      }
-    
-    
-      const handleRemoveTimeslot = (day: string, formIndex: number) => {
+    }
+
+
+    const handleRemoveTimeslot = (day: string, formIndex: number) => {
         setTimeslotForm(prevState => ({
-          ...prevState,
-          [day]: prevState[day].filter((_, index) => index !== formIndex),
+            ...prevState,
+            [day]: prevState[day].filter((_, index) => index !== formIndex),
         }));
-      }
+    }
 
     const [visibility, setVisibility] = useState<VisibilityState>({
         'monday': true,
@@ -95,7 +96,6 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
         'saturday': true,
         'sunday': true,
     })
-    const [timeslotAgreement, setTimeslotAgreement] = useState<boolean>(false)
     const setVisibilityForDay = (day: string, value: boolean) => {
         setVisibility(prevState => ({ ...prevState, [day]: value }));
     };
@@ -206,59 +206,59 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
         console.log(jsonRequestBody);
         const noOfWeeks = formData[`noOfWeek`];
         try {
-    
-          // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-          const responseData = await updateSchedule(tutorId,noOfWeeks, jsonRequestBody);
-    
-          // Check response status
-          if (!api.success) {
-            throw new Error(`Error: ${responseData.statusText}`);
-          }
-    
-          // Get response data
-          console.log('Tutor available timeslots saved successfully:', responseData);
-    
-          // Return success response
-          return responseData;
+
+            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+            const responseData = await updateSchedule(tutorId, noOfWeeks, jsonRequestBody);
+
+            // Check response status
+            if (!api.success) {
+                throw new Error(`Error: ${responseData.statusText}`);
+            }
+
+            // Get response data
+            console.log('Tutor available timeslots saved successfully:', responseData);
+
+            // Return success response
+            return responseData;
         } catch (error: any) {
-          api.error({
-            message: 'Error',
-            description: error.response ? error.response.data : error.message,
-          });
+            api.error({
+                message: 'Error',
+                description: error.response ? error.response.data : error.message,
+            });
         }
-      }
-    
-      function convertTimeslotsToJSON(formData: any) {
+    }
+
+    function convertTimeslotsToJSON(formData: any) {
         const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
         const jsonResult: { startTime: any; endTime: any; dayOfWeek: number; }[] = [];
-    
+
         daysOfWeek.forEach((day, index) => {
-          // Check for timeslots for the current day
-          for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
-            const timeslot = formData[`${day}_timeslot_${i}`];
-            if (timeslot && timeslot.length === 2) {
-                const startTime = timeslot[0].format("HH:mm:ss");
-                const endTime = timeslot[1].format("HH:mm:ss");
-    
-              jsonResult.push({
-                startTime,
-                endTime,
-                dayOfWeek: index + 2, // Monday is 2, Sunday is 8
-              });
-    
+            // Check for timeslots for the current day
+            for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
+                const timeslot = formData[`${day}_timeslot_${i}`];
+                if (timeslot && timeslot.length === 2) {
+                    const startTime = timeslot[0].format("HH:mm:ss");
+                    const endTime = timeslot[1].format("HH:mm:ss");
+
+                    jsonResult.push({
+                        startTime,
+                        endTime,
+                        dayOfWeek: index + 2, // Monday is 2, Sunday is 8
+                    });
+
+                }
             }
-          }
         });
-    
+
         return jsonResult;
-      }
+    }
 
 
     return (
         <>
             {contextHolder}
-            <Button type="default" onClick={showModal} 
-            style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px`, margin:`10px` }}>
+            <Button type="default" onClick={showModal}
+                style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px`, margin: `10px` }}>
                 Edit schedule
             </Button>
             <Modal
@@ -269,7 +269,9 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                 onOk={handleOk}
                 onCancel={handleCancel}
                 footer={[<FormStyled.ButtonDiv>
-                    <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '45%' }}>
+                    <Button key="Cancel" type="default"
+                        onClick={handleCancel}
+                        style={{ marginRight: '5%', width: '45%' }}>
                         Cancel
                     </Button>
                     <Button
@@ -301,9 +303,9 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                     onFinish={handleOk}
                 >
                     <FormStyled.FormContainer>
-                        <FormStyled.FormTitle level={1} style={{margin:`auto`}}>
+                        <FormStyled.FormTitle level={1} style={{ margin: `auto` }}>
                             Availability
-                            </FormStyled.FormTitle>
+                        </FormStyled.FormTitle>
                         <FormStyled.FormDescription style={{ flexDirection: `column` }}><br />
                             <span style={{ fontWeight: `600` }}>Each timeslot represents a study session between you and the student. </span>
                         </FormStyled.FormDescription>
@@ -356,7 +358,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                                     )}
                                 </FormStyled.TimeslotStyle>
                             ))}
-                            
+
                         </FormStyled.FormContainer>
 
 

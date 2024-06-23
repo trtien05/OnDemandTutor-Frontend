@@ -19,6 +19,7 @@ export interface Education {
 export interface Certificate {
     id: number;
     certificateName: string;
+    subject: string;
     description: string;
     issuedBy: string;
     issuedYear: number;
