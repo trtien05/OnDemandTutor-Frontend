@@ -66,8 +66,6 @@ const Profile = () => {
     const [modal, contextHolderModal] = Modal.useModal();
     const [form] = Form.useForm();
     const fieldComponents = useRef<JSX.Element[]>([]);
-    const [student, setStudent] = useState<UserType>();
-    const file = useRef<UploadFile>();
     const [imageUrl, setImageUrl] = useState<string>('');
     const [learnStatistic, setLearnStatistic] = useState<LearnStatistic>();
     const [loading, setLoading] = useState<boolean>(false);
@@ -84,7 +82,6 @@ const Profile = () => {
                 
                 form.setFieldsValue({
                     fullName: user.fullName,
-                    createAt: user.createAt,
                     dateOfBirth: user.dateOfBirth && dayjs(user.dateOfBirth),
                     gender: user.gender===1? Gender.MALE : Gender.FEMALE,
                     phoneNumber: user.phoneNumber,
@@ -92,8 +89,7 @@ const Profile = () => {
                     email: user.email,
                     address: user.address,
                 });
-                console.log(user);
-                setStudent(user);
+                // console.log(user);
                 setImageUrl(user.avatarUrl);
             } catch (error: any) {
                 api.error({
@@ -113,8 +109,8 @@ const Profile = () => {
                 setLoading(true);
 
                 if (!user) return;
-                // Log the API URL
-                console.log(`Fetching learn statistics for user ID: ${user.id}`);
+                
+                
                 const { data } = await getLearnStatistic(user.id);
                 setLearnStatistic(data);
             } catch (error: any) {
@@ -122,7 +118,6 @@ const Profile = () => {
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
-                console.error(`get learn statistic: ${error}`);
             } finally {
                 setLoading(false);
             }
@@ -171,10 +166,6 @@ const Profile = () => {
 
         try {
             if (!user?.id) return;
-
-            // setLoading(true);
-            // Log the upload URL and user ID
-            console.log(`Uploading avatar for user ID: ${user.id}`);
             const url = await uploadAvatar(user.id, file as File, 'avatar');
             if (!url) return;
 
@@ -185,7 +176,6 @@ const Profile = () => {
                 message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
-            console.error(`handle upload avatar: ${error}`);
         } finally {
             // setLoading(false);
         }
@@ -321,7 +311,7 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                {learnStatistic?.subjects.map((subjects:Subjects)=>subjects.subjectName).join(', ')||0}
+                                                                {learnStatistic?.totalSubjects.map((subjects:Subjects)=>subjects.subjectName).join(', ')||0}
                                                                 </Text>
                                                             </Paragraph>
                                                         </Flex>
@@ -339,8 +329,7 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {/* {customer?.numberOfOrder || 0} */}
-                                                                    12
+                                                                {learnStatistic?.thisMonthLessons||0}
                                                                 </Text>
                                                                 <Text>lessons</Text>
                                                             </Paragraph>
@@ -353,9 +342,7 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {/* {customer?.amountSpent.toLocaleString() ||
-                                                                        0} */}
-                                                                    2
+                                                                {learnStatistic?.thisMonthTutor||0}
                                                                 </Text>
                                                                 <Text>tutors</Text>
                                                             </Paragraph>
@@ -367,9 +354,7 @@ const Profile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {/* {customer?.amountSpent.toLocaleString() ||
-                                                                        0} */}
-                                                                    IELTS, TOEIC, TOEFL
+                                                                {learnStatistic?.thisMonthSubjects.map((subjects:Subjects)=>subjects.subjectName).join(', ')||0}
                                                                 </Text>
                                                             </Paragraph>
                                                         </Flex>
@@ -431,19 +416,6 @@ const Profile = () => {
                                                     ) : (
                                                         component
                                                     );
-                                                    // return fieldComponents.current.length === 2 ? (
-                                                    //     <Flex gap={12} key={`half-${index}`}>
-                                                    //         {fieldComponents.current.map(
-                                                    //             (component, compIndex) => (
-                                                    //                 <React.Fragment key={`comp-${index}-${compIndex}`}>
-                                                    //                     {component}
-                                                    //                 </React.Fragment>
-                                                    //             ),
-                                                    //         )}
-                                                    //     </Flex>
-                                                    // ) : (
-                                                    //     component
-                                                    // );
                                                 })}
 
                                                 <Flex justify="flex-end" >

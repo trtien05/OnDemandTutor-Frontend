@@ -53,5 +53,9 @@ export interface LearnStatistic {
     totalLessons: number;
     totalLearntTutor: number;
     totalTaughtStudent: number;
-    subjects: Subjects[];
+    totalSubjects: Subjects[];
+    thisMonthLessons: number;
+    thisMonthTutor: number;
+    thisMonthStudent: number;
+    thisMonthSubjects: Subjects[];
 }
