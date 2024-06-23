@@ -34,6 +34,12 @@ export const ScheduleWrapper = styled.div`
     text-align: center !important;
     padding: 0 !important;
     margin: 0 !important;
+
+    .e-toolbar-left .e-next,
+    .e-toolbar-left .e-prev {
+      display: none !important;
+    }
+
   }
 
   .e-schedule .e-header-cells .e-header-date,

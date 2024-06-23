@@ -211,7 +211,8 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
       <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          style={{maxHeight: '300px'}}
+          // style={{maxHeight: '300px'}}
+          height= '300px'
           selectedDate={today}
           minDate={today}
           maxDate={next7Days}
