@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Card, Tabs, Button, Rate, Skeleton, Row, Col, List } from "antd";
+import { Card, Tabs, Button, Rate, Skeleton, Row, Col, List, Avatar } from "antd";
 import { useDocumentTitle } from "../../hooks";
-import { getTutorById, getTutorReviews, getTutorEducation } from "../../utils/tutorAPI";
+import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import Title from "antd/es/typography/Title";
@@ -13,6 +13,7 @@ import iconPerson from "../../assets/images/image14.png";
 import iconBachelor from "../../assets/images/image13.png";
 import Schedule from "../../components/Schedule/Schedule";
 import BookTutor from "../../components/Popup/BookTutor";
+import { UserOutlined } from "@ant-design/icons";
 
 const { TabPane } = Tabs;
 
@@ -36,8 +37,10 @@ interface Education {
 }
 
 interface Certification {
-  nameCertificate?: string;
-  startYear?: number;
+  id?: number;
+  certificateName?: string;
+  issuedYear?: number;
+  issuedBy?: number;
   subject?: string;
 }
 
@@ -82,7 +85,7 @@ const TutorDetail: React.FC = () => {
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
   const [reviews, setReviews] = useState<Reviews[]>([]);
-  const [educations, setEducations] = useState<Education | null>(null);
+  const [educations, setEducations] = useState<Education[]>([]);
   const [certification, setCertification] = useState<Certification[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
@@ -103,12 +106,13 @@ const TutorDetail: React.FC = () => {
 
         //Fetch Education Data
         const educationResponse = await getTutorEducation(tutorId);
-        const educationArray: Education[] = educationResponse.data;
-        if (educationArray.length > 0) {
-          setEducations(educationArray[0]);
-        }
-        // console.log(educationResponse.data);
-        // setEducations(educationResponse.data)
+        setEducations(educationResponse.data);
+
+
+        //Fetch Certificate Data
+        const cetificateResponse = await getTutorCertification(tutorId);
+        setCertification(cetificateResponse.data);
+
 
       } catch (err) {
         setError("Failed to fetch tutor details");
@@ -161,22 +165,51 @@ const TutorDetail: React.FC = () => {
             <Col lg={12} md={12} sm={12} xs={24}>
               <Styled.TutorInfoCard>
                 <Col>
-                  <Styled.TutorImage src={tutor.avatarUrl || '/default-avatar.png'} alt={tutor.fullName} />
+                  {tutor.avatarUrl ? (
+                    <Avatar
+                      src={tutor.avatarUrl}
+                      style={{
+                        width: '210px',
+                        height: '210px',
+                        borderRadius: '50px',
+                        marginRight: '20px'
+
+                      }}
+                    />
+                  ) : (
+                    <Avatar
+                      icon={<UserOutlined />}
+                      style={{
+                        width: '210px',
+                        height: '210px',
+                        borderRadius: '25px',
+                        marginRight: '20px'
+
+                      }}
+                    />
+                  )}
                 </Col>
                 <Col>
                   <Styled.TutorDetails>
                     <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
                     <Styled.BestTutorEducation>
                       <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                      {educations && (
-                        <Styled.BestTutorEducationBachelor>{educations.majorName}</Styled.BestTutorEducationBachelor>
-                      )}
+                      {educations.map((education, index) => (
+                        <React.Fragment key={education.id}>
+                          <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
+                          {index < educations.length - 1 && ', '}
+                        </React.Fragment>
+                      ))}
+
                     </Styled.BestTutorEducation>
                     <Styled.BestTutorEducation>
                       <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                      {educations && (
-                        <Styled.BestTutorEducationBachelor>{educations.degreeType}</Styled.BestTutorEducationBachelor>
-                      )}
+                      {educations.map((education, index) => (
+                        <React.Fragment key={education.id}>
+                          <Styled.BestTutorEducationBachelor>{education.specialization}</Styled.BestTutorEducationBachelor>
+                          {index < educations.length - 1 && ', '}
+                        </React.Fragment>
+                      ))}
                     </Styled.BestTutorEducation>
                     <Styled.BestTutorStudent>
                       <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
@@ -239,39 +272,42 @@ const TutorDetail: React.FC = () => {
                   <Styled.TitleWrapper>
                     <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
                   </Styled.TitleWrapper>
-                  {educations && (
+                  {(educations.length > 0) && (
                     <Styled.Section>
                       <Col lg={4} md={4} sm={4} xs={4}>
                         <Styled.SectionHeader>Education</Styled.SectionHeader>
                       </Col>
                       <Col lg={20} md={20} sm={20} xs={20}>
                         <Styled.SectionContent>
-                          <Styled.Item>
-                            <Styled.Year>{educations.startYear} - {educations.endYear}</Styled.Year>
-                            <Styled.Description>
-                              {educations.universityName}<br />
-                              {educations.degreeType}
-                            </Styled.Description>
-                          </Styled.Item>
+                          {educations.map((education) => (
+                            <Styled.Item key={education.id}>
+                              <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
+                              <Styled.Description>
+                                {education.universityName}<br />
+                                {education.degreeType}
+                              </Styled.Description>
+                            </Styled.Item>
+                          ))}
                         </Styled.SectionContent>
                       </Col>
                     </Styled.Section>
                   )}
-
-                  {educations && (
+                  {(certification.length > 0) && (
                     <Styled.Section>
                       <Col lg={4} md={4} sm={4} xs={4}>
                         <Styled.SectionHeader>Certification</Styled.SectionHeader>
                       </Col>
                       <Col lg={20} md={20} sm={20} xs={20}>
                         <Styled.SectionContent>
-                          <Styled.Item>
-                            <Styled.Year>{educations.startYear} - {educations.endYear}</Styled.Year>
-                            <Styled.Description>
-                              {educations.specialization}<br />
-                              {educations.degreeType}
-                            </Styled.Description>
-                          </Styled.Item>
+                          {certification.map((certification) => (
+                            <Styled.Item key={certification.id}>
+                              <Styled.Year>{certification.issuedBy} - {certification.issuedYear}</Styled.Year>
+                              <Styled.Description>
+                                {certification.certificateName}<br />
+                                {certification.subject}
+                              </Styled.Description>
+                            </Styled.Item>
+                          ))}
                         </Styled.SectionContent>
                       </Col>
                     </Styled.Section>
@@ -287,7 +323,8 @@ const TutorDetail: React.FC = () => {
                     <iframe
                       width="100%"
                       height="100%"
-                      style={{ borderRadius: '12px' }}
+
+                      style={{ borderRadius: '30px' }}
                       src={getEmbedUrl(tutor.videoIntroductionLink)}
                       title="YouTube video player"
                       allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -307,7 +344,7 @@ const TutorDetail: React.FC = () => {
                   </div>
                 </Styled.BookingInformation>
                 {/* <Styled.BookingTutorButton> */}
-                <BookTutor />
+                <BookTutor tutorId={tutorId} />
                 {/* </Styled.BookingTutorButton> */}
                 <Styled.SendMessageButton>Send message</Styled.SendMessageButton>
                 <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>

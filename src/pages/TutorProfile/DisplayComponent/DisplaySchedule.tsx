@@ -2,9 +2,9 @@ import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, Po
 import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
-import { getTutorSchedule } from '../../utils/tutorBookingAPI';
+import { getTutorSchedule } from '../../../utils/tutorBookingAPI';
 import { notification } from 'antd';
-import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
+import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -19,7 +19,7 @@ interface ScheduleProps {
   update?: boolean;
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule, update }) => {
+const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule, update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
@@ -81,7 +81,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
     };
 
     fetchSchedule();
-  }, update!=null?[update]: []);
+  }, [update]);
 
 
   const [start, setStart] = useState<string>('');
@@ -209,7 +209,6 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
 
   const restrictedTime = !noRestricted
     ? {
-      minDate: today,
       maxDate: next7Days,
     }
     : {};
@@ -220,9 +219,10 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
       <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          height="300px"
+          style={{maxHeight: '500px'}}
           selectedDate={today}
           {...restrictedTime}
+          minDate={today}
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}
@@ -244,4 +244,4 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
   )
 }
 
-export default Schedule
+export default DisplaySchedule

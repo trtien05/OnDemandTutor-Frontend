@@ -34,9 +34,7 @@ const Login = () => {
                 }, 2000);
             }
         } catch (error: any) {
-            if (error.response) messageApi.error(error.response.data);
-
-            // if (error.response) messageApi.error();
+            if (error.response) messageApi.error(error.response.data.message);
             else messageApi.error(error.message);
         } finally {
             setIsSubmitting(false);

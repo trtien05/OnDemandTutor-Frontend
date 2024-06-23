@@ -17,7 +17,6 @@ import { RightOutlined } from '@ant-design/icons';
 import { CollapseProps } from 'antd/lib';
 import Link from '../../components/Link';
 import config from '../../config';
-import BookTutor from '../../components/Popup/BookTutor';
 import TutorsList from '../../components/TutorsList/TutorsList';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
 
@@ -97,7 +96,6 @@ const Home = () => {
                 <Container>
                     <Row align="middle" justify='center'>
                         <Col lg={12}>
-                            <BookTutor />
                             <Styled.BestServiceTitle level={2}>
                                 Popular Categories
                             </Styled.BestServiceTitle>
@@ -181,20 +179,6 @@ const Home = () => {
                     </Row>
 
                     <TutorsList initLoading={initLoading} list={list} />
-
-
-                    <Row>
-                        <Col lg={24} md={24} xs={24} sm={24} >
-                            <Styled.ButtonWrapper>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.SeeMoreButton>
-                                        See More {'>'}
-                                    </Styled.SeeMoreButton>
-                                </Link>
-                            </Styled.ButtonWrapper>
-                        </Col>
-                    </Row>
-
                 </Container>
             </Styled.BestTutorSection>
 
@@ -202,6 +186,17 @@ const Home = () => {
 
             <Styled.QuestionSection>
                 <Container>
+                    <Row gutter={[20, 20]} align="middle" justify='center' style={{ marginBottom: '30px' }}>
+                        <Col lg={12}>
+                            <Styled.BestServiceTitle level={2}>
+                                FAQ
+                            </Styled.BestServiceTitle>
+
+                            <Styled.BestServiceDesc>
+                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                            </Styled.BestServiceDesc>
+                        </Col>
+                    </Row>
                     <Row align="middle">
                         <Col lg={13} md={24} sm={24} xs={24}>
                             <Styled.AnswerWrapper>
@@ -222,7 +217,7 @@ const Home = () => {
                                                 'alignItems': 'center',
                                             }
                                         }>
-                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                                            <RightOutlined rotate={isActive ? 90 : 0} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} />
                                         </div>
                                     }
                                     style={{ background: token.colorBgContainer }}
@@ -237,7 +232,6 @@ const Home = () => {
                             </Styled.QuestionWrapper>
                         </Col>
                     </Row>
-
                 </Container>
             </Styled.QuestionSection >
 

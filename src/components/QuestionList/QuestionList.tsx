@@ -20,10 +20,7 @@ const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (prop
                   itemLayout="horizontal"
                   dataSource={props.list}
                   renderItem={(item) => (
-                    <Styled.TutorItem
-                      // onMouseEnter={(event) => handleMouseEnter(event, item)}
-                      // translate={typeof translateY === 'number' ? "no" : translateY}
-                      >
+                    <Styled.TutorItem>
                       <QuestionItem item={item} />
                     </Styled.TutorItem>
                   )}
@@ -35,7 +32,7 @@ const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (prop
         </Container>
       </Styled.TutorFilteredSection>
     </>
-  
+
   );
 }
 

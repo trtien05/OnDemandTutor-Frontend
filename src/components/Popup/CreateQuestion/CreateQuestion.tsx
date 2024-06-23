@@ -1,69 +1,128 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input, Select, UploadFile, Typography, message, Form } from 'antd';
+import { Button, Modal, Input, Select, UploadFile, Typography, message, Form, Col } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
 import { theme } from '../../../themes';
-
-const Question: React.FC = () => {
+import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
+import { createQuestion } from '../../../utils/questionAPI';
+import { useAuth } from '../../../hooks';
+import { useNavigate } from 'react-router-dom';
+import config from '../../../config';
+import { RcFile } from 'antd/es/upload';
+interface CreateQuestionProps {
+    messageApi: any;
+}
+const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
+    const { user } = useAuth();
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
+    const navigate = useNavigate();
+
     const [modalData, setModalData] = useState(null);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    const [messageApi, contextHolder] = message.useMessage();
+    // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
         setOpen(true);
     };
-    const handleOk = () => {
-        setLoading(true); // Set loading state to true when form is submitted
-        form.validateFields()
-            .then((values) => {
-                values.questionFile = fileList; // Add the file list to the form values
-                setModalData(values);
-                console.log('Clicked OK with values:', values);
-                setConfirmLoading(true);
-                setTimeout(() => {
-                    setOpen(false);
-                    setConfirmLoading(false);
-                    setLoading(false); // Set loading state back to false when form submission is complete
-                    form.resetFields(); // Reset the form fields
-                }, 2000);
-            })
-            .catch((info) => {
-                console.log('Validate Failed:', info);
-                setLoading(false); // Set loading state back to false when form submission is complete
-            });
-    };
+    async function saveQuestion(studentId: number, formData: any) {
+        const jsonBody = convertQuestionData(formData);
 
-    const handleCancel = () => {
-        console.log('Clicked cancel button');
-        form.resetFields(); // Reset the form fields
-        setOpen(false);
-    };
-    // const onChange = ({ fileList: newFileList }) => {
+        try {
+            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+            const responseData = await createQuestion(studentId, jsonBody);
 
-    //     setFileList(newFileList);
-    // };
-    const handleFileSizeCheck = (info) => {
-        const isLt5M = info.file.size / 1024 / 1024 < 5;
-        if (!isLt5M) {
-            message.error('Image must smaller than 5MB!');
-            // Remove the file from the list
-            const index = info.fileList.indexOf(info.file);
-            const newFileList = info.fileList.slice();
-            newFileList.splice(index, 1);
-            return newFileList;
-        } else {
-            // If file size is less than 5MB, return the new file list
-            return info.fileList;
+            // Check response status
+
+            // Get response data
+            console.log('Question saved successfully:', responseData);
+            // Return success response
+            messageApi.success('Question saved successfully'); // Display success message
+            return responseData;
+        } catch (error: any) {
+            console.log(error);
+        }
+    }
+
+    function convertQuestionData(formData: any) {
+        const questionData = {
+            content: formData[`content`],
+            questionUrl: '' || formData[`questionFile`][0],
+            subjectName: formData[`subject`],
+            title: formData[`title`]
+        };
+        return questionData;
+    }
+
+    const handleOk = async () => {
+        setLoading(true);
+        try {
+            const values = await form.validateFields();
+            const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+            const uploadedFiles = await Promise.all(
+                fileList.map(async (file: UploadFile, index) => {
+                    if (file.originFileObj) {
+                        const url = await uploadCreateQuestionFiles(
+                            1,
+                            file.originFileObj,
+                            'CreateQuestion',
+                            dateCreated,
+                            index,
+                        );
+                        // console.log(`Uploaded file ${index} URL:`, url);
+                        return { ...file, url };
+                    }
+                }),
+            );
+            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
+            setModalData(values);
+            // console.log('Clicked OK with values:', values);
+            setConfirmLoading(true);
+            await saveQuestion(2, values);
+            setTimeout(() => {
+                setOpen(false);
+                setConfirmLoading(false);
+                setLoading(false);
+                form.resetFields();
+                setFileList([]);
+            }, 1000);
+        } catch (info) {
+            console.log('Validate Failed:', info);
+            setLoading(false);
         }
     };
 
-    const onChange = (info) => {
-        const newFileList = handleFileSizeCheck(info);
+    const handleCancel = () => {
+        // console.log('Clicked cancel button');
+        form.resetFields(); // Reset the form fields
+        setOpen(false);
+    };
+
+
+    const handleFileSizeCheck = (file: any) => {
+        const isLt5M = file.size / 1024 / 1024 < 5;
+        if (!isLt5M) {
+            message.error('File must be smaller than 5MB!');
+        }
+        return isLt5M;
+    };
+
+    const onChange = (info: any) => {
+        let newFileList = info.fileList;
+
+        // Limit the file list to one file
+        if (newFileList.length > 1) {
+            newFileList = [newFileList[newFileList.length - 1]];
+        }
+
+        // Check the file size
+        newFileList = newFileList.filter((file: any) => handleFileSizeCheck(file));
+
         setFileList(newFileList);
+        form.setFieldsValue({ questionFile: newFileList }); // Update the form value
+        // console.log('File List:', newFileList);
     };
     const options = [
         { label: 'Mathematics', value: 'Mathematics' },
@@ -82,7 +141,11 @@ const Question: React.FC = () => {
     const { Title } = Typography;
     return (
         <>
-            <Button type="primary" onClick={showModal}>
+            <Button
+                type="primary"
+                onClick={showModal}
+                style={{ width: '100%', borderRadius: '50px' }}
+            >
                 Create A Question
             </Button>
 
@@ -90,17 +153,22 @@ const Question: React.FC = () => {
                 open={open}
                 onCancel={handleCancel}
                 width={700}
-                styles={
-                    {
-                        content: {
-                            borderRadius: '100px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
-                        }
-                    }}
-
+                styles={{
+                    content: {
+                        borderRadius: '50px',
+                        padding: '50px',
+                        boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)',
+                    },
+                }}
                 closeIcon={null}
                 footer={[
                     <FormStyled.ButtonDiv>
-                        <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '50%' }}>
+                        <Button
+                            key="Cancel"
+                            type="default"
+                            onClick={handleCancel}
+                            style={{ marginRight: '5%', width: '50%' }}
+                        >
                             Cancel
                         </Button>
                         <Button
@@ -136,7 +204,7 @@ const Question: React.FC = () => {
                 >
                     <FormStyled.FormContainer>
                         <FormStyled.FormTitle>Subject</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="subject" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="subject" rules={[{ required: true, message: 'Please select a subject' }]}>
                             <Select size="large" placeholder="Select subject">
                                 {options.map((option, index) => (
                                     <Select.Option key={index} value={option.value}>
@@ -145,15 +213,37 @@ const Question: React.FC = () => {
                                 ))}
                             </Select>
                         </FormStyled.FormItem>
+                        <FormStyled.FormTitle>Title</FormStyled.FormTitle>
+                        <FormStyled.FormItem name="title" rules={[{ required: true, message: 'Please enter information for the title field' }]}>
+                            <Input
+                                count={{
+                                    show: true,
+                                    max: 80,
+                                }}
+                                type="text"
+                                placeholder="Enter your title here"
+                            ></Input>
+                        </FormStyled.FormItem>
                         <FormStyled.FormTitle>Enter your question</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="content" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="content" rules={[{ required: true, message: 'Please enter your question' }]}>
                             <FormStyled.CommentInput
+                                count={{
+                                    show: true,
+                                    max: 1000,
+                                }}
                                 placeholder="Type your question here"
                                 style={{ height: '200px' }}
                             ></FormStyled.CommentInput>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Upload a File</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="questionFile">
+                        <FormStyled.FormItem
+                            name="questionFile"
+                            valuePropName="fileList"
+                            getValueFromEvent={(e) => {
+                                console.log('Get value from event:', e); // Log the event to debug
+                                return Array.isArray(e) ? e : e && e.fileList;
+                            }}
+                        >
                             <Dragger
                                 name="questionFile"
                                 fileList={fileList}
@@ -174,15 +264,6 @@ const Question: React.FC = () => {
                                 </p>
                             </Dragger>
                         </FormStyled.FormItem>
-                        {/* <FormStyled.ButtonDiv>
-                    <Button key="Cancel" type="default" onClick={handleCancel}>
-                      Cancel
-                    </Button>,
-                    <Button key="submit" type="primary" htmlType="submit" loading={loading} > 
-                    
-                      Send
-                    </Button>
-                    </FormStyled.ButtonDiv> */}
                     </FormStyled.FormContainer>
                 </FormStyled.FormWrapper>
             </Modal>
@@ -190,4 +271,4 @@ const Question: React.FC = () => {
     );
 };
 
-export default Question;
+export default CreateQuestion;

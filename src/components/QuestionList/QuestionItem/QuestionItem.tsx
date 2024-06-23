@@ -71,24 +71,24 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     borderRadius: '15px',
                                     left: '-30px',
                                     top: '-30px',
-                                    
+
                                 }}
-                                
-                                
+
+
                             />
                         ) : (
                             <Avatar
                                 size={64}
-                                icon={<UserOutlined/>}
+                                icon={<UserOutlined />}
                                 style={{
                                     width: '100px',
                                     height: '100px',
                                     borderRadius: '15px',
                                     left: '-30px',
                                     top: '-30px',
-                                    
+
                                 }}
-                                
+
                             />
                         )}
                         {/* </Col> */}
@@ -154,25 +154,25 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                 <Col sm={24}>
                     <Styled.ModalStudentInfo>
                         <Col sm={3}>
-                        {item.account.avatarUrl ? (
-                            <Avatar
-                            size={55}
-                                src={item.account.avatarUrl}
-                                style={{
-                                    borderRadius: '15px',
-                                }}
-                            />
-                        ) : (
-                            <Avatar
-                            size={55}
-                                icon={<UserOutlined />}
-                                style={{
-                                    borderRadius: '15px',
-                                }}
-                                
-                            />
-                        )}
-                            
+                            {item.account.avatarUrl ? (
+                                <Avatar
+                                    size={55}
+                                    src={item.account.avatarUrl}
+                                    style={{
+                                        borderRadius: '15px',
+                                    }}
+                                />
+                            ) : (
+                                <Avatar
+                                    size={55}
+                                    icon={<UserOutlined />}
+                                    style={{
+                                        borderRadius: '15px',
+                                    }}
+
+                                />
+                            )}
+
                         </Col>
                         <Col sm={21}>
                             <div>

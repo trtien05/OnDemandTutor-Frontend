@@ -5,17 +5,20 @@ import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import TextArea from 'antd/es/input/TextArea';
 // Registering Syncfusion license key
 import { registerLicense } from '@syncfusion/ej2-base';
-import { createBooking } from '../../../api/tutorBookingAPI';
+import { createBooking } from '../../../utils/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
 import Schedule from '../../Schedule/Schedule';
-import { Schedule as ScheduleEvent } from '../../Schedule/Schedule.type';
+import { ScheduleEvent } from '../../Schedule/Schedule.type';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
+interface BookTutorProps {
+  tutorId: number;
+}
 
-const BookTutor: React.FC = () => {
-  const tutorId = 1;
+const BookTutor: React.FC<BookTutorProps> = (props) => {
+  const { tutorId } = props;
   const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
@@ -39,8 +42,10 @@ const BookTutor: React.FC = () => {
 
 
   function showModal() {
-    if (user)
+    if (user) {
       setIsFormOpen(true);
+      console.log(tutorId);
+    }
     else navigate(config.routes.public.login);
   };
 
@@ -65,7 +70,7 @@ const BookTutor: React.FC = () => {
         } catch (error: any) {
           api.error({
             message: 'Error create booking',
-            description: error.message || 'There was an issue with creating your booking. Please try again later.',
+            description: error.response.data.message || 'There was an issue with creating your booking. Please try again later.',
           });
         } finally {
           setLoading(false);
@@ -83,11 +88,13 @@ const BookTutor: React.FC = () => {
   return (
     <>
       {contextHolder}
+      {contextHolder}
       <Button type="primary" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
         Book this tutor
       </Button>
       <Modal
         centered
+        closable={false}
         width={'700px'}
         open={isFormOpen}
         onOk={handleOk}
@@ -111,7 +118,7 @@ const BookTutor: React.FC = () => {
         styles={
           {
             content: {
-              borderRadius: '100px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
+              borderRadius: '50px', padding: '50px', boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)'
             }
           }}
       >
