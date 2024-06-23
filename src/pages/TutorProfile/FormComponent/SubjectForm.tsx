@@ -1,14 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import * as FormStyled from '../../BecomeTutor/Form.styled'
-import ReactPlayer from 'react-player';
-import { Button, Checkbox, Col, Form, Input, Modal, Row, Select, Steps, notification } from 'antd';
+import * as FormStyled from '../../BecomeTutor/Form.styled';
+import { Button, Checkbox, Col, Form, Modal, Row, Select, notification, Typography } from 'antd';
 import { Certificate, Details, Education } from '../TutorProfile.type';
 import { updateTutorDescription } from '../../../utils/tutorAPI';
-import MultipleSteps from '../../BecomeTutor/MultipleSteps';
-import EducationForm from './EducationForm';
-import CertificationForm from './CertificationForm';
 import { FieldType } from '../../BecomeTutor/Form.fields';
-
+const { Title } = Typography;
 
 interface SubjectFormProps {
     tutorDetails: Details;
@@ -17,8 +13,6 @@ interface SubjectFormProps {
     certificateData: Certificate[];
     educationData: Education[];
 }
-
-
 
 const SubjectForm: React.FC<SubjectFormProps> = (props) => {
     const [tutorDetails, setTutorDetails] = useState<any>(props.tutorDetails);
@@ -55,91 +49,120 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
             }
         })
     );
+
     const subjectDoc = ['education', 'certification'];
 
     interface VisibilityState {
-        [key: string]: boolean;
+        [subject: string]: {
+            [doc: string]: boolean;
+        };
     }
+
     type FormState = {
-        [key in keyof VisibilityState]: FieldType[];
+        [key: string]: {
+            [doc: string]: FieldType[];
+        };
     };
 
-    const handleDayVisibility = (doc: string, checked: boolean) => {
-        setVisibilityForDay(doc, checked);
-    }
+    const handleDayVisibility = (subject: string, doc: string, checked: boolean) => {
+        setVisibilityForDay(subject, doc, checked);
+    };
 
-    const handleAddTimeslot = (doc: string) => {
+    const handleAddTimeslot = (subject: string, doc: string) => {
         setTimeslotForm(prevState => {
-            const newIndex = (prevState[doc].length);
+            const newIndex = (prevState[subject][doc].length);
             return {
                 ...prevState,
-                [doc]: [...prevState[doc], timeslotSelection(doc, newIndex, null)],
+                [subject]: {
+                    ...prevState[subject],
+                    [doc]: [...prevState[subject][doc], timeslotSelection(subject, doc, newIndex, null)],
+                }
             };
         });
-    }
+    };
 
-
-    const handleRemoveTimeslot = (doc: string, formIndex: number) => {
+    const handleRemoveTimeslot = (subject: string, doc: string, formIndex: number) => {
         setTimeslotForm(prevState => ({
             ...prevState,
-            [doc]: prevState[doc].filter((_, index) => index !== formIndex),
+            [subject]: {
+                ...prevState[subject],
+                [doc]: prevState[subject][doc].filter((_, index) => index !== formIndex),
+            }
         }));
-    }
-
-    const [visibility, setVisibility] = useState<VisibilityState>({
-        'education': true,
-        'certification': true
-    })
-    const setVisibilityForDay = (doc: string, value: boolean) => {
-        setVisibility(prevState => ({ ...prevState, [doc]: value }));
     };
-    const timeslotSelection = (doc: string,
-        index: number,
-        initialValue: string | null): FieldType => ({
-            key: `${doc}_${index}`,
-            label: '',
-            name: `${doc}_timeslot_${index}`,
-            rules: [
-                {
-                    required: true,
-                    message: 'Please select at least one diploma or certificate for your subject.',
-                },
-            ],
-            children: (
-                <Select size="large" placeholder="Select Subject">
-                    {Object.values(education).map((subject) => (
-                        <Select.Option key={subject.id} value={subject.id}>
-                            {subject.title}
-                        </Select.Option>
-                    ))}
-                </Select>
-            )
-        })
 
-    const initialFormState = (): FormState => {
-        return subjectDoc.reduce((acc, doc) => {
-            acc[doc as keyof VisibilityState] = [timeslotSelection(doc, 0, null)];
-            return acc;
-        }, {} as FormState);
+    const initialFormState = (subjects: string[]): FormState => {
+        const initialState: FormState = {};
+        subjects.forEach((subject) => {
+            initialState[subject] = subjectDoc.reduce((acc, doc) => {
+                acc[doc] = [timeslotSelection(subject, doc, 0, null)];
+                return acc;
+            }, {} as { [key: string]: FieldType[] });
+        });
+        return initialState;
     };
-    const [timeslotForm, setTimeslotForm] = useState<FormState>(initialFormState())
+
+    const initialVisibilityState = (subjects: string[]): VisibilityState => {
+        const initialState: VisibilityState = {};
+        subjects.forEach((subject) => {
+            initialState[subject] = subjectDoc.reduce((acc, doc) => {
+                acc[doc] = true;
+                return acc;
+            }, {} as { [doc: string]: boolean });
+        });
+        return initialState;
+    };
+
+    const [timeslotForm, setTimeslotForm] = useState<FormState>({});
+    const [visibility, setVisibility] = useState<VisibilityState>(initialVisibilityState([]));
+
+    const setVisibilityForDay = (subject: string, doc: string, value: boolean) => {
+        setVisibility(prevState => ({
+            ...prevState,
+            [subject]: {
+                ...prevState[subject],
+                [doc]: value,
+            }
+        }));
+    };
+
+    const timeslotSelection = (subject: string, doc: string, index: number, initialValue: string | null): FieldType => ({
+        key: `${subject}_${doc}_${index}`,
+        label: '',
+        name: `${subject}_${doc}_${index}`,
+        rules: [
+            {
+                required: true,
+                message: 'Please select at least one diploma or certificate for your subject.',
+            },
+        ],
+        children: (
+            <Select size="large" placeholder="Select Subject">
+                {Object.values(education).map((subject) => (
+                    <Select.Option key={subject.id} value={subject.id}>
+                        {subject.title}
+                    </Select.Option>
+                ))}
+            </Select>
+        )
+    });
+
     const handleInputChange = (
+        subject: string,
         doc: string,
         index: number,
         value: string | null
     ) => {
         setTimeslotForm((prevState) => {
-            const updatedFields = prevState[doc].map(
+            const updatedFields = prevState[subject][doc].map(
                 (field, i) =>
                     i === index ? { ...field, initialValue: value } : field
             );
-            return { ...prevState, [doc]: updatedFields };
+            return { ...prevState, [subject]: { ...prevState[subject], [doc]: updatedFields } };
         });
     };
 
-
     //--------------------Initial Data--------------------
-
     useEffect(() => {
         form.setFieldsValue({
             teachingPricePerHour: tutorDetails.teachingPricePerHour,
@@ -165,7 +188,6 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
         { label: "Coding", value: "Coding" },
     ];
 
-
     //--------------------Modal--------------------
     function showModal() {
         setIsFormOpen(true);
@@ -174,74 +196,76 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
     const handleCancel = () => {
         setIsFormOpen(false);
     };
+
     //--------------------Finish Form--------------------
     const isNewSubject = (values: any) => {
         const differences: string[] = values.subjects.filter((val: string) => !(tutorDetails.subjects.includes(val)));
-        console.log(differences)
-        console.log(tutorDetails.subjects)
         const containsAll = differences.length !== 0;
-        console.log(containsAll)
         return { containsAll, differences };
-    }
+    };
 
     const onSendSubject = async (values: any) => {
         const newSubject = isNewSubject(values);
+        console.log(values);
+        
         if (newSubject.containsAll) {
+            if (values[`${newSubject.differences[0]}_${education}`] === undefined 
+                || values[`${newSubject.differences[0]}_${certificate}`] === null) {
             await setNeedDocument(newSubject.differences);
-            
-        } 
-        // else {
-        //     onFinish(values);
-        // }
-    }
+            setTimeslotForm(initialFormState(values.subjects)); // Set initial form state
+        setVisibility(initialVisibilityState(values.subjects)); // Set initial visibility state
+        }} else {
+            onFinish(values);
+        }
+    };
 
     const mapSubjects = (values: string[]) => (
         values.map((subject: string, index: number) => (
-            <div key={index} style={{width:`100%`}}>
-                <FormStyled.FormTitle level={3}>{subject}</FormStyled.FormTitle>
+            <div key={index} style={{ width: `100%` }}>
+                <Title level={3} style={{ textAlign: `center` }}>{subject}</Title>
                 {subjectDoc.map((doc) => (
-                    <FormStyled.TimeslotStyle key={`${subject}_${doc}`} style={{width:`100%`}}>
+                    <FormStyled.TimeslotStyle key={`${doc}`} style={{ width: `100%`, marginBottom: `20px` }}>
                         <Form.Item
                             name={`${subject}_${doc}`}
                             valuePropName="checked"
-                            initialValue={visibility[doc]}
+                            initialValue={visibility[subject][doc]}
                             style={{ margin: '0', width: '100%' }}
                         >
                             <FormStyled.FormCheckbox
                                 style={{ margin: '0', width: '100%' }}
-                                checked={visibility[doc]}
-                                defaultChecked={visibility[doc]}
-                                onChange={(e) => handleDayVisibility(doc, e.target.checked)}
+                                checked={visibility[subject][doc]}
+                                defaultChecked={visibility[subject][doc]}
+                                onChange={(e) => handleDayVisibility(subject, doc, e.target.checked)}
                             >
                                 {doc.charAt(0).toUpperCase() + doc.slice(1)}
                             </FormStyled.FormCheckbox>
                         </Form.Item>
 
-                        {visibility[doc] && timeslotForm[doc].map((field: FieldType, formIndex: number) => (
-                            <div style={{ width: '100%' }} key={`${doc}_${formIndex}`}>
-                                <FormStyled.FormContainer style={{ columnGap: '3%' }} key={formIndex}>
+                        {visibility[subject][doc] && timeslotForm[subject][doc].map((field: FieldType, formIndex: number) => (
+                            <div style={{ width: '100%' }} key={`${subject}_${doc}_${formIndex}`}>
+                                <FormStyled.FormContainer style={{ columnGap: '3%' }} key={`${subject}_${formIndex}`}>
                                     <FormStyled.FormItem
                                         key={field.key}
                                         label={field.label}
                                         name={field.name}
                                         rules={field.rules}
-                                        $width={field.$width ? field.$width : '100%'}
+                                        $width={field.$width ? field.$width : '90%'}
                                         initialValue={field.initialValue}
                                         validateFirst
                                     >
                                         {field.children}
                                     </FormStyled.FormItem>
                                     {formIndex > 0 && (
-                                        <FormStyled.DeleteButton type='link' onClick={() => handleRemoveTimeslot(doc, formIndex)}>
+                                        <FormStyled.DeleteButton type='link' onClick={() => handleRemoveTimeslot(subject, doc, formIndex)}>
                                             X
                                         </FormStyled.DeleteButton>
                                     )}
                                 </FormStyled.FormContainer>
                             </div>
                         ))}
-                        {visibility[doc] && (
-                            <Button type="dashed" onClick={() => handleAddTimeslot(doc)}>
-                                Add another timeslot
+                        {visibility[subject][doc] && (
+                            <Button type="dashed" onClick={() => handleAddTimeslot(subject, doc)}>
+                                Add another document
                             </Button>
                         )}
                     </FormStyled.TimeslotStyle>
@@ -253,11 +277,10 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
     const onFinish = async (values: any) => {
         try {
             setLoading(true);
-            //if (!isNewSubject(values)) {
             await saveTutorDescription(tutorId, values);
             props.isUpdate(true);
             api.success({
-                message: "Your subjects has been updated",
+                message: "Your subjects have been updated",
             });
         } catch (error: any) {
             api.error({
@@ -268,28 +291,20 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
             setLoading(false);
             setIsFormOpen(false);
         }
-    }
+    };
 
     //--------------------API Save Profile--------------------
     async function saveTutorDescription(tutorId: number, formData: any) {
-
-        // Get JSON body from form data
         const jsonRequestBody = convertTutorDescriptionFormData(formData);
 
         try {
-
-            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
             const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
 
-            // Check response status
             if (!api.success) {
                 throw new Error(`Error: ${responseData.statusText}`);
             }
 
-            // Get response data
             console.log('Tutor description saved successfully:', responseData);
-
-            // Return success response
             return responseData;
         } catch (error: any) {
             api.error({
@@ -301,14 +316,12 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
 
     function convertTutorDescriptionFormData(formData: any) {
         const descriptionData = {
-            // convert form data to tutor description json format
             teachingPricePerHour: formData.teachingPricePerHour,
             backgroundDescription: formData.backgroundDescription,
             meetingLink: formData.meetingLink,
             videoIntroductionLink: formData.videoIntroductionLink,
             subjects: formData.subjects,
         };
-
         return descriptionData;
     }
 
@@ -358,43 +371,43 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                     size="middle"
                     style={{ rowGap: "10px" }}
                 >
-                    
+
                     <FormStyled.FormContainer >
-                    <FormStyled.FormTitle level={1} style={{ margin: `auto` }}>Teaching Subjects</FormStyled.FormTitle>
-                    <FormStyled.FormItem
-                        name="teachingPricePerHour" hidden />
+                        <FormStyled.FormTitle level={1} style={{ margin: `auto`, marginBottom:`20px` }}>Teaching Subjects</FormStyled.FormTitle>
+                        <FormStyled.FormItem
+                            name="teachingPricePerHour" hidden />
 
-                    <FormStyled.FormItem
-                        name="backgroundDescription" hidden />
+                        <FormStyled.FormItem
+                            name="backgroundDescription" hidden />
 
-                    <FormStyled.FormItem
-                        name="meetingLink" hidden />
+                        <FormStyled.FormItem
+                            name="meetingLink" hidden />
 
-                    <FormStyled.FormItem
-                        name="videoIntroductionLink" hidden />
+                        <FormStyled.FormItem
+                            name="videoIntroductionLink" hidden />
 
-                    <FormStyled.FormItem
-                        name="subjects"
-                        $width={"100%"}
-                        hidden={needDocument.length !== 0}
-                        rules={[{
-                            required: true,
-                            message: 'Please choose a subject'
-                        }]}>
-                        <FormStyled.CheckboxGroup>
-                            <Row>
-                                {options.map(option => (
-                                    <Col lg={{ span: 6 }} sm={{ span: 8 }} xs={{ span: 8 }} key={option.value}>
-                                        <Checkbox
-                                            value={option.value}>
-                                            {option.label}</Checkbox>
-                                    </Col>
-                                ))}
-                            </Row>
-                        </FormStyled.CheckboxGroup>
-                    </FormStyled.FormItem>
-                {needDocument.length !== 0 && mapSubjects(needDocument)}
-                </FormStyled.FormContainer>
+                        <FormStyled.FormItem
+                            name="subjects"
+                            $width={"100%"}
+                            hidden={needDocument.length !== 0}
+                            rules={[{
+                                required: true,
+                                message: 'Please choose a subject'
+                            }]}>
+                            <FormStyled.CheckboxGroup>
+                                <Row>
+                                    {options.map(option => (
+                                        <Col lg={{ span: 6 }} sm={{ span: 8 }} xs={{ span: 8 }} key={option.value}>
+                                            <Checkbox
+                                                value={option.value}>
+                                                {option.label}</Checkbox>
+                                        </Col>
+                                    ))}
+                                </Row>
+                            </FormStyled.CheckboxGroup>
+                        </FormStyled.FormItem>
+                        {needDocument.length !== 0 && mapSubjects(needDocument)}
+                    </FormStyled.FormContainer>
                 </FormStyled.FormWrapper>
             </Modal>
         </>

@@ -4,8 +4,6 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useState } from "react";
 import { FieldType } from "../../BecomeTutor/Form.fields";
 import { theme } from "../../../themes";
-import { addAvailableSchedule } from "../../../utils/tutorRegisterAPI";
-import moment from "moment";
 import { updateSchedule } from "../../../utils/tutorAPI";
 const { useBreakpoint } = Grid;
 

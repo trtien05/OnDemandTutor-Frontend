@@ -29,8 +29,8 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
 
   useEffect(() => {
     setTimeout(() => {
-      setIsScheduleLoaded(true);
-    }, 1000); // Adjust this delay as needed
+      
+    }, 2000); // Adjust this delay as needed
   }, []);
 
   useEffect(() => {
@@ -70,6 +70,9 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           });
 
           setSchedule(newSchedule);
+          setTimeout(() => {
+            setIsScheduleLoaded(true);
+          }, 1000);
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
       } catch (error: any) {
@@ -219,7 +222,8 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
       <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          style={{maxHeight: '500px'}}
+          // style={{maxHeight: '500px'}}
+          height={300}
           selectedDate={today}
           {...restrictedTime}
           minDate={today}
