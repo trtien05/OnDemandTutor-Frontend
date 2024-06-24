@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import * as FormStyled from '../../BecomeTutor/Form.styled';
 import { Button, Checkbox, Col, Form, Modal, Row, Select, notification, Typography } from 'antd';
 import { Certificate, Details, Education } from '../TutorProfile.type';
-import { updateTutorDescription } from '../../../utils/tutorAPI';
 import { FieldType } from '../../BecomeTutor/Form.fields';
 const { Title } = Typography;
 
@@ -10,12 +9,12 @@ interface SubjectFormProps {
     tutorDetails: Details;
     tutorId: number;
     isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
-    certificateData: Certificate[];
+    certificateData?: Certificate[];
     educationData: Education[];
 }
 
 const SubjectForm: React.FC<SubjectFormProps> = (props) => {
-    const [tutorDetails, setTutorDetails] = useState<any>(props.tutorDetails);
+    const tutorDetails = props.tutorDetails;
     const tutorId = props.tutorId;
     const [form] = Form.useForm();
     const [isFormOpen, setIsFormOpen] = useState(false);
@@ -24,31 +23,33 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
+    const [addDoc, setAddDoc] = useState<boolean>(false);
 
     //--------------------Mapping Data--------------------
-    const [education, setEducation] = useState<{
+    const education: {
         id: number;
         title: string;
-    }[]>(
-        props.educationData.map((item: Education) => {
-            return {
-                id: item.id,
-                title: `${item.degreeType} of ${item.majorName}`,
-            }
-        })
-    );
+    }[] = (
+            props.educationData.map((item: Education) => {
+                return {
+                    id: item.id,
+                    title: `${item.degreeType} of ${item.majorName}`,
+                }
+            })
+        );
 
-    const [certificate, setCertificate] = useState<{
+    const certificate: {
         id: number;
         title: string;
-    }[]>(
-        props.certificateData.map((item: Certificate) => {
-            return {
-                id: item.id,
-                title: `${item.certificateName} issued by ${item.issuedBy}`,
-            }
-        })
-    );
+    }[] = (
+            props.certificateData !== undefined && props.certificateData !== null ?
+                (props.certificateData.map((item: Certificate) => {
+                    return {
+                        id: item.id,
+                        title: `${item.certificateName} issued by ${item.issuedBy}`,
+                    }
+                })) : []
+        );
 
     const subjectDoc = ['education', 'certification'];
 
@@ -75,7 +76,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                 ...prevState,
                 [subject]: {
                     ...prevState[subject],
-                    [doc]: [...prevState[subject][doc], timeslotSelection(subject, doc, newIndex, null)],
+                    [doc]: [...prevState[subject][doc], timeslotSelection(subject, doc, newIndex)],
                 }
             };
         });
@@ -95,7 +96,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
         const initialState: FormState = {};
         subjects.forEach((subject) => {
             initialState[subject] = subjectDoc.reduce((acc, doc) => {
-                acc[doc] = [timeslotSelection(subject, doc, 0, null)];
+                acc[doc] = [timeslotSelection(subject, doc, 0)];
                 return acc;
             }, {} as { [key: string]: FieldType[] });
         });
@@ -126,7 +127,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
         }));
     };
 
-    const timeslotSelection = (subject: string, doc: string, index: number, initialValue: string | null): FieldType => ({
+    const timeslotSelection = (subject: string, doc: string, index: number): FieldType => ({
         key: `${subject}_${doc}_${index}`,
         label: '',
         name: `${subject}_${doc}_${index}`,
@@ -137,30 +138,22 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
             },
         ],
         children: (
-            <Select size="large" placeholder="Select Subject">
-                {Object.values(education).map((subject) => (
-                    <Select.Option key={subject.id} value={subject.id}>
-                        {subject.title}
-                    </Select.Option>
-                ))}
-            </Select>
+            doc === 'education' ?
+                (<Select size="large" placeholder="Select Subject">
+                    {Object.values(education).map((subject) => (
+                        <Select.Option key={subject.id} value={subject.id}>
+                            {subject.title}
+                        </Select.Option>
+                    ))}
+                </Select>) : <Select size="large" placeholder="Select Certificate">
+                    {Object.values(certificate).map((subject) => (
+                        <Select.Option key={subject.id} value={subject.id}>
+                            {subject.title}
+                        </Select.Option>
+                    ))}
+                </Select>
         )
     });
-
-    const handleInputChange = (
-        subject: string,
-        doc: string,
-        index: number,
-        value: string | null
-    ) => {
-        setTimeslotForm((prevState) => {
-            const updatedFields = prevState[subject][doc].map(
-                (field, i) =>
-                    i === index ? { ...field, initialValue: value } : field
-            );
-            return { ...prevState, [subject]: { ...prevState[subject], [doc]: updatedFields } };
-        });
-    };
 
     //--------------------Initial Data--------------------
     useEffect(() => {
@@ -206,15 +199,16 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
 
     const onSendSubject = async (values: any) => {
         const newSubject = isNewSubject(values);
-        console.log(values);
-        
         if (newSubject.containsAll) {
-            if (values[`${newSubject.differences[0]}_${education}`] === undefined 
-                || values[`${newSubject.differences[0]}_${certificate}`] === null) {
-            await setNeedDocument(newSubject.differences);
-            setTimeslotForm(initialFormState(values.subjects)); // Set initial form state
-        setVisibility(initialVisibilityState(values.subjects)); // Set initial visibility state
-        }} else {
+            if (!addDoc) {
+                setLoading(true);
+                await setNeedDocument(newSubject.differences);
+                await setTimeslotForm(initialFormState(values.subjects)); // Set initial form state
+                await setVisibility(initialVisibilityState(values.subjects)); // Set initial visibility state
+                setAddDoc(true);
+                setLoading(false)
+            }
+        } else {
             onFinish(values);
         }
     };
@@ -241,7 +235,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                             </FormStyled.FormCheckbox>
                         </Form.Item>
 
-                        {visibility[subject][doc] && timeslotForm[subject][doc].map((field: FieldType, formIndex: number) => (
+                        {visibility[subject][doc] && (timeslotForm[subject][doc].map((field: FieldType, formIndex: number) => (
                             <div style={{ width: '100%' }} key={`${subject}_${doc}_${formIndex}`}>
                                 <FormStyled.FormContainer style={{ columnGap: '3%' }} key={`${subject}_${formIndex}`}>
                                     <FormStyled.FormItem
@@ -262,7 +256,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                                     )}
                                 </FormStyled.FormContainer>
                             </div>
-                        ))}
+                        )))}
                         {visibility[subject][doc] && (
                             <Button type="dashed" onClick={() => handleAddTimeslot(subject, doc)}>
                                 Add another document
@@ -295,17 +289,17 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
 
     //--------------------API Save Profile--------------------
     async function saveTutorDescription(tutorId: number, formData: any) {
-        const jsonRequestBody = convertTutorDescriptionFormData(formData);
+        const jsonRequestBody = await convertSubjectData(formData);
 
         try {
-            const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
+            // const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
+            console.log(jsonRequestBody)
+            // if (!api.success) {
+            //     throw new Error(`Error: ${responseData.statusText}`);
+            // }
 
-            if (!api.success) {
-                throw new Error(`Error: ${responseData.statusText}`);
-            }
-
-            console.log('Tutor description saved successfully:', responseData);
-            return responseData;
+            // console.log('Tutor description saved successfully:', responseData);
+            // return responseData;
         } catch (error: any) {
             api.error({
                 message: 'Error',
@@ -314,15 +308,31 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
         }
     }
 
-    function convertTutorDescriptionFormData(formData: any) {
-        const descriptionData = {
-            teachingPricePerHour: formData.teachingPricePerHour,
-            backgroundDescription: formData.backgroundDescription,
-            meetingLink: formData.meetingLink,
-            videoIntroductionLink: formData.videoIntroductionLink,
-            subjects: formData.subjects,
-        };
-        return descriptionData;
+    function convertSubjectData(formData: any) {
+        const jsonResult: { subjectName: string; diploma: number[]; certificate: number[]; }[] = [];
+
+        needDocument.forEach((subject: string, index) => {
+            // Check for timeslots for the current day
+            let arr: { [key: string]: number[] } = {};
+            arr['education'] = [];
+            arr['certification'] = [];
+            subjectDoc.forEach((doc) => {
+                if (formData[`${subject}_${doc}`]) {
+                    arr[doc] = [];
+                    for (let i = 0; formData[`${subject}_${doc}_${i}`]; i++) {
+                        arr[doc].push(formData[`${subject}_${doc}_${i}`]);
+                    }
+                }
+            })
+
+            jsonResult.push({
+                subjectName: subject,
+                diploma: arr['education'],
+                certificate: arr['certification']
+            });
+        });
+        console.log(jsonResult)
+        return jsonResult;
     }
 
     return (
@@ -373,7 +383,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                 >
 
                     <FormStyled.FormContainer >
-                        <FormStyled.FormTitle level={1} style={{ margin: `auto`, marginBottom:`20px` }}>Teaching Subjects</FormStyled.FormTitle>
+                        <FormStyled.FormTitle level={1} style={{ margin: `auto`, marginBottom: `20px` }}>Teaching Subjects</FormStyled.FormTitle>
                         <FormStyled.FormItem
                             name="teachingPricePerHour" hidden />
 
@@ -389,7 +399,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                         <FormStyled.FormItem
                             name="subjects"
                             $width={"100%"}
-                            hidden={needDocument.length !== 0}
+                            hidden={addDoc}
                             rules={[{
                                 required: true,
                                 message: 'Please choose a subject'
@@ -406,7 +416,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                                 </Row>
                             </FormStyled.CheckboxGroup>
                         </FormStyled.FormItem>
-                        {needDocument.length !== 0 && mapSubjects(needDocument)}
+                        {addDoc && mapSubjects(needDocument)}
                     </FormStyled.FormContainer>
                 </FormStyled.FormWrapper>
             </Modal>
