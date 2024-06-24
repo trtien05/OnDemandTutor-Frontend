@@ -1,12 +1,13 @@
+
 const PRIMARY_COLOR: string = '#B94AB7';
-const SECONDARY_COLOR: string = '#31C3E0';
+const SECONDARY_COLOR: string = '#F4D1F3';
 
 export const theme = {
     light: '',
     dark: '',
     colors: {
         primary: PRIMARY_COLOR,
-        secondary: '#31C3E0',
+        secondary: SECONDARY_COLOR,
         facebook: '#1877F2',
         info: '#1677FF',
         warning: '#FAAD14',

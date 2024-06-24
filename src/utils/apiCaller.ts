@@ -1,5 +1,4 @@
 import axios, { AxiosResponse } from 'axios';
-
 import config from '../config';
 import cookieUtils from './cookieUtils';
 
@@ -21,11 +20,11 @@ export const request = (
     body: object = {},
 ): Promise<AxiosResponse> => {
     const token = cookieUtils.getToken();
-
+    const authHeaders = token ? { Authorization: `Bearer ${token}` } : {};
     return axios({
         url: config.publicRuntime.API_URL + endpoint,
         method: method,
-        headers: Object.assign({}, headers, { Authorization: `Bearer ${token}` }),
+        headers: Object.assign({}, headers, authHeaders),
         params: Object.assign(params),
         data: body,
     });

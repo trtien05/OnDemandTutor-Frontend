@@ -2,6 +2,7 @@ import { BrowserRouter as Router } from 'react-router-dom';
 import RoutesComponent from './routes';
 
 function App() {
+
   return (
     <Router>
       <RoutesComponent />
@@ -9,4 +10,4 @@ function App() {
   )
 }
 
-export default App
+export default App;
