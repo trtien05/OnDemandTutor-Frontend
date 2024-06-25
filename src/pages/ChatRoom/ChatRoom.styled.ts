@@ -6,6 +6,8 @@ export const ChatBox = styled.div`
     display: flex;
     flex-direction: column;
     height: 600px;
+    width: 100%;
+
     border-left: 1px solid #e8e8e8;
 `;
 
@@ -20,12 +22,15 @@ export const Message = styled.div<MessageProps>`
     display: flex;
     align-items: center;
     margin-bottom: 30px;
-    flex-direction: ${(props) => (props.self ? 'row-reverse' : 'row')};
+    justify-content: ${(props) => (props.self ? 'flex-end' : 'flex-start')};
 `;
 
 export const MessageData = styled.div<MessageProps>`
     margin: 0 10px;
-    text-align: ${(props) => (props.self ? 'right' : 'left')};
+    display: flex;
+
+    flex-direction: ${(props) => (props.self ? 'row-reverse' : 'row')};
+    align-items: center;
 `;
 
 export const SendMessage = styled.div`

@@ -14,6 +14,7 @@ import iconBachelor from "../../assets/images/image13.png";
 import Schedule from "../../components/Schedule/Schedule";
 import BookTutor from "../../components/Popup/BookTutor";
 import { UserOutlined } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -123,7 +124,12 @@ const TutorDetail: React.FC = () => {
 
     fetchData();
   }, [tutorId]);
+  const navigate = useNavigate();
+  console.log(tutorId);
 
+  const handleSendMessage = () => {
+    navigate(`/chat-room`, { state: { tutorId: tutor?.id, tutorName: tutor?.fullName, tutorAvatar: tutor?.avatarUrl } });
+  };
   const onLoadMore = async () => {
     setLoading(true);
     try {
@@ -145,6 +151,7 @@ const TutorDetail: React.FC = () => {
   if (error) {
     return <div>{error}</div>;
   }
+
 
   const loadMore = !loading ? (
     <Row>
@@ -168,6 +175,8 @@ const TutorDetail: React.FC = () => {
                   {tutor.avatarUrl ? (
                     <Avatar
                       src={tutor.avatarUrl}
+                      icon={<UserOutlined />}
+                      size={150}
                       style={{
                         width: '210px',
                         height: '210px',
@@ -178,6 +187,7 @@ const TutorDetail: React.FC = () => {
                     />
                   ) : (
                     <Avatar
+                      size={150}
                       icon={<UserOutlined />}
                       style={{
                         width: '210px',
@@ -343,10 +353,8 @@ const TutorDetail: React.FC = () => {
                     <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
                   </div>
                 </Styled.BookingInformation>
-                {/* <Styled.BookingTutorButton> */}
                 <BookTutor tutorId={tutorId} />
-                {/* </Styled.BookingTutorButton> */}
-                <Styled.SendMessageButton>Send message</Styled.SendMessageButton>
+                <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
                 <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
               </Styled.TutorVideoCard>
             </Col>

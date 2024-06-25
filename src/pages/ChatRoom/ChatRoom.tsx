@@ -1,59 +1,60 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
-import './style.css'
-import * as Styled from './ChatRoom.styled.ts';
+import './style.css';
+import * as Styled from './ChatRoom.styled';
 import { Avatar, Button, Input, Layout, List, Typography } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
-import Container from '../../components/Container/Container.tsx';
+import Container from '../../components/Container/Container';
+import useAuth from '../../hooks/useAuth.ts';
+import { useParams } from 'react-router-dom';
 const { Text } = Typography;
 
 type ChatMessage = {
-  senderName: string;
-  receiverName?: string;
+  senderId: number;
+  receiverId?: number;
   message: string;
   status: string;
+  receiverAvatarUrl?: string;
+  receiverFullName?: string;
 };
 
 type UserData = {
-  username: string;
-  receivername: string;
+  id: number;
+  avatarUrl: string;
+  receiverId: number;
   connected: boolean;
   message: string;
+  name?: string; // Add name to UserData type if not already included
+
 };
 
-type PublicChatMessage = {
-  senderName: string;
-  message: string;
-  status: string;
-};
 
 let stompClient: Client | null = null;
 
 const ChatRoom: React.FC = () => {
-  const [privateChats, setPrivateChats] = useState<Map<string, ChatMessage[]>>(new Map());
-  const [publicChats, setPublicChats] = useState<PublicChatMessage[]>([]);
+  const { user } = useAuth();
+  const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
   const [tab, setTab] = useState<string>("CHATROOM");
   const [userData, setUserData] = useState<UserData>({
-    username: '',
-    receivername: '',
+    id: user?.id || 0,
+    avatarUrl: user?.avatarUrl || '',
+    receiverId: 0,
     connected: false,
-    message: ''
+    message: '',
+    name: user?.fullName || ''
   });
 
   useEffect(() => {
-    console.log(userData);
-  }, [userData]);
-
-  useEffect(() => {
-    if (userData.connected) {
-      fetchUsers();
-      fetchMessages();
+    if (user && !userData.connected) {
+      setUserData({ ...userData, id: user.id, avatarUrl: user.avatarUrl, name: user.fullName });
+      connect();
     }
-  }, [userData.connected]);
+  }, [user]);
+
 
   const connect = () => {
     let Sock = new SockJS('http://localhost:8080/ws');
@@ -63,87 +64,58 @@ const ChatRoom: React.FC = () => {
 
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
-    stompClient?.subscribe('/chatroom/public', onMessageReceived);
-    stompClient?.subscribe('/user/' + userData.username + '/private', onPrivateMessage);
+    stompClient?.subscribe(`/user/${userData.id}/private`, onPrivateMessage);
     userJoin();
   };
 
   const userJoin = () => {
     var chatMessage = {
-      senderName: userData.username,
+      senderId: userData.id,
       status: "JOIN",
-      message: ""
+      message: "",
+      avatarUrl: userData.avatarUrl
     };
     stompClient?.send("/app/message", {}, JSON.stringify(chatMessage));
   };
 
-  const fetchUsers = async () => {
-    try {
-      const response = await fetch(`/api/users`);
-      const data: { username: string }[] = await response.json();
-
-      data.forEach(user => {
-        if (!privateChats.has(user.username)) {
-          privateChats.set(user.username, []);
-        }
-      });
-      setPrivateChats(new Map(privateChats));
-
-    } catch (error) {
-      console.error('Error fetching users: ', error);
-    }
-  };
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`/api/messages/${userData.username}`);
+      const response = await fetch(`http://localhost:8080/api/messages/accounts/${user?.id}`);
+      console.log(response);
       const data: ChatMessage[] = await response.json();
-
-      const publicMsgs = data.filter(msg => !msg.receiverName) as PublicChatMessage[];
-      const privateMsgs = data.filter(msg => msg.receiverName);
-
-      setPublicChats(publicMsgs);
-
-      privateMsgs.forEach(msg => {
-        const isSelfMessage = msg.senderName === msg.receiverName;
-        const chatKey = isSelfMessage ? userData.username : (msg.senderName === userData.username ? msg.receiverName! : msg.senderName);
-
-        if (!privateChats.has(chatKey)) {
-          privateChats.set(chatKey, []);
+      // console.log(data);
+      const newPrivateChats = new Map(privateChats);
+      data.forEach(msg => {
+        if (msg.senderId === userData.id) {
+          const chatKey = msg.senderId === userData.id ? msg.receiverId! : msg.senderId;
+          if (!newPrivateChats.has(chatKey)) {
+            newPrivateChats.set(chatKey, []);
+          }
+          newPrivateChats.get(chatKey)!.push(msg);
         }
-        privateChats.get(chatKey)!.push(msg);
       });
-      setPrivateChats(new Map(privateChats));
+      setPrivateChats(new Map(newPrivateChats));
     } catch (error) {
       console.error('Error fetching messages: ', error);
     }
   };
+  useEffect(() => {
+    if (userData.connected) {
+      fetchMessages();
 
-  const onMessageReceived = (payload: { body: string }) => {
-    var payloadData = JSON.parse(payload.body);
-    switch (payloadData.status) {
-      case "JOIN":
-        if (!privateChats.get(payloadData.senderName)) {
-          privateChats.set(payloadData.senderName, []);
-          setPrivateChats(new Map(privateChats));
-        }
-        break;
-      case "MESSAGE":
-        publicChats.push(payloadData);
-        setPublicChats([...publicChats]);
-        break;
     }
-  };
+  }, [userData.connected]);
 
   const onPrivateMessage = (payload: { body: string }) => {
     var payloadData = JSON.parse(payload.body);
-    if (privateChats.get(payloadData.senderName)) {
-      privateChats.get(payloadData.senderName)!.push(payloadData);
+    if (privateChats.get(payloadData.senderId)) {
+      privateChats.get(payloadData.senderId)!.push(payloadData);
       setPrivateChats(new Map(privateChats));
     } else {
       let list: ChatMessage[] = [];
       list.push(payloadData);
-      privateChats.set(payloadData.senderName, list);
+      privateChats.set(payloadData.senderId, list);
       setPrivateChats(new Map(privateChats));
     }
   };
@@ -157,29 +129,21 @@ const ChatRoom: React.FC = () => {
     setUserData({ ...userData, message: value });
   };
 
-  const sendValue = () => {
-    if (stompClient) {
-      var chatMessage: PublicChatMessage = {
-        senderName: userData.username,
-        message: userData.message,
-        status: "MESSAGE"
-      };
-      stompClient.send("/app/message", {}, JSON.stringify(chatMessage));
-      setUserData({ ...userData, message: "" });
-    }
-  };
 
   const sendPrivateValue = () => {
     if (stompClient) {
       var chatMessage: ChatMessage = {
-        senderName: userData.username,
-        receiverName: tab,
+        senderId: userData.id,
+        receiverId: parseInt(tab),
         message: userData.message,
-        status: "MESSAGE"
+        status: "MESSAGE",
+        receiverAvatarUrl: userData.avatarUrl,
+        receiverFullName: userData.name
       };
+      console.log(chatMessage);
 
-      if (userData.username !== tab) {
-        privateChats.get(tab)!.push(chatMessage);
+      if (userData.id !== parseInt(tab)) {
+        privateChats.get(parseInt(tab))!.push(chatMessage);
         setPrivateChats(new Map(privateChats));
       }
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
@@ -187,14 +151,7 @@ const ChatRoom: React.FC = () => {
     }
   };
 
-  const handleUsername = (event: ChangeEvent<HTMLInputElement>) => {
-    const { value } = event.target;
-    setUserData({ ...userData, username: value });
-  };
-
-  const registerUser = () => {
-    connect();
-  };
+  console.log(privateChats);
 
   return (
     <Layout>
@@ -204,11 +161,11 @@ const ChatRoom: React.FC = () => {
             <List
               itemLayout="horizontal"
               dataSource={[...privateChats.keys()]}
-              renderItem={name => (
-                <List.Item onClick={() => setTab(name)} style={{ cursor: 'pointer', background: tab === name ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
+              renderItem={(id) => (
+                <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
                   <List.Item.Meta
-                    avatar={<Avatar size={50} style={{ backgroundColor: '#87d068' }}>{name.charAt(0).toUpperCase()}</Avatar>}
-                    title={name}
+                    avatar={<Avatar size={50} src={privateChats.get(id)?.[0]?.receiverAvatarUrl || ''} />}
+                    title={privateChats.get(id)?.[0]?.receiverFullName || ``}
                     description="Lastest message..."
                   />
                 </List.Item>
@@ -219,16 +176,17 @@ const ChatRoom: React.FC = () => {
           <Content style={{ minHeight: 280 }}>
             <Styled.ChatBox>
               <Styled.ChatMessages>
-                {(tab === 'CHATROOM' ? publicChats : (privateChats.get(tab) ?? [])).map((chat, index) => {
-                  const isSelfMessage = chat.senderName === userData.username;
+                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
+                  const isSelfMessage = chat.senderId === userData.id;
                   return (
                     <Styled.Message self={isSelfMessage} key={index}>
-                      {!isSelfMessage && <Avatar size={40} style={{ backgroundColor: '#87d068' }}>{chat.senderName[0].toUpperCase()}</Avatar>}
+                      {!isSelfMessage && <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>}
                       <Styled.MessageData self={isSelfMessage}>
-                        <Text strong>{chat.senderName}</Text>
+                        {!isSelfMessage && <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>}
+                        <Text strong>{!isSelfMessage && chat.senderId}</Text>
                         <p>{chat.message}</p>
                       </Styled.MessageData>
-                      {isSelfMessage && <Avatar size={40} style={{ backgroundColor: '#87d068' }}>{chat.senderName[0].toUpperCase()}</Avatar>}
+                      {isSelfMessage && <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>}
                     </Styled.Message>
                   );
                 })}
@@ -246,20 +204,14 @@ const ChatRoom: React.FC = () => {
                   shape="circle"
                   disabled={!userData.message}
                   icon={<SendOutlined />}
-                  onClick={tab === 'CHATROOM' ? sendValue : sendPrivateValue} />
-
+                  onClick={sendPrivateValue} />
               </Styled.SendMessage>
             </Styled.ChatBox>
           </Content>
         </>
-      ) : (
-        <Styled.Register>
-          <Input id="user-name" placeholder="Enter your name" value={userData.username} onChange={handleUsername} />
-          <Button type="primary" onClick={registerUser}>Connect</Button>
-        </Styled.Register>
+      ) : (null
       )}
     </Layout>
-
   );
 };
 

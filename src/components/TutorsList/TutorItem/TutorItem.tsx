@@ -32,12 +32,13 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
               {item.avatarUrl ? (
                 <Link to={route}>
                   <Avatar
-                    size={64}
+                    size={150}
                     src={item.avatarUrl}
+                    icon={<UserOutlined />}
                     style={{
                       cursor: 'pointer',
                       width: '210px',
-                      height: '100%',
+                      height: '210px',
                       borderRadius: '50px',
                       left: '-5px',
                       bottom: '2px',
@@ -49,13 +50,12 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
               ) : (
                 <Link to={route}>
                   <Avatar
-                    size={64}
-                    icon={<UserOutlined />}
+                    size={150}
                     style={{
                       cursor: 'pointer',
                       width: '210px',
-                      height: '100%',
-                      borderRadius: '50px',
+                      height: '210px',
+                      borderRadius: '100px',
                       left: '-5px',
                       bottom: '2px',
                       boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
