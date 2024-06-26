@@ -1,4 +1,4 @@
-import { theme } from '@/themes';
+import { theme } from '../../themes';
 import { FcGoogle } from 'react-icons/fc';
 import { BsFacebook, BsApple } from 'react-icons/bs';
 

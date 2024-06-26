@@ -2,34 +2,24 @@ import { AccountStatus, Gender, Role } from '../utils/enums';
 import { useCallback, useEffect, useState } from 'react';
 
 import cookieUtils from '../utils/cookieUtils';
-// import { getInfoCurrentUser } from '../utils/accountAPI';
+import { getInfoCurrentUser } from '../utils/accountAPI';
 
-type PayloadType = {
+type JwtType = {
+    exp: number;
     id: number;
     role: string;
     fullname: string;
     email: string;
-};
-
-type JwtType = {
-    exp: number;
-    payload: PayloadType;
+    accountStatus: AccountStatus;
 };
 
 export type UserType = {
-    avatar: string;
-    emailAddress: string;
-    emailValidationStatus: boolean;
+    avatarUrl: string;
+    email: string;
     fullName: string;
     phoneNumber: string | null;
-    role: string;
-    userId: number;
-    address: string | null;
-    // proficiencyScore: number;
-    avgRating: number;
-    accountStatus: AccountStatus;
+    id: number;
     createdAt: Date | string;
-    // identityCard: string | null;
     dateOfBirth: Date | string | null;
     gender: Gender;
 };
@@ -38,9 +28,9 @@ export type UserType = {
 const getRole = () => {
     const decoded = cookieUtils.decodeJwt() as JwtType;
 
-    if (!decoded || !decoded.payload || !decoded.payload.role) return null;
+    if (!decoded || !decoded.role) return null;
 
-    return Role[decoded.payload.role];
+    return Role[decoded.role];
 };
 
 const useAuth = () => {
@@ -81,8 +71,8 @@ const useAuth = () => {
 
             // Fetch API to get info user
             const getInfo = async () => {
-                // const { data } = await getInfoCurrentUser();
-                // setUser(data);
+                const { data } = await getInfoCurrentUser();
+                setUser(data);
             };
 
             getInfo();

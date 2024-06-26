@@ -62,54 +62,6 @@ export const NavbarLink = styled(Link)`
     }
 `;
 
-export const HeaderButton = styled(Button)`
-    --height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-left: auto;
-    min-width: 112px;
-    height: var(--height);
-    line-height: var(--height);
-    background-color: ${theme.colors.secondary};
-    border-radius: 2px;
-    border: 1px solid ${theme.colors.secondary};
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-color: ${theme.colors.white};
-        border-radius: 2px;
-        transform: scaleX(0);
-        transition: ${theme.transition.primary};
-    }
-
-    & span {
-        position: relative;
-        color: ${theme.colors.white};
-        font-size: 1.6rem;
-        font-weight: 500;
-        line-height: 1.5;
-        text-transform: uppercase;
-        transition: ${theme.transition.primary};
-    }
-
-    &.ant-btn.ant-btn-default:hover {
-        border-color: ${theme.colors.secondary};
-    }
-
-    &:hover::before {
-        transform: scaleX(1);
-    }
-
-    &:hover span {
-        color: ${theme.colors.secondary};
-    }
-`;
-
 export const HeaderAvatarWrapper = styled.div`
     width: 100%;
 

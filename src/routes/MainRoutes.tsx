@@ -1,9 +1,9 @@
-import { Navigate } from 'react-router-dom';
 import config from '../config';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
 import Home from '../pages/Home';
-import Login from '../pages/Login';
+import SearchTutors from '../pages/SearchTutors/SearchTutors';
+import TutorDetail from '../pages/TutorDetail';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -35,7 +35,8 @@ const MainRouter = () => {
 const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
-        //...
+        { path: config.routes.public.searchTutors, element: <SearchTutors /> },
+        { path: config.routes.public.tutorDetails, element: <TutorDetail /> },
     ],
 };
 
