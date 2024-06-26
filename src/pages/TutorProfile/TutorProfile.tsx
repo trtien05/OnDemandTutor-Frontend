@@ -153,7 +153,6 @@ const TutorProfile = () => {
                                                 />
                                             )}
                                             <Title level={1}>{user?.fullName}</Title>
-                                            <Text>Tutoring since: </Text>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Overview</Title>
 
@@ -229,7 +228,8 @@ const TutorProfile = () => {
                                                     </Skeleton>
                                                </Style.ProfileInfoBox>
                                                <div style={{textAlign:`right`}}>
-                                             { user?.id && tutorDetails &&
+                                             { user?.id && tutorDetails && 
+                                             tutorEducation && tutorCert &&
                                              <SubjectForm tutorId={user?.id} 
                                                 isUpdate={isUpdate}
                                                 tutorDetails={tutorDetails} 
@@ -239,11 +239,12 @@ const TutorProfile = () => {
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>
+                                                <Skeleton loading={loading} paragraph={false}>
                                                 {user?.id &&
                                                     (<div style={{ textAlign: `right` }}>
                                                         <Schedule tutorId={user?.id} scheduleType='tutorProfile' update={updateSchedule} />
                                                         <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
-
+                                                </Skeleton>
                                             </Style.ProfileInfoItem>
                                         </Style.ProfileContent>
                                     </Col>
@@ -260,7 +261,8 @@ const TutorProfile = () => {
                             <Style.ProfileWrapper>
                                 <Row gutter={40}>
                                     <Col span={24}>
-                                        <Flex vertical gap="middle">
+                                    <Skeleton loading={loading} paragraph={false}>
+                                        <Flex vertical gap="middle" >
                                             <Radio.Group defaultValue={tableDisplay}
                                                 onChange={(e) => setTableDisplay(e.target.value)}
                                                 buttonStyle="solid">
@@ -268,7 +270,7 @@ const TutorProfile = () => {
                                                 <Radio.Button value="certificate">Certificates</Radio.Button>
                                             </Radio.Group>
                                         </Flex>
-                                        <div style={{ textAlign: `right`, margin: `20px` }}>
+                                        <div style={{ textAlign: `right`, margin: `20px`,overflow:`scroll` }}>
                                             {tableDisplay.includes("education") ? (<>
                                                 <TableComponent dataType={tableDisplay}
                                                     EducationData={tutorEducation} />
@@ -284,6 +286,7 @@ const TutorProfile = () => {
                                                         isUpdate={isUpdateCert} />
                                                 }</>}
                                         </div>
+                                        </Skeleton>
                                     </Col>
                                 </Row>
                             </Style.ProfileWrapper>

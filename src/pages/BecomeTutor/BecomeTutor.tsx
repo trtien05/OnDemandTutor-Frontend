@@ -236,6 +236,7 @@ const BecomeTutor = () => {
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
+    console.log(values)
     if (accountId) {
       await saveData(values, accountId);
       saveBecomeTutor(accountId);
