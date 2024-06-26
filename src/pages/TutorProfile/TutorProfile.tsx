@@ -16,8 +16,8 @@ import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import { useNavigate } from 'react-router-dom';
-import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 import SubjectForm from './FormComponent/SubjectForm';
+import Schedule from '../../components/Schedule/Schedule';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -233,15 +233,15 @@ const TutorProfile = () => {
                                              <SubjectForm tutorId={user?.id} 
                                                 isUpdate={isUpdate}
                                                 tutorDetails={tutorDetails} 
-                                                educationData={tutorEducation}
-                                                certificateData={tutorCert} />}
+                                                educationData={tutorEducation? tutorEducation:[]}
+                                                certificateData={tutorCert? tutorCert:[]} />}
                                                 </div>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>
                                                 {user?.id &&
                                                     (<div style={{ textAlign: `right` }}>
-                                                        <DisplaySchedule tutorId={user?.id} noRestricted={true} update={updateSchedule} />
+                                                        <Schedule tutorId={user?.id} scheduleType='tutorProfile' update={updateSchedule} />
                                                         <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
 
                                             </Style.ProfileInfoItem>
