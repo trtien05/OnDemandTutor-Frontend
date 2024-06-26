@@ -3,6 +3,43 @@ export enum PageEnum {
     REGISTER = 'Register',
     FORGOT_PASSWORD = 'ForgotPassword',
     SET_PASSWORD = 'SetPassword',
+    VERIFY_EMAIL = 'VerifyCode',
+}
+
+export enum Degree {
+    ASSOCIATE = 'Associate',
+    BACHELOR = 'Bachelor',
+    MASTER = 'Master',
+    DOCTORAL = 'Doctoral',
+}
+
+export enum Subject {
+    MATH = 'Math',
+    CHEMISTRY = 'Chemistry',
+    BIOLOGY = 'Biology',
+    PHYSICS = 'Physics',
+    GEOGRAPHY = 'Geography',
+
+    LITERATURE = 'Literature',
+    ENGLISH = 'English',
+
+    IELTS = 'IELTS',
+    TOEIC = 'TOEIC',
+    TOEFL = 'TOEFL',
+
+    CODING = 'Coding',
+
+    HISTORY = 'History',
+
+    OTHER = 'Other',
+}
+
+
+export enum AccountStatus {
+    ACTIVE = 'ACTIVE',
+    INACTIVE = 'UNVERIFIED',
+    PROCESSING = 'PROCESSING',
+    BANNED = 'BANNED',
 }
 
 export const Role: { [key: string]: string } = {
@@ -164,18 +201,6 @@ export enum TaskStatusLabel {
     CANCELLED = 'Đã hủy',
 }
 
-export enum AccountStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'INACTIVE',
-    BANNED = 'BANNED',
-}
-
-export enum AccountStatusLabel {
-    ACTIVE = 'Đang hoạt động',
-    INACTIVE = 'Ngừng hoạt động',
-    BANNED = 'Đã bị cấm',
-}
-
 export enum Config {
     SERVICE_GROUPS = 'SERVICE_GROUPS',
     SERVICE_UNITS = 'SERVICE_UNITS',
@@ -229,7 +254,14 @@ export enum CancelOption {
 }
 
 export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER',
+    MALE = 1,
+    FEMALE = 0,
+    
+}
+export enum AppointmentStatus {
+    PROCESSING = 'PROCESSING',
+    CONFIRMED = 'CONFIRMED',
+    CANCELED = 'CANCELED',
+    SUCCESS = 'SUCCESS',
+    FAILED = 'FAILED',
 }

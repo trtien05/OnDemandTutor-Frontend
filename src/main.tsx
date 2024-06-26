@@ -1,8 +1,8 @@
-import React from 'react'
 import { AntdThemeConfig } from './themes/';
-import viVN from 'antd/es/locale/vi_VN';
+
 import ReactDOM from 'react-dom/client'
 import App from './App.tsx'
+import { StrictMode } from 'react';
 import GlobalStyles from './themes/globalStyles.ts';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
 import { createStyledBreakpointsTheme } from 'styled-breakpoints';
@@ -22,15 +22,17 @@ export const breakpoints = {
 const theme: DefaultTheme = createStyledBreakpointsTheme({
   breakpoints,
 });
+
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <React.StrictMode>
+  <StrictMode>
     <ThemeProvider theme={theme}>
-      <ConfigProvider locale={viVN} theme={AntdThemeConfig}>
+      <ConfigProvider  theme={AntdThemeConfig}>
         <AppAntd>
           <App />
         </AppAntd>
         <GlobalStyles />
       </ConfigProvider>
     </ThemeProvider>
-  </React.StrictMode>,
+  </StrictMode>
+
 )
