@@ -69,7 +69,6 @@ const Schedule: React.FC<ScheduleProps> = ({
                 if (day.dayOfMonth < demo.getDate()) 
                   demo.setMonth(demo.getMonth() + 1)
                 demo.setDate(day.dayOfMonth);
-                console.log(demo)
                 const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
                 if (timeslotStart > currentDate) {
                   const value = {
