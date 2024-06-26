@@ -40,7 +40,7 @@ const validateBirthDate = (_: unknown, value: string) => {
 export const fields: FieldType[] = [
     {
         key: 1,
-        label: 'Fullname',
+        label: 'Full Name',
         name: 'fullName',
         rules: [
             {

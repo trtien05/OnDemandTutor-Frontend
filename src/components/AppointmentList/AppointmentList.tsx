@@ -1,12 +1,13 @@
 import React from 'react';
 import { Col, List, Row } from 'antd';
-import * as Styled from '../QuestionList/Question.styled';
+import * as Styled from './Appointment.styled';
 import Container from '../Container';
-import { Appointment } from './Appointment.type';
+import { Appointment, TimeSlot } from './Appointment.type';
 import AppointmentItem from './AppointmentItem/AppointmentItem';
+import { useAuth } from '../../hooks';
 
-const AppointmentList: React.FC<{ list: Appointment[], initLoading: boolean }> = (props) => {
-
+const AppointmentList: React.FC<{ list: TimeSlot[], initLoading: boolean }> = (props) => {
+  const {user} = useAuth();
 
   return (
     <>
@@ -21,7 +22,7 @@ const AppointmentList: React.FC<{ list: Appointment[], initLoading: boolean }> =
                   dataSource={props.list}
                   renderItem={(item) => (
                     <Styled.TutorItem>
-                      <AppointmentItem item={item} />
+                      <AppointmentItem item={item} user={user} />
                     </Styled.TutorItem>
                   )}
                 />

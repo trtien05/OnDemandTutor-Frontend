@@ -12,6 +12,7 @@ import SearchQuestions from '../pages/Questions/SearchQuestions';
 import { Navigate, useLocation } from 'react-router-dom';
 import cookieUtils from '../utils/cookieUtils';
 import Profile from '../pages/Student/Profile/Profile';
+import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -37,7 +38,8 @@ const studentRoutes = {
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
-        { path: config.routes.student.profile, element: <Profile/> }
+        { path: config.routes.student.profile, element: <Profile/> },
+        { path: config.routes.student.studentSchedule, element: <StudentAppointment/> }
     ],
 };
 

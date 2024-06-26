@@ -139,13 +139,13 @@ export const BookingTutorButton = styled.button`
 
 export const TutorFilteredSection = styled.section`
     margin-top: 20px;
-    margin-bottom: 80px;
+    margin-bottom: 50px;
 `;
 export const TotalTutorAvaiable = styled(Title)`
     &.ant-typography {
-        text-align: center;
-        color: #fff;
-        font-size: 48px;
+        text-align: left;
+        color: ${theme.colors.primary};
+        font-size: 25px;
         font-style: normal;
         font-weight: 800;
         line-height: normal;
@@ -159,7 +159,8 @@ export const SearchWrapper = styled.div`
     width: 100%;`;
 
 export const RowWrapper = styled(Row)`
-    margin-top: 20px;
+    margin: 20px 0;
+    padding-top: 3%;
 `;
 
 export const InputStyled = styled(Input)`

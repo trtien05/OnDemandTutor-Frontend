@@ -1,6 +1,6 @@
 import { BrowserRouter as Router } from 'react-router-dom';
 import RoutesComponent from './routes';
-import Appointment from './pages/Student/Appointment/Appointment';
+import StudentAppointment from './pages/Student/Appointment/StudentAppointment';
 import QuestionItem from './components/AppointmentList/AppointmentItem/AppointmentItem';
 // import Profile from './pages/Customer/Profile/Profile';
 
@@ -11,7 +11,7 @@ function App() {
       <RoutesComponent />
     </Router>
     // <>
-    //   <Appointment />
+    //   <StudentAppointment />
     // </>
   )
 }

@@ -19,8 +19,8 @@ const items: MenuProps['items'] = [
         key: config.routes.student.profile,
     },
     {
-        label: <Link to={config.routes.student.appointment}>Appointment</Link>,
-        key: config.routes.student.appointment,
+        label: <Link to={config.routes.student.studentSchedule}>My Schedule</Link>,
+        key: config.routes.student.studentSchedule,
     },
     {
         type: 'divider',

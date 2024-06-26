@@ -17,13 +17,14 @@ export const TutorItem = styled(List.Item)`
 `;
 export const BoxHover = styled.div`
     position: relative;
-    margin-bottom: 30px;
+    // margin-bottom: 30px;
 `;
 
 export const QuestionItem = styled(Row)`
     // cursor: pointer;
-    background-color: ${theme.colors.primary};
+    background-color: #F4D1F3;
     border-radius: 25px;
+    border: 1px solid ${theme.colors.primary};
     & .ant-list-item {
         border-block-end: none;
     }
@@ -54,7 +55,7 @@ export const Name = styled(Title)`
     }
 `;
 export const QuestionRow = styled.div`
-    color: #fff;
+    color: #000;
     display: flex;
     align-items: center;
     align-content: center;
@@ -70,6 +71,7 @@ export const QuestionRowSpan = styled.span`
     align-items: center;
     align-content: center;
     margin-right: 2%;
+    color: #000;
 `;
 export const BestTutorStudent = styled.div`
     display: flex;
@@ -161,7 +163,7 @@ export const Button = styled.button`
 
 export const TutorFilteredSection = styled.section`
     margin-top: 20px;
-    margin-bottom: 80px;
+    margin-bottom: 50px;
 `;
 export const TotalTutorAvaiable = styled(Title)`
     &.ant-typography {

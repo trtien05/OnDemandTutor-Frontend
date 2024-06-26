@@ -259,9 +259,10 @@ export enum Gender {
     
 }
 export enum AppointmentStatus {
-    PROCESSING = 'PROCESSING',
-    CONFIRMED = 'CONFIRMED',
-    CANCELED = 'CANCELED',
-    SUCCESS = 'SUCCESS',
+    PENDING_PAYMENT= 'PENDING_PAYMENT',
+    PAID = 'PAID',
     FAILED = 'FAILED',
+    CANCELED = 'CANCELED',
+    REFUNDED = 'REFUNDED',
+    DONE = 'DONE',
 }

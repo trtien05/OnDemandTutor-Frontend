@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-
+import { theme } from '../../../../themes';
 export const NavWrapper = styled.nav`
     display: flex;
     margin-bottom: 20px;
@@ -11,7 +11,7 @@ export const NavWrapper = styled.nav`
 
 export const PageItem = styled.li`
     margin: 0 5px;
-    color: #fff;
+    color: ${theme.colors.primary};
 
     &.active {
         background: #d1b3fc;
@@ -26,7 +26,7 @@ export const ButtonItem = styled.button`
     border-radius: 50%;
     background: none;
     cursor: pointer;
-    color: #fff;
+    color: ${theme.colors.primary};
     transition: background 0.3s ease;
 
     &:hover {

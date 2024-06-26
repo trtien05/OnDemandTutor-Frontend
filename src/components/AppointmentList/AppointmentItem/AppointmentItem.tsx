@@ -2,61 +2,26 @@ import React, { useState } from 'react';
 import { Col, Skeleton, Avatar, Modal } from 'antd';
 import iconBachelor from '../../../assets/images/image13.png';
 import * as Styled from '../Appointment.styled';
-import { Question } from '../../QuestionList/Question.type';
-import { CloseOutlined, UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
-import { Appointment } from '../Appointment.type';
+import { CloseOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
+import { Appointment, TimeSlot } from '../Appointment.type';
+import { UserType } from '../../../hooks/useAuth';
 
 interface AppointmentItemProps {
-    item: Appointment;
+    item: TimeSlot;
+    user?: UserType;
+    onCancel: (timeslotId: number) => void; // Define the onCancel callback prop
 }
 
 // QuestionItemProps
-const AppointmentItem: React.FC<AppointmentItemProps> = ({ item }) => {
-    // const [open, setOpen] = useState(false);
-    // const truncateContent = (content: string, maxLength: number) => {
-    //     if (content.length <= maxLength) {
-    //         return content;
-    //     }
-    //     return content.substring(0, maxLength) + '...';
-    // };
-    // const showModal = () => {
-    //     setOpen(true);
-    // };
-    // const handleCancel = () => {
-    //     console.log('Clicked cancel button');
-    //     setOpen(false);
-    // };
-    //This function extracts the file extension from the URL correctly
-    //by using the URL constructor, which handles query parameters.
-    // const getFileExtension = (url: string) => {
-    //     const path = new URL(url).pathname;
-    //     const ext = path.split('.').pop();
-    //     return ext ? ext.toLowerCase() : '';
-    // };
-    //This function now uses getFileExtension
-    //to determine the file type and render the image or link accordingly.
-    // const renderQuestionFile = (url: string) => {
-    //     const fileExtension = getFileExtension(url);
-    //     console.log(fileExtension); // for debugging
-
-    //     if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
-    //         return <Styled.QuestionImage src={url} alt="Question Image" />;
-    //     } else if (fileExtension === 'pdf') {
-    //         return (
-    //             <a
-    //                 href={url}
-    //                 target="_blank"
-    //                 rel="noopener noreferrer"
-    //                 style={{ fontStyle: 'italic', textDecoration: 'underline' }}
-    //             >
-    //                 Click to download PDF file
-    //             </a>
-    //         );
-    //     }
-    //     return null;
-    // };
+const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel }) => {
+    const { startTime, endTime, scheduleDate, appointment,  } = item;
+    // const timeslot = item.timeslots[0];
+    const appointmentDate = new Date(`${scheduleDate}T${startTime}`);
+    const isTutor = user?.role === 'TUTOR';
+    const displayPerson = isTutor ? appointment.student : appointment.tutor;
+    
     return (
-        <Skeleton avatar title={false} loading={item.loading} active>    
+        <Skeleton avatar title={false} loading={item.loading} active>
             <Styled.StyleCol lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
                     {/* justify="space-between" */}
@@ -65,22 +30,28 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item }) => {
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
                                     style={{
+                                        fontSize: '18px',
                                         fontWeight: 'bold',
                                         textAlign: 'center',
                                         display: 'block',
                                     }}
                                 >
-                                    MAR
+                                    {appointmentDate.toLocaleString('default', { month: 'short' }).toUpperCase()}
                                 </Styled.QuestionRow>
 
-                                <Styled.QuestionRow 
-                                style={{
+                                <Styled.QuestionRow
+                                    style={{
+                                        fontSize: '18px',
                                         textAlign: 'center',
                                         display: 'block',
-                                    }}>11</Styled.QuestionRow>
+                                        fontWeight: 'bold',
+                                    }}
+                                >
+                                    {appointmentDate.getDate()}
+                                </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={8} md={20} sm={19} xs={16}>
+                        {/* <Styled.StyleCol lg={8} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 
                                 <Styled.QuestionRow>
@@ -90,36 +61,41 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item }) => {
                                             alignContent: 'center',
                                         }}
                                     >
-                                        Monday, 11:00 - 12:00
+                                        {appointmentDate.toLocaleString('default', { weekday: 'long' })}, {timeslot.startTime} - {timeslot.endTime}
                                     </Styled.QuestionRow>
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
+                        </Styled.StyleCol> */}
+                        <Styled.StyleCol lg={5} md={20} sm={19} xs={16}>
+                            <Styled.QuestionContent>
+                                <Styled.QuestionRow
+                                    style={{ fontSize: '16px', alignContent: 'center' }}
+                                >
+                                    {appointmentDate.toLocaleString('default', { weekday: 'long' })}
+                                    , {startTime} - {endTime}
+                                </Styled.QuestionRow>
+                            </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={8} md={24} sm={24} xs={24}>
-                        <Styled.QuestionRow>
-                            <Avatar
-                                size={64}
-                                src="https://firebasestorage.googleapis.com/v0/b/mytutor-swp391.appspot.com/o/1%2FCreateQuestion_2024-06-10%2Fconfident-asian-woman-face-portrait-smiling.jpg?alt=media&token=e2198820-1471-4737-84d4-161f8c806dc9"
-                                
-                            />
-                            
-                            <Styled.QuestionRowSpan
-                                style={{
-                                    fontWeight: 'bold',
-                                    marginLeft: '10px',
-                                    
-                                }}
-                            >
-                                {"Mia Basford,"}
-                            </Styled.QuestionRowSpan>
-                            <Styled.QuestionRowSpan
-                                
-                            >
-                            {"English"}
-                            </Styled.QuestionRowSpan>
+                        <Styled.StyleCol lg={10} md={24} sm={24} xs={24}>
+                            <Styled.QuestionRow>
+                                {displayPerson.avatarUrl ? (
+                                    <Avatar size={64} src={displayPerson.avatarUrl} />
+                                ) : (
+                                    <Avatar size={64} icon={<UserOutlined />} />
+                                )}
+
+                                <Styled.QuestionRowSpan
+                                    style={{
+                                        fontWeight: '500',
+                                        marginLeft: '10px',
+                                    }}
+                                >
+                                    {displayPerson.fullName},
+                                </Styled.QuestionRowSpan>
+                                <Styled.QuestionRowSpan>{appointment.subjectName}</Styled.QuestionRowSpan>
                             </Styled.QuestionRow>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={4} md={24} sm={24} xs={24}>
+                        <Styled.StyleCol lg={3} md={24} sm={24} xs={24}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
                                     style={{
@@ -128,20 +104,44 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item }) => {
                                         textDecoration: 'underline',
                                     }}
                                 >
-                                    Meet Link
+                                    <a
+                                        href={appointment.tutor.meetingLink}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        style={{ color: '#000' }}
+                                    >
+                                        Meet Link
+                                    </a>
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={2} md={24} sm={24} xs={24} style={{textAlign:'center'}}>
-                            <CloseOutlined style={{color:'#B52121', fontSize:'30px', cursor:'pointer'}}/>
+                        <Styled.StyleCol
+                            lg={2}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            style={{ textAlign: 'center' }}
+                        >
+                            <CalendarOutlined style={{ fontSize: '30px', cursor: 'pointer' }}
+                            />
+                            
+                        </Styled.StyleCol>
+                        <Styled.StyleCol
+                            lg={2}
+                            md={24}
+                            sm={24}
+                            xs={24}
+                            style={{ textAlign: 'center' }}
+                        >
+                            <CloseOutlined
+                                style={{ color: '#B52121', fontSize: '30px', cursor: 'pointer' }}
+                                onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
+                            />
                         </Styled.StyleCol>
                     </Styled.QuestionItem>
                 </Styled.BoxHover>
             </Styled.StyleCol>
-            
-
-            </Skeleton>
-        
+        </Skeleton>
     );
 };
 

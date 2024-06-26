@@ -1,9 +1,9 @@
 import React from 'react'
-import Container from '../../../components/Container';
+import Container from '../../../../components/Container/Container';
 import * as Styled from './AppointmentPagination.styled'
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 
-const Pagination:
+const AppointmentPagination:
   React.FC<{
     currentPage: number,
     totalPages: number,
@@ -60,4 +60,4 @@ const Pagination:
     )
   }
 
-export default Pagination
+export default AppointmentPagination
