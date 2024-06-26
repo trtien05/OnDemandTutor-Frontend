@@ -1,15 +1,14 @@
-import { Col, message, Grid, Typography, Space, Button, notification, Statistic } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic } from 'antd';
 import React, { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
-import tutorAva from "../../assets/images/image17.png"
 import rating from "../../assets/images/star.webp"
 import vnpayLogo from "../../assets/svg/vnpay-logo.svg"
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { getPaymentUrl, getTutorEducation, getTutorInfo } from '../../api/paymentAPI';
+import { getPaymentUrl, getTutorEducation, getTutorInfo } from '../../utils/paymentAPI';
 import cookieUtils from '../../utils/cookieUtils';
 import { Schedule, ScheduleEvent } from '../../components/Schedule/Schedule.type';
 import moment from 'moment';
@@ -74,30 +73,32 @@ const MakePayment = () => {
   const [tutor, setTutor] = useState<Tutor>();
   const location = useLocation();
   const [schedule, setSchedule] = useState<Schedule[]>();
-  const [appointmentData, setAppointmentData] = useState<any>(location.state?location.state.appointmentData?location.state.appointmentData:null:null); // [TODO] Replace any with the correct type
+  const [appointmentData, setAppointmentData] = useState<any>(location.state ? location.state.appointmentData ? location.state.appointmentData : null : null); // [TODO] Replace any with the correct type
 
-  const [tutorId, setTutorId] = useState<number>(appointmentData?appointmentData.tutorId?appointmentData.tutorId:0:0); // [TODO] Replace any with the correct type
-  const selectedSchedule = location.state?location.state.selectedSchedule?location.state.selectedSchedule:null:null; 
+  const [tutorId, setTutorId] = useState<number>(appointmentData ? appointmentData.tutor.tutorId ? appointmentData.tutor.tutorId : 0 : 0); // [TODO] Replace any with the correct type
+  const selectedSchedule = location.state ? location.state.selectedSchedule ? location.state.selectedSchedule : null : null;
   const [deadline, setDeadline] = useState(new Date().getTime() + 15 * 60 * 1000); // 15 minutes
   const navigate = useNavigate();
-  const {user} = useAuth();
+  const { user } = useAuth();
 
-  useEffect(() => {(async () => {
-    if (!user) navigate(config.routes.public.login);
-    if (location.state) {
-    await setAppointmentData(location.state.appointmentData);
-    await setTutorId(appointmentData.tutorId);
-      } else navigate(config.routes.public.home)
-  })}, []);
+  useEffect(() => {
+    (async () => {
+      if (!user) navigate(config.routes.public.login);
+      if (location.state) {
+        await setAppointmentData(location.state.appointmentData);
+        await setTutorId(appointmentData.tutor.tutorId);
+      } else  navigate(config.routes.public.home)
+    })
+  }, []);
 
 
   useEffect(() => {
-    if (location.state.appointmentData != null && appointmentData.tutorId) {
+    if (location.state.appointmentData != null && appointmentData.tutor.tutorId) {
       const fetchTutor = async () => {
         setLoading(true);
         try {
           await setAppointmentData(location.state.appointmentData);
-          await setTutorId(appointmentData.tutorId);
+          await setTutorId(appointmentData.tutor.tutorId);
           const response = await getTutorInfo(tutorId)
 
           const educations = await getTutorEducation(tutorId)
@@ -115,20 +116,20 @@ const MakePayment = () => {
 
           setSchedule(selectSchedule);
           const tutorEdu = await selectTutorEducation(educations.data);
-          if (tutorEdu !== null){
-          //format data    
-          const tutorData: Tutor = {
-            id: response.data.id,
-            fullName: response.data.fullName,
-            avatarUrl: response.data.avatarUrl,
-            teachingPricePerHour: response.data.teachingPricePerHour,
-            educations: tutorEdu,
-            subjects: response.data.subjects,
-            averageRating: response.data.averageRating,
-            loading: false
+          if (tutorEdu !== null) {
+            //format data    
+            const tutorData: Tutor = {
+              id: response.data.id,
+              fullName: response.data.fullName,
+              avatarUrl: response.data.avatarUrl,
+              teachingPricePerHour: response.data.teachingPricePerHour,
+              educations: tutorEdu,
+              subjects: response.data.subjects,
+              averageRating: response.data.averageRating,
+              loading: false
+            }
+            await setTutor(tutorData); // Set state once, after processing all schedules
           }
-          await setTutor(tutorData); // Set state once, after processing all schedules
-        }
           setLoading(false);
         } catch (error) {
           console.error('Failed to fetch tutor info ', error);
@@ -137,10 +138,10 @@ const MakePayment = () => {
       };
 
       fetchTutor();
-    } else navigate(config.routes.public.home);
-  }, [appointmentData, appointmentData.tutorId])
+    } else  navigate(config.routes.public.home);
+  }, [appointmentData, appointmentData.tutor.tutorId])
 
-  
+
   // for countdown clock
 
   useEffect(() => {
@@ -178,22 +179,22 @@ const MakePayment = () => {
   }
 
 
-  function calculateTotalHour(schedule: Schedule[]):number {
+  function calculateTotalHour(schedule: Schedule[]): number {
     let totalMinutes = 0;
 
-  schedule.forEach((time: Schedule) => {
-    const [startHour, startMinute] = time.startTime.split(':').map(Number);
-    const [endHour, endMinute] = time.endTime.split(':').map(Number);
+    schedule.forEach((time: Schedule) => {
+      const [startHour, startMinute] = time.startTime.split(':').map(Number);
+      const [endHour, endMinute] = time.endTime.split(':').map(Number);
 
-    // Convert start and end times to minutes
-    const startTimeInMinutes = startHour * 60 + startMinute;
-    const endTimeInMinutes = endHour * 60 + endMinute;
+      // Convert start and end times to minutes
+      const startTimeInMinutes = startHour * 60 + startMinute;
+      const endTimeInMinutes = endHour * 60 + endMinute;
 
-    // Calculate the difference in minutes
-    totalMinutes += endTimeInMinutes - startTimeInMinutes;
-  })
-  return totalMinutes / 60;
-}
+      // Calculate the difference in minutes
+      totalMinutes += endTimeInMinutes - startTimeInMinutes;
+    })
+    return totalMinutes / 60;
+  }
 
 
   const handleOrder = async () => {
@@ -203,19 +204,21 @@ const MakePayment = () => {
       setLoading(true);
       const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
       if (schedule !== undefined && tutor !== undefined && tutor !== null) {
-      const totalHour = calculateTotalHour(schedule);
-      const price = totalHour * tutor.teachingPricePerHour;
-      await cookieUtils.setItem('bookingData', JSON.stringify({
-        tutor: tutor,
-        schedule: schedule,
-        totalHour: totalHour,
-        price: price,
-      }));} else throw new Error("Can't send Tutor and Schedule data")
+        const totalHour = calculateTotalHour(schedule);
+        const price = totalHour * tutor.teachingPricePerHour;
+        await cookieUtils.setItem('bookingData', JSON.stringify({
+          tutor: tutor,
+          schedule: schedule,
+          subject: appointmentData.subjectName,
+          totalHour: totalHour,
+          price: price,
+        }));
+      } else throw new Error("Can't send Tutor and Schedule data")
       // window.open(data.paymentUrl)
       setTutor(undefined);
       window.location.href = data.paymentUrl;
 
-    } catch (error:any) {
+    } catch (error: any) {
       api.error({
         message: 'Error',
         description: error.response ? error.response.data : error.message,
@@ -269,23 +272,24 @@ const MakePayment = () => {
               </Styled.TutorItem>
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
+              <p>Subject: {appointmentData.subjectName}</p>
                 {schedule?.map((schedule: Schedule, index: number) => (
                   <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
                 )
                 )}
-                <p>{appointmentData.description?`Description: ${appointmentData.description}`:''}</p>
+                <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>
               </div>
               <Styled.BorderLine />
               <Styled.PriceCalculation>
                 <Space>
                   <Title level={3}>Tutor's price per hour</Title>
-                  <Text> {(tutor)?(tutor.teachingPricePerHour).toLocaleString():''} VND</Text>
+                  <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString() : ''} VND</Text>
                 </Space>
 
                 <Space>
                   <Title level={3}>Total hour</Title>
                   <Text>
-                    {schedule? calculateTotalHour(schedule):''} hour{schedule &&calculateTotalHour(schedule) > 1 && 's'}
+                    {schedule ? calculateTotalHour(schedule) : ''} hour{schedule && calculateTotalHour(schedule) > 1 && 's'}
                   </Text>
                 </Space>
 
@@ -299,7 +303,7 @@ const MakePayment = () => {
                     Total
                   </Title>
                   <Text>
-                    {(schedule && tutor)? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString():''} VND
+                    {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString() : ''} VND
                   </Text>
                 </Space>
                 <p></p>

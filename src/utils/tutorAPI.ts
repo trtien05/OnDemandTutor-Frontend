@@ -1,4 +1,4 @@
-import { get, post } from './apiCaller';
+import { get } from './apiCaller';
 
 export const getTutorById = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}`);
