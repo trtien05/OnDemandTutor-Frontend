@@ -1,4 +1,4 @@
-import React, { useEffect, useState, ChangeEvent } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
 import './style.css';
@@ -8,9 +8,8 @@ import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
-import Container from '../../components/Container/Container';
 import useAuth from '../../hooks/useAuth.ts';
-import { useParams } from 'react-router-dom';
+
 const { Text } = Typography;
 
 type ChatMessage = {
@@ -28,10 +27,8 @@ type UserData = {
   receiverId: number;
   connected: boolean;
   message: string;
-  name?: string; // Add name to UserData type if not already included
-
+  name?: string;
 };
-
 
 let stompClient: Client | null = null;
 
@@ -48,6 +45,8 @@ const ChatRoom: React.FC = () => {
     name: user?.fullName || ''
   });
 
+  const chatMessagesRef = useRef<HTMLDivElement>(null); // Ref to chat messages
+
   useEffect(() => {
     if (user && !userData.connected) {
       setUserData({ ...userData, id: user.id, avatarUrl: user.avatarUrl, name: user.fullName });
@@ -55,6 +54,15 @@ const ChatRoom: React.FC = () => {
     }
   }, [user]);
 
+  useEffect(() => {
+    if (userData.connected) {
+      fetchMessages();
+    }
+  }, [userData.connected]);
+
+  useEffect(() => {
+    scrollToBottom(); // Scroll to bottom on private chat change
+  }, [tab, privateChats]);
 
   const connect = () => {
     let Sock = new SockJS('http://localhost:8080/ws');
@@ -66,6 +74,7 @@ const ChatRoom: React.FC = () => {
     setUserData({ ...userData, connected: true });
     stompClient?.subscribe(`/user/${userData.id}/private`, onPrivateMessage);
     userJoin();
+    fetchMessages();
   };
 
   const userJoin = () => {
@@ -78,13 +87,10 @@ const ChatRoom: React.FC = () => {
     stompClient?.send("/app/message", {}, JSON.stringify(chatMessage));
   };
 
-
   const fetchMessages = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/messages/accounts/${user?.id}`);
-      console.log(response);
       const data: ChatMessage[] = await response.json();
-      // console.log(data);
       const newPrivateChats = new Map(privateChats);
       data.forEach(msg => {
         if (msg.senderId === userData.id) {
@@ -96,62 +102,65 @@ const ChatRoom: React.FC = () => {
         }
       });
       setPrivateChats(new Map(newPrivateChats));
+      scrollToBottom(); // Scroll to bottom after fetching messages
     } catch (error) {
       console.error('Error fetching messages: ', error);
     }
   };
-  useEffect(() => {
-    if (userData.connected) {
-      fetchMessages();
-
-    }
-  }, [userData.connected]);
 
   const onPrivateMessage = (payload: { body: string }) => {
     var payloadData = JSON.parse(payload.body);
-    if (privateChats.get(payloadData.senderId)) {
+    if (privateChats.has(payloadData.senderId)) {
       privateChats.get(payloadData.senderId)!.push(payloadData);
       setPrivateChats(new Map(privateChats));
     } else {
-      let list: ChatMessage[] = [];
-      list.push(payloadData);
+      let list: ChatMessage[] = [payloadData];
       privateChats.set(payloadData.senderId, list);
       setPrivateChats(new Map(privateChats));
     }
+    scrollToBottom(); // Scroll to bottom after receiving new message
   };
 
   const onError = (err: any) => {
     console.log(err);
   };
 
-  const handleMessage = (event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleMessage = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     setUserData({ ...userData, message: value });
   };
 
-
   const sendPrivateValue = () => {
-    if (stompClient) {
+    if (stompClient && tab && userData.message.trim() !== "") {
       var chatMessage: ChatMessage = {
         senderId: userData.id,
         receiverId: parseInt(tab),
-        message: userData.message,
+        message: userData.message.trim(),
         status: "MESSAGE",
         receiverAvatarUrl: userData.avatarUrl,
         receiverFullName: userData.name
       };
-      console.log(chatMessage);
 
-      if (userData.id !== parseInt(tab)) {
-        privateChats.get(parseInt(tab))!.push(chatMessage);
-        setPrivateChats(new Map(privateChats));
+      const updatedPrivateChats = new Map(privateChats);
+      if (privateChats.has(parseInt(tab))) {
+        updatedPrivateChats.get(parseInt(tab))!.push(chatMessage);
+      } else {
+        updatedPrivateChats.set(parseInt(tab), [chatMessage]);
       }
+      setPrivateChats(updatedPrivateChats);
+
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: "" });
+
+      scrollToBottom(); // Scroll to bottom after sending message
     }
   };
 
-  console.log(privateChats);
+  const scrollToBottom = () => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  };
 
   return (
     <Layout>
@@ -175,42 +184,47 @@ const ChatRoom: React.FC = () => {
 
           <Content style={{ minHeight: 280 }}>
             <Styled.ChatBox>
-              <Styled.ChatMessages>
-                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
-                  const isSelfMessage = chat.senderId === userData.id;
-                  return (
-                    <Styled.Message self={isSelfMessage} key={index}>
-                      {!isSelfMessage && <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>}
-                      <Styled.MessageData self={isSelfMessage}>
-                        {!isSelfMessage && <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>}
-                        <Text strong>{!isSelfMessage && chat.senderId}</Text>
-                        <p>{chat.message}</p>
-                      </Styled.MessageData>
-                      {isSelfMessage && <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>}
-                    </Styled.Message>
-                  );
-                })}
+              <Styled.ChatMessages ref={chatMessagesRef}>
+                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => (
+                  <Styled.Message self={chat.senderId === userData.id} key={index}>
+                    {chat.senderId !== userData.id && (
+                      <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
+                    )}
+                    <Styled.MessageData self={chat.senderId === userData.id}>
+                      {chat.senderId !== userData.id && (
+                        <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
+                      )}
+                      <Text strong>{chat.senderId === userData.id && chat.senderId}</Text>
+                      <p>{chat.message}</p>
+                    </Styled.MessageData>
+                    {chat.senderId === userData.id && (
+                      <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
+                    )}
+                  </Styled.Message>
+                ))}
               </Styled.ChatMessages>
               <Styled.SendMessage>
                 <TextArea
                   required
-                  maxLength={100} rows={2}
+                  maxLength={100}
+                  rows={2}
                   value={userData.message}
                   style={{ height: 120, resize: 'none', marginRight: '10px' }}
                   onChange={handleMessage}
-                  placeholder="Your message..." />
+                  placeholder="Your message..."
+                />
                 <Button
                   type="primary"
                   shape="circle"
-                  disabled={!userData.message}
+                  disabled={!userData.message.trim()}
                   icon={<SendOutlined />}
-                  onClick={sendPrivateValue} />
+                  onClick={sendPrivateValue}
+                />
               </Styled.SendMessage>
             </Styled.ChatBox>
           </Content>
         </>
-      ) : (null
-      )}
+      ) : null}
     </Layout>
   );
 };
