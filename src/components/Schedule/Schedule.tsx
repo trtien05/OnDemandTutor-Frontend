@@ -30,7 +30,8 @@ const Schedule: React.FC<ScheduleProps> = ({
   selectedId,
   selectedSchedule,
   restrictedTime,
-  maxSlots }) => {
+  maxSlots,
+  update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
@@ -219,13 +220,6 @@ const Schedule: React.FC<ScheduleProps> = ({
     );
   };
 
-  const restrictedTime = !noRestricted
-    ? {
-      minDate: today,
-      maxDate: next7Days,
-    }
-    : {};
-
 
   if (isScheduleLoaded) return (
     <div>
@@ -237,7 +231,8 @@ const Schedule: React.FC<ScheduleProps> = ({
           // style={{maxHeight: '300px'}}
           height='300px'
           selectedDate={today}
-          {...restrictedTime}
+          minDate={today}
+          maxDate={next7Days}
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}
