@@ -9,11 +9,12 @@ import { useAuth } from '../../hooks';
 interface AppointmentListProps {
   list: TimeSlot[];
   initLoading: boolean;
+  user?: UserType;
   onCancel: (timeslotId: number) => void; // Pass the onCancel function prop
 }
 
-const AppointmentList: React.FC<AppointmentListProps> = (props) => {
-  const {user} = useAuth();
+const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, user, onCancel }) => {
+  // const {user} = useAuth();
 
   return (
     <>
@@ -23,15 +24,15 @@ const AppointmentList: React.FC<AppointmentListProps> = (props) => {
             <Row justify='space-between'>
               <Col lg={24} md={24} xs={24} sm={24}>
                 <List
-                  loading={props.initLoading}
+                  loading={initLoading}
                   itemLayout="horizontal"
-                  dataSource={props.list}
+                  dataSource={list}
                   renderItem={(item) => (
                     <Styled.TutorItem>
-                      <AppointmentItem item={item} user={user} />
+                      <AppointmentItem item={item} user={user} onCancel={onCancel}/>
                     </Styled.TutorItem>
                   )}
-                />
+                    />
               </Col>
             </Row>
 

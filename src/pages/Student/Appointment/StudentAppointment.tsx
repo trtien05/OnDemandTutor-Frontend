@@ -9,7 +9,7 @@ import Pagination from '../../../components/Pagination/Pagination';
 import AppointmentPagination from './AppointmentPagination/AppointmentPagination';
 // import CreateQuestion from '../../../components/Popup/CreateQuestion/CreateQuestion';
 const { Option } = Select;
-// import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
+import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { AppointmentStatus } from '../../../utils/enums';
 
@@ -65,81 +65,59 @@ const StudentAppointment = () => {
     if (viewMode === 'Upcoming') {
         return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.PAID);
     } else if (viewMode === 'Past') {
-        return list.filter(timeSlot => [AppointmentStatus.DONE, AppointmentStatus.CANCELED].includes(timeSlot.appointment.appointmentStatus));
+        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.CANCELED);
     } else {
         return [];
     }
 };
-const checkCancel = (timeslotId: number) => {
-  let checkCancel = false;
-  const appointment = list.find(item => item.timeslotId === timeslotId);
-  if (!appointment) return;
+// const checkCancel = (timeslotId: number) => {
+//   let checkCancel = false;
+//   const appointment = list.find(item => item.timeslotId === timeslotId);
+//   if (!appointment) return;
 
-  const currentDate = new Date();
-  const appointmentDate = new Date(appointment.scheduleDate + 'T' + appointment.startTime);
+//   const currentDate = new Date();
+//   const appointmentDate = new Date(appointment.scheduleDate + 'T' + appointment.startTime);
 
-  // Calculate the difference in days
-  const diffInDays = Math.floor((appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
+//   // Calculate the difference in days
+//   const diffInDays = Math.floor((appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60 * 24));
 
-  if (diffInDays <= 1) {
-    // Show modal for confirmation
-    checkCancel=true;
-    setCancelAppointmentId(timeslotId);
-    confirmCancel(timeslotId)
-    return checkCancel;
-  } 
-};
+//   if (diffInDays <= 1) {
+//     // Show modal for confirmation
+//     checkCancel=true;
+//     setCancelAppointmentId(timeslotId);
+//     confirmCancel(timeslotId)
+//     return checkCancel;
+//   } 
+// };
 const confirmCancel = (timeslotId: number) => {
   modal.confirm({
     centered: true,
     title: 'Do you want to cancel this lesson?',
-    content: 'Since this time slot is within 3 days prior to the appointment, you cannot reschedule this. Do you want to proceed?',
+    content: 'Since this time slot is within 24 hours prior to the appointment, you cannot reschedule this. Do you want to proceed?',
     icon: <ExclamationCircleOutlined />,
     okText: 'Confirm',
-    // onOk: () => handleCancelAppointment(timeslotId),
+    onOk: () => handleCancelAppointment(timeslotId),
     cancelText: 'Back',
 });
 };
-// const handleCancelAppointment = (appointmentId: number) => {
-//   // Perform cancellation logic
-//   cancelAppointment(appointmentId)
-//     .then(() => {
-//       messageApi.success('Lesson canceled successfully');
-//       // Refetch appointments after cancellation
-//       setCurrentPage(1); // Reset to first page
-//     })
-//     .catch(error => {
-//       messageApi.error('Failed to cancel lesson');
-//       console.error('Failed to cancel lesson:', error);
-//     });
-// };
-// const handleModalOk = () => {
-//   if (cancelAppointmentId) {
-//     handleCancelAppointment(cancelAppointmentId);
-//     setModalVisible(false);
-//     setCancelAppointmentId(null);
-//   }
-// };
-
-  
-  
-
+const handleCancelAppointment = (timeslotId: number) => {
+  // Perform cancellation logic
+  cancelAppointment(timeslotId, user.id)
+    .then(() => {
+      messageApi.success('Lesson canceled successfully');
+      // Refetch appointments after cancellation
+      setCurrentPage(1); // Reset to first page
+    })
+    .catch(error => {
+      messageApi.error('Failed to cancel lesson');
+      console.error('Failed to cancel lesson:', error);
+    });
+};
 
   return (
     <div style={{backgroundColor:'#fff'}}>
     {contextHolder}
-      {/* <Styled.FilterSection>
-        <Container>
-          <Styled.SearchWrapper>
-          
-            <Row justify='space-between' align='middle' gutter={[20, 20]} style={{ width: '100%' }} >
-            
-              
-            </Row>
-          </Styled.SearchWrapper>
-        </Container>
-      </Styled.FilterSection> */}
-      
+    {contextHolderModal}
       <Styled.TitleWrapper>
         <Container>
         <Styled.RowWrapper>
@@ -157,7 +135,7 @@ const confirmCancel = (timeslotId: number) => {
         </Container>
       </Styled.TitleWrapper>
 
-      <AppointmentList initLoading={initLoading} list={filteredAppointments()} onCancel={checkCancel(cancelAppointmentId)} />
+      <AppointmentList initLoading={initLoading} list={filteredAppointments()} onCancel={confirmCancel} />
 
       {totalPages > 1 &&
         <AppointmentPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />

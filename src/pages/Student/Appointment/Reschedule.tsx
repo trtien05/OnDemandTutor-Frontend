@@ -9,6 +9,7 @@ import { ScheduleEvent } from '../../../components/Schedule/Schedule.type';
 import { reschedule } from '../../../utils/appointmentAPI';
 import { TimeSlot } from '../../../components/AppointmentList/Appointment.type';
 import { theme } from '../../../themes';
+import { CalendarOutlined } from '@ant-design/icons';
 
 interface RescheduleProps {
   tutorId: number;
@@ -103,8 +104,8 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
   return (
     <>
       {contextHolder}
-      <Button type="link" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
-        X
+      <Button type="link" onClick={showModal} >
+        <CalendarOutlined style={{ fontSize: '30px', cursor: 'pointer' }}/>
       </Button>
       <Modal
         centered

@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Col, Skeleton, Avatar, Modal } from 'antd';
 import iconBachelor from '../../../assets/images/image13.png';
 import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
+import { CloseOutlined, UserOutlined, CalendarOutlined, ExclamationCircleOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
 import { Appointment, TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
@@ -20,6 +20,10 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
     const appointmentDate = new Date(`${scheduleDate}T${startTime}`);
     const isTutor = user?.role === 'TUTOR';
     const displayPerson = isTutor ? appointment.student : appointment.tutor;
+    const currentDate = new Date();
+    const timeDiff = (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60); // difference in hours
+    const showReschedule = timeDiff > 24;
+    const showCancel = timeDiff <= 24;
     
     return (
         <Skeleton avatar title={false} loading={item.loading} active>
@@ -123,8 +127,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                             xs={24}
                             style={{ textAlign: 'center' }}
                         >
-                            <CalendarOutlined style={{ fontSize: '30px', cursor: 'pointer' }}
-                            />
+                            <Reschedule tutorId={item.appointment.tutor.tutorId} oldBooking={item}/>
                             
                         </Styled.StyleCol>
                         <Styled.StyleCol
@@ -134,11 +137,11 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                             xs={24}
                             style={{ textAlign: 'center' }}
                         >
-                            {/* <CloseOutlined
+                            <CloseOutlined
                                 style={{ color: '#B52121', fontSize: '30px', cursor: 'pointer' }}
                                 onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
-                            /> */}
-                            <Reschedule tutorId={item.appointment.tutor.tutorId} oldBooking={item}/>
+                            />
+                            
                         </Styled.StyleCol>
                     </Styled.QuestionItem>
                 </Styled.BoxHover>

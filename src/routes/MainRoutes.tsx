@@ -53,7 +53,12 @@ const tutorRoutes = {
         {path: config.routes.student.paymentSuccess, element: <PaymentSuccess />}
     ],
 };
-
+const tutorRoutes = {
+    children: [
+        { path: config.routes.student.studentSchedule, element: <StudentAppointment/> },
+        { path: config.routes.tutor.tutorSchedule, element: <StudentAppointment/> }
+    ],
+};
 
 const notFoundRoutes = { path: '*', element: <NotFound /> };
 

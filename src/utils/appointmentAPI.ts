@@ -12,3 +12,6 @@ export const reschedule = (appointmentId: number,data: any) => {
 export const getReschedule = (tutorId: number, timeslotId: number) => {
     return get(`/api/schedules/tutors/${tutorId}/old-schedule/${timeslotId}`);
 }
+export const cancelAppointment = (timeslotId: number, accountId: number) => {
+    return put(`/api/appointments/accounts/${accountId}/timeslots/${timeslotId}`)
+}

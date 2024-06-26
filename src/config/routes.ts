@@ -22,9 +22,10 @@ const routes = {
         registerTutor: '/register-tutor',
     },
     tutor: {
-        tutorProfile: '/tutor-profile',
         makePayment: '/make-payment',
-        paymentSuccess: '/confirm-payment'
+        paymentSuccess: '/confirm-payment',
+        profile: '/tutor-profile',
+        tutorSchedule: '/tutor-schedule',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
