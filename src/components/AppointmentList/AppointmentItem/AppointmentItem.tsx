@@ -72,8 +72,8 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                                 <Styled.QuestionRow
                                     style={{ fontSize: '16px', alignContent: 'center' }}
                                 >
-                                    <p>{appointmentDate.toLocaleString('default', { weekday: 'long' })}
-                                    , {startTime} - {endTime}</p>
+                                    {appointmentDate.toLocaleString('default', { weekday: 'long' })}
+                                    , {startTime} - {endTime}
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>

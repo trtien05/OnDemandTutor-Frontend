@@ -24,7 +24,7 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
   });
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
-  const [selectedId, setSelectedId] = useState<number[]>([]);
+  const [selectedId, setSelectedId] = useState<number[]>([props.oldBooking.timeslotId]);
   const [rescheduleAgreement, setRescheduleAgreement] = useState<boolean>(false)
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
@@ -33,7 +33,7 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
   function convertRescheduleData() {
     return {
       oldTimeslotId: props.oldBooking.timeslotId,
-      newWeeklyScheduleId: selectedId[0],
+      newWeeklyScheduleId: selectedId[1],
     }
   }
 
@@ -165,8 +165,9 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
               setSelectedSchedule={setSelectedSchedule}
               selectedId={selectedId}
               selectedSchedule={selectedSchedule}
-              maxSlots={1}
-              restrictedTime={12}
+              maxSlots={2}
+              restrictedTime={24}
+              scheduleType='reschedule'
             />
           </FormStyled.FormItem>
           <FormStyled.FormDescription style={{marginBottom:`0px`}}>

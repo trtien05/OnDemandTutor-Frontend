@@ -5,6 +5,7 @@ import * as ScheduleStyle from './Schedule.styled';
 import { getTutorSchedule } from '../../utils/tutorBookingAPI';
 import { notification } from 'antd';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
+import { getReschedule } from '../../utils/appointmentAPI';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -47,37 +48,41 @@ const Schedule: React.FC<ScheduleProps> = ({
     const fetchSchedule = async () => {
       try {
 
-        const response = await getTutorSchedule(tutorId)
+        const response = !(scheduleType?.includes('reschedule') && selectedId) ?
+          await getTutorSchedule(tutorId) : await getReschedule(tutorId, selectedId[0]);
+
         if (response) {
           //format data    
           const start = new Date(response.data.startDate);
           const today = new Date();
           if (restrictedTime === undefined) restrictedTime = 12;
           today.setHours(today.getHours() + restrictedTime)
+
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
-          response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + dayIndex);
+          let updateSchedule = response.data.schedules;
+          const currentDate = new Date(startDate);
+          updateSchedule.forEach((day: ScheduleDay, dayIndex: number) => {
             if (day.timeslots.length > 0) {
-              if (day.dayOfMonth === currentDate.getDate()) {
               day.timeslots.forEach((timeslot) => {
-                const timeslotStart = new Date(`${currentDate.toISOString().split('T')[0]}T${timeslot.startTime}`);
-                if (currentDate.toDateString() === today.toDateString() && timeslotStart.getTime() < today.getTime()) {
-                  // If the day is today and the timeslot is before the current moment, skip this timeslot
-                  return;
+                const demo = new Date()
+                if (day.dayOfMonth < demo.getDate()) 
+                  demo.setMonth(demo.getMonth() + 1)
+                demo.setDate(day.dayOfMonth);
+                console.log(demo)
+                const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
+                if (timeslotStart > currentDate) {
+                  const value = {
+                    id: timeslot.id,
+                    scheduleDate: demo.toISOString().split('T')[0],
+                    startTime: timeslot.startTime.slice(0, 5),
+                    endTime: timeslot.endTime.slice(0, 5),
+                    isSelected: false
+                  };
+                  newSchedule.push(value);
                 }
-
-                const value = {
-                  id: timeslot.id,
-                  scheduleDate: currentDate.toISOString().split('T')[0],
-                  startTime: timeslot.startTime.slice(0, 5),
-                  endTime: timeslot.endTime.slice(0, 5),
-                  isSelected: false
-                };
-                newSchedule.push(value);
               });
-            }}
+            }
           });
 
           setSchedule(newSchedule);
