@@ -179,7 +179,12 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                 <FormStyled.FormItem
                     name="backgroundDescription"
                     $width={"100%"}
-                    label="Profile description">
+                    label="Profile description"
+                    rules={[{
+                        required: true,
+                        max: 255,
+                        message: "Profile description cannot exceed 255 characters.",
+                    }]}>
                     <FormStyled.CommentInput rows={4}
                         placeholder="Tell us about yourself..."
                         style={{ height: 120, resize: 'none', marginRight: '10px' }} />
