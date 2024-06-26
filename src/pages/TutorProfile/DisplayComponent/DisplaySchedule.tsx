@@ -2,90 +2,77 @@ import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, Po
 import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
-import { getTutorSchedule } from '../../utils/tutorBookingAPI';
+import { getTutorSchedule } from '../../../utils/tutorBookingAPI';
 import { notification } from 'antd';
-import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
-import { getReschedule } from '../../utils/appointmentAPI';
+import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
 
 interface ScheduleProps {
   tutorId: number;
-  scheduleType?: string;
-  restrictedTime?: number;
+  noRestricted?: boolean;
   setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
   setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
   selectedId?: number[];
-  maxSlots?: number;
   selectedSchedule?: ScheduleEvent[];
   update?: boolean;
 }
 
-const Schedule: React.FC<ScheduleProps> = ({
-  tutorId,
-  scheduleType,
-  setSelectedId,
-  setSelectedSchedule,
-  selectedId,
-  selectedSchedule,
-  restrictedTime,
-  maxSlots }) => {
+const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule, update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
   const [isScheduleLoaded, setIsScheduleLoaded] = useState<boolean>(false);
-  const maxSlot = maxSlots ? maxSlots : 5;
 
   useEffect(() => {
     setTimeout(() => {
-      setIsScheduleLoaded(true);
-    }, 1000); // Adjust this delay as needed
+      
+    }, 2000); // Adjust this delay as needed
   }, []);
 
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
 
-        const response = !(scheduleType?.includes('reschedule') && selectedId) ?
-          await getTutorSchedule(tutorId) : await getReschedule(tutorId, selectedId[0]);
-
+        const response = await getTutorSchedule(tutorId)
         if (response) {
           //format data    
           const start = new Date(response.data.startDate);
           const today = new Date();
-          if (restrictedTime === undefined) restrictedTime = 12;
-          today.setHours(today.getHours() + restrictedTime)
-
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
-          let updateSchedule = response.data.schedules;
-          const currentDate = new Date(startDate);
-          updateSchedule.forEach((day: ScheduleDay, dayIndex: number) => {
+
+          response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
+            const currentDate = new Date(startDate);
+            currentDate.setDate(startDate.getDate() + dayIndex);
+
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
-                const demo = new Date()
-                if (day.dayOfMonth < demo.getDate()) 
-                  demo.setMonth(demo.getMonth() + 1)
-                demo.setDate(day.dayOfMonth);
-                const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
-                if (timeslotStart > currentDate) {
-                  const value = {
-                    id: timeslot.id,
-                    scheduleDate: demo.toISOString().split('T')[0],
-                    startTime: timeslot.startTime.slice(0, 5),
-                    endTime: timeslot.endTime.slice(0, 5),
-                    isSelected: false
-                  };
-                  newSchedule.push(value);
+                const timeslotStart = new Date(`${currentDate.toISOString().split('T')[0]}T${timeslot.startTime}`);
+                if (currentDate.toDateString() === today.toDateString() && timeslotStart.getTime() < today.getTime()) {
+                  // If the day is today and the timeslot is before the current moment, skip this timeslot
+                  return;
                 }
+
+                const value = {
+                  id: timeslot.id,
+                  scheduleDate: currentDate.toISOString().split('T')[0],
+                  startTime: timeslot.startTime.slice(0, 5),
+                  endTime: timeslot.endTime.slice(0, 5),
+                  isSelected: false
+                };
+                newSchedule.push(value);
               });
             }
           });
 
           setSchedule(newSchedule);
+          setTimeout(() => {
+            setIsScheduleLoaded(true);
+          }, 1000);
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
       } catch (error: any) {
@@ -97,7 +84,7 @@ const Schedule: React.FC<ScheduleProps> = ({
     };
 
     fetchSchedule();
-  }, update!=null?[update]: []);
+  }, [update]);
 
 
   const [start, setStart] = useState<string>('');
@@ -167,8 +154,11 @@ const Schedule: React.FC<ScheduleProps> = ({
     element.style.width = '100%';
   };
 
+
+
   const onEventClick = (args: any) => {
     const id = args.event.Id;
+
     setSchedule(prevSchedule =>
       prevSchedule.map(s =>
         // s.id.toString() === id ? { ...s, isSelected: !s.isSelected } : s
@@ -176,7 +166,7 @@ const Schedule: React.FC<ScheduleProps> = ({
       )
     );
 
-    if (setSelectedSchedule && selectedSchedule) {
+    if (setSelectedSchedule) {
       setSelectedSchedule(prevSchedule => {
         if (args && args.event && args.event.Id) {
           if (prevSchedule.some(s => s.Id === args.event.Id)) {
@@ -196,9 +186,10 @@ const Schedule: React.FC<ScheduleProps> = ({
       setSelectedId(prevIds =>
         prevIds.includes(id)
           ? prevIds.filter(i => i !== id)
-          : prevIds.length < maxSlot ? [...prevIds, id] : prevIds
+          : [...prevIds, id]
       );
     }
+
   };
 
   const defaultEventRendered = (args: EventRenderedArgs) => {
@@ -221,7 +212,6 @@ const Schedule: React.FC<ScheduleProps> = ({
 
   const restrictedTime = !noRestricted
     ? {
-      minDate: today,
       maxDate: next7Days,
     }
     : {};
@@ -229,15 +219,14 @@ const Schedule: React.FC<ScheduleProps> = ({
 
   if (isScheduleLoaded) return (
     <div>
-      <ScheduleStyle.ScheduleWrapper
-        hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
-      >
+      <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          // style={{maxHeight: '300px'}}
-          height='300px'
+          // style={{maxHeight: '500px'}}
+          height={300}
           selectedDate={today}
           {...restrictedTime}
+          minDate={today}
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}
@@ -254,11 +243,9 @@ const Schedule: React.FC<ScheduleProps> = ({
           <Inject services={[Day]} />
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
-      {scheduleType?.includes('tutorProfile') ?
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>) :
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
+      {!noRestricted? schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>): schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
     </div>
   )
 }
 
-export default Schedule
+export default DisplaySchedule
