@@ -77,7 +77,14 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
     return Promise.resolve();
   };
 
-  const handleOk = async (values: any) => {
+  const restrictTimeslot = (_: unknown) => {
+    if (selectedSchedule.length >= 5) {
+      return Promise.reject("You can only select up to 5 time slots");
+    }
+    return Promise.resolve();
+  };
+
+  const handleOk = async () => {
     setLoading(true); // Set loading state to true when form is submitted
     form.validateFields(['selectedSlots'])
       .then(async () => {
@@ -159,6 +166,10 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
                 validator: validateTimeslot,
                 message: "Please select at least one time slot to proceed",
               },
+              {
+                validator: restrictTimeslot,
+                message: "You can only select up to 5 time slots",
+              }
             ]}>
             <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
           </FormStyled.FormItem>

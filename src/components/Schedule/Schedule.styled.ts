@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ScheduleWrapper = styled.div`
+export const ScheduleWrapper = styled.div<{ hideToolBar: boolean }>`
   .e-schedule .e-time-cells, 
   .e-schedule .e-work-cells, 
   .e-schedule .e-header-cells {
@@ -20,6 +20,10 @@ export const ScheduleWrapper = styled.div`
     padding: 0 !important;
     margin: 0 !important;
   }
+  
+  .e-schedule .e-schedule-toolbar-container {
+    display: ${props => props.hideToolBar ? 'none' : 'block'} !important;
+  }
 
   .e-schedule .e-new-event,
   .e-schedule .e-toolbar-right {
@@ -35,11 +39,11 @@ export const ScheduleWrapper = styled.div`
     padding: 0 !important;
     margin: 0 !important;
 
+    .e-toolbar-left .e-prev,
     .e-toolbar-left .e-next,
-    .e-toolbar-left .e-prev {
-      display: none !important;
+    .e-toolbar-left .e-icon-down-arrow{
+      display: none; !important;
     }
-
   }
 
   .e-schedule .e-header-cells .e-header-date,
