@@ -1,6 +1,7 @@
 import styled, { css } from 'styled-components';
 import { theme } from '../../themes';
 import { Flex } from 'antd';
+import ReactPlayer from 'react-player';
 
 export const ProfileContainer = styled.section`
     padding: 10px 0 60px;
@@ -93,3 +94,18 @@ export const ProfileInfoBox = styled(Flex)`
         }
     }
 `;
+
+export const Player = styled(ReactPlayer)`
+.player-wrapper {
+  width: auto; // Reset width
+  height: auto; // Reset height
+}
+.react-player {
+  padding-top: 56.25%; // Percentage ratio for 16:9
+  position: relative; // Set to relative
+}
+
+.react-player > div {
+  position: absolute; // Scaling will occur since parent is relative now
+}
+`

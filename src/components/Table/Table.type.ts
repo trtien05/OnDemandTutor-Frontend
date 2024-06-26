@@ -3,12 +3,14 @@ import { Certificate, Education } from "../../pages/TutorProfile/TutorProfile.ty
 
 export const EducationColumns: TableColumnsType<Education> = [
     {
-        title: 'EducationNo',
+        title: 'No',
         dataIndex: 'id',
-        showSorterTooltip: { target: 'full-header' },
-        defaultSortOrder: 'ascend',
-        sorter: (a, b) => a.id - b.id,
-        sortDirections: ['ascend', 'descend'],
+        key: 'index',
+        render: (text, record, index) => index + 1,
+        // showSorterTooltip: { target: 'full-header' },
+        // defaultSortOrder: 'ascend',
+        // sorter: (a, b) => a.id - b.id,
+        // sortDirections: ['ascend', 'descend'],
     },
     {
         title: 'Degree Type',
@@ -43,8 +45,10 @@ export const EducationColumns: TableColumnsType<Education> = [
 
 export const CertColumns: TableColumnsType<Certificate> = [
     {
-        title: 'CertificateNo',
+        title: 'No',
         dataIndex: 'id',
+        key: 'index',
+        render: (text, record, index) => index + 1,
         showSorterTooltip: { target: 'full-header' },
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,

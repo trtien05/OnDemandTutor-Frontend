@@ -4,6 +4,7 @@ import ReactPlayer from 'react-player';
 import { Button, Form, Input, notification } from 'antd';
 import { Details } from '../TutorProfile.type';
 import { updateTutorDescription } from '../../../utils/tutorAPI';
+import { Player } from '../TutorProfile.styled';
 
 
 interface DescriptionFormProps {
@@ -100,151 +101,157 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
 
         // Get JSON body from form data
         const jsonRequestBody = convertTutorDescriptionFormData(formData);
-    
+
         try {
-    
-          // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-          const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
-    
-          // Check response status
-          if (!api.success) {
-            throw new Error(`Error: ${responseData.statusText}`);
-          }
-    
-          // Get response data
-          console.log('Tutor description saved successfully:', responseData);
-    
-          // Return success response
-          return responseData;
+
+            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+            const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
+
+            // Check response status
+            if (!api.success) {
+                throw new Error(`Error: ${responseData.statusText}`);
+            }
+
+            // Get response data
+            console.log('Tutor description saved successfully:', responseData);
+
+            // Return success response
+            return responseData;
         } catch (error: any) {
-          api.error({
-            message: 'Error',
-            description: error.response ? error.response.data : error.message,
-          });
+            api.error({
+                message: 'Error',
+                description: error.response ? error.response.data : error.message,
+            });
         }
-      }
-    
-      function convertTutorDescriptionFormData(formData: any) {
+    }
+
+    function convertTutorDescriptionFormData(formData: any) {
         const descriptionData = {
-          // convert form data to tutor description json format
-          teachingPricePerHour: formData.teachingPricePerHour,
-          backgroundDescription: formData.backgroundDescription,
-          meetingLink: formData.meetingLink,
-          videoIntroductionLink: formData.videoIntroductionLink,
-          subjects: formData.subjects,
+            // convert form data to tutor description json format
+            teachingPricePerHour: formData.teachingPricePerHour,
+            backgroundDescription: formData.backgroundDescription,
+            meetingLink: formData.meetingLink,
+            videoIntroductionLink: formData.videoIntroductionLink,
+            subjects: formData.subjects,
         };
-    
+
         return descriptionData;
-      }
+    }
 
     return (
         <>
-        {contextHolder}
-        <FormStyled.FormWrapper
-            onFinish={onFinish}
-            form={form}
-            labelAlign="left"
-            layout="vertical"
-            requiredMark={false}
-            size="middle"
-            style={{ rowGap: "0px" }}
-        >
-
-            <FormStyled.FormItem
-                $width={"100%"}
-                name="teachingPricePerHour"
-                label="Hourly base rate"
-                rules={[
-                    {
-                        required: true,
-                        type: 'number',
-                        min: 0,
-                        max: 1000000
-                    },
-                ]}>
-                <FormStyled.NumberInput
-                    style={{ width: '100%' }}
-                    formatter={formatter}
-                    parser={parser}
-                    onChange={onChange}
-                >
-                </FormStyled.NumberInput>
-            </FormStyled.FormItem>
-            <FormStyled.FormDescription>
-                We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
-                The remaining will be transferred automatically to your bank account every 28 days.
-            </FormStyled.FormDescription>
-
-            <FormStyled.FormItem
-                name="backgroundDescription"
-                $width={"100%"}
-                label="Profile description">
-                <FormStyled.CommentInput rows={4} placeholder="Tell us about yourself..." />
-            </FormStyled.FormItem>
-
-
-
-            <FormStyled.FormItem
-                name="meetingLink"
-                label="Google Meet Link"
-                $width={"100%"}
-                rules={[
-                    {
-                        pattern:
-                            /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
-                        message: "Invalid Google Meet link.",
-                    },
-                    {
-                        required: true,
-                        message: "Please provide your Google Meet link.",
-                    },
-                ]}
+            {contextHolder}
+            <FormStyled.FormWrapper
+                onFinish={onFinish}
+                form={form}
+                labelAlign="left"
+                layout="vertical"
+                requiredMark={false}
+                size="middle"
+                style={{ rowGap: "0px" }}
             >
-                <Input
-                    type="text"
-                    placeholder="Paste your Google Meet link"
-                ></Input>
-            </FormStyled.FormItem>
 
-            <FormStyled.FormItem
-                name="videoIntroductionLink"
-                label="Video introduction"
-                $width={"100%"}
-                rules={[
-                    {
-                        pattern:
-                            /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
-                        message: "Invalid Youtube link.",
-                    },
-                ]}
-            >
-                <Input
-                    onChange={handleInputChange}
-                    type="text"
-                    placeholder="Paste a Youtube link to your video"
-                ></Input>
-            </FormStyled.FormItem>
-            {tutorDetails.videoIntroductionLink && (
-                // style={{ width: "100%", height: "100%", display: "flex" }}
-                <div style={{ width: "100%", height: "100%", marginBottom:`20px` }}>
-                    <ReactPlayer url={tutorDetails?.videoIntroductionLink} 
-                        controls={true} 
-                        width="70%" height="70%" 
-                        style={{margin:`auto`}}
-                        />
-                </div>
-            )}
-            <FormStyled.FormItem
-                name="subjects" hidden>
+                <FormStyled.FormItem
+                    $width={"100%"}
+                    name="teachingPricePerHour"
+                    label="Hourly base rate (VND)"
+                    rules={[
+                        {
+                            required: true,
+                            type: 'number',
+                            min: 0,
+                            max: 1000000
+                        },
+                    ]}>
+                    <FormStyled.NumberInput
+                        style={{ width: '100%' }}
+                        formatter={formatter}
+                        parser={parser}
+                        onChange={onChange}
+                    >
+                    </FormStyled.NumberInput>
+                </FormStyled.FormItem>
+                <FormStyled.FormDescription>
+                    We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
+                    The remaining will be transferred automatically to your bank account every 28 days.
+                </FormStyled.FormDescription>
+
+                <FormStyled.FormItem
+                    name="backgroundDescription"
+                    $width={"100%"}
+                    label="Profile description">
+                    <FormStyled.CommentInput rows={4}
+                        placeholder="Tell us about yourself..."
+                        style={{ height: 120, resize: 'none', marginRight: '10px' }} />
                 </FormStyled.FormItem>
 
-            <FormStyled.ButtonDiv style={{justifyContent:`flex-end`}}>
-                <Button type="default" htmlType="submit" 
-                style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px` }}>
-                    Save profile
-                </Button>
-            </FormStyled.ButtonDiv>
-        </FormStyled.FormWrapper></>
+
+
+                <FormStyled.FormItem
+                    name="meetingLink"
+                    label="Google Meet Link"
+                    $width={"100%"}
+                    rules={[
+                        {
+                            pattern:
+                                /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
+                            message: "Invalid Google Meet link.",
+                        },
+                        {
+                            required: true,
+                            message: "Please provide your Google Meet link.",
+                        },
+                    ]}
+                >
+                    <Input
+                        type="text"
+                        placeholder="Paste your Google Meet link"
+                    ></Input>
+                </FormStyled.FormItem>
+
+                <FormStyled.FormItem
+                    name="videoIntroductionLink"
+                    label="Video introduction"
+                    $width={"100%"}
+                    rules={[
+                        {
+                            pattern:
+                                /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})/,
+                            message: "Invalid Youtube link.",
+                        },
+                    ]}
+                >
+                    <Input
+                        onChange={handleInputChange}
+                        type="text"
+                        placeholder="Paste a Youtube link to your video"
+                    ></Input>
+                </FormStyled.FormItem>
+                {tutorDetails.videoIntroductionLink && (
+                    <div style={{ width: "100%", height: "100%", marginBottom: `20px`, marginTop:`10px` }}>
+                        <div style={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
+                            <ReactPlayer
+                                className="react-player"
+                                url={tutorDetails.videoIntroductionLink}
+                                controls={true}
+                                width="100%"
+                                height="100%"
+                                style={{ position: 'absolute', top: 0, left: 0 }}
+                            />
+                        </div>
+                    </div>
+                )}
+                <FormStyled.FormItem
+                    name="subjects" hidden>
+                </FormStyled.FormItem>
+
+                <FormStyled.ButtonDiv style={{ justifyContent: `flex-end` }}>
+                    <Button type="default" htmlType="submit"
+                        style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px` }}>
+                        Save profile
+                    </Button>
+                </FormStyled.ButtonDiv>
+            </FormStyled.FormWrapper></>
     )
 }
 
