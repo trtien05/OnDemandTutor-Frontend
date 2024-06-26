@@ -16,23 +16,26 @@ interface ScheduleProps {
   setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
   setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
   selectedId?: number[];
+  maxSlots?: number;
   selectedSchedule?: ScheduleEvent[];
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ 
-      tutorId, 
-      scheduleType, 
-      setSelectedId, 
-      setSelectedSchedule, 
-      selectedId, 
-      selectedSchedule, 
-      restrictedTime }) => {
+const Schedule: React.FC<ScheduleProps> = ({
+  tutorId,
+  scheduleType,
+  setSelectedId,
+  setSelectedSchedule,
+  selectedId,
+  selectedSchedule,
+  restrictedTime,
+  maxSlots }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
   const [isScheduleLoaded, setIsScheduleLoaded] = useState<boolean>(false);
+  const maxSlot = maxSlots ? maxSlots : 5;
 
   useEffect(() => {
     setTimeout(() => {
@@ -48,7 +51,6 @@ const Schedule: React.FC<ScheduleProps> = ({
         if (response) {
           //format data    
           const start = new Date(response.data.startDate);
-          
           const today = new Date();
           if (restrictedTime === undefined) restrictedTime = 12;
           today.setHours(today.getHours() + restrictedTime)
@@ -57,8 +59,8 @@ const Schedule: React.FC<ScheduleProps> = ({
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
             const currentDate = new Date(startDate);
             currentDate.setDate(startDate.getDate() + dayIndex);
-
             if (day.timeslots.length > 0) {
+              if (day.dayOfMonth === currentDate.getDate()) {
               day.timeslots.forEach((timeslot) => {
                 const timeslotStart = new Date(`${currentDate.toISOString().split('T')[0]}T${timeslot.startTime}`);
                 if (currentDate.toDateString() === today.toDateString() && timeslotStart.getTime() < today.getTime()) {
@@ -75,7 +77,7 @@ const Schedule: React.FC<ScheduleProps> = ({
                 };
                 newSchedule.push(value);
               });
-            }
+            }}
           });
 
           setSchedule(newSchedule);
@@ -162,7 +164,6 @@ const Schedule: React.FC<ScheduleProps> = ({
 
   const onEventClick = (args: any) => {
     const id = args.event.Id;
-
     setSchedule(prevSchedule =>
       prevSchedule.map(s =>
         // s.id.toString() === id ? { ...s, isSelected: !s.isSelected } : s
@@ -190,7 +191,7 @@ const Schedule: React.FC<ScheduleProps> = ({
       setSelectedId(prevIds =>
         prevIds.includes(id)
           ? prevIds.filter(i => i !== id)
-          : prevIds.length<5?[...prevIds, id]:prevIds
+          : prevIds.length < maxSlot ? [...prevIds, id] : prevIds
       );
     }
   };
@@ -218,11 +219,11 @@ const Schedule: React.FC<ScheduleProps> = ({
     <div>
       <ScheduleStyle.ScheduleWrapper
         hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
-        >
+      >
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
           // style={{maxHeight: '300px'}}
-          height= '300px'
+          height='300px'
           selectedDate={today}
           minDate={today}
           maxDate={next7Days}
@@ -242,8 +243,8 @@ const Schedule: React.FC<ScheduleProps> = ({
           <Inject services={[Day]} />
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
-      {scheduleType?.includes('tutorProfile')? 
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>):
+      {scheduleType?.includes('tutorProfile') ?
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>) :
         schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
     </div>
   )

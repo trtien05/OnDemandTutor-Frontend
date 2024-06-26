@@ -6,7 +6,13 @@ import { Appointment, TimeSlot } from './Appointment.type';
 import AppointmentItem from './AppointmentItem/AppointmentItem';
 import { useAuth } from '../../hooks';
 
-const AppointmentList: React.FC<{ list: TimeSlot[], initLoading: boolean }> = (props) => {
+interface AppointmentListProps {
+  list: TimeSlot[];
+  initLoading: boolean;
+  onCancel: (timeslotId: number) => void; // Pass the onCancel function prop
+}
+
+const AppointmentList: React.FC<AppointmentListProps> = (props) => {
   const {user} = useAuth();
 
   return (

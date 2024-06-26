@@ -9,7 +9,7 @@ import Pagination from '../../../components/Pagination/Pagination';
 import AppointmentPagination from './AppointmentPagination/AppointmentPagination';
 // import CreateQuestion from '../../../components/Popup/CreateQuestion/CreateQuestion';
 const { Option } = Select;
-import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
+// import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { AppointmentStatus } from '../../../utils/enums';
 
@@ -32,9 +32,9 @@ const StudentAppointment = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [cancelAppointmentId, setCancelAppointmentId] = useState<number>(null);
   
-    let isDone = true;
+    let isDone = false;
     if(viewMode==='Past'){
-      isDone = false; 
+      isDone = true; 
     }
     
   useEffect(() => {
@@ -96,23 +96,23 @@ const confirmCancel = (timeslotId: number) => {
     content: 'Since this time slot is within 3 days prior to the appointment, you cannot reschedule this. Do you want to proceed?',
     icon: <ExclamationCircleOutlined />,
     okText: 'Confirm',
-    onOk: () => handleCancelAppointment(timeslotId),
+    // onOk: () => handleCancelAppointment(timeslotId),
     cancelText: 'Back',
 });
 };
-const handleCancelAppointment = (appointmentId: number) => {
-  // Perform cancellation logic
-  cancelAppointment(appointmentId)
-    .then(() => {
-      messageApi.success('Lesson canceled successfully');
-      // Refetch appointments after cancellation
-      setCurrentPage(1); // Reset to first page
-    })
-    .catch(error => {
-      messageApi.error('Failed to cancel lesson');
-      console.error('Failed to cancel lesson:', error);
-    });
-};
+// const handleCancelAppointment = (appointmentId: number) => {
+//   // Perform cancellation logic
+//   cancelAppointment(appointmentId)
+//     .then(() => {
+//       messageApi.success('Lesson canceled successfully');
+//       // Refetch appointments after cancellation
+//       setCurrentPage(1); // Reset to first page
+//     })
+//     .catch(error => {
+//       messageApi.error('Failed to cancel lesson');
+//       console.error('Failed to cancel lesson:', error);
+//     });
+// };
 // const handleModalOk = () => {
 //   if (cancelAppointmentId) {
 //     handleCancelAppointment(cancelAppointmentId);

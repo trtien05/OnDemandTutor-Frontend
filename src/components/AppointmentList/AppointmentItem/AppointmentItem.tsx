@@ -5,6 +5,7 @@ import * as Styled from '../Appointment.styled';
 import { CloseOutlined, UserOutlined, CalendarOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
 import { Appointment, TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
+import Reschedule from '../../../pages/Student/Appointment/Reschedule';
 
 interface AppointmentItemProps {
     item: TimeSlot;
@@ -71,8 +72,8 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                                 <Styled.QuestionRow
                                     style={{ fontSize: '16px', alignContent: 'center' }}
                                 >
-                                    {appointmentDate.toLocaleString('default', { weekday: 'long' })}
-                                    , {startTime} - {endTime}
+                                    <p>{appointmentDate.toLocaleString('default', { weekday: 'long' })}
+                                    , {startTime} - {endTime}</p>
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
@@ -133,10 +134,11 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                             xs={24}
                             style={{ textAlign: 'center' }}
                         >
-                            <CloseOutlined
+                            {/* <CloseOutlined
                                 style={{ color: '#B52121', fontSize: '30px', cursor: 'pointer' }}
                                 onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
-                            />
+                            /> */}
+                            <Reschedule tutorId={item.appointment.tutor.tutorId} oldBooking={item}/>
                         </Styled.StyleCol>
                     </Styled.QuestionItem>
                 </Styled.BoxHover>

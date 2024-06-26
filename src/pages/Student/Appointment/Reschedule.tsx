@@ -2,20 +2,21 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Button, Form, Modal, Select, notification } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
-import TextArea from 'antd/es/input/TextArea';
-import { createBooking } from '../../../utils/tutorBookingAPI';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
-import Schedule from '../../Schedule/Schedule';
-import { ScheduleEvent } from '../../Schedule/Schedule.type';
-import { getTutorById } from '../../../utils/tutorAPI';
+import Schedule from '../../../components/Schedule/Schedule';
+import { ScheduleEvent } from '../../../components/Schedule/Schedule.type';
+import { reschedule } from '../../../utils/appointmentAPI';
+import { TimeSlot } from '../../../components/AppointmentList/Appointment.type';
+import { theme } from '../../../themes';
 
-interface BookTutorProps {
+interface RescheduleProps {
   tutorId: number;
+  oldBooking: TimeSlot;
 }
 
-const BookTutor: React.FC<BookTutorProps> = (props) => {
-  const { tutorId } = props;
+const Reschedule: React.FC<RescheduleProps> = (props) => {
+  const tutorId = props.tutorId;
   const { user } = useAuth();
   const accountId = user?.id;
   const [api, contextHolder] = notification.useNotification({
@@ -24,18 +25,15 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
   const [selectedId, setSelectedId] = useState<number[]>([]);
-  const [subjects, setSubjects] = useState<string[]>([]);
+  const [rescheduleAgreement, setRescheduleAgreement] = useState<boolean>(false)
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
-  function convertBookingData(values: any) {
+  function convertRescheduleData() {
     return {
-      description: values.description,
-      tutorId: tutorId,
-      subjectName: values.subjects,
-      studentId: accountId,
-      timeslotIds: selectedId
+      oldTimeslotId: props.oldBooking.timeslotId,
+      newWeeklyScheduleId: selectedId[0],
     }
   }
 
@@ -47,37 +45,18 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
     else navigate(config.routes.public.login);
   };
 
-  useEffect(() => {
-    (async () => {
-      try {
-        setLoading(true);
-        const response = await getTutorById(tutorId);
-        if (response) {
-          await setSubjects(response.data.subjects);
-        } else throw new Error("Error fetching tutor data");
-      } catch (error: any) {
-        api.error({
-          message: 'Error',
-          description: error.message || 'There was an issue with fetching tutor data. Please try again later.',
-        });
-      } finally {
-        setLoading(false);
-      }
-    })();
-  }, [isFormOpen]);
-
   const validateTimeslot = (_: unknown) => {
-    if (selectedSchedule.length === 0) {
+    if (selectedSchedule.length < 1) {
       return Promise.reject("Please select at least one time slot to proceed");
     }
     return Promise.resolve();
   };
 
-  
+
   const restrictTimeslot = (_: unknown) => {
-    if (selectedSchedule.length > 5) {
+    if (selectedSchedule.length > 1) {
       selectedSchedule.pop();
-      return Promise.reject("You can only select up to 5 time slots");
+      return Promise.reject("You can only select one time slot");
     }
     return Promise.resolve();
   };
@@ -86,15 +65,22 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
     form.validateFields(['selectedSlots']);
   }, [selectedSchedule]);
 
-  const handleOk = async (values:any) => {
+  const handleOk = async (values: any) => {
     setLoading(true); // Set loading state to true when form is submitted
     form.validateFields(['selectedSlots'])
       .then(async () => {
-        const bookingData = await convertBookingData(values);
+        setLoading(true)
+        const rescheduleData = await convertRescheduleData();
         try {
           if (accountId !== undefined) {
-            const response = await createBooking(accountId, bookingData);
-            await navigate(config.routes.student.makePayment, { state: { selectedSchedule: selectedSchedule, appointmentData: response.data } });
+            const response = await reschedule(props.oldBooking.appointment.id, rescheduleData);
+            if (response.status === 200) {
+              api.success({
+                message: 'Your appointment has been rescheduled'
+              });
+              setIsFormOpen(false);
+              setLoading(false);
+            }
           } else { console.error("Account ID is undefined") }
         } catch (error: any) {
           api.error({
@@ -117,8 +103,8 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
   return (
     <>
       {contextHolder}
-      <Button type="primary" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
-        Book this tutor
+      <Button type="link" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
+        X
       </Button>
       <Modal
         centered
@@ -135,8 +121,9 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
             key="submit"
             type="primary"
             htmlType="submit"
+            disabled={!rescheduleAgreement}
             loading={loading}
-            form='bookTutorForm'
+            form='rescheduleForm'
             style={{ marginRight: '2%', width: '45%' }}
           >
             Send
@@ -150,7 +137,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
           }}
       >
         <FormStyled.FormWrapper
-          id='bookTutorForm'
+          id='rescheduleForm'
           labelAlign='left'
           layout="vertical"
           requiredMark={false}
@@ -170,35 +157,39 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
               },
               {
                 validator: restrictTimeslot,
-                message: "You can only select up to 5 time slots",
+                message: "You can only select one time slot",
               }
             ]}>
-            <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
+            <Schedule tutorId={tutorId}
+              setSelectedId={setSelectedId}
+              setSelectedSchedule={setSelectedSchedule}
+              selectedId={selectedId}
+              selectedSchedule={selectedSchedule}
+              maxSlots={1}
+              restrictedTime={12}
+            />
           </FormStyled.FormItem>
+          <FormStyled.FormDescription style={{marginBottom:`0px`}}>
+            We will not refund for any fewer hours than the original booking.<br/>
+            Please make sure to select the appropriate time slot.
+          </FormStyled.FormDescription>
           <FormStyled.FormItem
-            name="subjects"
-            $width="100%"
-            rules={[
-              {
-                required: true,
-                message: "Please select a subject",
-              },
-            ]}
-            style={{ margin: `-10px 0px` }}
+            name='agreement'
+            valuePropName="checked"
+            rules={[{
+              required: true,
+              message: 'You must confirm your timeslots to proceed'
+            }]}
             validateFirst
           >
-            <Select size="large" placeholder="Select subject" >
-              {subjects.map((subject) => {
-                return <Select.Option key={subject} value={subject}>{subject}</Select.Option>
-              })}
-            </Select>
-          </FormStyled.FormItem>
-          <FormStyled.FormItem
-            name="description"
-            $width="100%"
-            validateFirst
-          >
-            <TextArea rows={2} name='description' placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
+            <FormStyled.FormCheckbox
+              name='agreement'
+              style={{ margin: `0px`, color: `${theme.colors.black}` }}
+              checked={rescheduleAgreement}
+              defaultChecked={rescheduleAgreement}
+              onChange={(e) => setRescheduleAgreement(e.target.checked)}
+            > I have acknowledged all possible losts and agreed to the reschedule.
+            </FormStyled.FormCheckbox>
           </FormStyled.FormItem>
         </FormStyled.FormWrapper>
       </Modal>
@@ -206,4 +197,4 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
   );
 };
 
-export default BookTutor;
+export default Reschedule;
