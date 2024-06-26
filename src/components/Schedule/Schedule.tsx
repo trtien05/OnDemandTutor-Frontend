@@ -54,7 +54,6 @@ const Schedule: React.FC<ScheduleProps> = ({
           today.setHours(today.getHours() + restrictedTime)
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
-          console.log(startDate)
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
             const currentDate = new Date(startDate);
             currentDate.setDate(startDate.getDate() + dayIndex);
@@ -161,8 +160,6 @@ const Schedule: React.FC<ScheduleProps> = ({
     element.style.width = '100%';
   };
 
-
-
   const onEventClick = (args: any) => {
     const id = args.event.Id;
 
@@ -173,7 +170,7 @@ const Schedule: React.FC<ScheduleProps> = ({
       )
     );
 
-    if (setSelectedSchedule) {
+    if (setSelectedSchedule && selectedSchedule) {
       setSelectedSchedule(prevSchedule => {
         if (args && args.event && args.event.Id) {
           if (prevSchedule.some(s => s.Id === args.event.Id)) {
@@ -193,10 +190,9 @@ const Schedule: React.FC<ScheduleProps> = ({
       setSelectedId(prevIds =>
         prevIds.includes(id)
           ? prevIds.filter(i => i !== id)
-          : [...prevIds, id]
+          : prevIds.length<5?[...prevIds, id]:prevIds
       );
     }
-
   };
 
   const defaultEventRendered = (args: EventRenderedArgs) => {
