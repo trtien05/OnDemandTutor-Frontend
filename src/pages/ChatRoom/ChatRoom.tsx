@@ -3,7 +3,7 @@ import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
 import './style.css';
 import * as Styled from './ChatRoom.styled';
-import { Avatar, Button, Input, Layout, List, Typography } from 'antd';
+import { Avatar, Button, Input, Layout, List, Typography, message } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import TextArea from 'antd/es/input/TextArea';
@@ -19,6 +19,8 @@ type ChatMessage = {
   status: string;
   receiverAvatarUrl?: string;
   receiverFullName?: string;
+  senderAvatarUrl?: string;
+  senderFullName?: string;
 };
 
 type UserData = {
@@ -29,20 +31,25 @@ type UserData = {
   message: string;
   name?: string;
 };
+type Account = {
+  fullName: string;
+  avatarUrl: string;
+}
 
 let stompClient: Client | null = null;
 
 const ChatRoom: React.FC = () => {
+  const [account, setAccount] = useState<Map<number, Account>>(new Map());
   const { user } = useAuth();
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
   const [tab, setTab] = useState<string>("CHATROOM");
   const [userData, setUserData] = useState<UserData>({
-    id: user?.id || 0,
-    avatarUrl: user?.avatarUrl || '',
+    id: 0,
+    avatarUrl: '',
     receiverId: 0,
     connected: false,
     message: '',
-    name: user?.fullName || ''
+    name: ''
   });
 
   const chatMessagesRef = useRef<HTMLDivElement>(null); // Ref to chat messages
@@ -73,18 +80,7 @@ const ChatRoom: React.FC = () => {
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
     stompClient?.subscribe(`/user/${userData.id}/private`, onPrivateMessage);
-    userJoin();
     fetchMessages();
-  };
-
-  const userJoin = () => {
-    var chatMessage = {
-      senderId: userData.id,
-      status: "JOIN",
-      message: "",
-      avatarUrl: userData.avatarUrl
-    };
-    stompClient?.send("/app/message", {}, JSON.stringify(chatMessage));
   };
 
   const fetchMessages = async () => {
@@ -92,14 +88,23 @@ const ChatRoom: React.FC = () => {
       const response = await fetch(`http://localhost:8080/api/messages/accounts/${user?.id}`);
       const data: ChatMessage[] = await response.json();
       const newPrivateChats = new Map(privateChats);
+
       data.forEach(msg => {
-        if (msg.senderId === userData.id) {
-          const chatKey = msg.senderId === userData.id ? msg.receiverId! : msg.senderId;
-          if (!newPrivateChats.has(chatKey)) {
-            newPrivateChats.set(chatKey, []);
-          }
-          newPrivateChats.get(chatKey)!.push(msg);
+        const chatKey = msg.senderId === userData.id ? msg.receiverId! : msg.senderId;
+        const fullName: string = msg.senderId === userData.id ? (msg.receiverFullName || 'Unknown Receiver') : (msg.senderFullName || 'Unknown Sender');
+        const avatarUrl: string = msg.senderId === userData.id ? (msg.receiverAvatarUrl || 'defaultAvatarUrl') : (msg.senderAvatarUrl || 'defaultAvatarUrl');
+
+        if (!newPrivateChats.has(chatKey)) {
+          newPrivateChats.set(chatKey, []);
         }
+        if (!account.has(chatKey)) {
+          account.set(chatKey, {
+            fullName: fullName,
+            avatarUrl: avatarUrl
+          });
+          setAccount(account);
+        }
+        newPrivateChats.get(chatKey)!.push(msg);
       });
       setPrivateChats(new Map(newPrivateChats));
       scrollToBottom(); // Scroll to bottom after fetching messages
@@ -129,6 +134,7 @@ const ChatRoom: React.FC = () => {
     const { value } = event.target;
     setUserData({ ...userData, message: value });
   };
+  console.log(account);
 
   const sendPrivateValue = () => {
     if (stompClient && tab && userData.message.trim() !== "") {
@@ -137,8 +143,7 @@ const ChatRoom: React.FC = () => {
         receiverId: parseInt(tab),
         message: userData.message.trim(),
         status: "MESSAGE",
-        receiverAvatarUrl: userData.avatarUrl,
-        receiverFullName: userData.name
+        senderAvatarUrl: userData.avatarUrl
       };
 
       const updatedPrivateChats = new Map(privateChats);
@@ -161,6 +166,7 @@ const ChatRoom: React.FC = () => {
       chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
     }
   };
+  console.log(privateChats);
 
   return (
     <Layout>
@@ -170,38 +176,42 @@ const ChatRoom: React.FC = () => {
             <List
               itemLayout="horizontal"
               dataSource={[...privateChats.keys()]}
-              renderItem={(id) => (
-                <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
-                  <List.Item.Meta
-                    avatar={<Avatar size={50} src={privateChats.get(id)?.[0]?.receiverAvatarUrl || ''} />}
-                    title={privateChats.get(id)?.[0]?.receiverFullName || ``}
-                    description="Lastest message..."
-                  />
-                </List.Item>
-              )}
+              renderItem={(id) => {
+                console.log(id);
+                return (
+                  <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
+                    <List.Item.Meta
+                      avatar={
+                        <Avatar size={50} src={account.get(id)?.avatarUrl} />}
+                      title={account.get(id)?.fullName}
+                      description="Lastest message..."
+                    />
+                  </List.Item>
+                )
+
+              }}
             />
           </Sider>
 
           <Content style={{ minHeight: 280 }}>
             <Styled.ChatBox>
               <Styled.ChatMessages ref={chatMessagesRef}>
-                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => (
-                  <Styled.Message self={chat.senderId === userData.id} key={index}>
-                    {chat.senderId !== userData.id && (
-                      <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
-                    )}
-                    <Styled.MessageData self={chat.senderId === userData.id}>
-                      {chat.senderId !== userData.id && (
-                        <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
-                      )}
-                      <Text strong>{chat.senderId === userData.id && chat.senderId}</Text>
-                      <p>{chat.message}</p>
-                    </Styled.MessageData>
-                    {chat.senderId === userData.id && (
-                      <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
-                    )}
-                  </Styled.Message>
-                ))}
+                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
+                  const isSelf = chat.senderId === userData.id;
+                  console.log(isSelf);
+                  return (
+                    <>
+                      <Styled.Message self={isSelf} key={index}>
+                        {!isSelf && <Avatar size={40} src={chat.senderAvatarUrl} />}
+                        <Styled.MessageData self={chat.senderId === userData.id}>
+                          <Text>{chat.message}</Text>
+
+                        </Styled.MessageData>
+                      </Styled.Message>
+                    </>
+
+                  )
+                })}
               </Styled.ChatMessages>
               <Styled.SendMessage>
                 <TextArea
@@ -224,8 +234,9 @@ const ChatRoom: React.FC = () => {
             </Styled.ChatBox>
           </Content>
         </>
-      ) : null}
-    </Layout>
+      ) : null
+      }
+    </Layout >
   );
 };
 

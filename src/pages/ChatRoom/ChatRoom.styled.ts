@@ -22,14 +22,13 @@ export const Message = styled.div<MessageProps>`
     display: flex;
     align-items: center;
     margin-bottom: 30px;
-    justify-content: ${(props) => (props.self ? 'flex-end' : 'flex-start')};
+    flex-direction: ${(props) => (props.self ? 'row-reverse' : 'row')};
 `;
 
 export const MessageData = styled.div<MessageProps>`
     margin: 0 10px;
     display: flex;
 
-    flex-direction: ${(props) => (props.self ? 'row-reverse' : 'row')};
     align-items: center;
 `;
 
