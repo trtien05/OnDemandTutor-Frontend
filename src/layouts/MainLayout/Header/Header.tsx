@@ -13,27 +13,27 @@ import { HeaderProps, MenuType } from './Header.type';
 import * as Styled from './Header.styled';
 import MobileMenu from '../../../components/Mobile/MobileMenu';
 
-const items: MenuProps['items'] = [
-    {
-        label: <Link to={config.routes.student.profile}>My Profile</Link>,
-        key: config.routes.student.profile,
-    },
-    {
-        label: <Link to={config.routes.student.appointment}>Appointment</Link>,
-        key: config.routes.student.appointment,
-    },
-    {
-        type: 'divider',
-    },
-    {
-        label: (
-            <Link to={config.routes.public.login} onClick={() => cookieUtils.clear()}>
-                Log Out
-            </Link>
-        ),
-        key: config.routes.public.login,
-    },
-];
+// const items: MenuProps['items'] = [
+//     {
+//         label: <Link to={config.routes.student.profile}>My Profile</Link>,
+//         key: config.routes.student.profile,
+//     },
+//     {
+//         label: <Link to={config.routes.student.studentSchedule}>My Schedule</Link>,
+//         key: config.routes.student.studentSchedule,
+//     },
+//     {
+//         type: 'divider',
+//     },
+//     {
+//         label: (
+//             <Link to={config.routes.public.login} onClick={() => cookieUtils.clear()}>
+//                 Log Out
+//             </Link>
+//         ),
+//         key: config.routes.public.login,
+//     },
+// ];
 
 const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
     const navigate = useNavigate();
@@ -52,6 +52,36 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
             setShow(true);
         } else setShow(false);
     };
+
+    const items: MenuProps['items'] = [
+        {
+            label: <Link to={config.routes.student.profile}>My Profile</Link>,
+            key: config.routes.student.profile,
+        },
+        {
+            label: <Link to={config.routes.student.studentSchedule}>My Schedule</Link>,
+            key: config.routes.student.studentSchedule,
+        },
+        {
+            type: 'divider',
+        },
+        {
+            label: (
+                <Link to={config.routes.public.login} onClick={() => cookieUtils.clear()}>
+                    Log Out
+                </Link>
+            ),
+            key: config.routes.public.login,
+        },
+    ];
+
+    // Add "Tutoring Details" link if the role is "TUTOR"
+    if (role === 'TUTOR') {
+        items.splice(1, 0, {
+            label: <Link to={config.routes.tutor.profile}>Tutor Profile</Link>,
+            key: config.routes.tutor.profile,
+        });
+    }
 
     useEffect(() => {
         window.addEventListener('scroll', transitionNavBar);

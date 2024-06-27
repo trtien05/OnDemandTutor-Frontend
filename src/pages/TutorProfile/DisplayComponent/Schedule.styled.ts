@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 
-export const ScheduleWrapper = styled.div<{ hideToolBar: boolean }>`
+export const ScheduleWrapper = styled.div`
   .e-schedule .e-time-cells, 
   .e-schedule .e-work-cells, 
   .e-schedule .e-header-cells {
@@ -8,6 +8,10 @@ export const ScheduleWrapper = styled.div<{ hideToolBar: boolean }>`
     line-height: 20px !important; /* Ensure text fits within the adjusted height */
     padding: 0 !important;
     margin: 0 !important;
+
+    .e-header-date {
+      display: none;
+    }
   }
 
   .e-schedule .e-time-cells .e-time-slots,
@@ -20,13 +24,9 @@ export const ScheduleWrapper = styled.div<{ hideToolBar: boolean }>`
     padding: 0 !important;
     margin: 0 !important;
   }
-  
-  .e-schedule .e-schedule-toolbar-container {
-    display: ${props => props.hideToolBar ? 'none' : 'block'} !important;
-  }
 
   .e-schedule .e-new-event,
-  .e-schedule .e-toolbar-right {
+  .e-schedule .e-schedule-toolbar {
         display: none !important;
       }
 
@@ -38,12 +38,6 @@ export const ScheduleWrapper = styled.div<{ hideToolBar: boolean }>`
     text-align: center !important;
     padding: 0 !important;
     margin: 0 !important;
-
-    .e-toolbar-left .e-prev,
-    .e-toolbar-left .e-next,
-    .e-toolbar-left .e-icon-down-arrow{
-      display: none; !important;
-    }
   }
 
   .e-schedule .e-header-cells .e-header-date,

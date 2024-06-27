@@ -1,12 +1,22 @@
 import React from 'react';
 import { Col, List, Row } from 'antd';
-import * as Styled from '../QuestionList/Question.styled';
+import * as Styled from './Appointment.styled';
 import Container from '../Container';
-import { Appointment } from './Appointment.type';
+import { Appointment, TimeSlot } from './Appointment.type';
 import AppointmentItem from './AppointmentItem/AppointmentItem';
+import { useAuth } from '../../hooks';
+import { UserType } from '../../hooks/useAuth';
 
-const AppointmentList: React.FC<{ list: Appointment[], initLoading: boolean }> = (props) => {
+interface AppointmentListProps {
+  list: TimeSlot[];
+  initLoading: boolean;
+  user?: UserType;
+  onCancel: (timeslotId: number) => void; // Pass the onCancel function prop
+  viewMode: 'Upcoming' | 'Past';
+}
 
+const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, user, onCancel,viewMode }) => {
+  // const {user} = useAuth();
 
   return (
     <>
@@ -16,15 +26,15 @@ const AppointmentList: React.FC<{ list: Appointment[], initLoading: boolean }> =
             <Row justify='space-between'>
               <Col lg={24} md={24} xs={24} sm={24}>
                 <List
-                  loading={props.initLoading}
+                  loading={initLoading}
                   itemLayout="horizontal"
-                  dataSource={props.list}
+                  dataSource={list}
                   renderItem={(item) => (
                     <Styled.TutorItem>
-                      <AppointmentItem item={item} />
+                      <AppointmentItem item={item} user={user} onCancel={onCancel} viewMode={viewMode}/>
                     </Styled.TutorItem>
                   )}
-                />
+                    />
               </Col>
             </Row>
 

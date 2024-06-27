@@ -34,5 +34,4 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
       </ConfigProvider>
     </ThemeProvider>
   </StrictMode>
-
 )
