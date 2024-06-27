@@ -21,8 +21,8 @@ export const BoxHover = styled.div`
 `;
 
 export const QuestionItem = styled(Row)`
-    // cursor: pointer;
-    background-color: #F4D1F3;
+    // cursor: pointer; 
+    background-color:#F4D1F3;
     border-radius: 25px;
     border: 1px solid ${theme.colors.primary};
     & .ant-list-item {

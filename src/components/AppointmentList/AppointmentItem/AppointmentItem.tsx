@@ -6,6 +6,7 @@ import { CloseOutlined, UserOutlined, CalendarOutlined, ExclamationCircleOutline
 import { Appointment, TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
+import { theme } from '../../../themes';
 
 interface AppointmentItemProps {
     item: TimeSlot;
@@ -25,7 +26,12 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
     const timeDiff = (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60); // difference in hours
     const showReschedule = timeDiff > 24;
     const showCancel = timeDiff <= 24;
-    
+    // Helper function to format time to "HH:mm"
+  const formatTime = (time: string) => {
+    const [hours, minutes] = time.split(':');
+    return `${hours}:${minutes}`;
+  };
+
     return (
         <Skeleton avatar title={false} loading={item.loading} active>
             <Styled.StyleCol lg={24} md={24} sm={24} xs={24}>
@@ -40,6 +46,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                         fontWeight: 'bold',
                                         textAlign: 'center',
                                         display: 'block',
+                                        color:`${theme.colors.primary}`
                                     }}
                                 >
                                     {appointmentDate.toLocaleString('default', { month: 'short' }).toUpperCase()}
@@ -51,6 +58,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                         textAlign: 'center',
                                         display: 'block',
                                         fontWeight: 'bold',
+                                        color:`${theme.colors.primary}`
                                     }}
                                 >
                                     {appointmentDate.getDate()}
@@ -75,10 +83,10 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                         <Styled.StyleCol lg={5} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
-                                    style={{ fontSize: '16px', alignContent: 'center' }}
+                                    style={{ fontSize: '16px', alignContent: 'center',  fontWeight:'500' }}
                                 >
                                     {appointmentDate.toLocaleString('default', { weekday: 'long' })}
-                                    , {startTime} - {endTime}
+                                    , {formatTime(startTime)} - {formatTime(endTime)}
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
@@ -109,13 +117,14 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                         fontSize: '16px',
                                         fontWeight: 'bold',
                                         textDecoration: 'underline',
+                                        color:`${theme.colors.primary}`
                                     }}
                                 >
                                     <a
                                         href={appointment.tutor.meetingLink}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        style={{ color: '#000' }}
+                                        style={{color:`${theme.colors.primary}`} }
                                     >
                                         Meet Link
                                     </a>
@@ -143,7 +152,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                             style={{ textAlign: 'center' }}
                         >
                             <CloseOutlined
-                                style={{ color: '#B52121', fontSize: '30px', cursor: 'pointer' }}
+                                style={{ color: '#B52121', fontSize: '20px', cursor: 'pointer' }}
                                 onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
                             />
                             
