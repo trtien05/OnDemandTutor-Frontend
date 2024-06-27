@@ -12,6 +12,7 @@ const { Option } = Select;
 import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { AppointmentStatus } from '../../../utils/enums';
+import { set } from 'date-fns';
 
 const StudentAppointment = () => {
   useDocumentTitle("Appointment | MyTutor")
@@ -31,6 +32,7 @@ const StudentAppointment = () => {
   const [viewMode, setViewMode] = useState<'Upcoming' | 'Past'>('Upcoming'); // State to manage view mode
   const [modalVisible, setModalVisible] = useState(false);
   const [cancelAppointmentId, setCancelAppointmentId] = useState<number>(null);
+  const [update, setIsUpdate] = useState(false);
   
     let isDone = false;
     if(viewMode==='Past'){
@@ -55,7 +57,7 @@ const StudentAppointment = () => {
     window.scrollTo(0, 0);
     console.log(baseUrl);
 
-  }, [appointmentsPerPage, currentPage, user, viewMode]);
+  }, [appointmentsPerPage, currentPage, user, viewMode, update]);
 
   const handleTabChange = (value: string) => {
     setViewMode(value as 'Upcoming' | 'Past');
@@ -65,7 +67,7 @@ const StudentAppointment = () => {
     if (viewMode === 'Upcoming') {
         return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.PAID);
     } else if (viewMode === 'Past') {
-        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.CANCELED);
+        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.DONE);
     } else {
         return [];
     }
@@ -107,6 +109,7 @@ const handleCancelAppointment = (timeslotId: number) => {
       messageApi.success('Lesson canceled successfully');
       // Refetch appointments after cancellation
       setCurrentPage(1); // Reset to first page
+      setIsUpdate(!update);
     })
     .catch(error => {
       messageApi.error('Failed to cancel lesson');
@@ -115,11 +118,11 @@ const handleCancelAppointment = (timeslotId: number) => {
 };
 
   return (
-    <div style={{backgroundColor:'#fff'}}>
+    <div style={{backgroundColor:'#fff', marginBottom:'-50px'}}>
     {contextHolder}
     {contextHolderModal}
       <Styled.TitleWrapper>
-        <Container>
+        <Container >
         <Styled.RowWrapper>
           <Segmented<string>
                     options={['Upcoming', 'Past']}
@@ -135,7 +138,7 @@ const handleCancelAppointment = (timeslotId: number) => {
         </Container>
       </Styled.TitleWrapper>
 
-      <AppointmentList initLoading={initLoading} list={filteredAppointments()} onCancel={confirmCancel} />
+      <AppointmentList initLoading={initLoading} list={filteredAppointments()} onCancel={confirmCancel} viewMode={viewMode} />
 
       {totalPages > 1 &&
         <AppointmentPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
