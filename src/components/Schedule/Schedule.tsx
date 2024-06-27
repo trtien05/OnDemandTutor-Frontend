@@ -11,13 +11,22 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHV
 
 interface ScheduleProps {
   tutorId: number;
+  scheduleType?: string;
+  restrictedTime?: number;
   setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
   setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
   selectedId?: number[];
   selectedSchedule?: ScheduleEvent[];
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule }) => {
+const Schedule: React.FC<ScheduleProps> = ({ 
+      tutorId, 
+      scheduleType, 
+      setSelectedId, 
+      setSelectedSchedule, 
+      selectedId, 
+      selectedSchedule, 
+      restrictedTime }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
@@ -39,10 +48,12 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
         if (response) {
           //format data    
           const start = new Date(response.data.startDate);
+          
           const today = new Date();
+          if (restrictedTime === undefined) restrictedTime = 12;
+          today.setHours(today.getHours() + restrictedTime)
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
-
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
             const currentDate = new Date(startDate);
             currentDate.setDate(startDate.getDate() + dayIndex);
@@ -149,8 +160,6 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
     element.style.width = '100%';
   };
 
-
-
   const onEventClick = (args: any) => {
     const id = args.event.Id;
 
@@ -161,7 +170,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
       )
     );
 
-    if (setSelectedSchedule) {
+    if (setSelectedSchedule && selectedSchedule) {
       setSelectedSchedule(prevSchedule => {
         if (args && args.event && args.event.Id) {
           if (prevSchedule.some(s => s.Id === args.event.Id)) {
@@ -181,10 +190,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
       setSelectedId(prevIds =>
         prevIds.includes(id)
           ? prevIds.filter(i => i !== id)
-          : [...prevIds, id]
+          : prevIds.length<5?[...prevIds, id]:prevIds
       );
     }
-
   };
 
   const defaultEventRendered = (args: EventRenderedArgs) => {
@@ -208,10 +216,13 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
 
   if (isScheduleLoaded) return (
     <div>
-      <ScheduleStyle.ScheduleWrapper>
+      <ScheduleStyle.ScheduleWrapper
+        hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
+        >
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          height="300px"
+          // style={{maxHeight: '300px'}}
+          height= '300px'
           selectedDate={today}
           minDate={today}
           maxDate={next7Days}
@@ -231,7 +242,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
           <Inject services={[Day]} />
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
-      {schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
+      {scheduleType?.includes('tutorProfile')? 
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>):
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
     </div>
   )
 }
