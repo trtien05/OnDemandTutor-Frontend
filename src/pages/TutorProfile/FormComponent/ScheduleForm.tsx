@@ -220,8 +220,8 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
             return responseData;
         } catch (error: any) {
             api.error({
-                message: 'Error',
-                description: error.response ? error.response.data : error.message,
+                message: 'Error updating schedule',
+                description: error.response.data.message || error.message,
             });
         }
     }
