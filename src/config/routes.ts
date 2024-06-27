@@ -26,6 +26,10 @@ const routes = {
         manageModerator: '/admin/moderator',
         manageStudent: '/admin/student',
     },
+    moderator: {
+        manageTutor: '/moderator/tutors',
+        manageStudent: '/moderator/student',
+    },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
     },
