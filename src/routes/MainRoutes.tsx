@@ -8,6 +8,8 @@ import MakePayment from '../pages/Payment/MakePayment';
 import TutorDetail from '../pages/TutorDetail';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
+import ChatRoom from '../pages/ChatRoom';
+
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Role } from '../utils/enums';
@@ -37,7 +39,8 @@ const studentRoutes = {
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
-        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> }
+        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
+        { path: config.routes.student.chatRoom, element: <ChatRoom /> }
     ],
 };
 

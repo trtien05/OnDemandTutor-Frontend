@@ -19,6 +19,7 @@ const routes = {
         makePayment: '/make-payment',
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
+        chatRoom: '/chat-room',
     },
     admin: {
         dashboard: '/admin',
