@@ -11,10 +11,11 @@ interface AppointmentItemProps {
     item: TimeSlot;
     user?: UserType;
     onCancel: (timeslotId: number) => void; // Define the onCancel callback prop
+    viewMode: 'Upcoming' | 'Past'; 
 }
 
 // QuestionItemProps
-const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel }) => {
+const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel, viewMode }) => {
     const { startTime, endTime, scheduleDate, appointment,  } = item;
     // const timeslot = item.timeslots[0];
     const appointmentDate = new Date(`${scheduleDate}T${startTime}`);
@@ -102,6 +103,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                         </Styled.StyleCol>
                         <Styled.StyleCol lg={3} md={24} sm={24} xs={24}>
                             <Styled.QuestionContent>
+                                {viewMode === 'Upcoming' && (
                                 <Styled.QuestionRow
                                     style={{
                                         fontSize: '16px',
@@ -118,8 +120,11 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                                         Meet Link
                                     </a>
                                 </Styled.QuestionRow>
+                                )}
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
+                        {viewMode==='Upcoming' && (
+                            <>
                         <Styled.StyleCol
                             lg={2}
                             md={24}
@@ -143,6 +148,8 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel 
                             />
                             
                         </Styled.StyleCol>
+                        </>
+                        )}
                     </Styled.QuestionItem>
                 </Styled.BoxHover>
             </Styled.StyleCol>

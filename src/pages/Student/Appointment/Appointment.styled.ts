@@ -159,7 +159,7 @@ export const SearchWrapper = styled.div`
     width: 100%;`;
 
 export const RowWrapper = styled(Row)`
-    margin: 20px 0;
+    margin:0;
     padding-top: 3%;
 `;
 
@@ -183,5 +183,5 @@ export const StyledSelect = styled(Select)`
     }
 `;
 export const TitleWrapper = styled.div`
-    margin: 20px 0;
+    margin:0;
 `;

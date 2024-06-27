@@ -5,15 +5,17 @@ import Container from '../Container';
 import { Appointment, TimeSlot } from './Appointment.type';
 import AppointmentItem from './AppointmentItem/AppointmentItem';
 import { useAuth } from '../../hooks';
+import { UserType } from '../../hooks/useAuth';
 
 interface AppointmentListProps {
   list: TimeSlot[];
   initLoading: boolean;
   user?: UserType;
   onCancel: (timeslotId: number) => void; // Pass the onCancel function prop
+  viewMode: 'Upcoming' | 'Past';
 }
 
-const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, user, onCancel }) => {
+const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, user, onCancel,viewMode }) => {
   // const {user} = useAuth();
 
   return (
@@ -29,7 +31,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, us
                   dataSource={list}
                   renderItem={(item) => (
                     <Styled.TutorItem>
-                      <AppointmentItem item={item} user={user} onCancel={onCancel}/>
+                      <AppointmentItem item={item} user={user} onCancel={onCancel} viewMode={viewMode}/>
                     </Styled.TutorItem>
                   )}
                     />
