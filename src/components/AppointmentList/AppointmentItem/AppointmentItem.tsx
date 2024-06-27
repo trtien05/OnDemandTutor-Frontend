@@ -49,7 +49,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                         color:`${theme.colors.primary}`
                                     }}
                                 >
-                                    {appointmentDate.toLocaleString('default', { month: 'short' }).toUpperCase()}
+                                    {appointmentDate.toLocaleString('en-US', { month: 'short' }).toUpperCase()}
                                 </Styled.QuestionRow>
 
                                 <Styled.QuestionRow
@@ -85,7 +85,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                 <Styled.QuestionRow
                                     style={{ fontSize: '16px', alignContent: 'center',  fontWeight:'500' }}
                                 >
-                                    {appointmentDate.toLocaleString('default', { weekday: 'long' })}
+                                    {appointmentDate.toLocaleString('en-US', { weekday: 'long' })}
                                     , {formatTime(startTime)} - {formatTime(endTime)}
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
