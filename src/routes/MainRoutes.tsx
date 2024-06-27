@@ -40,7 +40,7 @@ const studentRoutes = {
        
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.profile, element: <Profile/> },
-        { path: config.routes.student.studentSchedule, element: <StudentAppointment/> }
+        { path: config.routes.student.studentSchedule, element: <StudentAppointment/> },
         {path: config.routes.student.makePayment, element: <MakePayment />},
         
     ],
@@ -48,13 +48,9 @@ const studentRoutes = {
 
 const tutorRoutes = {
     children: [
-        { path: config.routes.tutor.tutorProfile, element: <TutorProfile /> },
+        { path: config.routes.tutor.profile, element: <TutorProfile /> },
         {path: config.routes.student.makePayment, element: <MakePayment />},
-        {path: config.routes.student.paymentSuccess, element: <PaymentSuccess />}
-    ],
-};
-const tutorRoutes = {
-    children: [
+        {path: config.routes.student.paymentSuccess, element: <PaymentSuccess />},
         { path: config.routes.student.studentSchedule, element: <StudentAppointment/> },
         { path: config.routes.tutor.tutorSchedule, element: <StudentAppointment/> }
     ],
