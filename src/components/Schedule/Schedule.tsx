@@ -250,8 +250,8 @@ const Schedule: React.FC<ScheduleProps> = ({
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
       {scheduleType?.includes('tutorProfile') ?
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>) :
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>) :
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
     </div>
   )
 }
