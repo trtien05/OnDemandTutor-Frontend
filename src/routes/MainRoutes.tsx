@@ -5,11 +5,10 @@ import Home from '../pages/Home';
 import BecomeTutor from '../pages/BecomeTutor';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import MakePayment from '../pages/Payment/MakePayment';
-import TutorDetail from '../pages/TutorDetail';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
+import TutorProfile from '../pages/TutorProfile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
-import ChatRoom from '../pages/ChatRoom';
-
+import TutorDetail from '../pages/TutorDetail/TutorDetail';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -34,8 +33,15 @@ const studentRoutes = {
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
-        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
-        { path: config.routes.student.chatRoom, element: <ChatRoom /> }
+        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> }
+    ],
+};
+
+const tutorRoutes = {
+    children: [
+        { path: config.routes.tutor.tutorProfile, element: <TutorProfile /> },
+        { path: config.routes.student.makePayment, element: <MakePayment /> },
+        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> }
     ],
 };
 
@@ -46,7 +52,7 @@ const notFoundRoutes = { path: '*', element: <NotFound /> };
 const MainRoutes = {
     path: '/',
     element: <MainRouter />,
-    children: [publicRoutes, studentRoutes, notFoundRoutes],
+    children: [publicRoutes, studentRoutes, tutorRoutes, notFoundRoutes],
 };
 
 export default MainRoutes;

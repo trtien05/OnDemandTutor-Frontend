@@ -53,6 +53,11 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     return current && current > fourYearsFromToday;
 };
 
+const certDate: RangePickerProps['disabledDate'] = (current) => {
+    // Can not select days after today and today
+    return current && current > dayjs().endOf('day');
+};
+
 const validateFileType = (_: RuleObject, fileList: UploadFile[]) => {
     if (fileList && fileList.length > 0) {
       const file = fileList[0];
@@ -410,7 +415,7 @@ export const certificateForm: FieldType[] = [
                 size='large'
                 picker="year"
                 placeholder="Year"
-                disabledDate={disabledDate}
+                disabledDate={certDate}
                 style={{ width: `100%` }}
             />
         ),

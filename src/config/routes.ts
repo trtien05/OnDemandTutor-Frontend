@@ -21,6 +21,11 @@ const routes = {
         registerTutor: '/register-tutor',
         chatRoom: '/chat-room',
     },
+    tutor: {
+        tutorProfile: '/tutor-profile',
+        makePayment: '/make-payment',
+        paymentSuccess: '/confirm-payment'
+    },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
     },

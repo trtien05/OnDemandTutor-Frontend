@@ -2,9 +2,9 @@ import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, Po
 import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
-import { getTutorSchedule } from '../../utils/tutorBookingAPI';
+import { getTutorSchedule } from '../../../utils/tutorBookingAPI';
 import { notification } from 'antd';
-import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
+import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -19,7 +19,7 @@ interface ScheduleProps {
   update?: boolean;
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule, update }) => {
+const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule, update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
@@ -29,8 +29,8 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
 
   useEffect(() => {
     setTimeout(() => {
-      setIsScheduleLoaded(true);
-    }, 1000); // Adjust this delay as needed
+      
+    }, 2000); // Adjust this delay as needed
   }, []);
 
   useEffect(() => {
@@ -41,12 +41,10 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
         if (response) {
           //format data    
           const start = new Date(response.data.startDate);
-
           const today = new Date();
-          if (restrictedTime === undefined) restrictedTime = 12;
-          today.setHours(today.getHours() + restrictedTime)
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
+
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
             const currentDate = new Date(startDate);
             currentDate.setDate(startDate.getDate() + dayIndex);
@@ -72,6 +70,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
           });
 
           setSchedule(newSchedule);
+          setTimeout(() => {
+            setIsScheduleLoaded(true);
+          }, 1000);
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
       } catch (error: any) {
@@ -83,7 +84,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
     };
 
     fetchSchedule();
-  }, update != null ? [update] : []);
+  }, [update]);
 
 
   const [start, setStart] = useState<string>('');
@@ -153,6 +154,8 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
     element.style.width = '100%';
   };
 
+
+
   const onEventClick = (args: any) => {
     const id = args.event.Id;
 
@@ -163,7 +166,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
       )
     );
 
-    if (setSelectedSchedule && selectedSchedule) {
+    if (setSelectedSchedule) {
       setSelectedSchedule(prevSchedule => {
         if (args && args.event && args.event.Id) {
           if (prevSchedule.some(s => s.Id === args.event.Id)) {
@@ -183,9 +186,10 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
       setSelectedId(prevIds =>
         prevIds.includes(id)
           ? prevIds.filter(i => i !== id)
-          : prevIds.length < 5 ? [...prevIds, id] : prevIds
+          : [...prevIds, id]
       );
     }
+
   };
 
   const defaultEventRendered = (args: EventRenderedArgs) => {
@@ -208,7 +212,6 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
 
   const restrictedTime = !noRestricted
     ? {
-      minDate: today,
       maxDate: next7Days,
     }
     : {};
@@ -216,15 +219,14 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
 
   if (isScheduleLoaded) return (
     <div>
-      <ScheduleStyle.ScheduleWrapper
-        hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
-      >
+      <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          // style={{maxHeight: '300px'}}
-          height='300px'
+          // style={{maxHeight: '500px'}}
+          height={300}
           selectedDate={today}
           {...restrictedTime}
+          minDate={today}
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}
@@ -241,9 +243,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedI
           <Inject services={[Day]} />
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
-      {!noRestricted ? schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>) : schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
+      {!noRestricted? schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>): schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
     </div>
   )
 }
 
-export default Schedule
+export default DisplaySchedule
