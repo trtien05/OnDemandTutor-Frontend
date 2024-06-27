@@ -55,12 +55,14 @@ interface Tutor {
 
 export function toScheduleString(schedule: Schedule) {
   let scheduleString = '';
+  console.log(schedule.scheduleDate)
   const dateString = new Date(schedule.scheduleDate).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
+  
   scheduleString = dateString + " at " + schedule.startTime + " - " + schedule.endTime;
   return scheduleString;
 }
@@ -272,7 +274,7 @@ const MakePayment = () => {
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
                 {schedule?.map((schedule: Schedule, index: number) => (
-                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split(' at ')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split(' at ')[1]} </span></p>
                 )
                 )}
                 <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>
