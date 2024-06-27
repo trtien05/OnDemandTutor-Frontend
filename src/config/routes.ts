@@ -16,15 +16,17 @@ const routes = {
     },
     student: {
         profile: '/profile',
+        studentSchedule: '/student-schedule',
         makePayment: '/make-payment',
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
         chatRoom: '/chat-room',
     },
     tutor: {
-        tutorProfile: '/tutor-profile',
         makePayment: '/make-payment',
-        paymentSuccess: '/confirm-payment'
+        paymentSuccess: '/confirm-payment',
+        profile: '/tutor-profile',
+        tutorSchedule: '/tutor-schedule',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',

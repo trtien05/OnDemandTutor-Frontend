@@ -26,4 +26,26 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
   }
 
 }
+export const uploadAvatar = async (userId: number, file: File | null, sectionName: string) => {
+  console.log(file)
+  if (!file) {
+    console.log("No file selected for upload.");
+    return;
+  }
+
+  //By creating a reference to a file, your app gains access to it.
+  const imageRef = ref(storage, `${userId}/${sectionName}`);
+  try {
+
+    const uploadResult = await uploadBytes(imageRef, file)
+
+    // Get the download URL
+    const url = await getDownloadURL(uploadResult.ref);
+    console.log(`File available at: ${url}`);
+    return url;
+  } catch (error) {
+    console.log(`Upload failed: ${error}`);
+  }
+
+}
 
