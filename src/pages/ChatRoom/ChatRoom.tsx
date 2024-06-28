@@ -140,15 +140,17 @@ const ChatRoom: React.FC = () => {
         senderId: userData.id,
         receiverId: parseInt(tab),
         message: userData.message.trim(),
-        status: "MESSAGE"
+        status: "MESSAGE"   
       };
-      if (privateChats.has(parseInt(tab))) {
-        privateChats.get(parseInt(tab))!.push(chatMessage);
-      } else {
-        privateChats.set(parseInt(tab), [chatMessage]);
+      if (user?.id !== parseInt(tab)) {
+        if (privateChats.has(parseInt(tab))) {
+          privateChats.get(parseInt(tab))!.push(chatMessage);
+        } else {
+          privateChats.set(parseInt(tab), [chatMessage]);
+        }
+        setPrivateChats(privateChats);  
       }
-      setPrivateChats(privateChats);
-
+      
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: "" });
 
