@@ -20,8 +20,8 @@ export const getTutorDescription = (tutorId: number) => {
 
 export const updateTutorDescription = (tutorId: number, requestBody: any) => {
     return put(`/api/tutors/${tutorId}/tutor-description`, requestBody);
-}
+};
 
 export const updateSchedule = (tutorId: number, noOfWeeks: number, requestBody: any) => {
     return put(`/api/schedules/tutors/${tutorId}`, requestBody);
-}
+};
