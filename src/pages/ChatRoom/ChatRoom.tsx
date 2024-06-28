@@ -188,11 +188,11 @@ const ChatRoom: React.FC = () => {
             <Styled.ChatBox>
               <Styled.ChatMessages ref={chatMessagesRef}>
                 {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
-                  const isSelf = chat.senderId === userData.id;
+                  const isSelf = chat.senderId === user?.id;
                   return (
                       <Styled.Message self={isSelf} key={index}>
                         {!isSelf && <Avatar size={40} src={chat.senderAvatarUrl} />}
-                        <Styled.MessageData self={chat.senderId === userData.id}>
+                        <Styled.MessageData self={isSelf}>
                           <Text>{chat.message}</Text>
                         </Styled.MessageData>
                       </Styled.Message>
