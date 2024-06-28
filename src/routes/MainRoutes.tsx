@@ -14,6 +14,7 @@ import cookieUtils from '../utils/cookieUtils';
 import Profile from '../pages/Student/Profile/Profile';
 import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 import TutorDetail from '../pages/TutorDetail';
+import ChatRoom from '../pages/ChatRoom';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -37,7 +38,7 @@ const publicRoutes = {
 const studentRoutes = {
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
-
+        { path: config.routes.student.chatRoom, element: <ChatRoom /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.profile, element: <Profile /> },
         { path: config.routes.student.studentSchedule, element: <StudentAppointment /> },
@@ -49,6 +50,7 @@ const studentRoutes = {
 const tutorRoutes = {
     children: [
         { path: config.routes.tutor.profile, element: <TutorProfile /> },
+        { path: config.routes.student.chatRoom, element: <ChatRoom /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.studentSchedule, element: <StudentAppointment /> },
