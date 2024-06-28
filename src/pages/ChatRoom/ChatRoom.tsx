@@ -174,9 +174,7 @@ const ChatRoom: React.FC = () => {
                 return (
                   <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
                     <List.Item.Meta
-                      avatar={
-                        <Avatar size={50} src={account.get(id)?.avatarUrl} />
-                      }
+                      avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
                       title={account.get(id)?.fullName}
                       description="Lastest message..."
                     />
