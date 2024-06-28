@@ -137,7 +137,7 @@ const ChatRoom: React.FC = () => {
   const sendPrivateValue = () => {
     if (stompClient && tab && userData.message.trim() !== "") {
       var chatMessage: ChatMessage = {
-        senderId: userData.id,
+        senderId: user?.id || 0,
         receiverId: parseInt(tab),
         message: userData.message.trim(),
         status: "MESSAGE"   
