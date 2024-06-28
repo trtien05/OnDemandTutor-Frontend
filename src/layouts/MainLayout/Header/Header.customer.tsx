@@ -88,7 +88,7 @@ export const menuLogged = (user: PIIProps) => {
         ...menuUnLogged().slice(0, -1),
 
         createMenuItem(
-            config.routes.student.profile,
+            config.routes.student.chatRoom,
             <IoChatboxOutline size={20} />,
             'Chat room',
         ),
