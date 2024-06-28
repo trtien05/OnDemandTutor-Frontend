@@ -1,9 +1,9 @@
 import { Row, Col, Checkbox, Button, Input } from "antd";
 
-import React, { useState} from "react";
+import React, { useState } from "react";
 
 import * as FormStyled from "./Form.styled";
-import { CommentInput} from "./Form.styled";
+import { CommentInput } from "./Form.styled";
 import ReactPlayer from "react-player";
 
 const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
@@ -98,11 +98,13 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
               </Row>
             </FormStyled.CheckboxGroup>
           </FormStyled.FormItem>
+          <div>
+            <FormStyled.FormTitle>Hourly base rate</FormStyled.FormTitle>
+            <FormStyled.FormDescription>
+              You can change your base rate in settings after approval
+            </FormStyled.FormDescription>
+          </div>
 
-          <FormStyled.FormTitle>Hourly base rate</FormStyled.FormTitle>
-          <FormStyled.FormDescription>
-            You can change your base rate in settings after approval
-          </FormStyled.FormDescription>
           <FormStyled.FormItem
             $width={"100%"}
             name="amount"
@@ -126,8 +128,8 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             </FormStyled.NumberInput>
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
-            Students can subscribe to monthly or yearly plans based on the frequency of lessons they’ll take.
-            Automatic recurring payment takes place every 28 days.
+            We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
+            The remaining will be transferred automatically to your bank account every 28 days.
           </FormStyled.FormDescription>
 
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>
@@ -140,18 +142,18 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             <CommentInput rows={6} placeholder="Tell us about yourself..." />
           </FormStyled.FormItem>
 
-
           <FormStyled.FormTitle>Google Meet Link</FormStyled.FormTitle>
           <FormStyled.FormDescription>
-          Create your Google Meet link. You can change your link in settings later.
+            Create your Google Meet link. You can change your link in settings later.
           </FormStyled.FormDescription>
+
           <FormStyled.FormItem
             name="meetingLink"
             $width={"100%"}
             rules={[
               {
                 pattern:
-                /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
+                  /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
                 message: "Invalid Google Meet link.",
               },
               {
@@ -166,8 +168,8 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             ></Input>
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
-          By providing a Google Meet link directly on the My Tutor platform, students can join your virtual classroom with a single click. 
-          This convenience enhances their learning experience and reduces the chances of miscommunication or missed sessions. 
+            By providing a Google Meet link directly on the My Tutor platform, students can join your virtual classroom with a single click.
+            This convenience enhances their learning experience and reduces the chances of miscommunication or missed sessions.
           </FormStyled.FormDescription>
 
 
