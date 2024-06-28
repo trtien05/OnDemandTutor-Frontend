@@ -122,6 +122,10 @@ const ChatRoom: React.FC = () => {
       privateChats.set(payloadData.senderId, list);
       setPrivateChats(new Map(privateChats));
     }
+    // Move the latest message to the top of the list
+    const msg = privateChats.get(payloadData.senderId) || [];
+    privateChats.delete(payloadData.senderId);
+    setPrivateChats(new Map([[payloadData.senderId, msg],...privateChats]));
     scrollToBottom(); // Scroll to bottom after receiving new message
   };
 
@@ -153,6 +157,9 @@ const ChatRoom: React.FC = () => {
       
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: "" });
+      const msg = privateChats.get(parseInt(tab)) || [];
+      privateChats.delete(parseInt(tab));
+      setPrivateChats(new Map([[parseInt(tab), msg],...privateChats]));
 
       scrollToBottom(); // Scroll to bottom after sending message
     }
