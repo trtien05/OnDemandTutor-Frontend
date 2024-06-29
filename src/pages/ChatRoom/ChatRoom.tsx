@@ -244,15 +244,15 @@ const ChatRoom: React.FC = () => {
     return `${senderName} ${messageContent}`;
   };
 
-  const truncateFullName = (fullName?: string): string | undefined => {
-    if (!fullName) return undefined;
-    return fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
+  const truncateText = (text?: string): string | undefined => {
+    if (!text) return undefined;
+    return text.length > 20 ? `${text.slice(0, 20)}...` : text;
   };
   return (
     <Layout>
       {userData.connected ? (
         <>
-          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px' }}>
+          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
             <List
               itemLayout="horizontal"
               dataSource={[...privateChats.keys()]}
@@ -275,11 +275,11 @@ const ChatRoom: React.FC = () => {
                   }}>
                     <Styled.CustomListItemMeta
                       avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
-                      title={truncateFullName(account.get(id)?.fullName) || 'Unknown'}
+                      title={truncateText(account.get(id)?.fullName) || 'Unknown'}
                       unread={unreadTabs.has(id)}
                       description={
                         <span className="message-content">
-                          {getLatestMessage(privateChats.get(id))}
+                          {truncateText(getLatestMessage(privateChats.get(id)))}
                         </span>
                       }
                       as={List.Item.Meta}
