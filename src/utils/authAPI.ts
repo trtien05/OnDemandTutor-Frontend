@@ -9,12 +9,11 @@ export const login = (account: object) => {
 };
 
 export const forgotPassword = (emailObj: { email: string }) => {
-    return post(`/api/auth/forgot-password?email=${encodeURIComponent(emailObj.email)}`);
+    return post(`/api/auth/forgot-password`, emailObj);
 };
 
-export const resetPassword = (password: string, email: string) => {
-    const params = new URLSearchParams({ email, password });
-    return put(`/api/auth/reset-password?${params.toString()}`);
+export const resetPassword = (resetObj: {password: string, email: string}) => {
+    return put(`/api/auth/reset-password`, resetObj);
 };
 
 export const resendOTP = (email: string) => {

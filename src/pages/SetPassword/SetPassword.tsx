@@ -31,7 +31,7 @@ const SetPassword = () => {
             setIsSubmitting(true);
 
             // Fetch API
-            const { data } = await resetPassword(newValues.password, newValues.email);
+            const { data } = await resetPassword(newValues);
             messageApi.success(data);
 
             // Navigate to login page
