@@ -7,11 +7,11 @@ export const getTutorById = (tutorId: number) => {
 export const getTutorReviews = (tutorId: number, pageNo: number, pageSize: number) => {
     return get(`/api/tutors/${tutorId}/reviews?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
-export const getTutorEducation = (tutorId: number) => {
-    return get(`/api/tutors/${tutorId}/educations`);
+export const getTutorEducation = (tutorId: number, isVerified: boolean) => {
+    return get(`/api/tutors/${tutorId}/educations?isVerified=${isVerified}`);
 };
-export const getTutorCertification = (tutorId: number) => {
-    return get(`/api/tutors/${tutorId}/certificates`);
+export const getTutorCertification = (tutorId: number, isVerified: boolean) => {
+    return get(`/api/tutors/${tutorId}/certificates?isVerified=${isVerified}`);
 };
 
 export const getTutorDescription = (tutorId: number) => {

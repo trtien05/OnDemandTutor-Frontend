@@ -113,11 +113,11 @@ const TutorDetail: React.FC = () => {
         setReviews(reviewsResponse.data.content);
 
         // Fetch Education Data
-        const educationResponse = await getTutorEducation(tutorId);
+        const educationResponse = await getTutorEducation(tutorId, true);
         setEducations(educationResponse.data);
 
         // Fetch Certificate Data
-        const cetificateResponse = await getTutorCertification(tutorId);
+        const cetificateResponse = await getTutorCertification(tutorId, true);
         setCertification(cetificateResponse.data);
 
         // Fetch Booked Tutor Data
