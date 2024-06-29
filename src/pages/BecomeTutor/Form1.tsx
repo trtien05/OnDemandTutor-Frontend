@@ -95,7 +95,7 @@ const Form1: React.FC<Form1Props> = ({
         requiredMark={false}
         form={form}
         size="middle"
-        onFinish={handleFinish}
+        onFinish={(values) => handleFinish(values)}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -218,7 +218,7 @@ const Form1: React.FC<Form1Props> = ({
         </FormStyled.FormContainer>
         {agreement && (
           <FormStyled.ButtonDiv>
-            <Button type="primary" htmlType="submit" form="aboutForm">
+            <Button type="primary" htmlType="submit">
               Save and continue
             </Button>
           </FormStyled.ButtonDiv>
