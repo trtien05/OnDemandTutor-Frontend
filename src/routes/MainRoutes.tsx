@@ -12,7 +12,6 @@ import Profile from '../pages/Student/Profile/Profile';
 import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 import TutorDetail from '../pages/TutorDetail';
 import ChatRoom from '../pages/ChatRoom';
-import ChatRoom from '../pages/ChatRoom';
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
