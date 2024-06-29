@@ -1,32 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { Button } from 'antd';
-import TutorTable from './TutorTable';
+import TutorTable from './DisplayComponents/TutorTable';
 import { getListTutor } from '../../../utils/tutorAPI';
-
-interface Education {
-  degreeType?: string;
-  majorName?: string;
-  specialization?: string;
-  verified?: boolean;
-};
-
-interface Tutor {
-  id: number;
-  fullName?: string;
-  avatarUrl?: string;
-  teachingPricePerHour: number;
-  educations?: Education;
-  subjects: string[],
-  averageRating?: number;
-  loading: boolean;
-};
+import { Tutor, Education } from './Tutor.type';
+import { getTutorByStatus } from '../../../utils/moderatorAPI';
 
 const ManageTutor = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
 
   const fetchApi = async () => {
-    const response = await getListTutor();
+    const response = await getTutorByStatus('PROCESSING');
     setTutors(response.data.content);
   }
 
@@ -40,7 +24,7 @@ const ManageTutor = () => {
   console.log(tutors);
   return (
     <div style={{ 'height': '100vh' }}>
-      <h2>Manage Tutor</h2>
+      <h2>Processing Tutor</h2>
 
       {tutors && (
         <div style={{ 'marginTop': '20px' }}>

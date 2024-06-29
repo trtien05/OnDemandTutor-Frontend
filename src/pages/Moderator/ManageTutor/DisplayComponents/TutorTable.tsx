@@ -1,25 +1,8 @@
 import { Badge, Table, Tag, Tooltip } from 'antd';
 import React from 'react';
-import DeleteTutor from './DeleteTutor';
-
-interface Education {
-  degreeType?: string;
-  majorName?: string;
-  specialization?: string;
-  verified?: boolean;
-};
-
-interface Tutor {
-  id: number;
-  fullName?: string;
-  avatarUrl?: string;
-  teachingPricePerHour: number;
-  educations?: Education;
-  subjects: string[],
-  averageRating?: number;
-  loading: boolean;
-};
-
+import DeleteTutor from '../DeleteTutor';
+import { Tutor } from '../Tutor.type'
+import TutorInfo from './TutorInfo/TutorInfo';
 
 interface TutorTableProps {
   tutors: Tutor[];
@@ -28,6 +11,12 @@ interface TutorTableProps {
 
 const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
   const columns = [
+    {
+      title: 'Id',
+      key: 'index',
+      dataIndex: 'id'
+      // render: (text: any, record:any , index:number) => index + 1,
+    },
     {
       title: 'Tutor Name',
       dataIndex: 'fullName',
@@ -44,15 +33,11 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       key: 'email',
     },
     {
-      title: 'Price Per Hour',
-      dataIndex: 'teachingPricePerHour',
+      title: 'Phone number',
+      dataIndex: 'phoneNumber',
       key: 'teachingPricePerHour',
     },
-    {
-      title: 'Rating',
-      dataIndex: 'averageRating',
-      key: 'averageRating',
-    },
+
     {
       title: 'Action',
       dataIndex: 'action',
@@ -60,7 +45,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       render: (_: any, record: Tutor) => (
         <>
           {/* <EditRoom record={record} onReload={onReload} /> */}
-          <DeleteTutor record={record} onReload={onReload} />
+          <TutorInfo tutorId={record.id} tutor={record} />
 
         </>
       )
