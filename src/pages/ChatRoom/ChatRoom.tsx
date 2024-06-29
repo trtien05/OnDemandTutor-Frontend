@@ -11,6 +11,7 @@ import { SendOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
 import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
 import { format } from 'date-fns';
+import { useLocation } from 'react-router-dom';
 
 type ChatMessage = {
   senderId: number;
@@ -44,8 +45,13 @@ const ChatRoom: React.FC = () => {
   useDocumentTitle("Chat Room | MyTutor");
   const [account, setAccount] = useState<Map<number, Account>>(new Map());
   const { user } = useAuth();
+  const location = useLocation();
+  const { id, fullName, avatar } = location.state || {};
+  console.log(id, fullName, avatar)
+
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
   const [tab, setTab] = useState<string>("CHATROOM");
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<UserData>({
     id: 0,
     avatarUrl: '',
@@ -55,8 +61,7 @@ const ChatRoom: React.FC = () => {
     name: ''
   });
 
-  const chatMessagesRef = useRef<HTMLDivElement>(null);
-
+  console.log(privateChats);
   useEffect(() => {
     if (user && !userData.connected) {
       setUserData({ ...userData, id: user.id, avatarUrl: user.avatarUrl, name: user.fullName });
@@ -131,6 +136,18 @@ const ChatRoom: React.FC = () => {
         const bLastMessage = b[1][b[1].length - 1];
         return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
       })));
+      if (id && fullName && avatar) {
+        setAccount(prev => new Map(prev.set(id, { fullName, avatarUrl: avatar })));
+        setPrivateChats(prev => {
+          if (!prev.has(id)) {
+            const newChats = new Map(prev);
+            newChats.set(id, []);
+            return newChats;
+          }
+          return prev;
+        });
+        setTab(id.toString());
+      }
     } catch (error) {
       console.error('Error fetching messages: ', error);
     }
@@ -143,7 +160,11 @@ const ChatRoom: React.FC = () => {
     setPrivateChats(prevChats => {
       const updatedChats = new Map(prevChats);
       if (updatedChats.has(chatKey)) {
-        updatedChats.get(chatKey)!.push(payloadData);
+        const chatMessages = updatedChats.get(chatKey)!;
+        const isDuplicate = chatMessages.some(msg => msg.createdAt === payloadData.createdAt && msg.message === payloadData.message);
+        if (!isDuplicate) {
+          chatMessages.push(payloadData);
+        }
       } else {
         updatedChats.set(chatKey, [payloadData]);
       }
@@ -199,10 +220,11 @@ const ChatRoom: React.FC = () => {
     const date = new Date(dateString);
     if (isNaN(date.getTime())) {
       console.error('Invalid date:', dateString);
-      return new Date(); // Return current date as fallback
+      return new Date();
     }
     return date;
   };
+  console.log(privateChats);
 
   return (
     <Layout>

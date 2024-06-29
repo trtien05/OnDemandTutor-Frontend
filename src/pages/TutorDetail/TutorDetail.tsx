@@ -139,9 +139,9 @@ const TutorDetail: React.FC = () => {
 
   const handleSendMessage = () => {
     if (tutorBooked && tutorBooked.some(bookedTutor => bookedTutor.id === tutorId)) {
-      navigate(`/chat-room`,);
+      navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
     } else {
-      api.error({
+      api.warning({
         message: 'Fail',
         description: 'You have not registered this teacher yet!',
       })
