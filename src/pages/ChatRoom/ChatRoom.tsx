@@ -23,6 +23,7 @@ type ChatMessage = {
   senderAvatarUrl?: string;
   senderFullName?: string;
   createdAt: string;
+  isRead: boolean; // Thêm trường isRead vào đây
 };
 
 type UserData = {
@@ -156,7 +157,19 @@ const ChatRoom: React.FC = () => {
   const onPrivateMessage = (payload: { body: string }) => {
     const payloadData = JSON.parse(payload.body);
     const chatKey = payloadData.senderId;
+    // const defaultName = 'Unknown';
+    // const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
+    // const fullName = payloadData.senderFullName || defaultName;
+    // const avatarUrl = payloadData.senderAvatarUrl || defaultAvatarUrl;
 
+    // const accounts = new Map(account);
+    // if (!accounts.has(chatKey)) {
+    //   accounts.set(chatKey, {
+    //     fullName: fullName,
+    //     avatarUrl: avatarUrl
+    //   });
+    // }
+    // setAccount(accounts);
     setPrivateChats(prevChats => {
       const updatedChats = new Map(prevChats);
       if (updatedChats.has(chatKey)) {
@@ -194,7 +207,8 @@ const ChatRoom: React.FC = () => {
         receiverId: parseInt(tab),
         message: userData.message.trim(),
         status: "MESSAGE",
-        createdAt: currentDate.toISOString()
+        createdAt: currentDate.toISOString(),
+        isRead: false
       };
 
       setPrivateChats(prevChats => {
@@ -224,8 +238,15 @@ const ChatRoom: React.FC = () => {
     }
     return date;
   };
-  console.log(privateChats);
+  const getLatestMessage = (messages: ChatMessage[] | undefined): string => {
+    if (!messages || messages.length === 0) {
+      return 'No messages yet';
+    }
 
+    const latestMessage = messages[messages.length - 1];
+    const senderName = latestMessage.senderId === user?.id ? 'You:' : '';
+    return `${senderName} ${latestMessage.message}`;
+  };
   return (
     <Layout>
       {userData.connected ? (
@@ -240,7 +261,7 @@ const ChatRoom: React.FC = () => {
                     <List.Item.Meta
                       avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
                       title={account.get(id)?.fullName}
-                      description="Latest message..."
+                      description={getLatestMessage(privateChats.get(id))}
                     />
                   </List.Item>
                 )
@@ -256,13 +277,13 @@ const ChatRoom: React.FC = () => {
                   const messageTime = chat.createdAt ? format(parseDate(chat.createdAt), 'HH:mm') : 'Invalid Date';
 
                   return (
-                    <Styled.Message self={isSelf} key={index}>
+                    <Styled.Message self={isSelf} isRead={chat.isRead} key={index}>
                       {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
-                      <Styled.MessageData self={isSelf}>
-                        <Styled.MessageTime self={isSelf}>
+                      <Styled.MessageData isRead={chat.isRead} self={isSelf}>
+                        <Styled.MessageTime isRead={chat.isRead} self={isSelf}>
                           {messageTime}
                         </Styled.MessageTime>
-                        <Styled.MessageContent self={isSelf}>{chat.message}</Styled.MessageContent>
+                        <Styled.MessageContent isRead={chat.isRead} self={isSelf}>{chat.message}</Styled.MessageContent>
                       </Styled.MessageData>
                     </Styled.Message>
                   )
