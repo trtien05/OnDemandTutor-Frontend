@@ -1,4 +1,4 @@
-import Title from 'antd/es/typography/Title';
+import { List } from 'antd';
 import styled from 'styled-components';
 interface MessageProps {
     self: boolean;
@@ -8,7 +8,7 @@ export const ChatBox = styled.div`
     flex-direction: column;
     height: 600px;
     width: 100%;
-
+    overflow-y: auto;
     border-left: 1px solid #e8e8e8;
 `;
 
@@ -24,8 +24,23 @@ export const Message = styled.div<MessageProps>`
     align-items: center;
     margin-bottom: 30px;
     flex-direction: ${(props) => (props.self ? 'row-reverse' : 'row')};
+    padding: 10px;
+    border-radius: 10px;
 `;
-
+interface CustomListItemMetaProps {
+    unread?: boolean;
+}
+export const CustomListItemMeta = styled(List.Item.Meta)<CustomListItemMetaProps>`
+    .message-content {
+        font-size: 15px;
+        font-style: normal;
+        ${(props) =>
+            props.unread &&
+            ` color: black;
+              font-weight: 700;
+        `}
+    }
+`;
 export const MessageData = styled.div<MessageProps>`
     margin: 0 10px;
     display: flex;

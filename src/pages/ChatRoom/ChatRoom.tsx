@@ -1,4 +1,3 @@
-import React, { useEffect, useState, useRef } from 'react';
 import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
 import './style.css';
@@ -12,6 +11,7 @@ import useAuth from '../../hooks/useAuth.ts';
 import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
 import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 
 type ChatMessage = {
   senderId: number;
@@ -23,7 +23,6 @@ type ChatMessage = {
   senderAvatarUrl?: string;
   senderFullName?: string;
   createdAt: string;
-  isRead: boolean; // Thêm trường isRead vào đây
 };
 
 type UserData = {
@@ -48,10 +47,10 @@ const ChatRoom: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
   const { id, fullName, avatar } = location.state || {};
-  console.log(id, fullName, avatar)
 
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
   const [tab, setTab] = useState<string>("CHATROOM");
+  const [unreadTabs, setUnreadTabs] = useState<Set<number>>(new Set()); // Danh sách tab có tin nhắn chưa đọc
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<UserData>({
     id: 0,
@@ -62,7 +61,6 @@ const ChatRoom: React.FC = () => {
     name: ''
   });
 
-  console.log(privateChats);
   useEffect(() => {
     if (user && !userData.connected) {
       setUserData({ ...userData, id: user.id, avatarUrl: user.avatarUrl, name: user.fullName });
@@ -121,7 +119,7 @@ const ChatRoom: React.FC = () => {
         if (!chats.has(chatKey)) {
           chats.set(chatKey, []);
         }
-        chats.get(chatKey)!.push(msg);
+        chats.get(chatKey)!.push({ ...msg }); // Thêm tin nhắn vào map chats
 
         if (!accounts.has(chatKey)) {
           accounts.set(chatKey, {
@@ -157,29 +155,23 @@ const ChatRoom: React.FC = () => {
   const onPrivateMessage = (payload: { body: string }) => {
     const payloadData = JSON.parse(payload.body);
     const chatKey = payloadData.senderId;
-    // const defaultName = 'Unknown';
-    // const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
-    // const fullName = payloadData.senderFullName || defaultName;
-    // const avatarUrl = payloadData.senderAvatarUrl || defaultAvatarUrl;
 
-    // const accounts = new Map(account);
-    // if (!accounts.has(chatKey)) {
-    //   accounts.set(chatKey, {
-    //     fullName: fullName,
-    //     avatarUrl: avatarUrl
-    //   });
-    // }
-    // setAccount(accounts);
     setPrivateChats(prevChats => {
       const updatedChats = new Map(prevChats);
       if (updatedChats.has(chatKey)) {
         const chatMessages = updatedChats.get(chatKey)!;
         const isDuplicate = chatMessages.some(msg => msg.createdAt === payloadData.createdAt && msg.message === payloadData.message);
         if (!isDuplicate) {
-          chatMessages.push(payloadData);
+          chatMessages.push({ ...payloadData });
+          if (tab !== chatKey.toString()) {
+            setUnreadTabs(prev => new Set([...prev, chatKey]));
+          }
         }
       } else {
-        updatedChats.set(chatKey, [payloadData]);
+        updatedChats.set(chatKey, [{ ...payloadData }]);
+        if (tab !== chatKey.toString()) {
+          setUnreadTabs(prev => new Set([...prev, chatKey]));
+        }
       }
       return new Map([...updatedChats.entries()].sort((a, b) => {
         const aLastMessage = a[1][a[1].length - 1];
@@ -208,15 +200,14 @@ const ChatRoom: React.FC = () => {
         message: userData.message.trim(),
         status: "MESSAGE",
         createdAt: currentDate.toISOString(),
-        isRead: false
       };
 
       setPrivateChats(prevChats => {
         const updatedChats = new Map(prevChats);
         if (updatedChats.has(parseInt(tab))) {
-          updatedChats.get(parseInt(tab))!.push(chatMessage);
+          updatedChats.get(parseInt(tab))!.push({ ...chatMessage });
         } else {
-          updatedChats.set(parseInt(tab), [chatMessage]);
+          updatedChats.set(parseInt(tab), [{ ...chatMessage }]);
         }
         return new Map([...updatedChats.entries()].sort((a, b) => {
           const aLastMessage = a[1][a[1].length - 1];
@@ -238,6 +229,7 @@ const ChatRoom: React.FC = () => {
     }
     return date;
   };
+
   const getLatestMessage = (messages: ChatMessage[] | undefined): string => {
     if (!messages || messages.length === 0) {
       return 'No messages yet';
@@ -245,23 +237,52 @@ const ChatRoom: React.FC = () => {
 
     const latestMessage = messages[messages.length - 1];
     const senderName = latestMessage.senderId === user?.id ? 'You:' : '';
-    return `${senderName} ${latestMessage.message}`;
+
+    // Lấy chỉ 20 từ đầu tiên của tin nhắn
+    const messageContent = latestMessage.message.slice(0, 20);
+
+    return `${senderName} ${messageContent}`;
+  };
+
+  const truncateFullName = (fullName?: string): string | undefined => {
+    if (!fullName) return undefined;
+    return fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
   };
   return (
     <Layout>
       {userData.connected ? (
         <>
-          <Sider width={300} style={{ background: '#fff', height: '600px', padding: '0 20px' }}>
+          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px' }}>
             <List
               itemLayout="horizontal"
               dataSource={[...privateChats.keys()]}
               renderItem={(id) => {
+                const isCurrentTab = tab === id.toString();
                 return (
-                  <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
-                    <List.Item.Meta
+                  <List.Item onClick={() => {
+                    setTab(id.toString());
+                    if (unreadTabs.has(id)) {
+                      setUnreadTabs(prev => {
+                        const newUnreadTabs = new Set(prev);
+                        newUnreadTabs.delete(id);
+                        return newUnreadTabs;
+                      });
+                    }
+                  }} style={{
+                    cursor: 'pointer',
+                    padding: '20px', borderRadius: '25px',
+                    backgroundColor: isCurrentTab ? '#F4D1F3' : ''
+                  }}>
+                    <Styled.CustomListItemMeta
                       avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
-                      title={account.get(id)?.fullName}
-                      description={getLatestMessage(privateChats.get(id))}
+                      title={truncateFullName(account.get(id)?.fullName) || 'Unknown'}
+                      unread={unreadTabs.has(id)}
+                      description={
+                        <span className="message-content">
+                          {getLatestMessage(privateChats.get(id))}
+                        </span>
+                      }
+                      as={List.Item.Meta}
                     />
                   </List.Item>
                 )
@@ -277,13 +298,13 @@ const ChatRoom: React.FC = () => {
                   const messageTime = chat.createdAt ? format(parseDate(chat.createdAt), 'HH:mm') : 'Invalid Date';
 
                   return (
-                    <Styled.Message self={isSelf} isRead={chat.isRead} key={index}>
+                    <Styled.Message self={isSelf} key={index}>
                       {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
-                      <Styled.MessageData isRead={chat.isRead} self={isSelf}>
-                        <Styled.MessageTime isRead={chat.isRead} self={isSelf}>
+                      <Styled.MessageData self={isSelf}>
+                        <Styled.MessageTime self={isSelf}>
                           {messageTime}
                         </Styled.MessageTime>
-                        <Styled.MessageContent isRead={chat.isRead} self={isSelf}>{chat.message}</Styled.MessageContent>
+                        <Styled.MessageContent self={isSelf}>{chat.message}</Styled.MessageContent>
                       </Styled.MessageData>
                     </Styled.Message>
                   )
