@@ -9,6 +9,9 @@ import { createStyledBreakpointsTheme } from 'styled-breakpoints';
 import { ConfigProvider, App as AppAntd } from 'antd';
 // import { Provider } from 'react-redux';
 // import { store } from './store';
+// Add this line to polyfill global
+import global from 'global';
+(window as any).global = global;
 
 export const breakpoints = {
   xs: '360px',
