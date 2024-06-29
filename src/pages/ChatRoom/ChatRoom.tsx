@@ -3,14 +3,14 @@ import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
 import './style.css';
 import * as Styled from './ChatRoom.styled';
-import { Avatar, Button, Input, Layout, List, Typography, message } from 'antd';
+import { Avatar, Button, Layout, List } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
-
-const { Text } = Typography;
+import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
+import { format } from 'date-fns';
 
 type ChatMessage = {
   senderId: number;
@@ -21,6 +21,7 @@ type ChatMessage = {
   receiverFullName?: string;
   senderAvatarUrl?: string;
   senderFullName?: string;
+  createdAt: string;
 };
 
 type UserData = {
@@ -31,14 +32,16 @@ type UserData = {
   message: string;
   name?: string;
 };
+
 type Account = {
   fullName: string;
   avatarUrl: string;
-}
+};
 
 let stompClient: Client | null = null;
 
 const ChatRoom: React.FC = () => {
+  useDocumentTitle("Chat Room | MyTutor");
   const [account, setAccount] = useState<Map<number, Account>>(new Map());
   const { user } = useAuth();
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
@@ -52,7 +55,7 @@ const ChatRoom: React.FC = () => {
     name: ''
   });
 
-  const chatMessagesRef = useRef<HTMLDivElement>(null); // Ref to chat messages
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (user && !userData.connected) {
@@ -68,8 +71,16 @@ const ChatRoom: React.FC = () => {
   }, [userData.connected]);
 
   useEffect(() => {
-    scrollToBottom(); // Scroll to bottom on private chat change
-  }, [tab, privateChats]);
+    if (privateChats.size > 0 && tab === "CHATROOM") {
+      setTab([...privateChats.keys()][0].toString());
+    }
+  }, [privateChats]);
+
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [privateChats, tab]);
 
   const connect = () => {
     let Sock = new SockJS('http://localhost:8080/ws');
@@ -80,32 +91,47 @@ const ChatRoom: React.FC = () => {
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
     stompClient?.subscribe(`/user/${user?.id}/private`, onPrivateMessage);
+    stompClient?.subscribe(`/user/${user?.id}/private`, onPrivateMessage);
   };
 
   const fetchMessages = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/messages/accounts/${user?.id}`);
       const data: ChatMessage[] = await response.json();
+      const chats = new Map(privateChats);
+      const accounts = new Map(account);
+
       data.forEach(msg => {
         const chatKey = msg.senderId === user?.id ? msg.receiverId! : msg.senderId;
-        const defeaultName = 'Unknown';
-        const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
-        const fullName = msg.senderId === user?.id ? (msg.receiverFullName || defeaultName) : (msg.senderFullName || defeaultName);
-        const avatarUrl = msg.senderId === user?.id ? (msg.receiverAvatarUrl || defaultAvatarUrl) : (msg.senderAvatarUrl || defaultAvatarUrl);
-        if (!privateChats.has(chatKey)) {
-          privateChats.set(chatKey, []);
+
+        if (chatKey === user?.id) {
+          return;
         }
-        privateChats.get(chatKey)!.push(msg);
-        if (!account.has(chatKey)) {
-          account.set(chatKey, {
+
+        const defaultName = 'Unknown';
+        const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
+        const fullName = msg.senderId === user?.id ? (msg.receiverFullName || defaultName) : (msg.senderFullName || defaultName);
+        const avatarUrl = msg.senderId === user?.id ? (msg.receiverAvatarUrl || defaultAvatarUrl) : (msg.senderAvatarUrl || defaultAvatarUrl);
+
+        if (!chats.has(chatKey)) {
+          chats.set(chatKey, []);
+        }
+        chats.get(chatKey)!.push(msg);
+
+        if (!accounts.has(chatKey)) {
+          accounts.set(chatKey, {
             fullName: fullName,
             avatarUrl: avatarUrl
           });
-          setAccount(account);
         }
       });
-      setPrivateChats(new Map(privateChats));
-      scrollToBottom(); // Scroll to bottom after fetching messages
+
+      setAccount(accounts);
+      setPrivateChats(new Map([...chats.entries()].sort((a, b) => {
+        const aLastMessage = a[1][a[1].length - 1];
+        const bLastMessage = b[1][b[1].length - 1];
+        return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
+      })));
     } catch (error) {
       console.error('Error fetching messages: ', error);
     }
@@ -113,20 +139,27 @@ const ChatRoom: React.FC = () => {
 
   // Log privateChats changes
   const onPrivateMessage = (payload: { body: string }) => {
-    var payloadData = JSON.parse(payload.body);
-    if (privateChats.has(payloadData.senderId)) {
-      privateChats.get(payloadData.senderId)!.push(payloadData);
-      setPrivateChats(new Map(privateChats));
-    } else {
-      let list: ChatMessage[] = [payloadData];
-      privateChats.set(payloadData.senderId, list);
-      setPrivateChats(new Map(privateChats));
-    }
-    // Move the latest message to the top of the list
-    const msg = privateChats.get(payloadData.senderId) || [];
-    privateChats.delete(payloadData.senderId);
-    setPrivateChats(new Map([[payloadData.senderId, msg],...privateChats]));
-    scrollToBottom(); // Scroll to bottom after receiving new message
+    const payloadData = JSON.parse(payload.body);
+    const chatKey = payloadData.senderId;
+
+    setPrivateChats(prevChats => {
+      console.log(prevChats);
+      const updatedChats = new Map(prevChats);
+      if (updatedChats.has(chatKey)) {
+        const chatMessages = updatedChats.get(chatKey)!;
+        const isDuplicate = chatMessages.some(msg => msg.createdAt === payloadData.createdAt && msg.message === payloadData.message);
+        if (!isDuplicate) {
+          chatMessages.push(payloadData);
+        }
+      } else {
+        updatedChats.set(chatKey, [payloadData]);
+      }
+      return new Map([...updatedChats.entries()].sort((a, b) => {
+        const aLastMessage = a[1][a[1].length - 1];
+        const bLastMessage = b[1][b[1].length - 1];
+        return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
+      }));
+    });
   };
 
   const onError = (err: any) => {
@@ -138,39 +171,46 @@ const ChatRoom: React.FC = () => {
     setUserData({ ...userData, message: value });
   };
 
-  const sendPrivateValue = () => {
+  const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      var chatMessage: ChatMessage = {
+      const currentDate = new Date();
+      const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
         message: userData.message.trim(),
-        status: "MESSAGE"   
+        status: "MESSAGE",
+        createdAt: currentDate.toISOString()
       };
-      if (user?.id !== parseInt(tab)) {
-        if (privateChats.has(parseInt(tab))) {
-          privateChats.get(parseInt(tab))!.push(chatMessage);
+
+      setPrivateChats(prevChats => {
+        const updatedChats = new Map(prevChats);
+        if (updatedChats.has(parseInt(tab))) {
+          updatedChats.get(parseInt(tab))!.push(chatMessage);
         } else {
-          privateChats.set(parseInt(tab), [chatMessage]);
+          updatedChats.set(parseInt(tab), [chatMessage]);
         }
-        setPrivateChats(privateChats);  
-      }
-      
+        return new Map([...updatedChats.entries()].sort((a, b) => {
+          const aLastMessage = a[1][a[1].length - 1];
+          const bLastMessage = b[1][b[1].length - 1];
+          return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
+        }));
+      });
+
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: "" });
-      const msg = privateChats.get(parseInt(tab)) || [];
-      privateChats.delete(parseInt(tab));
-      setPrivateChats(new Map([[parseInt(tab), msg],...privateChats]));
-
-      scrollToBottom(); // Scroll to bottom after sending message
     }
   };
 
-  const scrollToBottom = () => {
-    if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+  const parseDate = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', dateString);
+      return new Date(); // Return current date as fallback
     }
+    return date;
   };
-  
+
   return (
     <Layout>
       {userData.connected ? (
@@ -184,8 +224,9 @@ const ChatRoom: React.FC = () => {
                   <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
                     <List.Item.Meta
                       avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
+                      avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
                       title={account.get(id)?.fullName}
-                      description="Lastest message..."
+                      description="Latest message..."
                     />
                   </List.Item>
                 )
@@ -198,13 +239,18 @@ const ChatRoom: React.FC = () => {
               <Styled.ChatMessages ref={chatMessagesRef}>
                 {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
                   const isSelf = chat.senderId === user?.id;
+                  const messageTime = chat.createdAt ? format(parseDate(chat.createdAt), 'HH:mm') : 'Invalid Date';
+
                   return (
-                      <Styled.Message self={isSelf} key={index}>
-                        {!isSelf && <Avatar size={40} src={chat.senderAvatarUrl} />}
-                        <Styled.MessageData self={isSelf}>
-                          <Text>{chat.message}</Text>
-                        </Styled.MessageData>
-                      </Styled.Message>
+                    <Styled.Message self={isSelf} key={index}>
+                      {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
+                      <Styled.MessageData self={isSelf}>
+                        <Styled.MessageTime self={isSelf}>
+                          {messageTime}
+                        </Styled.MessageTime>
+                        <Styled.MessageContent self={isSelf}>{chat.message}</Styled.MessageContent>
+                      </Styled.MessageData>
+                    </Styled.Message>
                   )
                 })}
               </Styled.ChatMessages>
@@ -229,9 +275,8 @@ const ChatRoom: React.FC = () => {
             </Styled.ChatBox>
           </Content>
         </>
-      ) : null
-      }
-    </Layout >
+      ) : null}
+    </Layout>
   );
 };
 
