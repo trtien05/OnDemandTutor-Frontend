@@ -24,7 +24,7 @@ const EducationVerify: React.FC<EducationVerifyProps> = (props) => {
         setSwitchStates(checked);
     }
     const toggleSwitch = (id: number) => {
-        handleChange(item.id, !switchStates);
+        handleChange(id, !switchStates);
     };
 
 

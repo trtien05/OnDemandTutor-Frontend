@@ -1,16 +1,16 @@
 import React, { useState } from 'react'
-import { Education } from '../../Tutor.type';
+import { Certificate } from '../../Tutor.type';
 import { RcFile } from 'antd/lib/upload';
 import { Flex, Image, Switch } from 'antd'
 import { Clickable } from './TutorInfo.styled';
 interface CertificateVerifyProps {
-    certificate: Education;
+    certificate: Certificate;
     handleFunction: (id:number, checked: boolean) => void;
 }
 
-const CertificateVerify: React.FC<CertificateVerifyVerifyProps> = (props) => {
+const CertificateVerify: React.FC<CertificateVerifyProps> = (props) => {
     const [previewImage, setPreviewImage] = useState<string | null>(null);
-    const item: Education = props.education;
+    const item: Certificate = props.certificate;
     const [previewOpen, setPreviewOpen] = useState(false);
     const [switchStates, setSwitchStates] = useState(false);
 
@@ -24,7 +24,7 @@ const CertificateVerify: React.FC<CertificateVerifyVerifyProps> = (props) => {
         setSwitchStates(checked);
     }
     const toggleSwitch = (id: number) => {
-        handleChange(item.id, !switchStates);
+        handleChange(id, !switchStates);
     };
 
 
@@ -35,7 +35,7 @@ const CertificateVerify: React.FC<CertificateVerifyVerifyProps> = (props) => {
         style={{display:`flex`, justifyContent:`space-between`}}>
             <div style={{display: `flex`}}>
             <div style={{margin:`auto`, borderRadius:`20px`}}>
-            <img src={item.diplomaUrl} 
+            <img src={item.certificateUrl} 
             alt="diploma" 
             style={{margin:`auto`, borderRadius:`20px`}}
             width={`100`}
@@ -56,12 +56,11 @@ const CertificateVerify: React.FC<CertificateVerifyVerifyProps> = (props) => {
             )}
             </div>
             <div style={{margin:`auto`, marginLeft:`20px`}}>
-            <p>{item.universityName}</p>
             <p style={{fontWeight:`bold`}}>
-                {`${item.degreeType.slice(0,1)}${item.degreeType.slice(1).toLowerCase()} `}
-                of {item.majorName}</p>
-            <p>Specialization: {item.specialization}</p>
-            <p>{item.startYear} - {item.endYear}</p>
+                {item.certificateName}</p>
+            <p>Issued: {item.issuedBy} - {item.issuedYear}</p>
+            <p>{item.description? item.description:''}</p>
+            <p>Relevant subject: {item.subject}</p>
             </div>
             </div>
             <Switch

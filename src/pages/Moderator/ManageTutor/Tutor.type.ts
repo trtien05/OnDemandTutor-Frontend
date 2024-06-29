@@ -8,6 +8,18 @@ export type Education = {
     endYear: number;
     diplomaUrl: string;
     universityName: string;
+    // verifyStatus: boolean;
+}
+
+export type Certificate = {
+    id:number;
+    certificateName: string;
+    description: string;
+    issuedBy: string;
+    issuedYear: number;
+    certificateUrl: string;
+    subject: string;
+    // verifyStatus: boolean;
 }
 
 export type Tutor = {
