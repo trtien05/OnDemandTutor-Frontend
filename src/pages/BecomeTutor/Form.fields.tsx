@@ -4,6 +4,8 @@ import locale from 'antd/es/date-picker/locale/vi_VN'
 import * as Enum from '../../utils/enums';
 import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+// import 'moment/locale/vi';
+// import locale from 'antd/es/locale/vi_VN';
 
 
 const { RangePicker } = DatePicker;
@@ -126,7 +128,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid email.',
             },
         ],
-        children: <></>,
+        children: <Input placeholder='email' readOnly/>,
         $width: '55%',
     },
     {

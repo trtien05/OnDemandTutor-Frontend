@@ -13,7 +13,7 @@ import { aboutForm } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
 import { validateFileSize, validateFileType } from "../../utils/UploadImg";
-import { add } from "date-fns";
+import dayjs from 'dayjs';
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -40,6 +40,10 @@ const Form1: React.FC<Form1Props> = ({
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    if(!validateFileSize(newFileList[0], 5)) return;
+    if(!validateFileType(newFileList[0], 'image/png') &&
+    !validateFileType(newFileList[0], 'image/jpg') && 
+    !validateFileType(newFileList[0], 'image/jpeg') ) return;
     for (let index = 0; index < newFileList.length; index++) {
       newFileList[index].status = 'done'
     }
@@ -51,19 +55,11 @@ const Form1: React.FC<Form1Props> = ({
       email: dataSource.email,
       phoneNumber: dataSource.phoneNumber,
       address: dataSource.address,
-
+      dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
+      gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
      });
-     console.log(dataSource)
-  }, []);
-
-  const validateFile = (_: unknown, value: UploadFile) => {
-    const file = value;
-    if (validateFileType(file, ".jpg,.jpeg,.png") === false) 
-      return Promise.reject("Avatar file must be in jpeg or png format!");
-    if (validateFileSize(file, 5) === false) 
-      return Promise.reject("Avatar file must be smaller than 5MB!");
-    return Promise.resolve();
-  };
+     console.log()
+  }, [dataSource]);
 
   const getBase64 = (file: RcFile) =>
     new Promise<string>((resolve, reject) => {
@@ -82,6 +78,7 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
+    console.log(form.getFieldsValue())
     onFinish({ ...values, fileList });
   };
 
@@ -119,8 +116,6 @@ const Form1: React.FC<Form1Props> = ({
                 initialValue={field.initialValue}
                 validateFirst
               >
-                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
-                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );
@@ -148,9 +143,6 @@ const Form1: React.FC<Form1Props> = ({
                 {
                   required: false,
                   message: "Please upload an avatar!"
-                },
-                {
-                  validator: validateFile,
                 }
               ]
             }
