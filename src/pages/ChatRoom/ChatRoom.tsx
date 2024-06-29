@@ -136,14 +136,20 @@ const ChatRoom: React.FC = () => {
     }
   };
 
+  // Log privateChats changes
   const onPrivateMessage = (payload: { body: string }) => {
     const payloadData = JSON.parse(payload.body);
     const chatKey = payloadData.senderId;
 
     setPrivateChats(prevChats => {
+      console.log(prevChats);
       const updatedChats = new Map(prevChats);
       if (updatedChats.has(chatKey)) {
-        updatedChats.get(chatKey)!.push(payloadData);
+        const chatMessages = updatedChats.get(chatKey)!;
+        const isDuplicate = chatMessages.some(msg => msg.createdAt === payloadData.createdAt && msg.message === payloadData.message);
+        if (!isDuplicate) {
+          chatMessages.push(payloadData);
+        }
       } else {
         updatedChats.set(chatKey, [payloadData]);
       }
