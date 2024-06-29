@@ -117,7 +117,7 @@ export const aboutForm: FieldType[] = [
         name: 'email',
         rules: [
             {
-                required: false,
+                required: true,
 
                 message: 'Please input your email.',
             },

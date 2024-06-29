@@ -4,15 +4,16 @@ import {
   Button,
   Image,
   Input,
-  Row,
+  Form,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Upload, { RcFile } from "antd/es/upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { aboutForm } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { useAuth } from "../../hooks";
+import { validateFileSize, validateFileType } from "../../utils/UploadImg";
+import { add } from "date-fns";
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -35,17 +36,35 @@ const Form1: React.FC<Form1Props> = ({
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(initialValues?.imageUrl || null);
-  const { user } = useAuth();
+  const [form] = Form.useForm();
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
     for (let index = 0; index < newFileList.length; index++) {
       newFileList[index].status = 'done'
-
     }
-    console.log(user)
   };
+
+  useEffect(() => {
+    form.setFieldsValue({ 
+      fullName: dataSource.fullName,
+      email: dataSource.email,
+      phoneNumber: dataSource.phoneNumber,
+      address: dataSource.address,
+
+     });
+     console.log(dataSource)
+  }, []);
+
+  const validateFile = (_: unknown, value: UploadFile) => {
+    const file = value;
+    if (validateFileType(file, ".jpg,.jpeg,.png") === false) 
+      return Promise.reject("Avatar file must be in jpeg or png format!");
+    if (validateFileSize(file, 5) === false) 
+      return Promise.reject("Avatar file must be smaller than 5MB!");
+    return Promise.resolve();
+  };
+
   const getBase64 = (file: RcFile) =>
     new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -63,19 +82,7 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
-    onFinish({ ...values, fileList, imageUrl });
-  };
-  const beforeUpload = (file: RcFile) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      //   // setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
-      setImageUrl(reader.result as string);
-      setFileList((prev) => [...prev, file]);
-    };
-
-    // then upload `file` from the argument manually
-    return false;
+    onFinish({ ...values, fileList });
   };
 
   return (
@@ -89,6 +96,7 @@ const Form1: React.FC<Form1Props> = ({
         labelAlign="left"
         layout="vertical"
         requiredMark={false}
+        form={form}
         size="middle"
         onFinish={handleFinish}
         initialValues={initialValues}
@@ -108,70 +116,72 @@ const Form1: React.FC<Form1Props> = ({
                 name={field.name}
                 rules={field.rules}
                 $width={field.$width ? field.$width : "100%"}
-
+                initialValue={field.initialValue}
                 validateFirst
               >
-                {/* {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null ? dataSource[field.name] : "0123456789"} />)} */}
+                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );
           })}
-          <div style={{ 'margin': '20px 0', 'width': '100%' }}>
-            <div>
-              <FormStyled.FormTitle style={{ display: `block` }}>
-                Profile picture
-              </FormStyled.FormTitle>
+          <FormStyled.FormTitle style={{ display: `block` }}>
+            Profile picture
+          </FormStyled.FormTitle>{" "}
+          <br />
+          <FormStyled.FormDescription style={{ display: `block` }}>
+            Make a great first impression!
+            <br />
+            Tutors who look friendly and professional get the most students
+          </FormStyled.FormDescription>
+          <br />
+          {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
+
+
+
+          <FormStyled.FormItem
+            name="avatar"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => e && e.fileList}
+            rules={
+              [
+                {
+                  required: false,
+                  message: "Please upload an avatar!"
+                },
+                {
+                  validator: validateFile,
+                }
+              ]
+            }
+          // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
+          >
+            <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
+              <ImgCrop
+                rotationSlider
+                quality={1}
+                showReset
+                showGrid
+
+              >
+                <Upload
+                  name="avatar"
+                  // action=''
+                  listType="picture-card"
+                  fileList={fileList}
+                  onChange={onChange}
+                  onPreview={handlePreview}
+                  accept=".jpg,.jpeg,.png"
+                  // beforeUpload={() => false} // Prevent upload by return false
+                  // beforeUpload={beforeUpload} 
+                  style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
+                >
+                  {fileList.length < 1 && "+ Upload"}
+                </Upload>
+              </ImgCrop>
             </div>
-
-            <div style={{ 'marginTop': '30px' }}>
-              <FormStyled.FormDescription>
-                Make a great first impression!
-                <br />
-                Tutors who look friendly and professional get the most students
-              </FormStyled.FormDescription>
-            </div>
-
-            <div>
-              <Row align='middle' justify='center'>
-                <Col style={{ margin: `0 auto` }}>
-                  <FormStyled.FormItem
-                    name="avatar"
-                    valuePropName="fileList"
-                    getValueFromEvent={(e) => e && e.fileList}
-                    rules={[{ required: false, message: "Please upload an avatar!" }]}
-
-                  >
-                    <ImgCrop
-                      rotationSlider
-                      quality={1}
-                      showReset
-                      showGrid
-                    >
-                      <Upload
-                        name="avatar"
-                        // action=''
-                        listType="picture-card"
-                        fileList={fileList}
-                        onChange={onChange}
-                        onPreview={handlePreview}
-                        accept=".jpg,.jpeg,.png"
-                      // beforeUpload={() => false} // Prevent upload by return false
-                      // beforeUpload={beforeUpload} 
-                      >
-                        {fileList.length < 1 && "+ Upload"}
-                      </Upload>
-                    </ImgCrop>
-
-                  </FormStyled.FormItem>
-                </Col>
-              </Row>
-
-            </div>
-          </div>
-
-
-
+          </FormStyled.FormItem>
+          {/* </FormStyled.FormContainer> */}
 
           {previewImage && (
             <Image
@@ -216,13 +226,13 @@ const Form1: React.FC<Form1Props> = ({
         </FormStyled.FormContainer>
         {agreement && (
           <FormStyled.ButtonDiv>
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" form="aboutForm">
               Save and continue
             </Button>
           </FormStyled.ButtonDiv>
         )}
       </FormStyled.FormWrapper>
-    </Col >
+    </Col>
   );
 };
 
