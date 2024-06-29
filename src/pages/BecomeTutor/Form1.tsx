@@ -3,7 +3,6 @@ import {
   UploadFile,
   Button,
   Image,
-  Input,
   Form,
 } from "antd";
 import ImgCrop from "antd-img-crop";
@@ -58,7 +57,7 @@ const Form1: React.FC<Form1Props> = ({
       dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
       gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
      });
-     console.log()
+     window.scrollTo({ top: 100, behavior: "smooth" });
   }, [dataSource]);
 
   const getBase64 = (file: RcFile) =>

@@ -142,9 +142,9 @@ const BecomeTutor = () => {
       disabledHours: () => {
         const hours = Array.from({ length: 24 }, (_, i) => i);
         if (!latestEndTime) {
-          return hours.filter(hour => hour < 5 || hour > 22);
+          return [];
         } else {
-          return hours.filter(hour => hour < 5 || hour > 22 || hour < latestEndTime.hour());
+          return hours.filter(hour => hour < latestEndTime.hour());
         }
       },
       disabledMinutes: (selectedHour: number) => {
@@ -162,8 +162,8 @@ const BecomeTutor = () => {
 
   const validateRange = (_: unknown, value: [Dayjs, Dayjs]) => {
     const [start, end] = value;
-    if (end.diff(start, 'minutes') > 240 || end.diff(start, 'hours') < 1) {
-      return Promise.reject('The time range cannot exceed 4 hours');
+    if (end.diff(start, 'minutes') > 180 || end.diff(start, 'hours') < 1) {
+      return Promise.reject('The time range cannot exceed 3 hours');
     }
     return Promise.resolve();
   };
@@ -182,7 +182,7 @@ const BecomeTutor = () => {
         },
         {
           validator: validateRange,
-          message: 'A timeslot must be at least 1 hour and must not exceed 4 hours.',
+          message: 'A timeslot must be at least 1 hour and must not exceed 3 hours.',
         },
       ],
       children: (
@@ -531,7 +531,6 @@ const BecomeTutor = () => {
     return {
       fullName: formData[`fullName`],
       phoneNumber: formData[`phoneNumber`],
-      email: formData[`email`],
       dateOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
       gender: formData[`gender`],
       address: formData[`address`],
@@ -692,12 +691,10 @@ const BecomeTutor = () => {
 
     // Get JSON body from form data
     const jsonRequestBody = convertTimeslotsToJSON(formData);
-    console.log(jsonRequestBody);
-    const noOfWeeks = formData[`noOfWeek`];
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addAvailableSchedule(noOfWeeks, tutorId, jsonRequestBody);
+      const responseData = await addAvailableSchedule(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
@@ -725,7 +722,6 @@ const BecomeTutor = () => {
       // Check for timeslots for the current day
       for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
         const timeslot = formData[`${day}_timeslot_${i}`];
-        console.log(timeslot);
         if (timeslot && timeslot.length === 2) {
           const startTime = timeslot[0].format("HH:mm:ss");
           const endTime = timeslot[1].format("HH:mm:ss");
