@@ -42,9 +42,9 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           //format data    
           const start = new Date(response.data.startDate);
           const today = new Date();
-          const startDate = (start.getTime() < today.getTime()) ? today : start;
+          const startDate = start;
           let newSchedule: ScheduleData[] = [];
-
+          
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
             const currentDate = new Date(startDate);
             currentDate.setDate(startDate.getDate() + dayIndex);
@@ -72,6 +72,9 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           setSchedule(newSchedule);
           setTimeout(() => {
             setIsScheduleLoaded(true);
+
+            
+          console.log(schedule)
           }, 1000);
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
@@ -110,7 +113,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
       setStart(earliest);
       setEnd(latest);
     };
-
     timeRange();
   }, [schedule]);
 
@@ -134,6 +136,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
 
   const onPopupOpen = (args: PopupOpenEventArgs) => {
     args.cancel = true; // Disable the event popup
+    
   };
 
   const onActionBegin = (args: ActionEventArgs) => {
@@ -147,7 +150,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
     const element = args.element as HTMLElement;
     const eventId = args.data.Id;
     const isSelected = selectedId?.includes(eventId);
-
+    
     element.style.border = '1px solid #B94AB7'; // Add border to event
     element.style.backgroundColor = isSelected ? '#B94AB7' : '#FFF'; // Change background color if selected
     element.style.color = isSelected ? '#FFF' : '#000'; // Change text color if selected

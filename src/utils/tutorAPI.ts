@@ -1,4 +1,4 @@
-import { get, put } from './apiCaller';
+import { get, post, put } from './apiCaller';
 
 export const getTutorById = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}`);
@@ -22,6 +22,14 @@ export const updateTutorDescription = (tutorId: number, requestBody: any) => {
     return put(`/api/tutors/${tutorId}/tutor-description`, requestBody);
 };
 
-export const updateSchedule = (tutorId: number, noOfWeeks: number, requestBody: any) => {
+export const updateSchedule = (tutorId: number, requestBody: any) => {
     return put(`/api/schedules/tutors/${tutorId}`, requestBody);
 };
+
+export const getTutorStatistic = (tutorId: number) => {
+    return get(`/api/statistics/${tutorId}/teach-statistics`);
+}
+
+export const addTimeslot = (tutorId: number, requestBody: any) => {
+    return post(`/api/schedules/tutors/${tutorId}/timeslots,`, requestBody);
+}

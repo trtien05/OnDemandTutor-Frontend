@@ -4,7 +4,7 @@ import dayjs, { Dayjs } from 'dayjs';
 import { useState } from "react";
 import { FieldType } from "../../BecomeTutor/Form.fields";
 import { theme } from "../../../themes";
-import { updateSchedule } from "../../../utils/tutorAPI";
+import { addTimeslot, updateSchedule } from "../../../utils/tutorAPI";
 const { useBreakpoint } = Grid;
 
 interface ScheduleProps {
@@ -12,7 +12,7 @@ interface ScheduleProps {
     isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const ScheduleForm: React.FC<ScheduleProps> = (props) => {
+const AddTimeslot: React.FC<ScheduleProps> = (props) => {
     const { tutorId } = props;
     const [api, contextHolder] = notification.useNotification({
         top: 100,
@@ -205,7 +205,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
         try {
 
             // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-            const responseData = await updateSchedule(tutorId, jsonRequestBody);
+            const responseData = await addTimeslot(tutorId, jsonRequestBody);
 
             // Check response status
             if (!api.success) {
@@ -256,7 +256,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
             {contextHolder}
             <Button type="default" onClick={showModal}
                 style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px`, margin: `10px` }}>
-                Replace schedule
+                Add timeslots
             </Button>
             <Modal
                 centered
@@ -304,8 +304,9 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                             Availability
                         </FormStyled.FormTitle>
                         <FormStyled.FormDescription style={{ flexDirection: `column` }}><br />
-                            This action will replace all your current available timeslots. <br />
-                            <span style={{ fontWeight: `600` }}>Each timeslot represents a study session between you and the student. </span>
+                        Please ensure there are no overlapping schedules. <br />
+                            <span style={{ fontWeight: `600` }}>
+                                Each timeslot represents a study session between you and the student. </span>
                         </FormStyled.FormDescription>
 
                         <FormStyled.FormContainer style={{ margin: '0', columnGap: '5%', width: '100%' }}>
@@ -402,5 +403,5 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
     );
 };
 
-export default ScheduleForm;
+export default AddTimeslot;
 
