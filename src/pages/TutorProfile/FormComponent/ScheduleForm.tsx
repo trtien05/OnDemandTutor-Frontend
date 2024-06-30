@@ -38,6 +38,7 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
                 message: 'Your schedule have been updated!',
             });
             props.isUpdate(true);
+            values = null;
         } catch (error: any) {
             api.error({
                 message: 'Error updating schedule',

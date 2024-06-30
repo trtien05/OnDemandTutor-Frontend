@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import SubjectForm from './FormComponent/SubjectForm';
 import Schedule from '../../components/Schedule/Schedule';
 import AddTimeslot from './FormComponent/AddTimeslot';
+import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -249,8 +250,10 @@ const TutorProfile = () => {
                                                 <Skeleton loading={loading} paragraph={false}>
                                                 {user?.id &&
                                                     (<div style={{ textAlign: `right` }}>
-                                                        <Schedule tutorId={user?.id} scheduleType='tutorProfile' update={updateSchedule} />
-                                                        <AddTimeslot tutorId={user?.id} isUpdate={isUpdateSchedule} />
+                                                        <DisplaySchedule tutorId={user?.id} update={updateSchedule} />
+                                                        <AddTimeslot tutorId={user?.id} 
+                                                            isUpdate={isUpdateSchedule} 
+                                                            update={updateSchedule} />
                                                         <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
                                                 </Skeleton>
                                             </Style.ProfileInfoItem>

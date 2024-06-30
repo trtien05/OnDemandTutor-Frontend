@@ -31,5 +31,9 @@ export const getTutorStatistic = (tutorId: number) => {
 }
 
 export const addTimeslot = (tutorId: number, requestBody: any) => {
-    return post(`/api/schedules/tutors/${tutorId}/timeslots,`, requestBody);
+    return post(`/api/schedules/tutors/${tutorId}/timeslots`, requestBody);
+}
+
+export const getFullSchedule = (tutorId: number) => {
+    return get(`/api/schedules/${tutorId}/profile-schedule`);
 }

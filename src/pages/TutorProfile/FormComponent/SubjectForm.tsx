@@ -273,7 +273,6 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
     const onFinish = async (values: any) => {
         try {
             setLoading(true);
-            console.log(values)
             await saveTutorDescription(tutorId, values);
             props.isUpdate(true);
             api.success({

@@ -10,6 +10,7 @@ const { useBreakpoint } = Grid;
 interface ScheduleProps {
     tutorId: number;
     isUpdate: React.Dispatch<React.SetStateAction<boolean>>;
+    update: boolean;
 }
 
 const AddTimeslot: React.FC<ScheduleProps> = (props) => {
@@ -34,10 +35,12 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
         setLoading(true); // Set loading state to true when form is submitted
         try {
             await saveTutorAvailableTimeslots(tutorId, values)
+            props.isUpdate(!props.update);
             api.success({
                 message: 'Your schedule have been updated!',
             });
             props.isUpdate(true);
+            values = null;
         } catch (error: any) {
             api.error({
                 message: 'Error updating schedule',

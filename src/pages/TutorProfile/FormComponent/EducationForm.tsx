@@ -1,5 +1,4 @@
 import { Button, Form, Modal, UploadFile, notification } from "antd";
-import useAuth from "../../../hooks/useAuth";
 import { useState } from "react";
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import { FieldType, educationForm } from "../../BecomeTutor/Form.fields";
