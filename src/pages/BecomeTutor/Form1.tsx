@@ -3,15 +3,16 @@ import {
   UploadFile,
   Button,
   Image,
-  Input,
+  Form,
 } from "antd";
 import ImgCrop from "antd-img-crop";
 import Upload, { RcFile } from "antd/es/upload";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { aboutForm } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { useAuth } from "../../hooks";
+import { validateFileSize, validateFileType } from "../../utils/UploadImg";
+import dayjs from 'dayjs';
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -33,27 +34,41 @@ const Form1: React.FC<Form1Props> = ({
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string| null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null >(initialValues?.imageUrl || null);
-  const { user } = useAuth();
+  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [form] = Form.useForm();
 
   const onChange = ({ fileList: newFileList }) => {
     setFileList(newFileList);
+    if(!validateFileSize(newFileList[0], 5)) return;
+    if(!validateFileType(newFileList[0], 'image/png') &&
+    !validateFileType(newFileList[0], 'image/jpg') && 
+    !validateFileType(newFileList[0], 'image/jpeg') ) return;
     for (let index = 0; index < newFileList.length; index++) {
-      newFileList[index].status='done'
-      
+      newFileList[index].status = 'done'
     }
-    console.log(user)
   };
-  const getBase64 = (file:RcFile) =>
-  new Promise<string>((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
-  const handlePreview = async (file:UploadFile) => {
-    
+
+  useEffect(() => {
+    form.setFieldsValue({ 
+      fullName: dataSource.fullName,
+      email: dataSource.email,
+      phoneNumber: dataSource.phoneNumber,
+      address: dataSource.address,
+      dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
+      gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
+     });
+     window.scrollTo({ top: 100, behavior: "smooth" });
+  }, [dataSource]);
+
+  const getBase64 = (file: RcFile) =>
+    new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = (error) => reject(error);
+    });
+  const handlePreview = async (file: UploadFile) => {
+
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -62,19 +77,8 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
-    onFinish({ ...values, fileList, imageUrl });
-  };
-  const beforeUpload = (file:RcFile) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-    //   // setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
-      setImageUrl(reader.result as string);
-      setFileList((prev) => [...prev, file]);
-    };
-  
-    // then upload `file` from the argument manually
-    return false;
+    console.log(form.getFieldsValue())
+    onFinish({ ...values, fileList });
   };
 
   return (
@@ -88,8 +92,9 @@ const Form1: React.FC<Form1Props> = ({
         labelAlign="left"
         layout="vertical"
         requiredMark={false}
+        form={form}
         size="middle"
-        onFinish={handleFinish}
+        onFinish={(values) => handleFinish(values)}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -110,8 +115,6 @@ const Form1: React.FC<Form1Props> = ({
                 initialValue={field.initialValue}
                 validateFirst
               >
-                {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null? dataSource[field.name] : "0123456789"} />)}
-                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)} 
                 {field.children}
               </FormStyled.FormItem>
             );
@@ -127,43 +130,50 @@ const Form1: React.FC<Form1Props> = ({
           </FormStyled.FormDescription>
           <br />
           {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
-          
-                    
-                  
-            <FormStyled.FormItem
-              name="avatar"
-              valuePropName="fileList"
-              getValueFromEvent={(e) => e && e.fileList}
-              rules={[{ required: false, message: "Please upload an avatar!" }]}
-              // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
-            >
-              <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}>
-              <ImgCrop 
-                rotationSlider 
+
+
+
+          <FormStyled.FormItem
+            name="avatar"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => e && e.fileList}
+            rules={
+              [
+                {
+                  required: false,
+                  message: "Please upload an avatar!"
+                }
+              ]
+            }
+          // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
+          >
+            <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
+              <ImgCrop
+                rotationSlider
                 quality={1}
                 showReset
                 showGrid
-                 
-                >
-              <Upload
-                name="avatar"
-                // action=''
-                listType="picture-card"
-                fileList={fileList}
-                onChange={onChange}
-                onPreview={handlePreview}
-                accept=".jpg,.jpeg,.png"
-                // beforeUpload={() => false} // Prevent upload by return false
-                // beforeUpload={beforeUpload} 
-                style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
+
               >
-                {fileList.length < 1 && "+ Upload"}
-              </Upload>
-            </ImgCrop>
+                <Upload
+                  name="avatar"
+                  // action=''
+                  listType="picture-card"
+                  fileList={fileList}
+                  onChange={onChange}
+                  onPreview={handlePreview}
+                  accept=".jpg,.jpeg,.png"
+                  // beforeUpload={() => false} // Prevent upload by return false
+                  // beforeUpload={beforeUpload} 
+                  style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
+                >
+                  {fileList.length < 1 && "+ Upload"}
+                </Upload>
+              </ImgCrop>
             </div>
-            </FormStyled.FormItem>
+          </FormStyled.FormItem>
           {/* </FormStyled.FormContainer> */}
-          
+
           {previewImage && (
             <Image
               wrapperStyle={{
@@ -193,8 +203,8 @@ const Form1: React.FC<Form1Props> = ({
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
-              // checked={isCheckedBox.current}
-              // onChange={(e) => setAgreement(e.target.checked)}
+            // checked={isCheckedBox.current}
+            // onChange={(e) => setAgreement(e.target.checked)}
             >
               By clicking Save and continue, I confirm that I’m over 18 years
               old. I also have read and agreed with the{" "}

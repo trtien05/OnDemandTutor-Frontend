@@ -3,6 +3,7 @@ const routes = {
         home: '/',
         login: '/login',
         register: '/register',
+        verifyCode: '/verify-code',
         forgotPassword: '/forgot-password',
         setPassword: '/set-password',
         contact: '/contact',
@@ -11,16 +12,24 @@ const routes = {
         searchClasses: '/search-classes',
         classDetails: '/search-classes/:classId',
         notFound: '/404',
-        createQuestion: '/create-question',
+        searchQuestions: '/search-questions',
     },
     student: {
         profile: '/profile',
+        studentSchedule: '/student-schedule',
         makePayment: '/make-payment',
-        paymentSuccess: '/check-payment',
+        paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
+        chatRoom: '/chat-room',
+    },
+    tutor: {
+        makePayment: '/make-payment',
+        paymentSuccess: '/confirm-payment',
+        profile: '/tutor-profile',
+        tutorSchedule: '/tutor-schedule',
     },
     api: {
-        loginGoogle: '/auth/callback/google/redirect',
+        loginGoogle: '/api/auth/callback/google/redirect',
     },
 };
 

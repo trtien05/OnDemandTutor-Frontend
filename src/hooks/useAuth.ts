@@ -1,44 +1,39 @@
-import { AccountStatus, Role } from '../utils/enums';
+import { AccountStatus, Gender, Role } from '../utils/enums';
 import { useCallback, useEffect, useState } from 'react';
 
 import cookieUtils from '../utils/cookieUtils';
-// import { getInfoCurrentUser } from '../utils/accountAPI';
+import { getInfoCurrentUser } from '../utils/accountAPI';
 
-type PayloadType = {
+type JwtType = {
+    exp: number;
     id: number;
     role: string;
     fullname: string;
     email: string;
-};
-
-type JwtType = {
-    exp: number;
-    payload: PayloadType;
+    accountStatus: AccountStatus;
 };
 
 export type UserType = {
-    avatarUrl?: string;
+    avatarUrl: string;
     email: string;
-    emailValidationStatus?: boolean;
-    fullName?: string;
-    phoneNumber?: string | null;
-    role: string;
+    fullName: string;
+    phoneNumber: string | null;
     id: number;
-    address?: string | null;
-    avgRating?: number | null;
-    accountStatus?: AccountStatus;
-    createdAt?: Date | string;
-    dateOfBirth?: Date | string | null;
-    gender?: boolean;
+    dateOfBirth: Date | string | null;
+    gender: Gender;
+    status: string;
+    role: string;
+    address: string | null;
+    createAt: Date | string |null;
 };
 
 // Function to get the role from the decoded JWT
 const getRole = () => {
     const decoded = cookieUtils.decodeJwt() as JwtType;
 
-    if (!decoded || !decoded.payload || !decoded.payload.role) return null;
+    if (!decoded || !decoded.role) return null;
 
-    return Role[decoded.payload.role];
+    return Role[decoded.role];
 };
 
 const useAuth = () => {
@@ -80,18 +75,7 @@ const useAuth = () => {
             // Fetch API to get info user
             const getInfo = async () => {
                 const { data } = await getInfoCurrentUser();
-                // setUser(data);
-                setUser({
-                    id: data.id,
-                    role: data.role,
-                    email: data.email,
-                    fullName: data.fullName?data.fullName:data.email.split('@')[0],
-                    phoneNumber: data.phoneNumber?data.phoneNumber:null,
-                    address: data.address?data.address:null,
-                    dateOfBirth: data.dateOfBirth?data.dateOfBirth:null,
-                    avatarUrl: data.avatarUrl?data.avatarUrl:null,
-                    gender: data.gender,
-                } as UserType)
+                setUser(data);
             };
 
             getInfo();

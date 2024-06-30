@@ -1,9 +1,9 @@
 import { Row, Col, Checkbox, Button, Input } from "antd";
 
-import React, { useState} from "react";
+import React, { useEffect, useState } from "react";
 
 import * as FormStyled from "./Form.styled";
-import { CommentInput} from "./Form.styled";
+import { CommentInput } from "./Form.styled";
 import ReactPlayer from "react-player";
 
 const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
@@ -22,6 +22,11 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
       setUrl("");
     }
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }, []);
+
   const onChange = (value: number | string | null) => {
     if (typeof value === "string") {
       setPriceValue(value);
@@ -47,8 +52,8 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     // Use the helper function to ensure value is a number
     const numberValue = formatNumberValue(value);
     // Use Intl.NumberFormat for Vietnamese locale
-    const formattedValue = new Intl.NumberFormat("vi-VN").format(numberValue);
-    return formattedValue;
+    //const formattedValue = new Intl.NumberFormat("vi-VN").format(numberValue);
+    return numberValue.toLocaleString("en-US");
   };
   const parser = (value: string | undefined) => {
     // Remove non-digit characters (commas, spaces, etc.)
@@ -98,11 +103,13 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
               </Row>
             </FormStyled.CheckboxGroup>
           </FormStyled.FormItem>
+          <div>
+            <FormStyled.FormTitle>Hourly base rate</FormStyled.FormTitle>
+            <FormStyled.FormDescription>
+              You can change your base rate in settings after approval
+            </FormStyled.FormDescription>
+          </div>
 
-          <FormStyled.FormTitle>Hourly base rate</FormStyled.FormTitle>
-          <FormStyled.FormDescription>
-            You can change your base rate in settings after approval
-          </FormStyled.FormDescription>
           <FormStyled.FormItem
             $width={"100%"}
             name="amount"
@@ -137,21 +144,21 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             hobbies.
           </FormStyled.FormDescription>
           <FormStyled.FormItem name="description" $width={"100%"}>
-            <CommentInput rows={6} placeholder="Tell us about yourself..." />
+            <CommentInput style={{ resize: 'none' }} rows={6} placeholder="Tell us about yourself..." />
           </FormStyled.FormItem>
-
 
           <FormStyled.FormTitle>Google Meet Link</FormStyled.FormTitle>
           <FormStyled.FormDescription>
-          Create your Google Meet link. You can change your link in settings later.
+            Create your Google Meet link. You can change your link in settings later.
           </FormStyled.FormDescription>
+
           <FormStyled.FormItem
             name="meetingLink"
             $width={"100%"}
             rules={[
               {
                 pattern:
-                /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
+                  /^https:\/\/meet\.google\.com\/[a-z]{3}-[a-z]{4}-[a-z]{3}(?:\?pli=1)?$/,
                 message: "Invalid Google Meet link.",
               },
               {
@@ -166,8 +173,8 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             ></Input>
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
-          By providing a Google Meet link directly on the My Tutor platform, students can join your virtual classroom with a single click. 
-          This convenience enhances their learning experience and reduces the chances of miscommunication or missed sessions. 
+            By providing a Google Meet link directly on the My Tutor platform, students can join your virtual classroom with a single click.
+            This convenience enhances their learning experience and reduces the chances of miscommunication or missed sessions.
           </FormStyled.FormDescription>
 
 
@@ -195,7 +202,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
           </FormStyled.FormItem>
           {url && (
             // style={{ width: "100%", height: "100%", display: "flex" }}
-            <div style={{ width: "100%", marginTop: "10px" }}>
+            <div style={{ width: "100%", margin: "10px 0 20px 0" }}>
               <ReactPlayer url={url} controls={true} width="100%" />
             </div>
           )}

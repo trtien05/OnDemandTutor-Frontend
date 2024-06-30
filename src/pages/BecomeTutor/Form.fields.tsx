@@ -2,8 +2,13 @@ import { Input, DatePicker, Select, GetProps, UploadFile } from 'antd';
 import { Rule, RuleObject } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
 import * as Enum from '../../utils/enums';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
+import type { DatePickerProps } from 'antd';
+import { validateFileSize } from '../../utils/UploadImg';
+
+// import 'moment/locale/vi';
+// import locale from 'antd/es/locale/vi_VN';
 
 
 const { RangePicker } = DatePicker;
@@ -14,37 +19,37 @@ dayjs.extend(customParseFormat);
 
 
 export type FieldType = {
-  key: string;
-  label: string;
-  name: string;
-  rules: Rule[];
-  children: JSX.Element;
-  initialValue?: any;
-  $width?: string;
+    key: string;
+    label: string;
+    name: string;
+    rules: Rule[];
+    children: JSX.Element;
+    initialValue?: any;
+    $width?: string;
 };
 
 const validateWhitespace = (_: unknown, value: string) => {
-  if (value && value.trim() === "") {
-    return Promise.reject("Please enter a valid value");
-  }
-  return Promise.resolve();
+    if (value && value.trim() === "") {
+        return Promise.reject("Please enter a valid value");
+    }
+    return Promise.resolve();
 };
 
 const validateBirthDate = (_: unknown, value: string) => {
-  if (!value) {
+    if (!value) {
+        return Promise.resolve();
+    }
+
+    const birthDate = new Date(value);
+    const today = new Date();
+
+    const age = today.getFullYear() - birthDate.getFullYear();
+
+    if (age < 18) {
+        return Promise.reject("You must be over 18 years old to be a tutor.");
+    }
+
     return Promise.resolve();
-  }
-
-  const birthDate = new Date(value);
-  const today = new Date();
-
-  const age = today.getFullYear() - birthDate.getFullYear();
-
-  if (age < 18) {
-    return Promise.reject("You must be over 18 years old to be a tutor.");
-  }
-
-  return Promise.resolve();
 };
 
 const disabledDate: RangePickerProps['disabledDate'] = (current) => {
@@ -53,14 +58,30 @@ const disabledDate: RangePickerProps['disabledDate'] = (current) => {
     return current && current > fourYearsFromToday;
 };
 
+const certDate: RangePickerProps['disabledDate'] = (current) => {
+    // Can not select days after today and today
+    return current && current > dayjs().endOf('day');
+};
+
 const validateFileType = (_: RuleObject, fileList: UploadFile[]) => {
     if (fileList && fileList.length > 0) {
-      const file = fileList[0];
-      const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
-  
-      if (!allowedTypes.includes(file.type)) {
-        return Promise.reject("File type must be png, pdf, jpeg, or jpg");
-      }
+        const file = fileList[0];
+        const allowedTypes = ['image/png', 'image/jpeg', 'image/jpg', 'application/pdf'];
+
+        if (file.type && !allowedTypes.includes(file.type)) {
+            return Promise.reject("File type must be png, pdf, jpeg, or jpg");
+        }
+    }
+    return Promise.resolve();
+}
+
+const validateSize = (_: RuleObject, fileList: UploadFile[]) => {
+    if (fileList && fileList.length > 0) {
+        const file = fileList[0];
+        
+        if (validateFileSize(file, 5)===false) {
+            return Promise.reject("File type must not exceed 5MB");
+        }
     }
     return Promise.resolve();
 }
@@ -86,7 +107,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Full name must not exceed 50 characters.',
             },
         ],
-        children: <Input placeholder="Nguyen Van A" />,
+        children: <Input placeholder='Nguyen Van An' />,
     },
     {
         key: '2',
@@ -94,7 +115,7 @@ export const aboutForm: FieldType[] = [
         name: 'phoneNumber',
         rules: [
             {
-                required: false,
+                required: true,
 
                 message: 'Please input your phone number.',
             },
@@ -103,7 +124,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid phone number.',
             },
         ],
-        children: <></>,
+        children: <Input placeholder='0908777777' />,
         $width: '40%',
     },
     {
@@ -112,7 +133,7 @@ export const aboutForm: FieldType[] = [
         name: 'email',
         rules: [
             {
-                required: false,
+                required: true,
 
                 message: 'Please input your email.',
             },
@@ -121,7 +142,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Invalid email.',
             },
         ],
-        children: <></>,
+        children: <Input placeholder='email' readOnly />,
         $width: '55%',
     },
     {
@@ -185,7 +206,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Address must not exceed 50 characters.',
             },
         ],
-        children: <Input name='address' placeholder="Phuong 7, Quan Phu Nhuan, TP.HCM" />,
+        children: <Input name='address' placeholder="Phuong 7, Ho Van Hue, Phu Nhuan" />,
     },
 ];
 
@@ -293,6 +314,7 @@ export const educationForm: FieldType[] = [
                     start: 'startYear',
                     end: 'endYear',
                 }}
+                placeholder={['Start year', 'End year']}
 
                 style={{ width: `100%` }}
             />
@@ -310,6 +332,10 @@ export const educationForm: FieldType[] = [
             {
                 validator: validateFileType,
                 message: 'File type must be png, pdf, jpeg, or jpg',
+            },
+            {
+                validator: validateSize,
+                message: 'File type must not exceed 5MB',
             },
         ],
         children: (
@@ -370,7 +396,10 @@ export const certificateForm: FieldType[] = [
                 message: 'Description must not exceed 100 characters.',
             },
         ],
-        children: <TextArea rows={3} name='description' placeholder="Teaching English as a second or foreign language" />,
+        children: <TextArea rows={3}
+            style={{    resize: 'none' }}
+            name='description'
+            placeholder="This field is optional" />,
     },
     {
         key: '4',
@@ -408,7 +437,8 @@ export const certificateForm: FieldType[] = [
             <DatePicker
                 size='large'
                 picker="year"
-                disabledDate={disabledDate}
+                placeholder="Year"
+                disabledDate={certDate}
                 style={{ width: `100%` }}
             />
         ),
@@ -421,11 +451,15 @@ export const certificateForm: FieldType[] = [
         rules: [
             {
                 required: true,
-                message: 'Please upload your certificate verification.',
+                message: 'Please upload your certificate verification. It should be an image or .pdf file with a maximum size of 5MB.',
             },
             {
                 validator: validateFileType,
                 message: 'File type must be png, pdf, jpeg, or jpg',
+            },
+            {
+                validator: validateSize,
+                message: 'File type must not exceed 5MB',
             },
         ],
         children: (

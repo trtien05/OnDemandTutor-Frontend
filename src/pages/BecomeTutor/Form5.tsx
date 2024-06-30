@@ -1,8 +1,9 @@
-import { Col, Form, Button, Grid, Input } from 'antd';
+import { Col, Form, Button, Grid } from 'antd';
 import { FieldType } from './Form.fields';
 import * as FormStyled from './Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
+import { useEffect } from 'react';
 
 const { useBreakpoint } = Grid;
 
@@ -21,14 +22,11 @@ const Form5 = ({ onFinish,
   const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
   const screens = useBreakpoint()
-  const validateIntegerInRange = (_: unknown, value: number) => {
-    const parsedValue = Number(value);
-    if (!(Number.isInteger(parsedValue)) || value < 1 || value > 8) {
-      return Promise.reject("Please enter a valid integer between 1 and 8");
-    }
-    return Promise.resolve();
-  };
 
+  useEffect(() => {
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }, []);
+  
   return (
     < Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
       <FormStyled.FormWrapper
@@ -42,7 +40,7 @@ const Form5 = ({ onFinish,
         <FormStyled.FormContainer>
           <FormStyled.FormTitle level={1}>Availability</FormStyled.FormTitle>
           <FormStyled.FormDescription style={{ flexDirection: `column` }}>Availability shows your potential working hours. Students can book your lessons at these times.<br />
-            <span style={{ fontWeight: `600` }}>Remember that students can book your available times instantly without messaging you first!</span>
+            <span style={{ fontWeight: `600` }}>Each timeslot represents a study session between you and the student. You can change this later in your profile session. </span>
           </FormStyled.FormDescription>
 
           <FormStyled.FormContainer style={{ margin: '0', columnGap: '5%', width: '100%' }}>
@@ -93,22 +91,6 @@ const Form5 = ({ onFinish,
                 )}
               </FormStyled.TimeslotStyle>
             ))}
-            <FormStyled.FormItem
-              key='noOfWeek'
-              label='Number of weeks apply'
-              name='noOfWeek'
-              rules={[{
-                required: true,
-                message: 'You must insert in this field'
-              },{
-                validator: validateIntegerInRange,
-                message: 'Please enter a valid integer between 1 and 8'
-              }]}
-              $width={'100%'}
-              validateFirst
-            >
-              <Input placeholder='3' type='number' max='8' min='1' />
-            </FormStyled.FormItem>
           </FormStyled.FormContainer>
 
 
@@ -133,7 +115,7 @@ const Form5 = ({ onFinish,
               valuePropName="checked"
               rules={[{
                 required: true,
-                message: 'You must agree to our Terms and Condition to proceed'
+                message: 'You must make sure your availability to proceed.'
               }]}
               validateFirst
             >
