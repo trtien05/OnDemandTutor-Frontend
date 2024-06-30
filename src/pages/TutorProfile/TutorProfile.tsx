@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import useAuth from '../../hooks/useAuth';
-import { getTutorById } from '../../utils/tutorAPI';
+import { getTutorById, getTutorStatistic } from '../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
 import { Avatar, Col, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
@@ -18,6 +18,8 @@ import DescriptionForm from './FormComponent/DescriptionForm';
 import { useNavigate } from 'react-router-dom';
 import SubjectForm from './FormComponent/SubjectForm';
 import Schedule from '../../components/Schedule/Schedule';
+import AddTimeslot from './FormComponent/AddTimeslot';
+import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 
 
 const { Title, Paragraph, Text } = Typography;
@@ -38,13 +40,15 @@ const TutorProfile = () => {
     const { user, role } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
+    const [statistic, setStatistic] = useState<any>([]);
     const navigate = useNavigate();
 
     //---------------------FETCH DATA---------------------
     useEffect(() => {
         (async () => {
+            setLoading(true);
             try {
-                setLoading(true);
+                
                 if (!user || !(role == "TUTOR")) return;
                 const { data } = await getTutorById(user.id);
                 await setTutorDetails({
@@ -54,7 +58,11 @@ const TutorProfile = () => {
                     videoIntroductionLink: data.videoIntroductionLink,
                     subjects: data.subjects,
                 });
-
+                
+                const response = await getTutorStatistic(user.id);
+                if (response) {
+                    setStatistic(response.data);
+                }
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -159,13 +167,13 @@ const TutorProfile = () => {
                                                 <Style.ProfileInfoBox vertical gap={6}>
                                                     <Skeleton loading={loading} paragraph={false}>
                                                         <Flex justify="space-between">
-                                                            <Text>Total tutoring hours:</Text>
+                                                            <Text>Total tutoring lessons:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    15
+                                                                    {statistic?.totalLessons?statistic?.totalLessons:0}
                                                                 </Text>
-                                                                <Text>hours</Text>
+                                                                <Text>lessons</Text>
                                                             </Paragraph>
                                                         </Flex>
                                                     </Skeleton>
@@ -176,7 +184,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {(4000000).toLocaleString()}
+                                                                {statistic?.totalIncome?Math.round((statistic?.totalIncome)).toLocaleString('en-US'):0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
@@ -190,13 +198,13 @@ const TutorProfile = () => {
                                                 <Style.ProfileInfoBox vertical gap={6}>
                                                     <Skeleton loading={loading} paragraph={false}>
                                                         <Flex justify="space-between">
-                                                            <Text>Total tutoring hours:</Text>
+                                                            <Text>Total tutoring lessons:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    15
+                                                                {statistic?.thisMonthLessons?statistic?.thisMonthLessons:0}
                                                                 </Text>
-                                                                <Text>hours</Text>
+                                                                <Text>lessons</Text>
                                                             </Paragraph>
                                                         </Flex>
                                                     </Skeleton>
@@ -207,7 +215,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {(4000000).toLocaleString()}
+                                                                {statistic?.totalMonthlyIncome?Math.round(statistic?.totalMonthlyIncome).toLocaleString('en-US'):0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
@@ -242,7 +250,10 @@ const TutorProfile = () => {
                                                 <Skeleton loading={loading} paragraph={false}>
                                                 {user?.id &&
                                                     (<div style={{ textAlign: `right` }}>
-                                                        <Schedule tutorId={user?.id} scheduleType='tutorProfile' update={updateSchedule} />
+                                                        <DisplaySchedule tutorId={user?.id} update={updateSchedule} />
+                                                        <AddTimeslot tutorId={user?.id} 
+                                                            isUpdate={isUpdateSchedule} 
+                                                            update={updateSchedule} />
                                                         <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
                                                 </Skeleton>
                                             </Style.ProfileInfoItem>

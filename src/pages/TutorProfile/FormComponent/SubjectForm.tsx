@@ -3,6 +3,8 @@ import * as FormStyled from '../../BecomeTutor/Form.styled';
 import { Button, Checkbox, Col, Form, Modal, Row, Select, notification, Typography } from 'antd';
 import { Certificate, Details, Education } from '../TutorProfile.type';
 import { FieldType } from '../../BecomeTutor/Form.fields';
+import { updateTutorDescription } from '../../../utils/tutorAPI';
+import { ConsoleSqlOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 
 interface SubjectFormProps {
@@ -197,21 +199,21 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
         return { containsAll, differences };
     };
 
-    const onSendSubject = async (values: any) => {
-        const newSubject = isNewSubject(values);
-        if (newSubject.containsAll) {
-            if (!addDoc) {
-                setLoading(true);
-                await setNeedDocument(newSubject.differences);
-                await setTimeslotForm(initialFormState(values.subjects)); // Set initial form state
-                await setVisibility(initialVisibilityState(values.subjects)); // Set initial visibility state
-                setAddDoc(true);
-                setLoading(false)
-            }
-        } else {
-            onFinish(values);
-        }
-    };
+    // const onSendSubject = async (values: any) => {
+    //     const newSubject = isNewSubject(values);
+    //     if (newSubject.containsAll) {
+    //         if (!addDoc) {
+    //             setLoading(true);
+    //             await setNeedDocument(newSubject.differences);
+    //             await setTimeslotForm(initialFormState(values.subjects)); // Set initial form state
+    //             await setVisibility(initialVisibilityState(values.subjects)); // Set initial visibility state
+    //             setAddDoc(true);
+    //             setLoading(false)
+    //         }
+    //     } else {
+    //         onFinish(values);
+    //     }
+    // };
 
     const mapSubjects = (values: string[]) => (
         values.map((subject: string, index: number) => (
@@ -289,51 +291,91 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
 
     //--------------------API Save Profile--------------------
     async function saveTutorDescription(tutorId: number, formData: any) {
-        const jsonRequestBody = await convertSubjectData(formData);
 
+        // Get JSON body from form data
+        const jsonRequestBody = convertTutorDescriptionFormData(formData);
+    
         try {
-            // const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
-            console.log(jsonRequestBody)
-            // if (!api.success) {
-            //     throw new Error(`Error: ${responseData.statusText}`);
-            // }
-
-            // console.log('Tutor description saved successfully:', responseData);
-            // return responseData;
+    
+          // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
+          const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
+    
+          // Check response status
+          if (!api.success) {
+            throw new Error(`Error: ${responseData.statusText}`);
+          }
+    
+          // Get response data
+          console.log('Tutor description saved successfully:', responseData);
+    
+          // Return success response
+          return responseData;
         } catch (error: any) {
-            api.error({
-                message: 'Error',
-                description: error.response ? error.response.data : error.message,
-            });
+          api.error({
+            message: 'Lỗi',
+            description: error.response ? error.response.data : error.message,
+          });
         }
-    }
+      }
+    
+      function convertTutorDescriptionFormData(formData: any) {
+        const descriptionData = {
+          // convert form data to tutor description json format
+          teachingPricePerHour: formData.teachingPricePerHour,
+          backgroundDescription: formData.backgroundDescription,
+          meetingLink: formData.meetingLink,
+          videoIntroductionLink: formData.videoIntroductionLink,
+          subjects: formData.subjects,
+        };
+    
+        return descriptionData;
+      }
+    // async function saveTutorDescription(tutorId: number, formData: any) {
+    //     const jsonRequestBody = await convertSubjectData(formData);
 
-    function convertSubjectData(formData: any) {
-        const jsonResult: { subjectName: string; diploma: number[]; certificate: number[]; }[] = [];
+    //     try {
+    //         // const responseData = await updateTutorDescription(tutorId, jsonRequestBody);
+    //         console.log(jsonRequestBody)
+    //         // if (!api.success) {
+    //         //     throw new Error(`Error: ${responseData.statusText}`);
+    //         // }
 
-        needDocument.forEach((subject: string, index) => {
-            // Check for timeslots for the current day
-            let arr: { [key: string]: number[] } = {};
-            arr['education'] = [];
-            arr['certification'] = [];
-            subjectDoc.forEach((doc) => {
-                if (formData[`${subject}_${doc}`]) {
-                    arr[doc] = [];
-                    for (let i = 0; formData[`${subject}_${doc}_${i}`]; i++) {
-                        arr[doc].push(formData[`${subject}_${doc}_${i}`]);
-                    }
-                }
-            })
+    //         // console.log('Tutor description saved successfully:', responseData);
+    //         // return responseData;
+    //     } catch (error: any) {
+    //         api.error({
+    //             message: 'Error',
+    //             description: error.response ? error.response.data : error.message,
+    //         });
+    //     }
+    // }
 
-            jsonResult.push({
-                subjectName: subject,
-                diploma: arr['education'],
-                certificate: arr['certification']
-            });
-        });
-        console.log(jsonResult)
-        return jsonResult;
-    }
+    // function convertSubjectData(formData: any) {
+    //     const jsonResult: { subjectName: string; diploma: number[]; certificate: number[]; }[] = [];
+
+    //     // needDocument.forEach((subject: string, index) => {
+    //     //     // Check for timeslots for the current day
+    //     //     let arr: { [key: string]: number[] } = {};
+    //     //     arr['education'] = [];
+    //     //     arr['certification'] = [];
+    //     //     subjectDoc.forEach((doc) => {
+    //     //         if (formData[`${subject}_${doc}`]) {
+    //     //             arr[doc] = [];
+    //     //             for (let i = 0; formData[`${subject}_${doc}_${i}`]; i++) {
+    //     //                 arr[doc].push(formData[`${subject}_${doc}_${i}`]);
+    //     //             }
+    //     //         }
+    //     //     })
+
+    //     //     jsonResult.push({
+    //     //         subjectName: subject,
+    //     //         diploma: arr['education'],
+    //     //         certificate: arr['certification']
+    //     //     });
+    //     // });
+    //     console.log(form.getFieldsValue())
+    //     return jsonResult;
+    // }
 
     return (
         <>
@@ -347,7 +389,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                 width={'700px'}
                 open={isFormOpen}
                 onCancel={handleCancel}
-                onOk={onSendSubject}
+                onOk={onFinish}
                 footer={[<FormStyled.ButtonDiv>
                     <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '45%' }}>
                         Cancel
@@ -372,7 +414,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
             >
                 {contextHolder}
                 <FormStyled.FormWrapper
-                    onFinish={onSendSubject}
+                    onFinish={onFinish}
                     form={form}
                     id='subjectForm'
                     labelAlign="left"
@@ -399,7 +441,6 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                         <FormStyled.FormItem
                             name="subjects"
                             $width={"100%"}
-                            hidden={addDoc}
                             rules={[{
                                 required: true,
                                 message: 'Please choose a subject'
@@ -416,7 +457,7 @@ const SubjectForm: React.FC<SubjectFormProps> = (props) => {
                                 </Row>
                             </FormStyled.CheckboxGroup>
                         </FormStyled.FormItem>
-                        {addDoc && mapSubjects(needDocument)}
+                        {/* {addDoc && mapSubjects(needDocument)} */}
                     </FormStyled.FormContainer>
                 </FormStyled.FormWrapper>
             </Modal>

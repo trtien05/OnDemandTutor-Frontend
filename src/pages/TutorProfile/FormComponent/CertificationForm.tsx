@@ -43,13 +43,14 @@ const CertificationForm: React.FC<CertProps> = (props) => {
   const normFile = (e: any) => {
     console.log('Upload event:', e);
     if (Array.isArray(e)) {
-      return e;
+        return e;
     }
-    return e?.fileList;
-  };
-  const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
-    setFileList(newFileList);
-  };
+    return e?.fileList.length > 0 ? [e.fileList[e.fileList.length - 1]] : [];
+};
+const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
+    setFileList([newFileList[newFileList.length - 1]]);
+};
+
   // const handleFinish = (values: any) => {
   //     onFinish({ ...values, fileList })
   // }

@@ -55,6 +55,9 @@ export const ScheduleWrapper = styled.div`
 
   .e-schedule .e-appointment {
     width: 100%;
+    .e-icons {
+      display: none !important;
+      }
   }
   
 

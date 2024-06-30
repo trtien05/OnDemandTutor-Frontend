@@ -39,7 +39,7 @@ export const EducationColumns: TableColumnsType<Education> = [
     {
         title: 'Is Verified',
         dataIndex: 'verified',
-        sorter: (a, b) => a.verified.localeCompare(b.verified),
+        sorter: (a, b) => a.verified.localeCompare(b.verified)
     },
 ];
 

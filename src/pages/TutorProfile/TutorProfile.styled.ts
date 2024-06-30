@@ -82,7 +82,7 @@ export const ProfileInfoBox = styled(Flex)`
 
     & > .ant-flex span.ant-typography {
         margin-right: 4px;
-        width: 150px;
+        width: 200px;
     }
 
     & div.ant-typography {
