@@ -42,6 +42,11 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
 
   function showModal() {
     if (user) {
+      if (user.id===tutorId) {
+        api.error({
+          message: 'Error',
+          description: 'You cannot book yourself as a tutor'});
+        } else
       setIsFormOpen(true);
     }
     else navigate(config.routes.public.login);
@@ -198,7 +203,10 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
             $width="100%"
             validateFirst
           >
-            <TextArea rows={2} name='description' placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
+            <TextArea rows={2} 
+            style={{ resize: 'none' }}
+            name='description' 
+            placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
           </FormStyled.FormItem>
         </FormStyled.FormWrapper>
       </Modal>
