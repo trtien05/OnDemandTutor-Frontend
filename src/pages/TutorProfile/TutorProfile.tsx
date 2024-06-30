@@ -167,7 +167,7 @@ const TutorProfile = () => {
                                                 <Style.ProfileInfoBox vertical gap={6}>
                                                     <Skeleton loading={loading} paragraph={false}>
                                                         <Flex justify="space-between">
-                                                            <Text>Total tutoring lessons:</Text>
+                                                            <Text>Total lessons:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
@@ -198,7 +198,7 @@ const TutorProfile = () => {
                                                 <Style.ProfileInfoBox vertical gap={6}>
                                                     <Skeleton loading={loading} paragraph={false}>
                                                         <Flex justify="space-between">
-                                                            <Text>Total tutoring lessons:</Text>
+                                                            <Text>Total lessons:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
