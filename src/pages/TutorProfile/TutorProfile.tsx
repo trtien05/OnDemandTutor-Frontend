@@ -184,7 +184,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                {statistic?.totalIncome?(statistic?.totalIncome).toLocaleString('en-US'):0}
+                                                                {statistic?.totalIncome?Math.round((statistic?.totalIncome)).toLocaleString('en-US'):0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
@@ -215,7 +215,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                {statistic?.totalMonthlyIncome?(statistic?.totalMonthlyIncome).toLocaleString('en-US'):0}
+                                                                {statistic?.totalMonthlyIncome?Math.round(statistic?.totalMonthlyIncome).toLocaleString('en-US'):0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>

@@ -34,17 +34,16 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
     const handleOk = async (values: any) => {
         setLoading(true); // Set loading state to true when form is submitted
         try {
-            await saveTutorAvailableTimeslots(tutorId, values)
+            const response = await saveTutorAvailableTimeslots(tutorId, values)
             props.isUpdate(!props.update);
-            api.success({
-                message: 'Your schedule have been updated!',
-            });
-            props.isUpdate(true);
             values = null;
+            if (response)
+            api.success({
+                message: 'Your schedule has been updated!',
+            });
         } catch (error: any) {
             api.error({
-                message: 'Error updating schedule',
-                description: error.response.data.message || error.message,
+                message: 'Error adding timeslot '
             });
         } finally {
             setLoading(false);
@@ -204,7 +203,6 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
 
         // Get JSON body from form data
         const jsonRequestBody = convertTimeslotsToJSON(formData);
-        console.log(jsonRequestBody);
         try {
 
             // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
@@ -221,16 +219,29 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
             // Return success response
             return responseData;
         } catch (error: any) {
-            api.error({
-                message: 'Error updating schedule',
-                description: error.response.data.message || error.message,
-            });
+            if (error.response.status === 409) {
+                let overlapped = ``;
+                error.response.data.map((data: any, index: number) => {
+                    overlapped += `[${daysOfWeek[data.dayOfWeek - 2].slice(0, 1).toUpperCase()}${daysOfWeek[data.dayOfWeek - 2].slice(1)}, from ${data.startTime} to ${data.endTime}]`;
+                    if (index !== error.response.data.length - 1) overlapped += `  __  `;
+                })
+                api.error({
+                    message: 'Overlapped timeslot',
+                    description: `The timeslot on ${overlapped} is overlapped with another timeslot. 
+                                Please check your schedule again.`,
+                })
+                if (error.response.data.length < jsonRequestBody.length) return true;
+            } else
+                api.error({
+                    message: 'Error updating schedule',
+                    description: error.response.data.message || error.message,
+                });
         }
     }
 
     function convertTimeslotsToJSON(formData: any) {
         const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-        const jsonResult: { startTime: any; endTime: any; dayOfWeek: number; }[] = [];
+        const jsonResult: { startTime: any; endTime: any; dayOfWeek: number; using: boolean; }[] = [];
 
         daysOfWeek.forEach((day, index) => {
             // Check for timeslots for the current day
@@ -244,6 +255,7 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
                         startTime,
                         endTime,
                         dayOfWeek: index + 2, // Monday is 2, Sunday is 8
+                        using: true,
                     });
 
                 }
@@ -307,7 +319,7 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
                             Availability
                         </FormStyled.FormTitle>
                         <FormStyled.FormDescription style={{ flexDirection: `column` }}><br />
-                        Please ensure there are no overlapping schedules. <br />
+                            Please ensure there are no overlapping schedules. <br />
                             <span style={{ fontWeight: `600` }}>
                                 Each timeslot represents a study session between you and the student. </span>
                         </FormStyled.FormDescription>
