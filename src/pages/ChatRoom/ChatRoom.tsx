@@ -156,6 +156,22 @@ const ChatRoom: React.FC = () => {
     const payloadData = JSON.parse(payload.body);
     const chatKey = payloadData.senderId;
 
+    const defaultName = 'Unknown';
+    const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
+    const fullName = payloadData.senderFullName || defaultName;
+    const avatarUrl = payloadData.senderAvatarUrl || defaultAvatarUrl;
+
+    setAccount(a => {
+      const accounts = new Map(a);
+      if (!accounts.has(chatKey)) {
+        accounts.set(chatKey, {
+          fullName: fullName,
+          avatarUrl: avatarUrl
+        });
+      }
+      return new Map(accounts);
+    });
+
     setPrivateChats(prevChats => {
       const updatedChats = new Map(prevChats);
       if (updatedChats.has(chatKey)) {
