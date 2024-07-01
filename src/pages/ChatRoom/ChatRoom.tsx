@@ -268,7 +268,7 @@ const ChatRoom: React.FC = () => {
     <Layout>
       {userData.connected ? (
         <>
-          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px' }}>
+          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
             <List
               itemLayout="horizontal"
               dataSource={[...privateChats.keys()]}
