@@ -20,7 +20,7 @@ export type UserType = {
     phoneNumber: string | null;
     id: number;
     dateOfBirth: Date | string | null;
-    gender: Gender;
+    gender: Gender | string;
     status: string;
     role: string;
     address: string | null;
