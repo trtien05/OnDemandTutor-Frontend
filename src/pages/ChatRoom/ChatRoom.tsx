@@ -156,6 +156,22 @@ const ChatRoom: React.FC = () => {
     const payloadData = JSON.parse(payload.body);
     const chatKey = payloadData.senderId;
 
+    const defaultName = 'Unknown';
+    const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
+    const fullName = payloadData.senderFullName || defaultName;
+    const avatarUrl = payloadData.senderAvatarUrl || defaultAvatarUrl;
+
+    setAccount(a => {
+      const accounts = new Map(a);
+      if (!accounts.has(chatKey)) {
+        accounts.set(chatKey, {
+          fullName: fullName,
+          avatarUrl: avatarUrl
+        });
+      }
+      return new Map(accounts);
+    });
+
     setPrivateChats(prevChats => {
       const updatedChats = new Map(prevChats);
       if (updatedChats.has(chatKey)) {
@@ -244,9 +260,9 @@ const ChatRoom: React.FC = () => {
     return `${senderName} ${messageContent}`;
   };
 
-  const truncateFullName = (fullName?: string): string | undefined => {
-    if (!fullName) return undefined;
-    return fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
+  const truncateText = (text?: string): string | undefined => {
+    if (!text) return undefined;
+    return text.length > 20 ? `${text.slice(0, 20)}...` : text;
   };
   return (
     <Layout>
@@ -275,11 +291,11 @@ const ChatRoom: React.FC = () => {
                   }}>
                     <Styled.CustomListItemMeta
                       avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
-                      title={truncateFullName(account.get(id)?.fullName) || 'Unknown'}
+                      title={truncateText(account.get(id)?.fullName) || 'Unknown'}
                       unread={unreadTabs.has(id)}
                       description={
                         <span className="message-content">
-                          {getLatestMessage(privateChats.get(id))}
+                          {truncateText(getLatestMessage(privateChats.get(id)))}
                         </span>
                       }
                       as={List.Item.Meta}

@@ -21,7 +21,7 @@ const HomeLayout = () => {
                 avatarUrl={user?.avatarUrl}
             />
 
-            <main>
+            <main style={{ marginTop: '100px' }}>
                 <Outlet />
             </main>
 
