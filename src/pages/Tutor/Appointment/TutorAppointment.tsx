@@ -17,6 +17,7 @@ const TeachingSchedule = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
   const [viewMode, setViewMode] = useState<'Upcoming' | 'Past'>('Upcoming');
+  const [update, setUpdate] = useState(false);
   const user = useAuth();
 
   useEffect(() => {
@@ -36,7 +37,7 @@ const TeachingSchedule = () => {
     };
 
     fetchAppointmentsData();
-  }, [user, messageApi]);
+  }, [user, messageApi, update]);
 
   const handleTabChange = (value: string) => {
     setViewMode(value as 'Upcoming' | 'Past');
