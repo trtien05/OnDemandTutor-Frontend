@@ -2,19 +2,20 @@
 import { initializeApp } from "firebase/app";
 import { getStorage } from "firebase/storage";
 import { getFirestore } from "firebase/firestore";
+import config from "../config";
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyATSdpozM1NjjG7uaLdZjO0Q6aaJsWa0vk",
-  authDomain: "mytutor-swp391.firebaseapp.com",
-  projectId: "mytutor-swp391",
-  storageBucket: "mytutor-swp391.appspot.com",
-  messagingSenderId: "211296788775",
-  appId: "1:211296788775:web:65f0f4ff21af30ec924902",
-  measurementId: "G-V67WR37JSB"
+  apiKey: config.publicRuntime.FIREBASE_API_KEY,
+  authDomain: config.publicRuntime.FIREBASE_AUTH_DOMAIN,
+  projectId: config.publicRuntime.FIREBASE_PROJECT_ID,
+  storageBucket: config.publicRuntime.FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: config.publicRuntime.FIREBASE_MESSAGING_SENDER_ID,
+  appId: config.publicRuntime.FIREBASE_APP_ID,
+  measurementId: config.publicRuntime.FIREBASE_MEASUREMENT_ID
 };
 
 // Initialize Firebase

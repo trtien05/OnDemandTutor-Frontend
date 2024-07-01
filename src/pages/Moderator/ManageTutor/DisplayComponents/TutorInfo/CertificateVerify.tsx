@@ -3,6 +3,7 @@ import { Certificate } from '../../Tutor.type';
 import { RcFile } from 'antd/lib/upload';
 import { Flex, Image, Switch } from 'antd'
 import { Clickable } from './TutorInfo.styled';
+import FileViewer from '../../../../../components/FileViewer/FileViewer';
 interface CertificateVerifyProps {
     certificate: Certificate;
     handleFunction: (id:number, checked: boolean) => void;
@@ -35,8 +36,8 @@ const CertificateVerify: React.FC<CertificateVerifyProps> = (props) => {
         style={{display:`flex`, justifyContent:`space-between`}}>
             <div style={{display: `flex`}}>
             <div style={{margin:`auto`, borderRadius:`20px`}}>
-            <img src={item.certificateUrl} 
-            alt="diploma" 
+            {/* <img src={item.certificateUrl} 
+            alt="certificate" 
             style={{margin:`auto`, borderRadius:`20px`}}
             width={`100`}
             onClick={(e) => handlePreview((e.target as HTMLImageElement).src)} />
@@ -53,7 +54,8 @@ const CertificateVerify: React.FC<CertificateVerifyProps> = (props) => {
                     src={previewImage}
                     style={{ display: 'none' }} // Ensure the image is not displayed
                 />
-            )}
+            )} */}
+            <FileViewer alt='certificate' fileUrl={item.certificateUrl} width='100' />
             </div>
             <div style={{margin:`auto`, marginLeft:`20px`}}>
             <p style={{fontWeight:`bold`}}>

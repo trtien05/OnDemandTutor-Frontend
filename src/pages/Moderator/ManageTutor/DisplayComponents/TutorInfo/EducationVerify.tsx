@@ -36,7 +36,7 @@ const EducationVerify: React.FC<EducationVerifyProps> = (props) => {
             <div style={{display: `flex`}}>
             <div style={{margin:`auto`, borderRadius:`20px`}}>
             <img src={item.diplomaUrl} 
-            alt="diploma" 
+            alt='diploma'
             style={{margin:`auto`, borderRadius:`20px`}}
             width={`100`}
             onClick={(e) => handlePreview((e.target as HTMLImageElement).src)} />

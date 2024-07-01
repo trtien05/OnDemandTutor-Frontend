@@ -5,8 +5,9 @@ import * as ScheduleStyle from './Schedule.styled';
 import { getTutorSchedule } from '../../utils/tutorBookingAPI';
 import { notification } from 'antd';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
+import config from '../../config';
 
-registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
+registerLicense(config.publicRuntime.SYNCFUSION_LICENSE_KEY);
 
 
 interface ScheduleProps {
