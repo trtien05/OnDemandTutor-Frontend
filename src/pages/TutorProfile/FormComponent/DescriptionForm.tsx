@@ -4,7 +4,6 @@ import ReactPlayer from 'react-player';
 import { Button, Form, Input, notification } from 'antd';
 import { Details } from '../TutorProfile.type';
 import { updateTutorDescription } from '../../../utils/tutorAPI';
-import { Player } from '../TutorProfile.styled';
 
 
 interface DescriptionFormProps {

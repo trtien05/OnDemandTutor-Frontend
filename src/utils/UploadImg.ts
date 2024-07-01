@@ -1,6 +1,24 @@
 import { getDownloadURL, uploadBytes, ref } from "firebase/storage";
 import { storage } from "../utils/firebase";
+import { UploadFile } from "antd";
 
+export const validateFileType = (
+  { type, name }: UploadFile,
+  allowedTypes?: string
+) => {
+  if (!allowedTypes) {
+    return true;
+  }
+  if (type) {
+    return allowedTypes.includes(type);
+  }
+};
+
+export const validateFileSize = (file: UploadFile, size: number) => {
+  if (file.size) {
+    return file.size <= size*1024*1024;
+  }
+}
 
 export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, index: number, handleChange: (url: string) => void) => {
   console.log(file)
