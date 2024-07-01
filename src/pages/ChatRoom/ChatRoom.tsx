@@ -12,7 +12,7 @@ import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
 import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
-import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
+import EmojiPicker, { EmojiClickData, EmojiStyle } from 'emoji-picker-react';
 
 type ChatMessage = {
   senderId: number;
@@ -340,6 +340,7 @@ const ChatRoom: React.FC = () => {
                   type="primary"
                   shape="circle"
                   icon={<SmileOutlined />}
+                  style={{ alignSelf: 'start' }}
                   onClick={() => setShowEmojiPicker(!showEmojiPicker)}
                 />
                 {showEmojiPicker && (
@@ -348,7 +349,7 @@ const ChatRoom: React.FC = () => {
                       lazyLoadEmojis={true}
                       onEmojiClick={handleEmojiSelect}
                       height={400}
-                      skinTonesDisabled={true}
+                      emojiStyle={EmojiStyle.NATIVE} skinTonesDisabled={true}
                       searchDisabled={true}
                     />
                   </div>
