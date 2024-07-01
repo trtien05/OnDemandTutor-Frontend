@@ -254,8 +254,8 @@ export enum CancelOption {
 }
 
 export enum Gender {
-    MALE = 1,
-    FEMALE = 0,
+    MALE = 0,
+    FEMALE = 1,
     
 }
 export enum AppointmentStatus {

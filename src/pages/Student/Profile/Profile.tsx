@@ -83,7 +83,7 @@ const Profile = () => {
                 form.setFieldsValue({
                     fullName: user.fullName,
                     dateOfBirth: user.dateOfBirth && dayjs(user.dateOfBirth),
-                    gender: user.gender===1? Gender.MALE : Gender.FEMALE,
+                    gender: user.gender=== Gender.MALE ?  false: true,
                     phoneNumber: user.phoneNumber,
                     avatarUrl: user.avatarUrl,
                     email: user.email,

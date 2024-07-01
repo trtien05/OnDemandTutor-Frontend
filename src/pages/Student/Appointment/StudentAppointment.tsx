@@ -57,7 +57,7 @@ const StudentAppointment = () => {
     window.scrollTo(0, 0);
     console.log(baseUrl);
 
-  }, [appointmentsPerPage, currentPage, user, viewMode, update]);
+  }, [appointmentsPerPage, currentPage, user, viewMode, update, isDone]);
 
   const handleTabChange = (value: string) => {
     setViewMode(value as 'Upcoming' | 'Past');
@@ -118,13 +118,13 @@ const handleCancelAppointment = (timeslotId: number) => {
 };
 
   return (
-    <div style={{backgroundColor:'#fff', marginBottom:'-50px'}}>
+    <div style={{backgroundColor:'#fff', paddingBottom:'30px'}}>
     {contextHolder}
     {contextHolderModal}
       <Styled.TitleWrapper>
         <Container >
         <Styled.RowWrapper>
-          <Segmented<string>
+          <Styled.StyledSegmented
                     options={['Upcoming', 'Past']}
                     onChange={handleTabChange}
                     value={viewMode}
