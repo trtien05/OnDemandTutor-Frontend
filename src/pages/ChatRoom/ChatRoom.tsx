@@ -6,12 +6,13 @@ import { Avatar, Button, Layout, List } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import TextArea from 'antd/es/input/TextArea';
-import { SendOutlined } from '@ant-design/icons';
+import { SendOutlined, SmileOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
 import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
 import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
+import EmojiPicker, { EmojiClickData } from 'emoji-picker-react';
 
 type ChatMessage = {
   senderId: number;
@@ -60,6 +61,7 @@ const ChatRoom: React.FC = () => {
     message: '',
     name: ''
   });
+  const [showEmojiPicker, setShowEmojiPicker] = useState<boolean>(false);
 
   useEffect(() => {
     if (user && !userData.connected) {
@@ -206,6 +208,12 @@ const ChatRoom: React.FC = () => {
     setUserData({ ...userData, message: value });
   };
 
+  const handleEmojiSelect = (emojiData: EmojiClickData) => {
+    if (showEmojiPicker) {
+      setUserData(prev => ({ ...prev, message: prev.message + emojiData.emoji }));
+    }
+  };
+
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
@@ -235,6 +243,7 @@ const ChatRoom: React.FC = () => {
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: "" });
     }
+    setShowEmojiPicker(false);
   };
 
   const parseDate = (dateString: string) => {
@@ -327,12 +336,29 @@ const ChatRoom: React.FC = () => {
                 })}
               </Styled.ChatMessages>
               <Styled.SendMessage>
+                <Button
+                  type="primary"
+                  shape="circle"
+                  icon={<SmileOutlined />}
+                  onClick={() => setShowEmojiPicker(!showEmojiPicker)}
+                />
+                {showEmojiPicker && (
+                  <div style={{ position: 'absolute', bottom: '200px', zIndex: 1 }}>
+                    <EmojiPicker
+                      lazyLoadEmojis={true}
+                      onEmojiClick={handleEmojiSelect}
+                      height={400}
+                      skinTonesDisabled={true}
+                      searchDisabled={true}
+                    />
+                  </div>
+                )}
                 <TextArea
                   required
                   maxLength={100}
                   rows={2}
                   value={userData.message}
-                  style={{ height: 120, resize: 'none', marginRight: '10px' }}
+                  style={{ height: 120, resize: 'none', margin: '0 10px' }}
                   onChange={handleMessage}
                   placeholder="Your message..."
                 />
@@ -343,6 +369,7 @@ const ChatRoom: React.FC = () => {
                   icon={<SendOutlined />}
                   onClick={sendPrivateValue}
                 />
+
               </Styled.SendMessage>
             </Styled.ChatBox>
           </Content>
