@@ -28,12 +28,16 @@ export const updateSchedule = (tutorId: number, requestBody: any) => {
 
 export const getTutorStatistic = (tutorId: number) => {
     return get(`/api/statistics/${tutorId}/teach-statistics`);
-}
+};
 
 export const addTimeslot = (tutorId: number, requestBody: any) => {
     return post(`/api/schedules/tutors/${tutorId}/timeslots`, requestBody);
-}
+};
 
 export const getFullSchedule = (tutorId: number) => {
     return get(`/api/schedules/${tutorId}/profile-schedule`);
-}
+};
+
+export const postTutorReviews = (tutorId: number, requestBody: any) => {
+    return post(`/api/tutors/${tutorId}/reviews`, requestBody);
+};
