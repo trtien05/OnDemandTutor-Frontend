@@ -50,7 +50,7 @@ const Toolbar = ({
                     {avatar ? (
                         <Avatar size={40} src={avatar} alt="avatar" />
                     ) : (
-                        // <Avatar size={40} icon={<UserOutlined />} />
+                        <Avatar size={40} icon={<UserOutlined />} />
                     )}
                 </Space>
             </Dropdown>
