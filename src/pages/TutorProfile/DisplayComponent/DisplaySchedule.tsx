@@ -6,7 +6,7 @@ import { notification } from 'antd';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
 import { getFullSchedule } from '../../../utils/tutorAPI';
 
-registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
+registerLicense("Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=");
 
 
 interface ScheduleProps {
