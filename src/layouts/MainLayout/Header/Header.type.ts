@@ -14,6 +14,7 @@ export type PIIProps = {
 
 export type HeaderProps = {
     role: string | null;
+    status:string|null;
     navbar: MenuType[];
     menu: ItemType[];
     avatarUrl?: string;
