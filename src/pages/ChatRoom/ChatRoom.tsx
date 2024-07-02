@@ -1,6 +1,5 @@
 import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
-import './style.css';
 import * as Styled from './ChatRoom.styled';
 import { Avatar, Button, Layout, List } from 'antd';
 import Sider from 'antd/es/layout/Sider';
