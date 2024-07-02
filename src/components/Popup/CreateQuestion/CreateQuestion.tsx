@@ -15,7 +15,7 @@ interface CreateQuestionProps {
 }
 const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
-    const { user } = useAuth();
+    const {user, role} = useAuth();
     const [open, setOpen] = useState(false);
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
@@ -25,6 +25,12 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
+        console.log('role:', role);
+        if(role === 'STUDENT'){
+            setOpen(true);
+        }else{
+            navigate(config.routes.public.login);
+        }
         setOpen(true);
     };
     async function saveQuestion(studentId: number, formData: any) {
@@ -65,7 +71,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 fileList.map(async (file: UploadFile, index) => {
                     if (file.originFileObj) {
                         const url = await uploadCreateQuestionFiles(
-                            1,
+                            user?.id || 0,
                             file.originFileObj,
                             'CreateQuestion',
                             dateCreated,
@@ -80,7 +86,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
             setModalData(values);
             // console.log('Clicked OK with values:', values);
             setConfirmLoading(true);
-            await saveQuestion(2, values);
+            await saveQuestion(user?.id||0, values);
             setTimeout(() => {
                 setOpen(false);
                 setConfirmLoading(false);
@@ -101,14 +107,14 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     };
 
 
-    const handleFileSizeCheck = (file: any) => {
+    const handleFileSizeCheck = (file:any) => {
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
             message.error('File must be smaller than 5MB!');
         }
         return isLt5M;
     };
-
+    
     const onChange = (info: any) => {
         let newFileList = info.fileList;
 
@@ -239,10 +245,10 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                         <FormStyled.FormItem
                             name="questionFile"
                             valuePropName="fileList"
-                            getValueFromEvent={(e) => {
-                                console.log('Get value from event:', e); // Log the event to debug
-                                return Array.isArray(e) ? e : e && e.fileList;
-                            }}
+                            // getValueFromEvent={(e) => {
+                            //     console.log('Get value from event:', e); // Log the event to debug
+                            //     return Array.isArray(e) ? e : e && e.fileList;
+                            // }}
                         >
                             <Dragger
                                 name="questionFile"

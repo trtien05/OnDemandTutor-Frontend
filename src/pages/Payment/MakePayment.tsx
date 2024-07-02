@@ -55,12 +55,14 @@ interface Tutor {
 
 export function toScheduleString(schedule: Schedule) {
   let scheduleString = '';
+  console.log(schedule.scheduleDate)
   const dateString = new Date(schedule.scheduleDate).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',
     month: 'long',
     day: 'numeric'
   });
+  
   scheduleString = dateString + " at " + schedule.startTime + " - " + schedule.endTime;
   return scheduleString;
 }
@@ -75,7 +77,7 @@ const MakePayment = () => {
   const [schedule, setSchedule] = useState<Schedule[]>();
   const [appointmentData, setAppointmentData] = useState<any>(location.state ? location.state.appointmentData ? location.state.appointmentData : null : null); // [TODO] Replace any with the correct type
 
-  const [tutorId, setTutorId] = useState<number>(appointmentData ? appointmentData.tutorId ? appointmentData.tutorId : 0 : 0); // [TODO] Replace any with the correct type
+  const [tutorId, setTutorId] = useState<number>(appointmentData ? appointmentData.tutor.tutorId ? appointmentData.tutor.tutorId : 0 : 0); // [TODO] Replace any with the correct type
   const selectedSchedule = location.state ? location.state.selectedSchedule ? location.state.selectedSchedule : null : null;
   const [deadline, setDeadline] = useState(new Date().getTime() + 15 * 60 * 1000); // 15 minutes
   const navigate = useNavigate();
@@ -86,19 +88,19 @@ const MakePayment = () => {
       if (!user) navigate(config.routes.public.login);
       if (location.state) {
         await setAppointmentData(location.state.appointmentData);
-        await setTutorId(appointmentData.tutorId);
-      } else navigate(config.routes.public.home)
+        await setTutorId(appointmentData.tutor.tutorId);
+      } else  navigate(config.routes.public.home)
     })
   }, []);
 
 
   useEffect(() => {
-    if (location.state.appointmentData != null && appointmentData.tutorId) {
+    if (location.state.appointmentData != null && appointmentData.tutor.tutorId) {
       const fetchTutor = async () => {
         setLoading(true);
         try {
           await setAppointmentData(location.state.appointmentData);
-          await setTutorId(appointmentData.tutorId);
+          await setTutorId(appointmentData.tutor.tutorId);
           const response = await getTutorInfo(tutorId)
 
           const educations = await getTutorEducation(tutorId)
@@ -138,8 +140,8 @@ const MakePayment = () => {
       };
 
       fetchTutor();
-    } else navigate(config.routes.public.home);
-  }, [appointmentData, appointmentData.tutorId])
+    } else  navigate(config.routes.public.home);
+  }, [appointmentData, appointmentData.tutor.tutorId])
 
 
   // for countdown clock
@@ -209,6 +211,7 @@ const MakePayment = () => {
         await cookieUtils.setItem('bookingData', JSON.stringify({
           tutor: tutor,
           schedule: schedule,
+          subject: appointmentData.subjectName,
           totalHour: totalHour,
           price: price,
         }));
@@ -271,8 +274,9 @@ const MakePayment = () => {
               </Styled.TutorItem>
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
+              <p>Subject: {appointmentData.subjectName}</p>
                 {schedule?.map((schedule: Schedule, index: number) => (
-                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split(' at ')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split(' at ')[1]} </span></p>
                 )
                 )}
                 <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>

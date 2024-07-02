@@ -19,11 +19,12 @@ export type UserType = {
     fullName: string;
     phoneNumber: string | null;
     id: number;
-    createdAt: Date | string;
     dateOfBirth: Date | string | null;
     gender: Gender;
     status: string;
     role: string;
+    address: string | null;
+    createAt: Date | string |null;
 };
 
 // Function to get the role from the decoded JWT

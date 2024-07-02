@@ -1,4 +1,4 @@
-import { get } from './apiCaller';
+import { get, post, put } from './apiCaller';
 
 export const getListTutor = () => {
     return get(`/api/tutors`);
@@ -17,3 +17,27 @@ export const getTutorEducation = (tutorId: number) => {
 export const getTutorCertification = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}/certificates`);
 };
+
+export const getTutorDescription = (tutorId: number) => {
+    return get(`/api/tutors/${tutorId}/tutor-description`);
+};
+
+export const updateTutorDescription = (tutorId: number, requestBody: any) => {
+    return put(`/api/tutors/${tutorId}/tutor-description`, requestBody);
+};
+
+export const updateSchedule = (tutorId: number, requestBody: any) => {
+    return put(`/api/schedules/tutors/${tutorId}`, requestBody);
+};
+
+export const getTutorStatistic = (tutorId: number) => {
+    return get(`/api/statistics/${tutorId}/teach-statistics`);
+}
+
+export const addTimeslot = (tutorId: number, requestBody: any) => {
+    return post(`/api/schedules/tutors/${tutorId}/timeslots`, requestBody);
+}
+
+export const getFullSchedule = (tutorId: number) => {
+    return get(`/api/schedules/${tutorId}/profile-schedule`);
+}

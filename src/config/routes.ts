@@ -16,10 +16,17 @@ const routes = {
     },
     student: {
         profile: '/profile',
+        studentSchedule: '/student-schedule',
         makePayment: '/make-payment',
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
         chatRoom: '/chat-room',
+    },
+    tutor: {
+        makePayment: '/make-payment',
+        paymentSuccess: '/confirm-payment',
+        profile: '/tutor-profile',
+        tutorSchedule: '/tutor-schedule',
     },
     admin: {
         dashboard: '/admin',

@@ -6,25 +6,40 @@ import { getTutorSchedule } from '../../utils/tutorBookingAPI';
 import { notification } from 'antd';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from './Schedule.type';
 import config from '../../config';
+import { getReschedule } from '../../utils/appointmentAPI';
 
 registerLicense(config.publicRuntime.SYNCFUSION_LICENSE_KEY);
 
 
 interface ScheduleProps {
   tutorId: number;
+  scheduleType?: string;
+  restrictedTime?: number;
   setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
   setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
   selectedId?: number[];
+  maxSlots?: number;
   selectedSchedule?: ScheduleEvent[];
+  update?: boolean;
 }
 
-const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule }) => {
+const Schedule: React.FC<ScheduleProps> = ({
+  tutorId,
+  scheduleType,
+  setSelectedId,
+  setSelectedSchedule,
+  selectedId,
+  selectedSchedule,
+  restrictedTime,
+  maxSlots,
+  update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
   const [isScheduleLoaded, setIsScheduleLoaded] = useState<boolean>(false);
+  const maxSlot = maxSlots ? maxSlots : 5;
 
   useEffect(() => {
     setTimeout(() => {
@@ -36,34 +51,38 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
     const fetchSchedule = async () => {
       try {
 
-        const response = await getTutorSchedule(tutorId)
+        const response = !(scheduleType?.includes('reschedule') && selectedId) ?
+          await getTutorSchedule(tutorId) : await getReschedule(tutorId, selectedId[0]);
+
         if (response) {
           //format data    
           const start = new Date(response.data.startDate);
           const today = new Date();
+          if (restrictedTime === undefined) restrictedTime = 12;
+          today.setHours(today.getHours() + restrictedTime)
+
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
-
-          response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + dayIndex);
-
+          let updateSchedule = response.data.schedules;
+          const currentDate = new Date(startDate);
+          updateSchedule.forEach((day: ScheduleDay, dayIndex: number) => {
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
-                const timeslotStart = new Date(`${currentDate.toISOString().split('T')[0]}T${timeslot.startTime}`);
-                if (currentDate.toDateString() === today.toDateString() && timeslotStart.getTime() < today.getTime()) {
-                  // If the day is today and the timeslot is before the current moment, skip this timeslot
-                  return;
+                const demo = new Date()
+                if (day.dayOfMonth < demo.getDate())
+                  demo.setMonth(demo.getMonth() + 1)
+                demo.setDate(day.dayOfMonth);
+                const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
+                if (timeslotStart > currentDate) {
+                  const value = {
+                    id: timeslot.id,
+                    scheduleDate: demo.toISOString().split('T')[0],
+                    startTime: timeslot.startTime.slice(0, 5),
+                    endTime: timeslot.endTime.slice(0, 5),
+                    isSelected: false
+                  };
+                  newSchedule.push(value);
                 }
-
-                const value = {
-                  id: timeslot.id,
-                  scheduleDate: currentDate.toISOString().split('T')[0],
-                  startTime: timeslot.startTime.slice(0, 5),
-                  endTime: timeslot.endTime.slice(0, 5),
-                  isSelected: false
-                };
-                newSchedule.push(value);
               });
             }
           });
@@ -80,7 +99,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
     };
 
     fetchSchedule();
-  }, []);
+  }, update != null ? [update] : []);
 
 
   const [start, setStart] = useState<string>('');
@@ -150,11 +169,8 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
     element.style.width = '100%';
   };
 
-
-
   const onEventClick = (args: any) => {
     const id = args.event.Id;
-
     setSchedule(prevSchedule =>
       prevSchedule.map(s =>
         // s.id.toString() === id ? { ...s, isSelected: !s.isSelected } : s
@@ -162,7 +178,7 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
       )
     );
 
-    if (setSelectedSchedule) {
+    if (setSelectedSchedule && selectedSchedule) {
       setSelectedSchedule(prevSchedule => {
         if (args && args.event && args.event.Id) {
           if (prevSchedule.some(s => s.Id === args.event.Id)) {
@@ -182,10 +198,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
       setSelectedId(prevIds =>
         prevIds.includes(id)
           ? prevIds.filter(i => i !== id)
-          : [...prevIds, id]
+          : prevIds.length < maxSlot ? [...prevIds, id] : prevIds
       );
     }
-
   };
 
   const defaultEventRendered = (args: EventRenderedArgs) => {
@@ -209,10 +224,13 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
 
   if (isScheduleLoaded) return (
     <div>
-      <ScheduleStyle.ScheduleWrapper>
+      <ScheduleStyle.ScheduleWrapper
+        hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
+      >
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          height="300px"
+          // style={{maxHeight: '300px'}}
+          height='300px'
           selectedDate={today}
           minDate={today}
           maxDate={next7Days}
@@ -232,7 +250,9 @@ const Schedule: React.FC<ScheduleProps> = ({ tutorId, setSelectedId, setSelected
           <Inject services={[Day]} />
         </ScheduleComponent>
       </ScheduleStyle.ScheduleWrapper>
-      {schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
+      {scheduleType?.includes('tutorProfile') ?
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>) :
+        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
     </div>
   )
 }

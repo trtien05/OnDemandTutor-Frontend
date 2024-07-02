@@ -254,7 +254,15 @@ export enum CancelOption {
 }
 
 export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER',
+    MALE = 1,
+    FEMALE = 0,
+    
+}
+export enum AppointmentStatus {
+    PENDING_PAYMENT= 'PENDING_PAYMENT',
+    PAID = 'PAID',
+    FAILED = 'FAILED',
+    CANCELED = 'CANCELED',
+    REFUNDED = 'REFUNDED',
+    DONE = 'DONE',
 }

@@ -39,7 +39,8 @@
     "react-player": "^2.16.0",
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.23.1",
-    "sockjs-client": "^1.5.2",
+    "sass": "^1.77.6",
+    "sockjs-client": "^1.6.1",
     "stompjs": "^2.3.3",
     "styled-breakpoints": "^12.1.5",
     "styled-components": "^6.0.8",
@@ -59,8 +60,6 @@
     "eslint-plugin-react": "^7.34.1",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.6",
-    "node-sass": "^9.0.0",
-    "sass": "^1.77.1",
     "typescript": "^5.2.2",
     "vite": "^5.2.0"
   }
