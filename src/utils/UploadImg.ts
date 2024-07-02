@@ -28,7 +28,7 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
   }
 
   //By creating a reference to a file, your app gains access to it.
-  const imageRef = ref(storage, `${tutorId}/${sectionName}_${index}_${file.type.split('/')[1]}`);
+  const imageRef = ref(storage, `${tutorId}/${sectionName}_${index}.${file.type.split('/')[1]}`);
   try {
 
     const uploadResult = await uploadBytes(imageRef, file)

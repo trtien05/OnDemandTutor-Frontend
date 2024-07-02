@@ -10,15 +10,15 @@ interface CertificateVerifyProps {
 }
 
 const CertificateVerify: React.FC<CertificateVerifyProps> = (props) => {
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
+    // const [previewImage, setPreviewImage] = useState<string | null>(null);
     const item: Certificate = props.certificate;
-    const [previewOpen, setPreviewOpen] = useState(false);
+    // const [previewOpen, setPreviewOpen] = useState(false);
     const [switchStates, setSwitchStates] = useState(false);
 
-    const handlePreview = async (url: string) => {
-        setPreviewImage(url);
-        setPreviewOpen(true);
-    };
+    // const handlePreview = async (url: string) => {
+    //     setPreviewImage(url);
+    //     setPreviewOpen(true);
+    // };
 
     const handleChange = (id: number, checked: boolean) => {
         props.handleFunction(id, checked);
@@ -34,28 +34,12 @@ const CertificateVerify: React.FC<CertificateVerifyProps> = (props) => {
         <Clickable
         onClick={() => toggleSwitch(item.id)}
         style={{display:`flex`, justifyContent:`space-between`}}>
-            <div style={{display: `flex`}}>
-            <div style={{margin:`auto`, borderRadius:`20px`}}>
-            {/* <img src={item.certificateUrl} 
-            alt="certificate" 
-            style={{margin:`auto`, borderRadius:`20px`}}
-            width={`100`}
-            onClick={(e) => handlePreview((e.target as HTMLImageElement).src)} />
-            {previewImage && (
-                <Image
-                    wrapperStyle={{
-                        height: "200%",
-                    }}
-                    preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) => !visible && setPreviewImage(""),
-                    }}
-                    src={previewImage}
-                    style={{ display: 'none' }} // Ensure the image is not displayed
-                />
-            )} */}
-            <FileViewer alt='certificate' fileUrl={item.certificateUrl} width='100' />
+            <div style={{display: `flex`, width:`50%`}}>
+            <div style={{margin:`auto`}}>
+            <FileViewer alt='certificate' 
+                fileUrl={item.certificateUrl} 
+                width='100' 
+                borderRadius='20px' />
             </div>
             <div style={{margin:`auto`, marginLeft:`20px`}}>
             <p style={{fontWeight:`bold`}}>
@@ -66,8 +50,8 @@ const CertificateVerify: React.FC<CertificateVerifyProps> = (props) => {
             </div>
             </div>
             <Switch
-                checkedChildren="Accepted"
-                unCheckedChildren="Rejected"
+                checkedChildren="Admit"
+                unCheckedChildren="Deny"
                 checked={switchStates}
                 style={{ margin: `auto` }}
                 onChange={(checked) => handleChange(item.id, checked)}

@@ -38,3 +38,15 @@ export type Tutor = {
     subjects: string[];
     educations: Education[];
 }
+
+export type Timeslot = {
+    id: number;
+    startTime: string;
+    endTime: string;
+}
+
+export type Schedule = {
+    dayOfWeek: string;
+    dayOfMonth?: number;
+    timeslots: Timeslot[];
+}

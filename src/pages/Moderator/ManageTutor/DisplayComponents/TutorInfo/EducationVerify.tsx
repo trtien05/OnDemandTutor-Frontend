@@ -3,6 +3,7 @@ import { Education } from '../../Tutor.type';
 import { RcFile } from 'antd/lib/upload';
 import { Flex, Image, Switch } from 'antd'
 import { Clickable } from './TutorInfo.styled';
+import FileViewer from '../../../../../components/FileViewer/FileViewer';
 interface EducationVerifyProps {
     education: Education;
     handleFunction: (id:number, checked: boolean) => void;
@@ -33,27 +34,12 @@ const EducationVerify: React.FC<EducationVerifyProps> = (props) => {
         <Clickable
         onClick={() => toggleSwitch(item.id)}
         style={{display:`flex`, justifyContent:`space-between`}}>
-            <div style={{display: `flex`}}>
-            <div style={{margin:`auto`, borderRadius:`20px`}}>
-            <img src={item.diplomaUrl} 
-            alt='diploma'
-            style={{margin:`auto`, borderRadius:`20px`}}
-            width={`100`}
-            onClick={(e) => handlePreview((e.target as HTMLImageElement).src)} />
-            {previewImage && (
-                <Image
-                    wrapperStyle={{
-                        height: "200%",
-                    }}
-                    preview={{
-                        visible: previewOpen,
-                        onVisibleChange: (visible) => setPreviewOpen(visible),
-                        afterOpenChange: (visible) => !visible && setPreviewImage(""),
-                    }}
-                    src={previewImage}
-                    style={{ display: 'none' }} // Ensure the image is not displayed
-                />
-            )}
+            <div style={{display: `flex`, width:`50%`}}>
+            <div style={{margin:`auto`}}>
+            <FileViewer alt='diploma' 
+                fileUrl={item.diplomaUrl} 
+                width='100' 
+                borderRadius='20px' />
             </div>
             <div style={{margin:`auto`, marginLeft:`20px`}}>
             <p>{item.universityName}</p>
@@ -65,8 +51,8 @@ const EducationVerify: React.FC<EducationVerifyProps> = (props) => {
             </div>
             </div>
             <Switch
-                checkedChildren="Accepted"
-                unCheckedChildren="Rejected"
+                checkedChildren="Admit"
+                unCheckedChildren="Deny"
                 checked={switchStates}
                 style={{ margin: `auto` }}
                 onChange={(checked) => handleChange(item.id, checked)}

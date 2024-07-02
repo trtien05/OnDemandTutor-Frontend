@@ -285,7 +285,7 @@ const TutorProfile = () => {
                                             {tableDisplay.includes("education") ? (<>
                                                 <TableComponent dataType={tableDisplay}
                                                     EducationData={tutorEducation} />
-                                                {user?.id && tutorEducation?.length &&
+                                                {user?.id && tutorEducation &&
                                                     <EducationForm tutorId={user?.id}
                                                         lastIndex={tutorEducation?.length}
                                                         isUpdate={isUpdateEducation} />}

@@ -3,13 +3,14 @@ import { useEffect, useState } from "react";
 import * as FormStyled from "../../../../BecomeTutor/Form.styled";
 import * as Styled from '../../../../../components/QuestionList/Question.styled';
 import { UserOutlined } from "@ant-design/icons";
-import { getTutorById, getTutorCertification, getTutorEducation } from "../../../../../utils/tutorAPI";
+import { getFullSchedule, getTutorCertification, getTutorEducation } from "../../../../../utils/tutorAPI";
 import { theme } from "../../../../../themes";
-import { Tutor, Education, Certificate } from "../../Tutor.type";
+import { Tutor, Education, Certificate, Schedule } from "../../Tutor.type";
 import ReactPlayer from "react-player";
 import { Clickable, FormItem } from "./TutorInfo.styled"
 import EducationVerify from "./EducationVerify";
 import CertificateVerify from "./CertificateVerify";
+import TimeslotVerify from "./TimeslotVerify";
 // import iconBachelor from '../../../assets/images/image13.png';
 interface TutorInfoProps {
     tutorId: number;
@@ -21,16 +22,15 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
+    const [schedule, setSchedule] = useState<Schedule[]>([]); // Tutor schedule
+    const [isScheduleAccepted, setIsScheduleAccepted] = useState(false); // Tutor schedule
     const [isFormOpen, setIsFormOpen] = useState(false);
     const [tutorInfo, setTutorInfo] = useState(props.tutor); // Tutor info
     const [tutorEducation, setTutorEducation] = useState<Education[]>([]); // Tutor education
     const [tutorCertification, setTutorCertification] = useState<Certificate[]>([]); // Tutor certification
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
-    // const initialValues = tutorInfo;
     const [switchStates, setSwitchStates] = useState({
-        teachingPricePerHour: false,
-        meetingLink: false,
         videoIntroductionLink: false,
         backgroundDescription: false,
     });
@@ -55,6 +55,20 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 const certificate = await getTutorCertification(tutorId);
                 if (certificate.data) {
                     setTutorCertification(certificate.data);
+                }
+                const schedule = await getFullSchedule(tutorId);
+                if (schedule.data) {
+                    console.log(schedule.data.schedules[4].timeslots, schedule.data.schedules[4].timeslots.length)
+                    setSchedule(() => schedule.data.schedules.map((item: any) => ({
+                        dayOfWeek: item.dayOfWeek,
+                        dayOfMonth: item.dayOfMonth,
+                        timeslots: [...item.timeslots.map((timeslot: any) => ({
+                            id: timeslot.id,
+                            startTime: timeslot.startTime,
+                            endTime: timeslot.endTime
+                        }))
+                        ]
+                    })));
                 }
             } catch (error) {
                 api.error({
@@ -112,6 +126,10 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         addSubject(subject, !switchSubject[subject as keyof typeof switchSubject]);
     };
 
+    const toggleSchedule = () => {
+        setIsScheduleAccepted(!isScheduleAccepted);
+    };
+
     //---------------------- Handle submit form ----------------------
 
     function showModal() {
@@ -122,11 +140,11 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const handleOk = async () => {
         // setLoading(true); // Set loading state to true when form is submitted
         const submitData = {
-            approvedSubjects:  acceptedSubject,
+            approvedSubjects: acceptedSubject,
             approvedEducations: acceptedDiploma,
             approvedCertificates: acceptedCertificate,
-            backgroundDescription: form.getFieldValue('backgroundDescription')?form.getFieldValue('backgroundDescription'):null,
-            videoIntroductionLink: form.getFieldValue('videoIntroductionLink')?form.getFieldValue('videoIntroductionLink'):null,
+            backgroundDescription: form.getFieldValue('backgroundDescription') ? form.getFieldValue('backgroundDescription') : null,
+            videoIntroductionLink: form.getFieldValue('videoIntroductionLink') ? form.getFieldValue('videoIntroductionLink') : null,
         }
         console.log(submitData);
     };
@@ -138,8 +156,8 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     return (
         <>
             {contextHolder}
-            <Button type="primary" onClick={showModal} style={{ borderRadius: `50px`, fontWeight: `bold` }}>
-                Book this tutor
+            <Button type="default" onClick={showModal} style={{ borderRadius: `5px`, fontWeight: `bold` }}>
+                Show Info
             </Button>
             <Modal
                 centered
@@ -184,7 +202,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
 
                     {tutorInfo.avatarUrl ? (
                         <Avatar
-                            size={55}
+                            size={100}
                             src={tutorInfo.avatarUrl}
                             style={{
                                 borderRadius: '15px',
@@ -193,7 +211,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         />
                     ) : (
                         <Avatar
-                            size={55}
+                            size={100}
                             icon={<UserOutlined />}
                             style={{
                                 borderRadius: '15px',
@@ -203,7 +221,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         />
                     )}
 
-                    <Col sm={24}>
+                    <Col sm={12}>
                         <div>
                             <Styled.ModalStudentInfo
                                 style={{
@@ -225,10 +243,6 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                 <p>
                                     Email: {tutorInfo.email}
                                 </p>
-                                {/* <Styled.QuestionRowSpan>
-                                        Uploaded:{' '}
-                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
-                                    </Styled.QuestionRowSpan> */}
                                 <p>
                                     Phone: {tutorInfo.phoneNumber}
                                 </p>
@@ -237,113 +251,117 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                 </p>
 
                             </Styled.ModalStudentInfo>
-                            <FormItem
-                                name='teachingPricePerHour'
-                                label='Teaching Price Per Hour'
-                            >
-                                <div onClick={() => toggleSwitch('teachingPricePerHour')}>
-                                    <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
-                                    <Switch
-                                        checkedChildren="Accepted"
-                                        unCheckedChildren="Rejected"
-                                        checked={switchStates.teachingPricePerHour}
-                                        onChange={(checked) => handleAcceptField('teachingPricePerHour', checked)}
-                                    /> </div>
-                            </FormItem>
-
-                            <FormItem
-                                name='meetingLink'
-                                label='Meeting Link'
-                            >
-                                <div onClick={() => toggleSwitch('meetingLink')}>
-                                    <span> {tutorInfo.meetingLink} </span>
-                                    <Switch
-                                        checkedChildren="Accepted"
-                                        unCheckedChildren="Rejected"
-                                        checked={switchStates.meetingLink}
-                                        onChange={(checked) => handleAcceptField('meetingLink', checked)}
-                                    /> </div>
-                            </FormItem>
-                            <FormItem
-                                name='videoIntroductionLink'
-                                label='Video Introduction'
-                            >
-                                {tutorInfo.videoIntroductionLink ?
-                                    <Clickable>
-                                        <Flex onClick={() => toggleSwitch('videoIntroductionLink')}>
-
-                                            <div
-                                                style={{
-                                                    width: "70%",
-                                                    height: "100%",
-                                                    marginBottom: `20px`,
-                                                    marginTop: `10px`
-                                                }}>
-                                                <div style={{
-                                                    position: 'relative',
-                                                    paddingTop: '56.25%',
-                                                    width: '100%'
-                                                }}>
-                                                    <ReactPlayer
-                                                        className="react-player"
-                                                        url={tutorInfo.videoIntroductionLink}
-                                                        controls={true}
-                                                        width="100%"
-                                                        height="100%"
-                                                        style={{
-                                                            position: 'absolute',
-                                                            top: 0,
-                                                            left: 0
-                                                        }}
-                                                    />
-                                                </div>
-                                            </div>
-                                            <Switch
-                                                checkedChildren="Accepted"
-                                                unCheckedChildren="Rejected"
-                                                style={{ margin: `auto` }}
-                                                checked={switchStates.videoIntroductionLink}
-                                                onChange={(checked) => handleAcceptField('videoIntroductionLink', checked)}
-                                            />
-                                        </Flex>
-                                    </Clickable>
-                                    : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
-                            </FormItem>
-                            <FormStyled.FormItem
-                                name='backgroundDescription'
-                                label='Background Description'
-                            >
-                                {tutorInfo.backgroundDescription ?
-                                    <Clickable onClick={() => toggleSwitch('backgroundDescription')}>
-                                        <span> {tutorInfo.backgroundDescription} </span>
-                                        <Switch
-                                            checkedChildren="Accepted"
-                                            unCheckedChildren="Rejected"
-                                            checked={switchStates.backgroundDescription}
-                                            onChange={(checked) => handleAcceptField('backgroundDescription', checked)}
-                                        />
-                                    </Clickable>
-                                    : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
-                            </FormStyled.FormItem>
-
-                            <FormStyled.FormItem
-                                name='subjects'
-                                label='Subjects'>
-                                {tutorInfo.subjects.map((item: string, index: number) => (
-                                    <Clickable key={index} onClick={() => toggleSubject(item)}>
-                                        <p>{item}</p>
-                                        <Switch
-                                            checkedChildren="Accepted"
-                                            unCheckedChildren="Rejected"
-                                            checked = {switchSubject[item as keyof typeof switchSubject]}
-                                            onChange={(checked) => handleAcceptField('backgroundDescription', checked)}
-                                        />
-                                    </Clickable>
-                                ))}
-                            </FormStyled.FormItem>
 
                         </div>
                     </Col>
+                    <Col sm={24}>
+                        <div style={{display:`flex`, flexWrap:`wrap`}}>
+                        <FormItem
+                            name='teachingPricePerHour'
+                            label='Teaching Price Per Hour'
+                            style={{ width: `300px` }}
+                        >
+                            <div onClick={() => toggleSwitch('teachingPricePerHour')}>
+                                <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
+                            </div>
+                        </FormItem>
+
+                        <FormItem
+                            name='meetingLink'
+                            label='Meeting Link'
+                            style={{ width: `50%` }}
+                        >
+                            <div>
+                                <span> {tutorInfo.meetingLink} </span>
+                            </div>
+                        </FormItem>
+                        </div>
+                        <FormItem
+                            name='videoIntroductionLink'
+                            label='Video Introduction'
+                        >
+                            {tutorInfo.videoIntroductionLink ?
+                                <Clickable>
+                                    <Flex onClick={() => toggleSwitch('videoIntroductionLink')}>
+
+                                        <div
+                                            style={{
+                                                width: "70%",
+                                                height: "100%",
+                                                marginBottom: `20px`,
+                                                marginTop: `10px`
+                                            }}>
+                                            <div style={{
+                                                position: 'relative',
+                                                paddingTop: '56.25%',
+                                                width: '100%'
+                                            }}>
+                                                <ReactPlayer
+                                                    className="react-player"
+                                                    url={tutorInfo.videoIntroductionLink}
+                                                    controls={true}
+                                                    width="100%"
+                                                    height="100%"
+                                                    style={{
+                                                        position: 'absolute',
+                                                        top: 0,
+                                                        left: 0
+                                                    }}
+                                                />
+                                            </div>
+                                        </div>
+                                        <Switch
+                                            checkedChildren="Admit"
+                                            unCheckedChildren="Deny"
+                                            style={{ margin: `auto` }}
+                                            checked={switchStates.videoIntroductionLink}
+                                            onChange={(checked) => handleAcceptField('videoIntroductionLink', checked)}
+                                        />
+                                    </Flex>
+                                </Clickable>
+                                : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
+                        </FormItem>
+                        <FormStyled.FormItem
+                            name='backgroundDescription'
+                            label='Background Description'
+                        >
+                            {tutorInfo.backgroundDescription ?
+                                <Clickable onClick={() => toggleSwitch('backgroundDescription')}>
+                                    <p style={{ marginBottom: `10px` }}> {tutorInfo.backgroundDescription} </p>
+                                    <Switch
+                                        checkedChildren="Admit"
+                                        unCheckedChildren="Deny"
+                                        checked={switchStates.backgroundDescription}
+                                        onChange={(checked) => handleAcceptField('backgroundDescription', checked)}
+                                    />
+                                </Clickable>
+                                : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
+                        </FormStyled.FormItem>
+
+
+                        <FormStyled.FormItem
+                            name='subjects'
+                            label='Subjects'>
+                            <div style={{ display: `flex`, flexWrap: `wrap` }}>
+                                {tutorInfo.subjects.map((item: string, index: number) => (
+                                    <Clickable key={index}
+                                        onClick={() => toggleSubject(item)}
+                                        
+                                        style={{ textAlign: `center` }}
+                                    >
+                                        <p style={{marginBottom: `5px` }}>{item}</p>
+                                        <Switch
+                                            checkedChildren="Admit"
+                                            unCheckedChildren="Deny"
+                                            checked={switchSubject[item as keyof typeof switchSubject]}
+                                            onChange={(checked) => handleAcceptField(item, checked)}
+                                        />
+                                    </Clickable>
+                                ))}
+                            </div>
+                        </FormStyled.FormItem>
+                    </Col>
+
                     <Col sm={24}>
                         <FormStyled.FormItem
                             name='educations'
@@ -366,6 +384,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                     handleFunction={handleAcceptedCertificate} />
                             )) : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
 
+                        </FormStyled.FormItem>
+                        <FormStyled.FormItem
+                            name='availability'
+                            label='Availability'
+                        >
+                            {schedule ? (<TimeslotVerify schedule={schedule}
+                                toggleSwitch={toggleSchedule}
+                                switchStates={isScheduleAccepted}
+                                handleChange={setIsScheduleAccepted} />)
+                                : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
                         </FormStyled.FormItem>
                     </Col>
 
