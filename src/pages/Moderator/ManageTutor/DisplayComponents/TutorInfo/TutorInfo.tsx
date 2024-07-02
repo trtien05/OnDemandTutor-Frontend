@@ -11,6 +11,7 @@ import { Clickable, FormItem } from "./TutorInfo.styled"
 import EducationVerify from "./EducationVerify";
 import CertificateVerify from "./CertificateVerify";
 import TimeslotVerify from "./TimeslotVerify";
+import { approveTutor } from "../../../../../utils/moderatorAPI";
 // import iconBachelor from '../../../assets/images/image13.png';
 interface TutorInfoProps {
     tutorId: number;
@@ -35,7 +36,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         backgroundDescription: false,
     });
     const [switchSubject, setSwitchSubject] = useState({});
-
+    const [agreement, setAgreement] = useState(false);
     const [acceptedDiploma, setAcceptedDiploma] = useState<number[]>([]);
     const [acceptedCertificate, setAcceptedCertificate] = useState<number[]>([]);
     const [acceptedSubject, setAcceptedSubject] = useState<string[]>([]);
@@ -137,16 +138,29 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     };
 
 
-    const handleOk = async () => {
+    const handleOk = async (status: string) => {
         // setLoading(true); // Set loading state to true when form is submitted
         const submitData = {
             approvedSubjects: acceptedSubject,
             approvedEducations: acceptedDiploma,
             approvedCertificates: acceptedCertificate,
-            backgroundDescription: form.getFieldValue('backgroundDescription') ? form.getFieldValue('backgroundDescription') : null,
-            videoIntroductionLink: form.getFieldValue('videoIntroductionLink') ? form.getFieldValue('videoIntroductionLink') : null,
+            backgroundDescription: form.getFieldValue('backgroundDescription') ? form.getFieldValue('backgroundDescription') : "",
+            videoIntroductionLink: form.getFieldValue('videoIntroductionLink') ? form.getFieldValue('videoIntroductionLink') : "",
         }
-        console.log(submitData);
+
+        try{
+            const response = await approveTutor(tutorId,status, submitData);
+            console.log(response)
+            api.success({
+                message: "Success",
+                description: "Tutor has been approved",
+            });
+        }catch (error) {
+            api.error({
+                message: "Error",
+                description: "Failed to submit tutor approval",
+            });
+        }
     };
 
     const handleCancel = () => {
@@ -164,22 +178,43 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 closable={false}
                 width={'700px'}
                 open={isFormOpen}
-                onOk={handleOk}
                 onCancel={handleCancel}
                 footer={[<FormStyled.ButtonDiv>
-                    <Button key="Cancel" type="default" onClick={handleCancel} style={{ marginRight: '5%', width: '45%' }}>
+                    <Button key="Cancel" 
+                        type="default" 
+                        onClick={handleCancel} 
+                        style={{ marginRight: '3%', width: '20%' }}>
                         Cancel
                     </Button>
                     <Button
                         key="submit"
-                        type="primary"
+                        type="default"
                         htmlType="submit"
-                        onClick={handleOk}
+                        onClick={() => handleOk('rejected')}
+                        disabled={!agreement}
                         loading={loading}
                         form='verifyTutorForm'
-                        style={{ marginRight: '2%', width: '45%' }}
+                        style={{ marginRight: '3%', 
+                            width: '35%', 
+                            fontWeight:`bold`,
+                            color: `${theme.colors.error}`}}
                     >
-                        Send
+                        Reject
+                    </Button>
+                    <Button
+                        key="submit"
+                        type="default"
+                        htmlType="submit"
+                        onClick={() => handleOk('approved')}
+                        disabled={!agreement}
+                        loading={loading}
+                        form='verifyTutorForm'
+                        style={{ marginRight: '2%', 
+                            width: '35%', 
+                            fontWeight:`bold`,
+                            color: `${theme.colors.success}`}}
+                    >
+                        Approve
                     </Button>
                 </FormStyled.ButtonDiv>,]}
                 styles={
@@ -255,26 +290,26 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         </div>
                     </Col>
                     <Col sm={24}>
-                        <div style={{display:`flex`, flexWrap:`wrap`}}>
-                        <FormItem
-                            name='teachingPricePerHour'
-                            label='Teaching Price Per Hour'
-                            style={{ width: `300px` }}
-                        >
-                            <div onClick={() => toggleSwitch('teachingPricePerHour')}>
-                                <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
-                            </div>
-                        </FormItem>
+                        <div style={{ display: `flex`, flexWrap: `wrap` }}>
+                            <FormItem
+                                name='teachingPricePerHour'
+                                label='Teaching Price Per Hour'
+                                style={{ width: `300px` }}
+                            >
+                                <div onClick={() => toggleSwitch('teachingPricePerHour')}>
+                                    <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
+                                </div>
+                            </FormItem>
 
-                        <FormItem
-                            name='meetingLink'
-                            label='Meeting Link'
-                            style={{ width: `50%` }}
-                        >
-                            <div>
-                                <span> {tutorInfo.meetingLink} </span>
-                            </div>
-                        </FormItem>
+                            <FormItem
+                                name='meetingLink'
+                                label='Meeting Link'
+                                style={{ width: `50%` }}
+                            >
+                                <div>
+                                    <span> {tutorInfo.meetingLink} </span>
+                                </div>
+                            </FormItem>
                         </div>
                         <FormItem
                             name='videoIntroductionLink'
@@ -346,10 +381,10 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                 {tutorInfo.subjects.map((item: string, index: number) => (
                                     <Clickable key={index}
                                         onClick={() => toggleSubject(item)}
-                                        
+
                                         style={{ textAlign: `center` }}
                                     >
-                                        <p style={{marginBottom: `5px` }}>{item}</p>
+                                        <p style={{ marginBottom: `5px` }}>{item}</p>
                                         <Switch
                                             checkedChildren="Admit"
                                             unCheckedChildren="Deny"
@@ -395,8 +430,22 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                 handleChange={setIsScheduleAccepted} />)
                                 : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
                         </FormStyled.FormItem>
+                        
                     </Col>
+                    <div style={{textAlign:`center`, 
+                                    margin:`20px`, 
+                                    fontWeight:`bold`}}>
+                        <FormStyled.FormCheckbox
+                            name='agreement'
+                            style={{ margin: `0px`, color: `${theme.colors.black}` }}
+                            checked={agreement}
+                            defaultChecked={agreement}
+                            onChange={(e) => setAgreement(e.target.checked)}
+                        >I have carefully checked all the tutor details 
+                        before submitting my decision</FormStyled.FormCheckbox>
 
+                    </div>
+                    
                 </FormStyled.FormWrapper>
             </Modal>
         </>
