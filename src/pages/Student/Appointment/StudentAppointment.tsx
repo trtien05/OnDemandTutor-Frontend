@@ -132,7 +132,7 @@ const handleCancelAppointment = (timeslotId: number) => {
           </Styled.RowWrapper>
           <Divider/>
           <Styled.TotalTutorAvaiable level={1}>
-          {viewMode} Lessons
+          {viewMode} Study Lessons
           </Styled.TotalTutorAvaiable>
           
         </Container>

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Select, Row, Col, message, Segmented, Divider, Modal } from 'antd';
-import * as Styled from '../../Student/Appointment/Appointment.styled' ;
+import * as Styled from '../../Student/Appointment/Appointment.styled';
 import Container from '../../../components/Container/Container';
 import AppointmentList from '../../../components/AppointmentList/AppointmentList'
 import { useAuth, useDocumentTitle } from '../../../hooks';
@@ -14,7 +14,7 @@ import { ExclamationCircleOutlined } from '@ant-design/icons';
 import { AppointmentStatus } from '../../../utils/enums';
 import { set } from 'date-fns';
 
-const TutorAppointment = () => {
+const StudentAppointment = () => {
   useDocumentTitle("My Schedule | MyTutor")
 
   
@@ -149,4 +149,4 @@ const handleCancelAppointment = (timeslotId: number) => {
   );
 };
 
-export default TutorAppointment;
+export default StudentAppointment;

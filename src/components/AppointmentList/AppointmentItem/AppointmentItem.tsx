@@ -1,17 +1,8 @@
-<<<<<<< Updated upstream
-import React, { useState } from 'react';
-import { Col, Skeleton, Avatar, Modal } from 'antd';
-import iconBachelor from '../../../assets/images/image13.png';
-import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined, CalendarOutlined, ExclamationCircleOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
-import { Appointment, TimeSlot } from '../Appointment.type';
-=======
 import React from 'react';
 import { Skeleton, Avatar } from 'antd';
 import * as Styled from '../Appointment.styled';
 import { CloseOutlined, UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
 import { TimeSlot } from '../Appointment.type';
->>>>>>> Stashed changes
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
 import { theme } from '../../../themes';
@@ -31,15 +22,8 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
     const appointmentDate = new Date(`${scheduleDate}T${startTime}`);
     const isTutor = role === 'TUTOR';
     const displayPerson = isTutor ? appointment.student : appointment.tutor;
-<<<<<<< Updated upstream
-    const currentDate = new Date();
-    const timeDiff = (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60); // difference in hours
-    const showReschedule = timeDiff > 24;
-    const showCancel = timeDiff <= 24;
-=======
     const canReschedule = appointmentDate.getTime() - new Date().getTime() > 24 * 60 * 60 * 1000;
 
->>>>>>> Stashed changes
     // Helper function to format time to "HH:mm"
     const formatTime = (time: string) => {
         const [hours, minutes] = time.split(':');
@@ -63,13 +47,9 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                         color: `${theme.colors.primary}`,
                                     }}
                                 >
-<<<<<<< Updated upstream
-                                    {appointmentDate.toLocaleString('default', { month: 'short' }).toUpperCase()}
-=======
                                     {appointmentDate
                                         .toLocaleString('en-US', { month: 'short' })
                                         .toUpperCase()}
->>>>>>> Stashed changes
                                 </Styled.QuestionRow>
 
                                 <Styled.QuestionRow
@@ -109,13 +89,8 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                         fontWeight: '500',
                                     }}
                                 >
-<<<<<<< Updated upstream
-                                    {appointmentDate.toLocaleString('default', { weekday: 'long' })}
-                                    , {formatTime(startTime)} - {formatTime(endTime)}
-=======
                                     {appointmentDate.toLocaleString('en-US', { weekday: 'long' })},{' '}
                                     {formatTime(startTime)} - {formatTime(endTime)}
->>>>>>> Stashed changes
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
