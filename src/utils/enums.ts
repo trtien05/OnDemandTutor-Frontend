@@ -35,11 +35,11 @@ export enum Subject {
 }
 
 
-export enum AccountStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'UNVERIFIED',
-    PROCESSING = 'PROCESSING',
-    BANNED = 'BANNED',
+export const AccountStatus: { [key: string]: string } = {
+    ACTIVE : 'ACTIVE',
+    INACTIVE : 'UNVERIFIED',
+    PROCESSING : 'PROCESSING',
+    BANNED : 'BANNED',
 }
 
 export const Role: { [key: string]: string } = {

@@ -15,7 +15,7 @@ import { AppointmentStatus } from '../../../utils/enums';
 import { set } from 'date-fns';
 
 const StudentAppointment = () => {
-  useDocumentTitle("Appointment | MyTutor")
+  useDocumentTitle("My Schedule | MyTutor")
 
   
   const [initLoading, setInitLoading] = useState(true);
@@ -42,7 +42,7 @@ const StudentAppointment = () => {
   useEffect(() => {
     if (!user) return;
     setInitLoading(true); 
-    const baseUrl: string = `http://localhost:8080/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=true&pageNo=${currentPage-1}&pageSize=${appointmentsPerPage}`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=true&pageNo=${currentPage-1}&pageSize=${appointmentsPerPage}`;
 
     fetch(baseUrl)
       .then((res) => res.json())
@@ -63,15 +63,15 @@ const StudentAppointment = () => {
     setViewMode(value as 'Upcoming' | 'Past');
   };
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const filteredAppointments = () => {
-    if (viewMode === 'Upcoming') {
-        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.PAID);
-    } else if (viewMode === 'Past') {
-        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.DONE);
-    } else {
-        return [];
-    }
-};
+//   const filteredAppointments = () => {
+//     if (viewMode === 'Upcoming') {
+//         return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.PAID);
+//     } else if (viewMode === 'Past') {
+//         return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.DONE);
+//     } else {
+//         return [];
+//     }
+// };
 // const checkCancel = (timeslotId: number) => {
 //   let checkCancel = false;
 //   const appointment = list.find(item => item.timeslotId === timeslotId);
@@ -95,7 +95,7 @@ const confirmCancel = (timeslotId: number) => {
   modal.confirm({
     centered: true,
     title: 'Do you want to cancel this lesson?',
-    content: 'Since this time slot is within 24 hours prior to the appointment, you cannot reschedule this. Do you want to proceed?',
+    content: 'Cancel this timeslot will not be refunded. Do you want to proceed?',
     icon: <ExclamationCircleOutlined />,
     okText: 'Confirm',
     onOk: () => handleCancelAppointment(timeslotId),
@@ -132,13 +132,13 @@ const handleCancelAppointment = (timeslotId: number) => {
           </Styled.RowWrapper>
           <Divider/>
           <Styled.TotalTutorAvaiable level={1}>
-          {viewMode} Lessons
+          {viewMode} Study Lessons
           </Styled.TotalTutorAvaiable>
           
         </Container>
       </Styled.TitleWrapper>
 
-      <AppointmentList initLoading={initLoading} list={filteredAppointments()} onCancel={confirmCancel} viewMode={viewMode} />
+      <AppointmentList initLoading={initLoading} list={list} onCancel={confirmCancel} viewMode={viewMode} role='STUDENT' />
 
       {totalPages > 1 &&
         <AppointmentPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
