@@ -1,16 +1,17 @@
-import React, { useEffect, useState, useRef } from 'react';
 import { over, Client } from 'stompjs';
 import SockJS from 'sockjs-client';
 import './style.css';
 import * as Styled from './ChatRoom.styled';
-import { Avatar, Button, Input, Layout, List, Typography } from 'antd';
+import { Avatar, Button, Layout, List } from 'antd';
 import Sider from 'antd/es/layout/Sider';
 import { Content } from 'antd/es/layout/layout';
 import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
-
-const { Text } = Typography;
+import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
+import { format } from 'date-fns';
+import { useLocation } from 'react-router-dom';
+import { useEffect, useRef, useState } from 'react';
 
 type ChatMessage = {
   senderId: number;
@@ -19,6 +20,9 @@ type ChatMessage = {
   status: string;
   receiverAvatarUrl?: string;
   receiverFullName?: string;
+  senderAvatarUrl?: string;
+  senderFullName?: string;
+  createdAt: string;
 };
 
 type UserData = {
@@ -30,22 +34,32 @@ type UserData = {
   name?: string;
 };
 
+type Account = {
+  fullName: string;
+  avatarUrl: string;
+};
+
 let stompClient: Client | null = null;
 
 const ChatRoom: React.FC = () => {
+  useDocumentTitle("Chat Room | MyTutor");
+  const [account, setAccount] = useState<Map<number, Account>>(new Map());
   const { user } = useAuth();
+  const location = useLocation();
+  const { id, fullName, avatar } = location.state || {};
+
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
   const [tab, setTab] = useState<string>("CHATROOM");
+  const [unreadTabs, setUnreadTabs] = useState<Set<number>>(new Set()); // Danh sách tab có tin nhắn chưa đọc
+  const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<UserData>({
-    id: user?.id || 0,
-    avatarUrl: user?.avatarUrl || '',
+    id: 0,
+    avatarUrl: '',
     receiverId: 0,
     connected: false,
     message: '',
-    name: user?.fullName || ''
+    name: ''
   });
-
-  const chatMessagesRef = useRef<HTMLDivElement>(null); // Ref to chat messages
 
   useEffect(() => {
     if (user && !userData.connected) {
@@ -61,8 +75,16 @@ const ChatRoom: React.FC = () => {
   }, [userData.connected]);
 
   useEffect(() => {
-    scrollToBottom(); // Scroll to bottom on private chat change
-  }, [tab, privateChats]);
+    if (privateChats.size > 0 && tab === "CHATROOM") {
+      setTab([...privateChats.keys()][0].toString());
+    }
+  }, [privateChats]);
+
+  useEffect(() => {
+    if (chatMessagesRef.current) {
+      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+    }
+  }, [privateChats, tab]);
 
   const connect = () => {
     let Sock = new SockJS('http://localhost:8080/ws');
@@ -72,53 +94,91 @@ const ChatRoom: React.FC = () => {
 
   const onConnected = () => {
     setUserData({ ...userData, connected: true });
-    stompClient?.subscribe(`/user/${userData.id}/private`, onPrivateMessage);
-    userJoin();
-    fetchMessages();
-  };
-
-  const userJoin = () => {
-    var chatMessage = {
-      senderId: userData.id,
-      status: "JOIN",
-      message: "",
-      avatarUrl: userData.avatarUrl
-    };
-    stompClient?.send("/app/message", {}, JSON.stringify(chatMessage));
+    stompClient?.subscribe(`/user/${user?.id}/private`, onPrivateMessage);
   };
 
   const fetchMessages = async () => {
     try {
       const response = await fetch(`http://localhost:8080/api/messages/accounts/${user?.id}`);
       const data: ChatMessage[] = await response.json();
-      const newPrivateChats = new Map(privateChats);
+      const chats = new Map(privateChats);
+      const accounts = new Map(account);
+
       data.forEach(msg => {
-        if (msg.senderId === userData.id) {
-          const chatKey = msg.senderId === userData.id ? msg.receiverId! : msg.senderId;
-          if (!newPrivateChats.has(chatKey)) {
-            newPrivateChats.set(chatKey, []);
-          }
-          newPrivateChats.get(chatKey)!.push(msg);
+        const chatKey = msg.senderId === user?.id ? msg.receiverId! : msg.senderId;
+
+        if (chatKey === user?.id) {
+          return;
+        }
+
+        const defaultName = 'Unknown';
+        const defaultAvatarUrl = 'https://i.pinimg.com/736x/0d/64/98/0d64989794b1a4c9d89bff571d3d5842.jpg';
+        const fullName = msg.senderId === user?.id ? (msg.receiverFullName || defaultName) : (msg.senderFullName || defaultName);
+        const avatarUrl = msg.senderId === user?.id ? (msg.receiverAvatarUrl || defaultAvatarUrl) : (msg.senderAvatarUrl || defaultAvatarUrl);
+
+        if (!chats.has(chatKey)) {
+          chats.set(chatKey, []);
+        }
+        chats.get(chatKey)!.push({ ...msg }); // Thêm tin nhắn vào map chats
+
+        if (!accounts.has(chatKey)) {
+          accounts.set(chatKey, {
+            fullName: fullName,
+            avatarUrl: avatarUrl
+          });
         }
       });
-      setPrivateChats(new Map(newPrivateChats));
-      scrollToBottom(); // Scroll to bottom after fetching messages
+
+      setAccount(accounts);
+      setPrivateChats(new Map([...chats.entries()].sort((a, b) => {
+        const aLastMessage = a[1][a[1].length - 1];
+        const bLastMessage = b[1][b[1].length - 1];
+        return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
+      })));
+      if (id && fullName && avatar) {
+        setAccount(prev => new Map(prev.set(id, { fullName, avatarUrl: avatar })));
+        setPrivateChats(prev => {
+          if (!prev.has(id)) {
+            const newChats = new Map(prev);
+            newChats.set(id, []);
+            return newChats;
+          }
+          return prev;
+        });
+        setTab(id.toString());
+      }
     } catch (error) {
       console.error('Error fetching messages: ', error);
     }
   };
 
   const onPrivateMessage = (payload: { body: string }) => {
-    var payloadData = JSON.parse(payload.body);
-    if (privateChats.has(payloadData.senderId)) {
-      privateChats.get(payloadData.senderId)!.push(payloadData);
-      setPrivateChats(new Map(privateChats));
-    } else {
-      let list: ChatMessage[] = [payloadData];
-      privateChats.set(payloadData.senderId, list);
-      setPrivateChats(new Map(privateChats));
-    }
-    scrollToBottom(); // Scroll to bottom after receiving new message
+    const payloadData = JSON.parse(payload.body);
+    const chatKey = payloadData.senderId;
+
+    setPrivateChats(prevChats => {
+      const updatedChats = new Map(prevChats);
+      if (updatedChats.has(chatKey)) {
+        const chatMessages = updatedChats.get(chatKey)!;
+        const isDuplicate = chatMessages.some(msg => msg.createdAt === payloadData.createdAt && msg.message === payloadData.message);
+        if (!isDuplicate) {
+          chatMessages.push({ ...payloadData });
+          if (tab !== chatKey.toString()) {
+            setUnreadTabs(prev => new Set([...prev, chatKey]));
+          }
+        }
+      } else {
+        updatedChats.set(chatKey, [{ ...payloadData }]);
+        if (tab !== chatKey.toString()) {
+          setUnreadTabs(prev => new Set([...prev, chatKey]));
+        }
+      }
+      return new Map([...updatedChats.entries()].sort((a, b) => {
+        const aLastMessage = a[1][a[1].length - 1];
+        const bLastMessage = b[1][b[1].length - 1];
+        return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
+      }));
+    });
   };
 
   const onError = (err: any) => {
@@ -130,78 +190,125 @@ const ChatRoom: React.FC = () => {
     setUserData({ ...userData, message: value });
   };
 
-  const sendPrivateValue = () => {
+  const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
+    event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      var chatMessage: ChatMessage = {
-        senderId: userData.id,
+      const currentDate = new Date();
+      const chatMessage: ChatMessage = {
+        senderId: user?.id || 0,
         receiverId: parseInt(tab),
         message: userData.message.trim(),
         status: "MESSAGE",
-        receiverAvatarUrl: userData.avatarUrl,
-        receiverFullName: userData.name
+        createdAt: currentDate.toISOString(),
       };
 
-      const updatedPrivateChats = new Map(privateChats);
-      if (privateChats.has(parseInt(tab))) {
-        updatedPrivateChats.get(parseInt(tab))!.push(chatMessage);
-      } else {
-        updatedPrivateChats.set(parseInt(tab), [chatMessage]);
-      }
-      setPrivateChats(updatedPrivateChats);
+      setPrivateChats(prevChats => {
+        const updatedChats = new Map(prevChats);
+        if (updatedChats.has(parseInt(tab))) {
+          updatedChats.get(parseInt(tab))!.push({ ...chatMessage });
+        } else {
+          updatedChats.set(parseInt(tab), [{ ...chatMessage }]);
+        }
+        return new Map([...updatedChats.entries()].sort((a, b) => {
+          const aLastMessage = a[1][a[1].length - 1];
+          const bLastMessage = b[1][b[1].length - 1];
+          return new Date(bLastMessage.createdAt).getTime() - new Date(aLastMessage.createdAt).getTime();
+        }));
+      });
 
       stompClient.send("/app/private-message", {}, JSON.stringify(chatMessage));
       setUserData({ ...userData, message: "" });
-
-      scrollToBottom(); // Scroll to bottom after sending message
     }
   };
 
-  const scrollToBottom = () => {
-    if (chatMessagesRef.current) {
-      chatMessagesRef.current.scrollTop = chatMessagesRef.current.scrollHeight;
+  const parseDate = (dateString: string) => {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) {
+      console.error('Invalid date:', dateString);
+      return new Date();
     }
+    return date;
   };
 
+  const getLatestMessage = (messages: ChatMessage[] | undefined): string => {
+    if (!messages || messages.length === 0) {
+      return 'No messages yet';
+    }
+
+    const latestMessage = messages[messages.length - 1];
+    const senderName = latestMessage.senderId === user?.id ? 'You:' : '';
+
+    // Lấy chỉ 20 từ đầu tiên của tin nhắn
+    const messageContent = latestMessage.message.slice(0, 20);
+
+    return `${senderName} ${messageContent}`;
+  };
+
+  const truncateFullName = (fullName?: string): string | undefined => {
+    if (!fullName) return undefined;
+    return fullName.length > 20 ? `${fullName.slice(0, 20)}...` : fullName;
+  };
   return (
     <Layout>
       {userData.connected ? (
         <>
-          <Sider width={300} style={{ background: '#fff', height: '600px', padding: '0 20px' }}>
+          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px' }}>
             <List
               itemLayout="horizontal"
               dataSource={[...privateChats.keys()]}
-              renderItem={(id) => (
-                <List.Item onClick={() => setTab(id.toString())} style={{ cursor: 'pointer', background: tab === id.toString() ? '#F4D1F3' : '#fff', padding: '20px', borderRadius: '25px' }}>
-                  <List.Item.Meta
-                    avatar={<Avatar size={50} src={privateChats.get(id)?.[0]?.receiverAvatarUrl || ''} />}
-                    title={privateChats.get(id)?.[0]?.receiverFullName || ``}
-                    description="Lastest message..."
-                  />
-                </List.Item>
-              )}
+              renderItem={(id) => {
+                const isCurrentTab = tab === id.toString();
+                return (
+                  <List.Item onClick={() => {
+                    setTab(id.toString());
+                    if (unreadTabs.has(id)) {
+                      setUnreadTabs(prev => {
+                        const newUnreadTabs = new Set(prev);
+                        newUnreadTabs.delete(id);
+                        return newUnreadTabs;
+                      });
+                    }
+                  }} style={{
+                    cursor: 'pointer',
+                    padding: '20px', borderRadius: '25px',
+                    backgroundColor: isCurrentTab ? '#F4D1F3' : ''
+                  }}>
+                    <Styled.CustomListItemMeta
+                      avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
+                      title={truncateFullName(account.get(id)?.fullName) || 'Unknown'}
+                      unread={unreadTabs.has(id)}
+                      description={
+                        <span className="message-content">
+                          {getLatestMessage(privateChats.get(id))}
+                        </span>
+                      }
+                      as={List.Item.Meta}
+                    />
+                  </List.Item>
+                )
+              }}
             />
           </Sider>
 
           <Content style={{ minHeight: 280 }}>
             <Styled.ChatBox>
               <Styled.ChatMessages ref={chatMessagesRef}>
-                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => (
-                  <Styled.Message self={chat.senderId === userData.id} key={index}>
-                    {chat.senderId !== userData.id && (
-                      <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
-                    )}
-                    <Styled.MessageData self={chat.senderId === userData.id}>
-                      {chat.senderId !== userData.id && (
-                        <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
-                      )}
-                      <Text strong>{chat.senderId === userData.id && chat.senderId}</Text>
-                      <p>{chat.message}</p>
-                    </Styled.MessageData>
-                    {chat.senderId === userData.id && (
-                      <Avatar size={40} src={chat.receiverAvatarUrl || ''}>{chat.senderId}</Avatar>
-                    )}
-                  </Styled.Message>
-                ))}
+                {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
+                  const isSelf = chat.senderId === user?.id;
+                  const messageTime = chat.createdAt ? format(parseDate(chat.createdAt), 'HH:mm') : 'Invalid Date';
+
+                  return (
+                    <Styled.Message self={isSelf} key={index}>
+                      {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
+                      <Styled.MessageData self={isSelf}>
+                        <Styled.MessageTime self={isSelf}>
+                          {messageTime}
+                        </Styled.MessageTime>
+                        <Styled.MessageContent self={isSelf}>{chat.message}</Styled.MessageContent>
+                      </Styled.MessageData>
+                    </Styled.Message>
+                  )
+                })}
               </Styled.ChatMessages>
               <Styled.SendMessage>
                 <TextArea

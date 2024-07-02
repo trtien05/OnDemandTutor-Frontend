@@ -103,7 +103,7 @@ export const FormItem = styled(Form.Item)`
 `;
 
 export const Clickable = styled.div`
-
+padding: 15px;
 /* Hover effect */
 &:hover {
     background-color: ${theme.colors.secondary};
