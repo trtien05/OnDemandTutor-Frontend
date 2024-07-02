@@ -35,7 +35,7 @@ import MobileMenu from '../../../components/Mobile/MobileMenu';
 //     },
 // ];
 
-const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
+const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
 
@@ -45,6 +45,7 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
         if (location.pathname !== config.routes.public.home) return;
 
         navigate(config.routes.public.home);
+        
     }, [location.search]);
 
     const transitionNavBar = () => {
@@ -55,12 +56,22 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
 
     const items: MenuProps['items'] = [
         {
-            label: <Link to={config.routes.student.profile}>My Profile</Link>,
-            key: config.routes.student.profile,
+            // label: <Link to={config.routes.student.profile}>My Profile</Link>,
+            // key: config.routes.student.profile,
+            label: <Link to={role === 'TUTOR' && status === 'ACTIVE' ? config.routes.tutor.profile : config.routes.student.profile}>Profile</Link>,
+            key: role === 'TUTOR' && status === 'ACTIVE' ? config.routes.tutor.profile : config.routes.student.profile,
         },
         {
-            label: <Link to={config.routes.student.studentSchedule}>My Schedule</Link>,
-            key: config.routes.student.studentSchedule,
+            
+            label:role === 'TUTOR' && status === 'ACTIVE' ? 'My Schedule': <Link to={config.routes.student.studySchedule}>My Schedule</Link>,
+            key: 'my-schedule',
+            children: 
+            role === 'TUTOR' && status === 'ACTIVE'? 
+            [
+                { key: config.routes.student.studySchedule, label: <Link to={config.routes.student.studySchedule}>Study Session</Link> },
+                { key: config.routes.tutor.teachingSchedule, label: <Link to={config.routes.tutor.teachingSchedule}>Teaching Session</Link> },
+              ]
+            : undefined,
         },
         {
             type: 'divider',
@@ -76,14 +87,16 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
     ];
 
     // Add "Tutoring Details" link if the role is "TUTOR"
-    if (role === 'TUTOR') {
-        items.splice(1, 0, {
-            label: <Link to={config.routes.tutor.profile}>Tutor Profile</Link>,
-            key: config.routes.tutor.profile,
-        });
-    }
+    // if (role === 'TUTOR' && status === 'ACTIVE') {
+    //     items.splice(1, 0, {
+    //         label: <Link to={config.routes.tutor.profile}>Tutor Profile</Link>,
+    //         key: config.routes.tutor.profile,
+    //     });
+    // }
 
     useEffect(() => {
+        console.log("Role: ", role);
+        console.log("Status: ", status);
         window.addEventListener('scroll', transitionNavBar);
         return () => window.removeEventListener('scroll', transitionNavBar);
     }, []);
@@ -117,6 +130,8 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
                                 avatar={avatarUrl}
                             />
                         </Col>
+                        
+                        
                     ) : (
                         <Col lg={3} md={0} sm={0} xs={0}>
                             <Styled.NavbarLink to={config.routes.public.login}>

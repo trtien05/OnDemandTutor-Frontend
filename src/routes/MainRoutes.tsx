@@ -2,12 +2,16 @@ import config from '../config';
 import MainLayout from '../layouts/MainLayout';
 import NotFound from '../pages/404/404';
 import Home from '../pages/Home';
+// import Login from '../pages/Login';
 import BecomeTutor from '../pages/BecomeTutor';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import MakePayment from '../pages/Payment/MakePayment';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import TutorProfile from '../pages/TutorProfile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
+
+// import { Navigate, useLocation } from 'react-router-dom';
+// import cookieUtils from '../utils/cookieUtils';
 import Profile from '../pages/Student/Profile/Profile';
 import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 import TutorDetail from '../pages/TutorDetail';
@@ -15,6 +19,8 @@ import ChatRoom from '../pages/ChatRoom';
 import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Role } from '../utils/enums';
+import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
+
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
@@ -42,9 +48,10 @@ const studentRoutes = {
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.profile, element: <Profile /> },
-        { path: config.routes.student.studentSchedule, element: <StudentAppointment /> },
+        { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
-        { path: config.routes.student.chatRoom, element: <ChatRoom /> },
+        
+
     ],
 };
 
@@ -53,9 +60,9 @@ const tutorRoutes = {
         { path: config.routes.tutor.profile, element: <TutorProfile /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
-        { path: config.routes.student.studentSchedule, element: <StudentAppointment /> },
-        { path: config.routes.tutor.tutorSchedule, element: <StudentAppointment /> },
-        { path: config.routes.student.chatRoom, element: <ChatRoom /> },
+        { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
+        { path: config.routes.tutor.teachingSchedule, element: <TutorAppointment /> }
+
     ],
 };
 

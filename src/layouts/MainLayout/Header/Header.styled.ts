@@ -8,7 +8,12 @@ export const Header = styled.header<{ $isScroll: boolean }>`
     width: 100%;
     padding: 24px 0;
     background-color: #fff;
-
+    height: 100px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
     ${(props) =>
         props.$isScroll &&
         css`

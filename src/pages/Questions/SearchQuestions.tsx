@@ -48,7 +48,7 @@ const SearchQuestions = () => {
 
   useEffect(() => {
 
-    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     let url: string = '';
 
     if (searchUrl === '') {
@@ -77,6 +77,7 @@ const SearchQuestions = () => {
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const options = [
+    { label: 'All', value: 'all' },
     { label: 'Mathematics', value: 'Mathematics' },
     { label: 'Chemistry', value: 'Chemistry' },
     { label: 'Biology', value: 'Biology' },
@@ -88,7 +89,8 @@ const SearchQuestions = () => {
     { label: 'Physics', value: 'Physics' },
     { label: 'Geography', value: 'Geography' },
     { label: 'History', value: 'History' },
-    { label: 'Coding', value: 'Coding' },
+    { label: 'Coding', value: 'Coding' }
+    
   ];
   return (
     <>

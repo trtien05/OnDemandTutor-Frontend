@@ -4,7 +4,6 @@ import { useAuth, useDocumentTitle } from "../../hooks";
 import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
-import Title from "antd/es/typography/Title";
 import * as Styled from './TutorDetail.styled';
 import { Schedule as ScheduleData, ScheduleEvent } from '../../components/Schedule/Schedule.type';
 
@@ -16,6 +15,7 @@ import BookTutor from "../../components/Popup/BookTutor";
 import { UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getTutorBooked } from "../../utils/studentAPI";
+import Feedback from "../../components/Popup/Feedback";
 
 const { TabPane } = Tabs;
 
@@ -87,6 +87,7 @@ const TutorDetail: React.FC = () => {
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
   const [tutorBooked, setTutorBooked] = useState<Tutor[]>([]);
+  const [tutorFeedback, setTutorFeedback] = useState(false);
 
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
@@ -100,6 +101,20 @@ const TutorDetail: React.FC = () => {
     top: 100,
   });
 
+  const fetchReviews = async () => {
+    try {
+      const reviewsResponse = await getTutorReviews(tutorId, page, 3); // Example parameters for page 1 and limit 3
+      setReviews(reviewsResponse.data.content);
+    } catch (error) {
+      console.error('Failed to fetch reviews', error);
+      setError("Failed to fetch reviews");
+    }
+  };
+
+  const handleReload = () => {
+    fetchReviews();
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -108,22 +123,30 @@ const TutorDetail: React.FC = () => {
         const tutorResponse = await getTutorById(tutorId);
         setTutor(tutorResponse.data);
 
-        // Fetch Reviews Data
-        const reviewsResponse = await getTutorReviews(tutorId, page, 1);
-        setReviews(reviewsResponse.data.content);
+        // // Fetch Reviews Data
+        await fetchReviews();
+        // const reviewsResponse = await getTutorReviews(tutorId, page, 3);
+        // setReviews(reviewsResponse.data.content);
 
         // Fetch Education Data
-        const educationResponse = await getTutorEducation(tutorId);
+        const educationResponse = await getTutorEducation(tutorId, true);
         setEducations(educationResponse.data);
 
         // Fetch Certificate Data
-        const cetificateResponse = await getTutorCertification(tutorId);
+        const cetificateResponse = await getTutorCertification(tutorId, true);
         setCertification(cetificateResponse.data);
 
         // Fetch Booked Tutor Data
         if (user?.id) {
           const bookedtutorResponse = await getTutorBooked(user.id);
           setTutorBooked(bookedtutorResponse.data);
+          // Check if tutor with specific tutorId is booked
+          const isTutorBooked = bookedtutorResponse.data.some(
+            (bookedTutor: { id: number; }) => bookedTutor.id === tutorId
+          );
+
+          // Set tutorFeedback based on the check
+          setTutorFeedback(isTutorBooked);
         }
 
       } catch (err) {
@@ -268,11 +291,11 @@ const TutorDetail: React.FC = () => {
 
                   </Styled.SectionInfor>
                   <Styled.SectionInfor ref={reviewRef}>
-                    <Styled.TitleWrapper>
+                    <Styled.TitleWrapper style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
+                      <Feedback tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
                     </Styled.TitleWrapper>
                     <List
-                      className="demo-loadmore-list"
                       loading={loading}
                       itemLayout="horizontal"
                       loadMore={loadMore}
