@@ -137,6 +137,24 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         setIsFormOpen(true);
     };
 
+    const approveValidation = () => {
+        if (acceptedDiploma.length === 0) {
+            api.error({
+                message: "Error",
+                description: "A tutor must have at least one approved diploma",
+            });
+            return false;
+        }
+        if (acceptedSubject.length === 0) {
+            api.error({
+                message: "Error",
+                description: "A tutor must have at least one approved subject",
+            });
+            return false;
+        }
+        handleOk('approved');
+    }
+
 
     const handleOk = async (status: string) => {
         // setLoading(true); // Set loading state to true when form is submitted
@@ -151,11 +169,18 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         try{
             const response = await approveTutor(tutorId,status, submitData);
             console.log(response)
-            api.success({
-                message: "Success",
-                description: "Tutor has been approved",
-            });
-        }catch (error) {
+            if (status === 'approved') {
+                api.success({
+                    message: "Success",
+                    description: "Tutor has been approved",
+                });
+            } else {
+                api.success({
+                    message: "Success",
+                    description: "Tutor has been rejected",
+                });
+            }
+        } catch (error) {
             api.error({
                 message: "Error",
                 description: "Failed to submit tutor approval",
@@ -205,7 +230,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         key="submit"
                         type="default"
                         htmlType="submit"
-                        onClick={() => handleOk('approved')}
+                        onClick={approveValidation}
                         disabled={!agreement}
                         loading={loading}
                         form='verifyTutorForm'

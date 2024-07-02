@@ -235,7 +235,7 @@ const TutorProfile = () => {
                                                         </Flex>
                                                     </Skeleton>
                                                </Style.ProfileInfoBox>
-                                               <div style={{textAlign:`right`}}>
+                                               {/* <div style={{textAlign:`right`}}>
                                              { user?.id && tutorDetails && 
                                              tutorEducation && tutorCert &&
                                              <SubjectForm tutorId={user?.id} 
@@ -243,7 +243,7 @@ const TutorProfile = () => {
                                                 tutorDetails={tutorDetails} 
                                                 educationData={tutorEducation? tutorEducation:[]}
                                                 certificateData={tutorCert? tutorCert:[]} />}
-                                                </div>
+                                                </div> */}
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>
