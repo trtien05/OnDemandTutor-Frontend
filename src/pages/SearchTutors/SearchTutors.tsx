@@ -66,7 +66,7 @@ const SearchTutors = () => {
 
 
   useEffect(() => {
-    const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
 
     let url: string = '';
 

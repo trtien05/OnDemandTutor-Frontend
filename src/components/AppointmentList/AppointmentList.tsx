@@ -13,9 +13,10 @@ interface AppointmentListProps {
   user?: UserType;
   onCancel: (timeslotId: number) => void; // Pass the onCancel function prop
   viewMode: 'Upcoming' | 'Past';
+  role: 'STUDENT'|'TUTOR';
 }
 
-const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, user, onCancel,viewMode }) => {
+const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, onCancel,viewMode, role }) => {
   // const {user} = useAuth();
 
   return (
@@ -31,7 +32,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, us
                   dataSource={list}
                   renderItem={(item) => (
                     <Styled.TutorItem>
-                      <AppointmentItem item={item} user={user} onCancel={onCancel} viewMode={viewMode}/>
+                      <AppointmentItem item={item} onCancel={onCancel} viewMode={viewMode} role={role}/>
                     </Styled.TutorItem>
                   )}
                     />

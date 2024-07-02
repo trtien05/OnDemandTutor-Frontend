@@ -16,7 +16,7 @@ const routes = {
     },
     student: {
         profile: '/profile',
-        studentSchedule: '/student-schedule',
+        studySchedule: '/study-schedule',
         makePayment: '/make-payment',
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
@@ -24,6 +24,8 @@ const routes = {
     },
     tutor: {
         makePayment: '/make-payment',
+        studySchedule: '/study-schedule',
+        teachingSchedule: '/teaching-schedule',
         paymentSuccess: '/confirm-payment',
         profile: '/tutor-profile',
         tutorSchedule: '/tutor-schedule',

@@ -48,7 +48,7 @@ const SearchQuestions = () => {
 
   useEffect(() => {
 
-    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     let url: string = '';
 
     if (searchUrl === '') {
