@@ -21,42 +21,39 @@ import TutorsList from '../../components/TutorsList/TutorsList';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
 
 
-const text = `
-  A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-A dog is a type of domesticated animal.
-  Known for its loyalty and faithfulness,
-  it can be found as a welcome guest in many households across the world.
-`;
+const text = [`
+ My Tutor offers unparalleled flexible scheduling, accommodating the diverse needs of students and tutors. Whether you’re juggling school, work, or other activities, you can easily find a time that fits your busy lifestyle. Our platform allows for seamless coordination across different time zones and schedules, ensuring that education is convenient and accessible. This flexibility enhances learning by making it easier to maintain consistent study sessions, leading to better academic outcomes without the stress.
+`,`
+Affordability is a key feature of My Tutor, designed to make quality education accessible to everyone. Our competitive pricing and various payment plans cater to different budgets, ensuring that financial constraints don’t hinder learning opportunities. We provide exceptional value without compromising on quality, allowing more students to benefit from personalized tutoring. By offering cost-effective solutions, My Tutor aims to remove financial barriers and support students in achieving their educational goals.`
+,`
+My Tutor boasts a team of industry-expert tutors who bring real-world experience and knowledge to their teaching. Each tutor is carefully selected for their expertise and passion for education, providing students with insights that extend beyond textbooks. This ensures that learners receive top-tier education from professionals who have excelled in their fields. Our expert tutors not only impart knowledge but also inspire and motivate students to reach their full potential through engaging and informative sessions.`,`
+My Tutor provides customized support tailored to each student’s unique learning needs. Recognizing that every learner is different, our platform offers personalized lesson plans and targeted feedback. Tutors focus on individual strengths and address specific challenges, creating a responsive and effective learning environment. This personalized approach helps students understand the material deeply, build confidence, and achieve their academic goals, ensuring a supportive and engaging educational experience.`
+]
 
 const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelStyle) => [
 
     {
         key: '1',
         label: <Styled.QuestionTitle level={3}>Flexible Scheduling</Styled.QuestionTitle>,
-        children: <Styled.AnswerContent>{text}</Styled.AnswerContent>,
+        children: <Styled.AnswerContent>{text[0]}</Styled.AnswerContent>,
         style: panelStyle,
     },
     {
         key: '2',
         label: <Styled.QuestionTitle level={3}>Affordable Pricing</Styled.QuestionTitle>,
-        children: <p style={{ 'color': '#fff' }}>{text}</p>,
+        children: <p style={{ 'color': '#fff' }}>{text[1]}</p>,
         style: panelStyle,
     },
     {
         key: '3',
         label: <Styled.QuestionTitle level={3}>Industry-Expert Tutors</Styled.QuestionTitle>,
-        children: <p style={{ 'color': '#fff' }}>{text}</p>,
+        children: <p style={{ 'color': '#fff' }}>{text[2]}</p>,
         style: panelStyle,
     },
     {
         key: '4',
         label: <Styled.QuestionTitle level={3}>Customized support</Styled.QuestionTitle>,
-        children: <p style={{ 'color': '#fff' }}>{text}</p>,
+        children: <p style={{ 'color': '#fff' }}>{text[3]}</p>,
         style: panelStyle,
     },
 ];

@@ -1,6 +1,5 @@
 import { Button, Form, Modal, UploadFile, notification } from "antd";
-import useAuth from "../../../hooks/useAuth";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import { FieldType, educationForm } from "../../BecomeTutor/Form.fields";
 import Dragger from "antd/es/upload/Dragger";
@@ -39,16 +38,15 @@ const EducationForm: React.FC<EducationProps> = (props) => {
     const [diploma, setDiploma] = useState<FieldType[][]>([
         educationForm
     ]);
-
     const normFile = (e: any) => {
         console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }
-        return e?.fileList;
+        return e?.fileList.length > 0 ? [e.fileList[e.fileList.length - 1]] : [];
     };
     const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
-        setFileList(newFileList);
+        setFileList([newFileList[newFileList.length - 1]]);
     };
 
     const handleAddDiploma = () => {
@@ -86,13 +84,13 @@ const EducationForm: React.FC<EducationProps> = (props) => {
                 })
         ) + 1;
         const diplomaUploadPromises = [];
-        const urls:string[] = [];
+        const urls: string[] = [];
 
-    const handleChange = (url:string) => {
-        urls.push(url);
-    }
+        const handleChange = (url: string) => {
+            urls.push(url);
+        }
         for (let i = 0; i < numberOfEntries1; i++) {
-            if (lastIndex) 
+            if (lastIndex)
                 diplomaUploadPromises.push(uploadImage(tutorId, values[`diplomaVerification_${i}`][0].originFileObj, 'diploma', lastIndex ? lastIndex + i : i, handleChange));
         }
         await Promise.all(diplomaUploadPromises);
@@ -102,7 +100,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
     const handleOk = async (values: any) => {
         setLoading(true); // Set loading state to true when form is submitted
         try {
-            const urls:string[] = await uploadDiploma(values)
+            const urls: string[] = await uploadDiploma(values)
             await saveEducations(tutorId, values, urls)
             api.success({
                 message: 'Your diploma has been sent',
@@ -117,13 +115,13 @@ const EducationForm: React.FC<EducationProps> = (props) => {
             setLoading(false);
             setIsFormOpen(false);
         }
-        
+
     };
     //-----------------------CONVERT FORM DATA-----------------------------
     async function saveEducations(tutorId: number, formData: any, url: any) {
         // Get JSON body from form data
         const jsonRequestBody = convertEducationFormData(formData, url);
-            
+
         try {
 
             // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
@@ -178,7 +176,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
     return (
         <>
             {contextHolder}
-            <Button type="default" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width:`150px` }}>
+            <Button type="default" onClick={showModal} style={{ borderRadius: `6px`, fontWeight: `bold`, width: `150px` }}>
                 Add diploma
             </Button>
             <Modal

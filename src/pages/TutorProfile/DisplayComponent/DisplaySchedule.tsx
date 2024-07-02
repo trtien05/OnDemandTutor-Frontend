@@ -2,9 +2,9 @@ import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, Po
 import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
-import { getTutorSchedule } from '../../../utils/tutorBookingAPI';
 import { notification } from 'antd';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
+import { getFullSchedule } from '../../../utils/tutorAPI';
 
 registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
 
@@ -26,6 +26,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
     top: 100,
   });
   const [isScheduleLoaded, setIsScheduleLoaded] = useState<boolean>(false);
+  const [startDate, setStartDate] = useState<Date>(new Date());
 
   useEffect(() => {
     setTimeout(() => {
@@ -37,26 +38,22 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
     const fetchSchedule = async () => {
       try {
 
-        const response = await getTutorSchedule(tutorId)
+        const response = await getFullSchedule(tutorId)
         if (response) {
           //format data    
-          const start = new Date(response.data.startDate);
-          const today = new Date();
-          const startDate = (start.getTime() < today.getTime()) ? today : start;
+          const start = new Date();
+          while (start.toLocaleString('en-US',{ weekday: 'short'}) !== 'Mon') {
+            start.setDate(start.getDate() -1);
+          }
+          const startDate = new Date(start);
+          setStartDate(startDate);
           let newSchedule: ScheduleData[] = [];
-
+          const date = startDate.getDate();
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
-            const currentDate = new Date(startDate);
-            currentDate.setDate(startDate.getDate() + dayIndex);
-
+            const currentDate = startDate;
+            currentDate.setDate(date + dayIndex);
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
-                const timeslotStart = new Date(`${currentDate.toISOString().split('T')[0]}T${timeslot.startTime}`);
-                if (currentDate.toDateString() === today.toDateString() && timeslotStart.getTime() < today.getTime()) {
-                  // If the day is today and the timeslot is before the current moment, skip this timeslot
-                  return;
-                }
-
                 const value = {
                   id: timeslot.id,
                   scheduleDate: currentDate.toISOString().split('T')[0],
@@ -70,9 +67,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           });
 
           setSchedule(newSchedule);
-          setTimeout(() => {
-            setIsScheduleLoaded(true);
-          }, 1000);
+         
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
       } catch (error: any) {
@@ -80,6 +75,11 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           message: 'Error',
           description: error.response ? error.response.data : error.message,
         });
+      } finally {
+        setTimeout(() => {
+          setIsScheduleLoaded(true);
+
+        }, 1000);
       }
     };
 
@@ -92,7 +92,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
 
   useEffect(() => {
     if (schedule.length === 0) return;
-
     const timeRange = () => {
       let earliest: string = '23:59';
       let latest: string = '00:00';
@@ -110,7 +109,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
       setStart(earliest);
       setEnd(latest);
     };
-
     timeRange();
   }, [schedule]);
 
@@ -123,14 +121,10 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
         Id: s.id,
         StartTime: new Date(`${s.scheduleDate}T${s.startTime}`),
         EndTime: new Date(`${s.scheduleDate}T${s.endTime}`),
+        RecurrenceRule: "FREQ=WEEKLY;INTERVAL=1;COUNT=5"
       })),
     });
   }, [schedule]);
-
-
-  const today = new Date();
-  const next7Days = new Date();
-  next7Days.setDate(today.getDate() + 7);
 
   const onPopupOpen = (args: PopupOpenEventArgs) => {
     args.cancel = true; // Disable the event popup
@@ -143,58 +137,8 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
     }
   };
 
-  const onEventRendered = (args: EventRenderedArgs) => {
-    const element = args.element as HTMLElement;
-    const eventId = args.data.Id;
-    const isSelected = selectedId?.includes(eventId);
-
-    element.style.border = '1px solid #B94AB7'; // Add border to event
-    element.style.backgroundColor = isSelected ? '#B94AB7' : '#FFF'; // Change background color if selected
-    element.style.color = isSelected ? '#FFF' : '#000'; // Change text color if selected
-    element.style.width = '100%';
-  };
-
-
-
-  const onEventClick = (args: any) => {
-    const id = args.event.Id;
-
-    setSchedule(prevSchedule =>
-      prevSchedule.map(s =>
-        // s.id.toString() === id ? { ...s, isSelected: !s.isSelected } : s
-        s.id === id ? { ...s, isSelected: !s.isSelected } : s
-      )
-    );
-
-    if (setSelectedSchedule) {
-      setSelectedSchedule(prevSchedule => {
-        if (args && args.event && args.event.Id) {
-          if (prevSchedule.some(s => s.Id === args.event.Id)) {
-            // If the schedule is already selected, remove it from the selection
-            return prevSchedule.filter(schedule => schedule.Id !== args.event.Id);
-          } else {
-            // If the schedule is not selected, add it to the selection
-            return [...prevSchedule, args.event];
-          }
-        }
-        return prevSchedule;
-      });
-    }
-
-
-    if (setSelectedId) {
-      setSelectedId(prevIds =>
-        prevIds.includes(id)
-          ? prevIds.filter(i => i !== id)
-          : [...prevIds, id]
-      );
-    }
-
-  };
-
   const defaultEventRendered = (args: EventRenderedArgs) => {
     const element = args.element as HTMLElement;
-
     element.style.border = '1px solid #B94AB7'; // Add border to event
     element.style.backgroundColor = '#FFF'; // Change background color if selected
     element.style.color = '#000'; // Change text color if selected
@@ -210,13 +154,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
     );
   };
 
-  const restrictedTime = !noRestricted
-    ? {
-      maxDate: next7Days,
-    }
-    : {};
-
-
   if (isScheduleLoaded) return (
     <div>
       <ScheduleStyle.ScheduleWrapper>
@@ -224,15 +161,12 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
           key={tutorId} // Add key to force re-render
           // style={{maxHeight: '500px'}}
           height={300}
-          selectedDate={today}
-          {...restrictedTime}
-          minDate={today}
+          
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}
-
-          eventClick={selectedId ? onEventClick : () => { }}
-          eventRendered={selectedId ? onEventRendered : defaultEventRendered}
+          eventClick={() => { }}
+          eventRendered={defaultEventRendered}
           actionBegin={onActionBegin}
           popupOpen={onPopupOpen}
 

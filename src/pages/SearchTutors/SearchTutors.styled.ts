@@ -196,7 +196,7 @@ export const InputStyled = styled(Input)`
 
 export const ButtonStyled = styled(Button)`
     border-radius: 15px;
-    ${({ theme }) => theme.breakpoints.down('sm')} {
+    ${({ theme }) => theme.breakpoints.down('lg')} {
         width: 100%;
     }
 `;

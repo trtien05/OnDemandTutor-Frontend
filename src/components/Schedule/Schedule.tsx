@@ -68,7 +68,7 @@ const Schedule: React.FC<ScheduleProps> = ({
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
                 const demo = new Date()
-                if (day.dayOfMonth < demo.getDate()) 
+                if (day.dayOfMonth < demo.getDate())
                   demo.setMonth(demo.getMonth() + 1)
                 demo.setDate(day.dayOfMonth);
                 const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
@@ -98,7 +98,7 @@ const Schedule: React.FC<ScheduleProps> = ({
     };
 
     fetchSchedule();
-  }, update!=null?[update]: []);
+  }, update != null ? [update] : []);
 
 
   const [start, setStart] = useState<string>('');

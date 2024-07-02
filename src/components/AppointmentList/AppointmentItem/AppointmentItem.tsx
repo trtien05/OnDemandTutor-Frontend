@@ -1,7 +1,8 @@
 import React from 'react';
-import { Skeleton, Avatar } from 'antd';
+
+import {  Skeleton, Avatar } from 'antd';
 import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
+import { CloseOutlined, UserOutlined} from '@ant-design/icons'; // Import the UserOutlined icon
 import { TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
@@ -23,7 +24,6 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
     const isTutor = role === 'TUTOR';
     const displayPerson = isTutor ? appointment.student : appointment.tutor;
     const canReschedule = appointmentDate.getTime() - new Date().getTime() > 24 * 60 * 60 * 1000;
-
     // Helper function to format time to "HH:mm"
     const formatTime = (time: string) => {
         const [hours, minutes] = time.split(':');
@@ -47,9 +47,10 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                         color: `${theme.colors.primary}`,
                                     }}
                                 >
-                                    {appointmentDate
-                                        .toLocaleString('en-US', { month: 'short' })
-                                        .toUpperCase()}
+
+
+                                    {appointmentDate.toLocaleString('en-US', { month: 'short' }).toUpperCase()}
+
                                 </Styled.QuestionRow>
 
                                 <Styled.QuestionRow
@@ -89,8 +90,10 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                         fontWeight: '500',
                                     }}
                                 >
+
                                     {appointmentDate.toLocaleString('en-US', { weekday: 'long' })},{' '}
                                     {formatTime(startTime)} - {formatTime(endTime)}
+
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
