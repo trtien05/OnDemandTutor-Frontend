@@ -1,11 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Card, Tabs, Button, Rate, Skeleton, Row, Col, List, Avatar, notification } from "antd";
+import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
 import { useAuth, useDocumentTitle } from "../../hooks";
 import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
-import { Schedule as ScheduleData, ScheduleEvent } from '../../components/Schedule/Schedule.type';
+import { ScheduleEvent } from '../../components/Schedule/Schedule.type';
 
 import iconEducation from "../../assets/images/image12.png";
 import iconPerson from "../../assets/images/image14.png";
@@ -103,7 +103,7 @@ const TutorDetail: React.FC = () => {
 
   const fetchReviews = async () => {
     try {
-      const reviewsResponse = await getTutorReviews(tutorId, page, 3); // Example parameters for page 1 and limit 3
+      const reviewsResponse = await getTutorReviews(tutorId, page, 3);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
@@ -125,8 +125,6 @@ const TutorDetail: React.FC = () => {
 
         // // Fetch Reviews Data
         await fetchReviews();
-        // const reviewsResponse = await getTutorReviews(tutorId, page, 3);
-        // setReviews(reviewsResponse.data.content);
 
         // Fetch Education Data
         const educationResponse = await getTutorEducation(tutorId, true);
@@ -159,14 +157,14 @@ const TutorDetail: React.FC = () => {
     fetchData();
   }, [tutorId, user?.id]);
   const navigate = useNavigate();
-
+  console.log(tutorBooked);
   const handleSendMessage = () => {
-    if (tutorBooked && tutorBooked.some(bookedTutor => bookedTutor.id === tutorId)) {
+    if (user?.role === 'STUDENT') {
       navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
     } else {
       api.warning({
-        message: 'Fail',
-        description: 'You have not registered this teacher yet!',
+        message: 'Warning',
+        description: 'You can not send messages to other tutor!',
       })
     }
   };

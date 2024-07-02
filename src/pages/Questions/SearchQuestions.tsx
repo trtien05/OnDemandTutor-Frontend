@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Select, Row, Col, message } from 'antd';
 import * as Styled from './SearchQuestions.styled';
 import Container from '../../components/Container';
@@ -90,7 +90,7 @@ const SearchQuestions = () => {
     { label: 'Geography', value: 'Geography' },
     { label: 'History', value: 'History' },
     { label: 'Coding', value: 'Coding' }
-    
+
   ];
   return (
     <>
