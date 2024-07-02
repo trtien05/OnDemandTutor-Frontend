@@ -29,7 +29,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         if (role === 'STUDENT') {
             setOpen(true);
         } else if (role === 'TUTOR') {
-            messageApi.error('You Cannot Create Question')
+            messageApi.error('Tutor Cannot Create Question')
         }
         else {
             navigate(config.routes.public.login);
