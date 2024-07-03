@@ -39,7 +39,8 @@ const routes = {
     },
     moderator: {
         manageTutor: '/moderator/tutors',
-        manageStudent: '/moderator/student',
+        manageQuestion: '/moderator/questions',
+        manageDocument: '/moderator/documents',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',

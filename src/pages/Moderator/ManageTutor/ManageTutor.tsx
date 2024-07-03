@@ -1,8 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
-import { Button } from 'antd';
 import TutorTable from './DisplayComponents/TutorTable';
-import { getListTutor } from '../../../utils/tutorAPI';
 import { Tutor, Education } from './Tutor.type';
 import { getTutorByStatus } from '../../../utils/moderatorAPI';
 

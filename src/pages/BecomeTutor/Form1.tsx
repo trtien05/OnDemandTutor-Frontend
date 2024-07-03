@@ -88,7 +88,9 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
-    if (fileList[0].status === 'done') {
+    if (values.gender.includes('ale')) 
+      values.gender = form.getFieldValue('gender').includes('Female')?'true':'false';
+    if (fileList[0] && fileList[0].status === 'done') {
     onFinish({ ...values, fileList });}
     else onFinish({ ...values, fileList: [] });
   };

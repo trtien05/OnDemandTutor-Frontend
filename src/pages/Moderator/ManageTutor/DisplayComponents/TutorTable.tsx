@@ -45,7 +45,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       render: (_: any, record: Tutor) => (
         <>
           {/* <EditRoom record={record} onReload={onReload} /> */}
-          <TutorInfo tutorId={record.id} tutor={record} />
+          <TutorInfo tutorId={record.id} tutor={record} onReload={onReload} />
 
         </>
       )
