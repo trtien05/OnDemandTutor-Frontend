@@ -55,7 +55,6 @@ interface Tutor {
 
 export function toScheduleString(schedule: Schedule) {
   let scheduleString = '';
-  console.log(schedule.scheduleDate)
   const dateString = new Date(schedule.scheduleDate).toLocaleDateString('en-US', {
     weekday: 'long',
     year: 'numeric',

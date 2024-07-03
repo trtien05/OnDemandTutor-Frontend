@@ -61,6 +61,10 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
             label: <Link to={role === 'TUTOR' && status === 'ACTIVE' ? config.routes.tutor.profile : config.routes.student.profile}>Profile</Link>,
             key: role === 'TUTOR' && status === 'ACTIVE' ? config.routes.tutor.profile : config.routes.student.profile,
         },
+        // {
+        //     label:role === 'TUTOR' && status === 'ACTIVE' ? <Link to={config.routes.tutor.profile}>Tutor Profile</Link>: <p hidden style={{height:`0`}}></p>,
+        //     key: 'tutor-profile',
+        // },
         {
             
             label:role === 'TUTOR' && status === 'ACTIVE' ? 'My Schedule': <Link to={config.routes.student.studySchedule}>My Schedule</Link>,
@@ -92,11 +96,10 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
     //         label: <Link to={config.routes.tutor.profile}>Tutor Profile</Link>,
     //         key: config.routes.tutor.profile,
     //     });
+    //     console.log(items)
     // }
 
     useEffect(() => {
-        console.log("Role: ", role);
-        console.log("Status: ", status);
         window.addEventListener('scroll', transitionNavBar);
         return () => window.removeEventListener('scroll', transitionNavBar);
     }, []);

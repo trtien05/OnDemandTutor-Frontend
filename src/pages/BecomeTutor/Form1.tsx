@@ -38,17 +38,28 @@ const Form1: React.FC<Form1Props> = ({
   const [form] = Form.useForm();
 
   const onChange = ({ fileList: newFileList }) => {
+    if (newFileList.length < 1) {
+      setFileList(newFileList);
+    } else {
     setFileList(newFileList);
-    if(!validateFileSize(newFileList[0], 5)) return;
+    if(!validateFileSize(newFileList[0], 5)) {
+      newFileList[0].status = 'error';
+      newFileList[0].response = 'File size must be less than 5MB';
+      return;}
     if(!validateFileType(newFileList[0], 'image/png') &&
     !validateFileType(newFileList[0], 'image/jpg') && 
-    !validateFileType(newFileList[0], 'image/jpeg') ) return;
+    !validateFileType(newFileList[0], 'image/jpeg') ) {
+      newFileList[0].status = 'error';
+      newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
+      return;};
+    
     for (let index = 0; index < newFileList.length; index++) {
       newFileList[index].status = 'done'
-    }
+    }}
   };
 
   useEffect(() => {
+    if (!initialValues){
     form.setFieldsValue({ 
       fullName: dataSource.fullName,
       email: dataSource.email,
@@ -56,7 +67,7 @@ const Form1: React.FC<Form1Props> = ({
       address: dataSource.address,
       dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
       gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
-     });
+     });}
      window.scrollTo({ top: 100, behavior: "smooth" });
   }, [dataSource]);
 
@@ -77,8 +88,9 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
-    console.log(form.getFieldsValue())
-    onFinish({ ...values, fileList });
+    if (fileList[0].status === 'done') {
+    onFinish({ ...values, fileList });}
+    else onFinish({ ...values, fileList: [] });
   };
 
   return (
@@ -145,6 +157,7 @@ const Form1: React.FC<Form1Props> = ({
                 }
               ]
             }
+            tooltip={{title: 'Please upload an avatar!'}}
           // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
           >
             <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
@@ -153,7 +166,6 @@ const Form1: React.FC<Form1Props> = ({
                 quality={1}
                 showReset
                 showGrid
-
               >
                 <Upload
                   name="avatar"
@@ -163,7 +175,9 @@ const Form1: React.FC<Form1Props> = ({
                   onChange={onChange}
                   onPreview={handlePreview}
                   accept=".jpg,.jpeg,.png"
-                  // beforeUpload={() => false} // Prevent upload by return false
+                  beforeUpload={(file) => {
+                    setFileList([...fileList, file])
+                    return false;}} // Prevent upload by return false
                   // beforeUpload={beforeUpload} 
                   style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
                 >

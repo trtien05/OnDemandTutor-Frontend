@@ -37,7 +37,7 @@ const TutorProfile = () => {
     // const [checkUser, isCheckUser] = useState<boolean>(false);
     const [updateCert, isUpdateCert] = useState<boolean>(false);
     const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
-    const { user, role } = useAuth();
+    const { user, role, status } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const [statistic, setStatistic] = useState<any>([]);
@@ -49,7 +49,7 @@ const TutorProfile = () => {
             setLoading(true);
             try {
                 
-                if (!user || !(role == "TUTOR")) return;
+                if (!user || !(role === "TUTOR") || (role==="TUTOR" && status ==="PROCESSING" )) return;
                 const { data } = await getTutorById(user.id);
                 await setTutorDetails({
                     backgroundDescription: data.backgroundDescription,
@@ -58,6 +58,7 @@ const TutorProfile = () => {
                     videoIntroductionLink: data.videoIntroductionLink,
                     subjects: data.subjects,
                 });
+                
                 
                 const response = await getTutorStatistic(user.id);
                 if (response) {
@@ -81,7 +82,7 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-                const education = (await getTutorEducation(user.id)).data;
+                const education = (await getTutorEducation(user.id,'')).data;
 
                 await setTutorEducation(
                     education.map((education: any) => ({
@@ -112,7 +113,7 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-                const certificate = (await getTutorCertification(user.id)).data;
+                const certificate = (await getTutorCertification(user.id,'')).data;
 
                 await setTutorCert(
                     certificate.map((certificate: any) => ({

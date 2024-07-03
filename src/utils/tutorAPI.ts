@@ -11,10 +11,11 @@ export const getTutorById = (tutorId: number) => {
 export const getTutorReviews = (tutorId: number, pageNo: number, pageSize: number) => {
     return get(`/api/tutors/${tutorId}/reviews?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
-export const getTutorEducation = (tutorId: number, isVerified: boolean) => {
+export const getTutorEducation = (tutorId: number, isVerified: string) => {
     return get(`/api/tutors/${tutorId}/educations?isVerified=${isVerified}`);
 };
-export const getTutorCertification = (tutorId: number, isVerified: boolean) => {
+
+export const getTutorCertification = (tutorId: number, isVerified: string) => {
     return get(`/api/tutors/${tutorId}/certificates?isVerified=${isVerified}`);
 };
 

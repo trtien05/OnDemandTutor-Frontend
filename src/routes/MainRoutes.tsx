@@ -20,6 +20,7 @@ import { Navigate } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Role } from '../utils/enums';
 import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
+import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
@@ -46,6 +47,7 @@ const publicRoutes = {
 const studentRoutes = {
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
+        { path: config.routes.student.registerStatus, element: <RegisterStatus /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.profile, element: <Profile /> },
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },

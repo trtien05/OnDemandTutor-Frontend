@@ -76,7 +76,7 @@ const Home = () => {
     };
 
     useEffect(() => {
-        const baseUrl: string = `https://my-tutor-render.onrender.com/api/tutors?pageNo=0&pageSize=3`;
+        const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=0&pageSize=3`;
         fetch(baseUrl)
             .then((res) => res.json())
             .then((res) => {

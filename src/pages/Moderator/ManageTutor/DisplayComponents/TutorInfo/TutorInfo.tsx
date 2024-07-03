@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Flex, Form, Input, Modal, Switch, notification } from "antd";
+import { Avatar, Button, Col, Flex, Form, Input, Modal, Skeleton, Switch, notification } from "antd";
 import { useEffect, useState } from "react";
 import * as FormStyled from "../../../../BecomeTutor/Form.styled";
 import * as Styled from '../../../../../components/QuestionList/Question.styled';
@@ -35,6 +35,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         videoIntroductionLink: false,
         backgroundDescription: false,
     });
+    const [update, setUpdate] = useState(false); // Update state to re-render component
     const [switchSubject, setSwitchSubject] = useState({});
     const [agreement, setAgreement] = useState(false);
     const [acceptedDiploma, setAcceptedDiploma] = useState<number[]>([]);
@@ -49,17 +50,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 setSwitchSubject(() => (
                     tutorInfo.subjects.map((item) => ({ [item]: false }))
                 ));
-                const education = await getTutorEducation(tutorId);
+                const education = await getTutorEducation(tutorId,'');
                 if (education.data) {
                     setTutorEducation(education.data);
                 }
-                const certificate = await getTutorCertification(tutorId);
+                const certificate = await getTutorCertification(tutorId,'');
                 if (certificate.data) {
                     setTutorCertification(certificate.data);
                 }
                 const schedule = await getFullSchedule(tutorId);
                 if (schedule.data) {
-                    console.log(schedule.data.schedules[4].timeslots, schedule.data.schedules[4].timeslots.length)
                     setSchedule(() => schedule.data.schedules.map((item: any) => ({
                         dayOfWeek: item.dayOfWeek,
                         dayOfMonth: item.dayOfMonth,
@@ -81,7 +81,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             }
         }
         fetchTutor();
-    }, [])
+    }, [update])
 
     //---------------------- Handle accept field ----------------------
 
@@ -157,7 +157,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
 
 
     const handleOk = async (status: string) => {
-        // setLoading(true); // Set loading state to true when form is submitted
+         setLoading(true); // Set loading state to true when form is submitted
         const submitData = {
             approvedSubjects: acceptedSubject,
             approvedEducations: acceptedDiploma,
@@ -167,8 +167,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         }
 
         try{
-            const response = await approveTutor(tutorId,status, submitData);
-            console.log(response)
+            await approveTutor(tutorId,status, submitData);
             if (status === 'approved') {
                 api.success({
                     message: "Success",
@@ -185,6 +184,10 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 message: "Error",
                 description: "Failed to submit tutor approval",
             });
+        } finally {
+            setLoading(false);
+            setUpdate(!update);
+            setIsFormOpen(false);
         }
     };
 
@@ -258,6 +261,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     size="middle"
                     style={{ rowGap: `10px` }}
                 >
+                    <Skeleton loading={loading}>
                     {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
 
                     {tutorInfo.avatarUrl ? (
@@ -314,6 +318,8 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
 
                         </div>
                     </Col>
+                    </Skeleton>
+                    <Skeleton loading={loading}>
                     <Col sm={24}>
                         <div style={{ display: `flex`, flexWrap: `wrap` }}>
                             <FormItem
@@ -398,7 +404,6 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                 : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
                         </FormStyled.FormItem>
 
-
                         <FormStyled.FormItem
                             name='subjects'
                             label='Subjects'>
@@ -421,7 +426,9 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                             </div>
                         </FormStyled.FormItem>
                     </Col>
+                    </Skeleton>
 
+                    <Skeleton loading={loading}>
                     <Col sm={24}>
                         <FormStyled.FormItem
                             name='educations'
@@ -457,6 +464,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         </FormStyled.FormItem>
                         
                     </Col>
+                    </Skeleton>
                     <div style={{textAlign:`center`, 
                                     margin:`20px`, 
                                     fontWeight:`bold`}}>
