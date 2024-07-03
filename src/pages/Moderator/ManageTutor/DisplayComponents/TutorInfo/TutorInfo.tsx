@@ -16,7 +16,7 @@ import { approveTutor } from "../../../../../utils/moderatorAPI";
 interface TutorInfoProps {
     tutorId: number;
     tutor: Tutor;
-}
+}7
 
 const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const { tutorId } = props;
@@ -41,6 +41,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const [acceptedDiploma, setAcceptedDiploma] = useState<number[]>([]);
     const [acceptedCertificate, setAcceptedCertificate] = useState<number[]>([]);
     const [acceptedSubject, setAcceptedSubject] = useState<string[]>([]);
+    const [isRejected, setIsRejected] = useState(false); // Tutor is rejected
 
     //---------------------- Fetch tutor info ----------------------
     useEffect(() => {
@@ -153,6 +154,13 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             return false;
         }
         handleOk('approved');
+    }
+
+    const rejectValidation = () => {
+        if (!isRejected){
+            setIsRejected(true);
+
+        }
     }
 
 

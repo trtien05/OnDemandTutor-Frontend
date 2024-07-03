@@ -5,7 +5,6 @@ import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
-import { ScheduleEvent } from '../../components/Schedule/Schedule.type';
 
 import iconEducation from "../../assets/images/image12.png";
 import iconPerson from "../../assets/images/image14.png";
