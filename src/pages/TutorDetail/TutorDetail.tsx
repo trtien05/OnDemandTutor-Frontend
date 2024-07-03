@@ -173,7 +173,7 @@ const TutorDetail: React.FC = () => {
     fetchData();
   }, [tutorId, user?.id]);
   const navigate = useNavigate();
-  console.log(tutorBooked);
+  console.log(tutor?.subjects.length);
   const handleSendMessage = () => {
     if (user?.role === 'STUDENT') {
       navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
@@ -272,10 +272,10 @@ const TutorDetail: React.FC = () => {
                       </Styled.BestTutorEducation>
                       <Styled.BestTutorEducation>
                         <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                        {educations.map((education, index) => (
-                          <React.Fragment key={education.id}>
-                            <Styled.BestTutorEducationBachelor>{education.specialization}</Styled.BestTutorEducationBachelor>
-                            {index < educations.length - 1 && ', '}
+                        {tutor.subjects.map((subject, index) => (
+                          <React.Fragment key={index}>
+                            <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
+                            {index < tutor.subjects.length - 1 && ', '}
                           </React.Fragment>
                         ))}
                       </Styled.BestTutorEducation>

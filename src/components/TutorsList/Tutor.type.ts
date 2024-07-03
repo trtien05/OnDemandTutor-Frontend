@@ -11,6 +11,7 @@ export interface Tutor {
     avatarUrl?: string;
     teachingPricePerHour?: number;
     educations: Education[];
+    subjects: string[];
     backgroundDescription?: string;
     videoIntroductionLink?: string;
     loading: boolean;
