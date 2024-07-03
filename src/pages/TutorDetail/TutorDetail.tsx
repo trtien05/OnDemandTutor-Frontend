@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
 import { useAuth, useDocumentTitle } from "../../hooks";
-import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification } from "../../utils/tutorAPI";
+import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
@@ -88,6 +88,7 @@ const TutorDetail: React.FC = () => {
   const [tutor, setTutor] = useState<Tutor | null>(null);
   const [tutorBooked, setTutorBooked] = useState<Tutor[]>([]);
   const [tutorFeedback, setTutorFeedback] = useState(false);
+  const [statusFeedback, setStatusFeedback] = useState(false);
 
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
@@ -101,9 +102,20 @@ const TutorDetail: React.FC = () => {
     top: 100,
   });
 
+  const fetchStatusFeedback = async () => {
+    if (user?.id !== undefined) {
+      const response = await getStatusReviews(tutorId, user.id);
+      if (response.status === 204) {
+        setStatusFeedback(true)
+      } else {
+        setStatusFeedback(false);
+      }
+    }
+  }
+
   const fetchReviews = async () => {
     try {
-      const reviewsResponse = await getTutorReviews(tutorId, page, 3);
+      const reviewsResponse = await getTutorReviews(tutorId, page, 1);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
@@ -147,6 +159,10 @@ const TutorDetail: React.FC = () => {
           setTutorFeedback(isTutorBooked);
         }
 
+        //Fetch Status feedback
+        await fetchStatusFeedback()
+
+
       } catch (err) {
         setError("Failed to fetch tutor details");
       } finally {
@@ -170,16 +186,19 @@ const TutorDetail: React.FC = () => {
   };
 
   const onLoadMore = async () => {
-    setLoading(true);
     try {
       const newPage = page + 1;
       const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
+      if (newReviewsResponse.data.content.length <= 0) {
+        api.info({
+          message: 'Done',
+          description: 'All reviews have been displayed!',
+        })
+      }
       setReviews((prevReviews) => [...prevReviews, ...newReviewsResponse.data.content]);
       setPage(newPage);
     } catch (err) {
       setError("Failed to load more reviews");
-    } finally {
-      setLoading(false);
     }
   };
 
@@ -291,7 +310,7 @@ const TutorDetail: React.FC = () => {
                   <Styled.SectionInfor ref={reviewRef}>
                     <Styled.TitleWrapper style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
-                      <Feedback tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
+                      <Feedback statusFeedback={statusFeedback} tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
                     </Styled.TitleWrapper>
                     <List
                       loading={loading}

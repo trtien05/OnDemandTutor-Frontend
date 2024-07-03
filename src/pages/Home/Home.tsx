@@ -23,10 +23,10 @@ import { Tutor } from '../../components/TutorsList/Tutor.type';
 
 const text = [`
  My Tutor offers unparalleled flexible scheduling, accommodating the diverse needs of students and tutors. Whether you’re juggling school, work, or other activities, you can easily find a time that fits your busy lifestyle. Our platform allows for seamless coordination across different time zones and schedules, ensuring that education is convenient and accessible. This flexibility enhances learning by making it easier to maintain consistent study sessions, leading to better academic outcomes without the stress.
-`,`
+`, `
 Affordability is a key feature of My Tutor, designed to make quality education accessible to everyone. Our competitive pricing and various payment plans cater to different budgets, ensuring that financial constraints don’t hinder learning opportunities. We provide exceptional value without compromising on quality, allowing more students to benefit from personalized tutoring. By offering cost-effective solutions, My Tutor aims to remove financial barriers and support students in achieving their educational goals.`
-,`
-My Tutor boasts a team of industry-expert tutors who bring real-world experience and knowledge to their teaching. Each tutor is carefully selected for their expertise and passion for education, providing students with insights that extend beyond textbooks. This ensures that learners receive top-tier education from professionals who have excelled in their fields. Our expert tutors not only impart knowledge but also inspire and motivate students to reach their full potential through engaging and informative sessions.`,`
+    , `
+My Tutor boasts a team of industry-expert tutors who bring real-world experience and knowledge to their teaching. Each tutor is carefully selected for their expertise and passion for education, providing students with insights that extend beyond textbooks. This ensures that learners receive top-tier education from professionals who have excelled in their fields. Our expert tutors not only impart knowledge but also inspire and motivate students to reach their full potential through engaging and informative sessions.`, `
 My Tutor provides customized support tailored to each student’s unique learning needs. Recognizing that every learner is different, our platform offers personalized lesson plans and targeted feedback. Tutors focus on individual strengths and address specific challenges, creating a responsive and effective learning environment. This personalized approach helps students understand the material deeply, build confidence, and achieve their academic goals, ensuring a supportive and engaging educational experience.`
 ]
 
@@ -76,7 +76,7 @@ const Home = () => {
     };
 
     useEffect(() => {
-        const baseUrl: string = `https://my-tutor-render.onrender.com/api/tutors?pageNo=0&pageSize=3`;
+        const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=0&pageSize=3`;
         fetch(baseUrl)
             .then((res) => res.json())
             .then((res) => {

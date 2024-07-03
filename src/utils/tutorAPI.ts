@@ -41,3 +41,7 @@ export const getFullSchedule = (tutorId: number) => {
 export const postTutorReviews = (tutorId: number, requestBody: any) => {
     return post(`/api/tutors/${tutorId}/reviews`, requestBody);
 };
+
+export const getStatusReviews = (tutorId: number, studentId: number) => {
+    return get(`/api/tutors/${tutorId}/students/${studentId}`);
+};

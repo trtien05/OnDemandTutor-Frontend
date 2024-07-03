@@ -16,6 +16,7 @@ import Profile from '../pages/Student/Profile/Profile';
 import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 import TutorDetail from '../pages/TutorDetail';
 import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
+import ChatRoom from '../pages/ChatRoom';
 
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
@@ -44,7 +45,8 @@ const studentRoutes = {
         { path: config.routes.student.profile, element: <Profile /> },
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
-        
+        { path: config.routes.student.chatRoom, element: <ChatRoom /> },
+
 
     ],
 };
@@ -55,7 +57,8 @@ const tutorRoutes = {
         { path: config.routes.student.makePayment, element: <MakePayment /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
-        { path: config.routes.tutor.teachingSchedule, element: <TutorAppointment /> }
+        { path: config.routes.tutor.teachingSchedule, element: <TutorAppointment /> },
+        { path: config.routes.tutor.chatRoom, element: <ChatRoom /> }
 
     ],
 };

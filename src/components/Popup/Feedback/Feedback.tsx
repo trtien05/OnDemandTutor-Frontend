@@ -1,38 +1,53 @@
 import { Modal, Rate, notification } from 'antd';
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import * as Styled from './Feedback.styled'
 import TextArea from 'antd/es/input/TextArea';
-import { postTutorReviews } from '../../../utils/tutorAPI';
+import { getStatusReviews, postTutorReviews } from '../../../utils/tutorAPI';
+import { useAuth } from '../../../hooks';
 
 interface FeedbackProps {
   tutorId: number;
   tutorName?: string;
   tutorFeedback?: boolean;
   onReload: () => void;
+  statusFeedback?: boolean;
 }
 const Feedback: React.FC<FeedbackProps> = (props) => {
-  const { tutorId, tutorName, tutorFeedback, onReload } = props;
+  const { user, role } = useAuth();
+  console.log(user?.id)
+  const { tutorId, tutorName, tutorFeedback, onReload, statusFeedback } = props;
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
-  const [review, setReview] = useState(false);
+  console.log(tutorId)
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   function showModal() {
-    if (review) {
+    if (role === 'STUDENT') {
+      // Submitted Feeback
+      if (!statusFeedback) {
+        api.warning({
+          message: 'You Already Submitted Feeback',
+          description: 'You have already submitted your feedback.',
+        });
+      }
+      // Not Registered
+      else if (!tutorFeedback) {
+        api.warning({
+          message: 'You not Registered this Tutor',
+          description: 'You cannot provide feedback.',
+        });
+      }
+      else {
+        setIsFormOpen(true);
+      }
+    } else {
       api.warning({
-        message: 'You Already Submitted Feeback',
-        description: 'You have already submitted your feedback.',
-      });
-    } else if (!tutorFeedback) {
-      api.warning({
-        message: 'Not Registered with Tutor',
+        message: 'You are Our tutor',
         description: 'You cannot provide feedback.',
       });
     }
-    else {
-      setIsFormOpen(true);
-    }
+
   };
 
   const handleCancel = () => {
@@ -56,7 +71,6 @@ const Feedback: React.FC<FeedbackProps> = (props) => {
           message: 'Success',
           description: 'Feedback submitted successfully!',
         });
-        setReview(true);
         setIsFormOpen(false);
       }
     } catch (error: any) {

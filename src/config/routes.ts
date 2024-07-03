@@ -29,6 +29,7 @@ const routes = {
         paymentSuccess: '/confirm-payment',
         profile: '/tutor-profile',
         tutorSchedule: '/tutor-schedule',
+        chatRoom: '/chat-room',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
