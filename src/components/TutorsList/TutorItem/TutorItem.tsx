@@ -24,10 +24,11 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
   const route: string = `${config.routes.public.searchTutors}/${item.id}`;
 
   return (
-    <Skeleton avatar title={true} loading={item.loading} active>
-      <Col lg={24} md={24} sm={24} xs={24}>
-        <Styled.BoxHover>
-          <Styled.BestTutorItem justify='space-between'>
+    <Col lg={24} md={24} sm={24} xs={24}>
+      <Styled.BoxHover>
+
+        <Styled.BestTutorItem justify='space-between'>
+          <Skeleton style={{ padding: '20px' }} paragraph={{ rows: 4 }} loading={item.loading} active>
             <Col lg={7} md={8} sm={9} xs={24}>
               {item.avatarUrl ? (
                 <Link to={route}>
@@ -126,10 +127,10 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                 </Styled.BookingThisTutor>
               </Styled.BestTutorBooking>
             </Col>
-          </Styled.BestTutorItem>
-        </Styled.BoxHover>
-      </Col>
-    </Skeleton>
+          </Skeleton>
+        </Styled.BestTutorItem>
+      </Styled.BoxHover>
+    </Col>
   );
 }
 
