@@ -1,8 +1,8 @@
 import { Modal, Rate, notification } from 'antd';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import * as Styled from './Feedback.styled'
 import TextArea from 'antd/es/input/TextArea';
-import { getStatusReviews, postTutorReviews } from '../../../utils/tutorAPI';
+import { postTutorReviews } from '../../../utils/tutorAPI';
 import { useAuth } from '../../../hooks';
 
 interface FeedbackProps {
@@ -13,13 +13,11 @@ interface FeedbackProps {
   statusFeedback?: boolean;
 }
 const Feedback: React.FC<FeedbackProps> = (props) => {
-  const { user, role } = useAuth();
-  console.log(user?.id)
+  const { role } = useAuth();
   const { tutorId, tutorName, tutorFeedback, onReload, statusFeedback } = props;
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
-  console.log(tutorId)
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   function showModal() {

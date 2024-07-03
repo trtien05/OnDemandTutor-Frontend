@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
 import { useAuth, useDocumentTitle } from "../../hooks";
-import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews } from "../../utils/tutorAPI";
+import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews, getTutorStatistic } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
@@ -56,7 +56,6 @@ const TutorDetail: React.FC = () => {
   const scheduleRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
   const resumeRef = useRef<HTMLDivElement>(null);
-
   const handleTabClick = (key: string) => {
     let ref;
     switch (key) {
@@ -89,13 +88,13 @@ const TutorDetail: React.FC = () => {
   const [tutorBooked, setTutorBooked] = useState<Tutor[]>([]);
   const [tutorFeedback, setTutorFeedback] = useState(false);
   const [statusFeedback, setStatusFeedback] = useState(false);
+  const [totalTaughtStudent, setTotalTaughtStudent] = useState(0);
 
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
   const [certification, setCertification] = useState<Certification[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
 
   const [api, contextHolderNotification] = notification.useNotification({
@@ -119,7 +118,6 @@ const TutorDetail: React.FC = () => {
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
-      setError("Failed to fetch reviews");
     }
   };
 
@@ -152,8 +150,7 @@ const TutorDetail: React.FC = () => {
           setTutorBooked(bookedtutorResponse.data);
           // Check if tutor with specific tutorId is booked
           const isTutorBooked = bookedtutorResponse.data.some(
-            (bookedTutor: { id: number; }) => bookedTutor.id === tutorId
-          );
+            (bookedTutor: { id: number; }) => bookedTutor.id === tutorId);
 
           // Set tutorFeedback based on the check
           setTutorFeedback(isTutorBooked);
@@ -162,10 +159,17 @@ const TutorDetail: React.FC = () => {
         //Fetch Status feedback
         await fetchStatusFeedback()
 
+        //Fetch Statistic Data
+        const responseTutorStatistic = await getTutorStatistic(tutorId);
+        setTotalTaughtStudent(responseTutorStatistic.data.totalTaughtStudent);
 
-      } catch (err) {
-        setError("Failed to fetch tutor details");
-      } finally {
+      } catch {
+        api.error({
+          message: 'Error',
+          description: 'Fail to fetch data.',
+        });
+      }
+      finally {
         setLoading(false);
       }
     };
@@ -173,7 +177,7 @@ const TutorDetail: React.FC = () => {
     fetchData();
   }, [tutorId, user?.id]);
   const navigate = useNavigate();
-  console.log(tutor?.subjects.length);
+  console.log(tutorBooked);
   const handleSendMessage = () => {
     if (user?.role === 'STUDENT') {
       navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
@@ -198,17 +202,12 @@ const TutorDetail: React.FC = () => {
       setReviews((prevReviews) => [...prevReviews, ...newReviewsResponse.data.content]);
       setPage(newPage);
     } catch (err) {
-      setError("Failed to load more reviews");
+      api.error({
+        message: 'Error',
+        description: 'Fail to fetch data.',
+      });
     }
   };
-
-  if (loading && page === 0) {
-    return <Skeleton active />;
-  }
-
-  if (error) {
-    return <div>{error}</div>;
-  }
 
   const loadMore = !loading ? (
     <Row>
@@ -222,84 +221,89 @@ const TutorDetail: React.FC = () => {
   return (
     <>
       {contextHolderNotification}
-
       <Styled.TutorDetailBackground>
         <Container>
           {tutor && (
             <Row justify='space-between'>
               <Col lg={12} md={12} sm={12} xs={24}>
-                <Styled.TutorInfoCard>
-                  <Col>
-                    {tutor.avatarUrl ? (
-                      <Avatar
-                        src={tutor.avatarUrl}
-                        icon={<UserOutlined />}
-                        size={150}
-                        style={{
-                          width: '210px',
-                          height: '210px',
-                          borderRadius: '50px',
-                          marginRight: '20px'
+                <Skeleton paragraph={{ rows: 4 }} loading={loading} active>
+                  <Styled.TutorInfoCard>
+                    <Col>
+                      {tutor.avatarUrl ? (
+                        <Avatar
+                          src={tutor.avatarUrl}
+                          icon={<UserOutlined />}
+                          size={150}
+                          style={{
+                            width: '210px',
+                            height: '210px',
+                            borderRadius: '50px',
+                            marginRight: '20px'
 
-                        }}
-                      />
-                    ) : (
-                      <Avatar
-                        size={150}
-                        icon={<UserOutlined />}
-                        style={{
-                          width: '210px',
-                          height: '210px',
-                          borderRadius: '25px',
-                          marginRight: '20px'
+                          }}
+                        />
+                      ) : (
+                        <Avatar
+                          size={150}
+                          icon={<UserOutlined />}
+                          style={{
+                            width: '210px',
+                            height: '210px',
+                            borderRadius: '25px',
+                            marginRight: '20px'
 
-                        }}
-                      />
-                    )}
-                  </Col>
-                  <Col>
-                    <Styled.TutorDetails>
-                      <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
-                      <Styled.BestTutorEducation>
-                        <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                        {educations.map((education, index) => (
-                          <React.Fragment key={education.id}>
-                            <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
-                            {index < educations.length - 1 && ', '}
-                          </React.Fragment>
-                        ))}
+                          }}
+                        />
+                      )}
+                    </Col>
+                    <Col>
+                      <Styled.TutorDetails>
+                        <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
+                        <Styled.BestTutorEducation>
+                          <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
+                          {educations.map((education, index) => (
+                            <React.Fragment key={education.id}>
+                              <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
+                              {index < educations.length - 1 && ', '}
+                            </React.Fragment>
+                          ))}
 
-                      </Styled.BestTutorEducation>
-                      <Styled.BestTutorEducation>
-                        <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                        {tutor.subjects.map((subject, index) => (
-                          <React.Fragment key={index}>
-                            <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
-                            {index < tutor.subjects.length - 1 && ', '}
-                          </React.Fragment>
-                        ))}
-                      </Styled.BestTutorEducation>
-                      <Styled.BestTutorStudent>
-                        <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
-                        <Styled.BestTutorEducationBachelor>55 students taught</Styled.BestTutorEducationBachelor>
-                      </Styled.BestTutorStudent>
-                      <Styled.BestTutorDescription>{tutor.backgroundDescription}</Styled.BestTutorDescription>
-                    </Styled.TutorDetails>
-                  </Col>
-                </Styled.TutorInfoCard>
-                <div>
+                        </Styled.BestTutorEducation>
+                        <Styled.BestTutorEducation>
+                          <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
+                          {tutor.subjects.map((subject, index) => (
+                            <React.Fragment key={index}>
+                              <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
+                              {index < tutor.subjects.length - 1 && ', '}
+                            </React.Fragment>
+                          ))}
+                        </Styled.BestTutorEducation>
+                        <Styled.BestTutorStudent>
+                          <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
+                          <Styled.BestTutorEducationBachelor>{totalTaughtStudent} students taught</Styled.BestTutorEducationBachelor>
+                        </Styled.BestTutorStudent>
+                        <Styled.BestTutorDescription>{tutor.backgroundDescription}</Styled.BestTutorDescription>
+                      </Styled.TutorDetails>
+                    </Col>
+                  </Styled.TutorInfoCard>
+                </Skeleton>
+                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
                   <Styled.StyledTabs defaultActiveKey="1" onTabClick={handleTabClick}>
                     <TabPane tab="About" key="1" />
                     <TabPane tab="Schedule" key="2" />
                     <TabPane tab="Review" key="3" />
                     <TabPane tab="Resume" key="4" />
                   </Styled.StyledTabs>
+                </Skeleton>
+                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
                   <Styled.SectionInfor ref={aboutRef}>
                     <Styled.TitleWrapper>
                       <Styled.TitleDetail level={4}>ABOUT THE TUTOR</Styled.TitleDetail>
                     </Styled.TitleWrapper>
                     <p>{tutor.backgroundDescription}</p>
                   </Styled.SectionInfor>
+                </Skeleton>
+                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
                   <Styled.SectionInfor ref={scheduleRef}>
                     <Styled.TitleWrapper>
                       <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
@@ -307,6 +311,8 @@ const TutorDetail: React.FC = () => {
                     <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
 
                   </Styled.SectionInfor>
+                </Skeleton>
+                <Skeleton style={{ marginTop: '10px' }} paragraph={{ rows: 4 }} loading={loading} active>
                   <Styled.SectionInfor ref={reviewRef}>
                     <Styled.TitleWrapper style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                       <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
@@ -336,6 +342,8 @@ const TutorDetail: React.FC = () => {
                       )}
                     />
                   </Styled.SectionInfor>
+                </Skeleton>
+                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
                   <Styled.ResumeSection ref={resumeRef}>
                     <Styled.TitleWrapper>
                       <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
@@ -382,40 +390,42 @@ const TutorDetail: React.FC = () => {
                     )}
 
                   </Styled.ResumeSection>
-                </div>
+                </Skeleton>
               </Col>
-              <Col lg={9} md={9} sm={9} xs={24}>
-                <Styled.TutorVideoCard>
-                  <Styled.TutorVideo>
-                    {tutor.videoIntroductionLink && (
-                      <iframe
-                        width="100%"
-                        height="100%"
+              <Skeleton style={{ marginTop: '30px', width: '30%' }} paragraph={{ rows: 4 }} loading={loading} active>
+                <Col lg={9} md={9} sm={9} xs={24}>
+                  <Styled.TutorVideoCard>
+                    <Styled.TutorVideo>
+                      {tutor.videoIntroductionLink && (
+                        <iframe
+                          width="100%"
+                          height="100%"
 
-                        style={{ borderRadius: '30px' }}
-                        src={getEmbedUrl(tutor.videoIntroductionLink)}
-                        title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      ></iframe>
-                    )}
-                  </Styled.TutorVideo>
-                  <Styled.BookingInformation>
-                    <div style={{ textAlign: 'center' }}>
-                      <div style={{ display: 'flex' }}>
-                        <Styled.IconStyleStart />
-                        <Styled.BookingRatingAndPrice>{tutor.averageRating}</Styled.BookingRatingAndPrice>
+                          style={{ borderRadius: '30px' }}
+                          src={getEmbedUrl(tutor.videoIntroductionLink)}
+                          title="YouTube video player"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      )}
+                    </Styled.TutorVideo>
+                    <Styled.BookingInformation>
+                      <div style={{ textAlign: 'center' }}>
+                        <div style={{ display: 'flex' }}>
+                          <Styled.IconStyleStart />
+                          <Styled.BookingRatingAndPrice>{tutor.averageRating}</Styled.BookingRatingAndPrice>
+                        </div>
                       </div>
-                    </div>
-                    <div>
-                      <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
-                    </div>
-                  </Styled.BookingInformation>
-                  <BookTutor tutorId={tutorId} />
-                  <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
-                  <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
-                </Styled.TutorVideoCard>
-              </Col>
+                      <div>
+                        <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
+                      </div>
+                    </Styled.BookingInformation>
+                    <BookTutor tutorId={tutorId} />
+                    <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
+                    <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
+                  </Styled.TutorVideoCard>
+                </Col>
+              </Skeleton>
             </Row>
           )}
         </Container>

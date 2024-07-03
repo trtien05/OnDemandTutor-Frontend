@@ -1,5 +1,5 @@
-import React from 'react';
-import { Avatar, Col, Skeleton } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Avatar, Col } from 'antd';
 import iconEducation from "../../../assets/images/image12.png";
 import iconBachelor from "../../../assets/images/image13.png";
 import iconPerson from "../../../assets/images/image14.png";
@@ -8,18 +8,27 @@ import { Tutor } from '../Tutor.type';
 import config from '../../../config';
 import { Link } from 'react-router-dom';
 import { UserOutlined } from '@ant-design/icons';
+import { getTutorStatistic } from '../../../utils/tutorAPI';
 
 interface TutorItemProps {
   item: Tutor;
 }
-const MAX_DESCRIPTION_LENGTH = 40;
-
 
 const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
-  const showFullDescription = false;
-  const truncatedDescription = item.backgroundDescription?.slice(0, MAX_DESCRIPTION_LENGTH);
-  const descriptionToShow = showFullDescription ? item.backgroundDescription : truncatedDescription;
-
+  const [totalTaughtStudent, setTotalTaughtStudent] = useState(0);
+  const truncateText = (text?: string): string | undefined => {
+    if (!text) return undefined;
+    return text.length > 20 ? `${text.slice(0, 40)}...` : text;
+  };
+  useEffect(() => {
+    const fetchTutorStatistic = async () => {
+      if (item?.id) {
+        const responseTutorStatistic = await getTutorStatistic(item.id);
+        setTotalTaughtStudent(responseTutorStatistic.data.totalTaughtStudent);
+      }
+    }
+    fetchTutorStatistic();
+  }, []);
   // Handle route
   const route: string = `${config.routes.public.searchTutors}/${item.id}`;
 
@@ -66,7 +75,9 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
           </Col>
           <Col lg={8} md={8} sm={6} xs={0}>
             <Styled.BestTutorContent>
-              <Styled.BestTutorName level={2}>{item.fullName}</Styled.BestTutorName>
+              <Styled.BestTutorName level={2}>
+                {truncateText(item.fullName)}
+              </Styled.BestTutorName>
               <Styled.BestTutorEducation>
                 <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
                 {item.educations.map((education, index) => (
@@ -84,12 +95,11 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
               <Styled.BestTutorStudent>
                 <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
                 <Styled.BestTutorEducationBachelor>
-                  55 students taught
+                  {totalTaughtStudent} students taught
                 </Styled.BestTutorEducationBachelor>
               </Styled.BestTutorStudent>
               <Styled.BestTutorDescription>
-                {descriptionToShow}...
-
+                {truncateText(item.backgroundDescription)}
               </Styled.BestTutorDescription>
             </Styled.BestTutorContent>
           </Col>
@@ -106,9 +116,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                 <div>
                   <Styled.BookingRatingAndPrice>{item.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
                 </div>
-                <div>
-                  <Styled.IconStyleHeart />
-                </div>
+
               </Styled.BookingInformation>
               <Styled.BookingThisTutor>
                 <Link to={route}>

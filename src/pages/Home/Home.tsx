@@ -19,6 +19,7 @@ import Link from '../../components/Link';
 import config from '../../config';
 import TutorsList from '../../components/TutorsList/TutorsList';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
+import { getTutorList } from '../../utils/tutorAPI';
 
 
 const text = [`
@@ -59,13 +60,10 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
 ];
 const Home = () => {
     useDocumentTitle('Home | MyTutor');
-    const [translateY, setTranslateY] = useState<number>(0);
-    const [hoveredTutor, setHoveredTutor] = useState<Tutor>();
     const listCategory = [ieltsImg, mathImg, programImg, toeicImg];
     const [initLoading, setInitLoading] = useState(true);
     const { token } = theme.useToken();
     const [list, setList] = useState<Tutor[]>([]);
-    const [data, setData] = useState<Tutor[]>([]);
     const panelStyle: React.CSSProperties = {
         marginBottom: 24,
         background: token.colorFillAlter,
@@ -74,17 +72,15 @@ const Home = () => {
         backgroundColor: '#B94AB7',
         padding: '10px',
     };
-
     useEffect(() => {
-        const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=0&pageSize=3`;
-        fetch(baseUrl)
-            .then((res) => res.json())
-            .then((res) => {
-                setInitLoading(false);
-                setData(res.content);
-                setList(res.content);
-            });
+        const fetchTutors = async () => {
+            const responseTutorList = await getTutorList();
+            setInitLoading(false);
+            setList(responseTutorList.data.content);
+        }
+        fetchTutors();
     }, []);
+
     return (
         <>
             <DefaultBanner />
@@ -98,7 +94,7 @@ const Home = () => {
                             </Styled.BestServiceTitle>
 
                             <Styled.BestServiceDesc>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Explore popular categories to find the perfect tutor for your needs. Whether preparing for tests, learning a new language, or seeking academic help, our experienced tutors are here to guide you to success.
                             </Styled.BestServiceDesc>
                         </Col>
                     </Row>
@@ -169,7 +165,7 @@ const Home = () => {
                                 Best Tutors
                             </Styled.BestServiceTitle>
                             <Styled.BestServiceDesc>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Connect with top-rated tutors who provide personalized and effective teaching. Achieve your goals with expert help in academics, test prep, and skill development. Excel with the best!
                             </Styled.BestServiceDesc>
                         </Col>
 
@@ -190,7 +186,7 @@ const Home = () => {
                             </Styled.BestServiceTitle>
 
                             <Styled.BestServiceDesc>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Explore our FAQ section to find answers to common queries about our online tutoring services.
                             </Styled.BestServiceDesc>
                         </Col>
                     </Row>
