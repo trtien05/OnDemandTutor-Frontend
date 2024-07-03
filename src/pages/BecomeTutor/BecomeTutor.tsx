@@ -20,6 +20,7 @@ import { useNavigate } from "react-router-dom";
 import * as Styled from './BecomeTutor.style'
 import Container from "../../components/Container";
 import { AiOutlineCheckCircle, AiOutlineExclamationCircle } from "react-icons/ai";
+import config from "../../config";
 
 const { Title } = Typography;
 
@@ -236,26 +237,29 @@ const BecomeTutor = () => {
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
-    console.log(values)
     if (accountId) {
-      await saveData(values, accountId);
-      saveBecomeTutor(accountId);
+      const save = await saveData(values, accountId);
+      const status = saveBecomeTutor(accountId);
+      if (save!==undefined && status!==undefined) 
+        navigate(config.routes.student.registerStatus, { state: 'sent' });
+      else navigate(config.routes.student.registerStatus, { state: 'error' });
     }
-    api.success({
-      message: 'Success',
-      description: 'Your form has been Sent',
-    });
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
+    // api.success({
+    //   message: 'Success',
+    //   description: 'Your form has been Sent',
+    // });
+    // setTimeout(() => {
+    //   navigate('/');
+    // }, 2000);
 
     next();
   };
 
   const saveToFirebase = async (tutorId: number) => {
     //upload avatar to firebase
-    
-    const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)
+    let avatarUploadPromise
+    if (aboutValues.fileList[0] && accountId){
+    avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)}
     //upload diploma to firebase
     const diplomaUploadPromises = [];
     if (educationValues != null) {
@@ -318,6 +322,7 @@ const BecomeTutor = () => {
         .catch(error => {
           console.error('Error saving tutor available timeslot:', error);
         });
+      return 'Success'
     } catch (error) {
       console.error('Error during the process:', error);
     }
@@ -491,6 +496,7 @@ const BecomeTutor = () => {
     try {
       const response = await becomeTutor(tutorId);
       console.log(' saved successfully:', response);
+      return 'success'
     } catch (error: any) {
       api.error({
         message: 'Lỗi',

@@ -1,7 +1,5 @@
 import React from 'react'
 import { Schedule } from '../../Tutor.type';
-import { Clickable } from './TutorInfo.styled';
-import { Switch } from 'antd';
 
 interface TimeslotVerifyProps {
     schedule: Schedule[];

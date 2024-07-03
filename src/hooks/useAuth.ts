@@ -10,7 +10,7 @@ type JwtType = {
     role: string;
     fullname: string;
     email: string;
-    accountStatus: AccountStatus;
+    status: string;
 };
 
 export type UserType = {
@@ -20,7 +20,7 @@ export type UserType = {
     phoneNumber: string | null;
     id: number;
     dateOfBirth: Date | string | null;
-    gender: Gender;
+    gender: Gender | string;
     status: string;
     role: string;
     address: string | null;
@@ -35,9 +35,17 @@ const getRole = () => {
 
     return Role[decoded.role];
 };
+const getStatus = () => {
+    const decoded = cookieUtils.decodeJwt() as JwtType;
+
+    if (!decoded || !decoded.status) return null;
+
+    return AccountStatus[decoded.status];
+};
 
 const useAuth = () => {
     const [role, setRole] = useState<string | null>(getRole());
+    const [status, setStatus] = useState<string | null>(getStatus());
     const [loading, setLoading] = useState(false);
     const [user, setUser] = useState<UserType>();
 
@@ -51,6 +59,7 @@ const useAuth = () => {
             // Check if the token is expired
             if (!decoded || decoded.exp < Date.now() / 1000) {
                 setRole(null);
+                setStatus(null);
                 cookieUtils.deleteUser();
                 return;
             }
@@ -63,6 +72,7 @@ const useAuth = () => {
         // If there is no token, set the role to null
         if (!token) {
             setRole(null);
+            setStatus(null);
             return;
         }
 
@@ -71,6 +81,7 @@ const useAuth = () => {
 
             // Set role
             setRole(getRole());
+            setStatus(getStatus());
 
             // Fetch API to get info user
             const getInfo = async () => {
@@ -90,7 +101,7 @@ const useAuth = () => {
         return () => clearInterval(intervalId);
     }, [checkTokenExpiration]);
 
-    return { loading, role, user };
+    return { loading, role, user, status };
 };
 
 export default useAuth;

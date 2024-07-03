@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Select, Row, Col, Slider } from 'antd';
 import * as Styled from './SearchTutors.styled';
 import Container from '../../components/Container';
@@ -26,6 +26,10 @@ const SearchTutors = () => {
   const [tutorPerPage] = useState(4);
   const [totalAmountofTutors, setTotalAmountTutors] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  useEffect(() => {
+    setMinPrice(priceRange[0]);
+    setMaxPrice(priceRange[1]);
+  }, [])
 
   const [searchUrl, setSearchUrl] = useState('');
 
@@ -93,7 +97,7 @@ const SearchTutors = () => {
     setPriceRange(value as [number, number]);
   };
 
-
+  console.log(data);
   const priceDropdownRender = () => (
     <div style={{ padding: 8 }}>
       <Slider
@@ -160,6 +164,7 @@ const SearchTutors = () => {
                 <Styled.StyledSelect placeholder="Sort By" onChange={handleSortChange}>
                   <Option value="Sort By">Sort By</Option>
                   <Option value="Rating">Rating</Option>
+                  <Option value="Price">Price</Option>
                 </Styled.StyledSelect>
               </Col>
 

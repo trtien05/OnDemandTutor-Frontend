@@ -7,7 +7,7 @@ import {
 import { Outlet } from 'react-router-dom';
 import logo from '../../assets/svg/logo.png';
 import MiniNotify from '../../components/MiniNotify/MiniNotify';
-import MenuSider from '../../components/MenuSider/MenuSider';
+import MenuSider from '../../components/MenuSider/ModeratorMenuSider';
 import * as Styled from './ModeratorLayout.styled'
 
 const ModeratorLayout: React.FC = () => {

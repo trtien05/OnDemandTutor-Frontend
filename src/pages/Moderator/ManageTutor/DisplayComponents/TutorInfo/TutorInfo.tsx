@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Flex, Form, Input, Modal, Switch, notification } from "antd";
+import { Avatar, Button, Col, Flex, Form, Input, Modal, Select, Skeleton, Switch, notification } from "antd";
 import { useEffect, useState } from "react";
 import * as FormStyled from "../../../../BecomeTutor/Form.styled";
 import * as Styled from '../../../../../components/QuestionList/Question.styled';
@@ -11,12 +11,14 @@ import { Clickable, FormItem } from "./TutorInfo.styled"
 import EducationVerify from "./EducationVerify";
 import CertificateVerify from "./CertificateVerify";
 import TimeslotVerify from "./TimeslotVerify";
-import { approveTutor } from "../../../../../utils/moderatorAPI";
+import { approveTutor, sendEmail } from "../../../../../utils/moderatorAPI";
+import { tutorApprovalMessages, tutorRejectionMessages } from "../../emailMessages";
 // import iconBachelor from '../../../assets/images/image13.png';
 interface TutorInfoProps {
     tutorId: number;
     tutor: Tutor;
-}
+    onReload?: () => void;
+}7
 
 const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const { tutorId } = props;
@@ -40,6 +42,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const [acceptedDiploma, setAcceptedDiploma] = useState<number[]>([]);
     const [acceptedCertificate, setAcceptedCertificate] = useState<number[]>([]);
     const [acceptedSubject, setAcceptedSubject] = useState<string[]>([]);
+    const [isRejected, setIsRejected] = useState(false); // Tutor is rejected
 
     //---------------------- Fetch tutor info ----------------------
     useEffect(() => {
@@ -49,17 +52,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 setSwitchSubject(() => (
                     tutorInfo.subjects.map((item) => ({ [item]: false }))
                 ));
-                const education = await getTutorEducation(tutorId);
+                const education = await getTutorEducation(tutorId, '');
                 if (education.data) {
                     setTutorEducation(education.data);
                 }
-                const certificate = await getTutorCertification(tutorId);
+                const certificate = await getTutorCertification(tutorId, '');
                 if (certificate.data) {
                     setTutorCertification(certificate.data);
                 }
                 const schedule = await getFullSchedule(tutorId);
                 if (schedule.data) {
-                    console.log(schedule.data.schedules[4].timeslots, schedule.data.schedules[4].timeslots.length)
                     setSchedule(() => schedule.data.schedules.map((item: any) => ({
                         dayOfWeek: item.dayOfWeek,
                         dayOfMonth: item.dayOfMonth,
@@ -137,9 +139,60 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         setIsFormOpen(true);
     };
 
+    const approveValidation = () => {
+        if (acceptedDiploma.length === 0) {
+            api.error({
+                message: "Error",
+                description: "A tutor must have at least one approved diploma",
+            });
+            return false;
+        }
+        if (acceptedSubject.length === 0) {
+            api.error({
+                message: "Error",
+                description: "A tutor must have at least one approved subject",
+            });
+            return false;
+        }
+
+        //set mail message
+        const rejectDocument = (acceptedDiploma.length < tutorEducation.length) || (acceptedCertificate.length < tutorCertification.length);
+        const rejectSubject = acceptedSubject.length < tutorInfo.subjects.length;
+        const missingDescription = tutorInfo.backgroundDescription === null || tutorInfo.videoIntroductionLink === null;
+        const rejectDescription = missingDescription===false && (form.getFieldValue('backgroundDescription') && form.getFieldValue('videoIntroductionLink'));
+        const rejectFields = (rejectDocument && rejectSubject) 
+                    || (rejectDescription && rejectSubject) || (rejectDescription && rejectDocument);
+        if (rejectFields) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedFields);
+        else if (rejectSubject) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedSubject);
+        else if (rejectDocument) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedDocument);
+        else if (missingDescription) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithMissingDescription);
+        else if (rejectDescription) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedDescription);
+        else form.setFieldValue('mailMessage', tutorApprovalMessages.fullyApproved);
+        console.log('document:', rejectDocument);
+        console.log('subject:', rejectSubject);
+        console.log('description:', rejectDescription);
+        console.log('fields:', rejectFields);
+        console.log('missing:', missingDescription);
+        handleOk('approved');
+    }
+
+    const rejectValidation = () => {
+        if (!isRejected) {
+            setLoading(true);
+            setIsRejected(true);
+            setTimeout(() => {
+                setLoading(false);
+            }, 500);
+            return false;
+        } else {
+            
+            handleOk('rejected');
+        }
+    }
+
 
     const handleOk = async (status: string) => {
-        // setLoading(true); // Set loading state to true when form is submitted
+        setLoading(true); // Set loading state to true when form is submitted
         const submitData = {
             approvedSubjects: acceptedSubject,
             approvedEducations: acceptedDiploma,
@@ -148,18 +201,38 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             videoIntroductionLink: form.getFieldValue('videoIntroductionLink') ? form.getFieldValue('videoIntroductionLink') : "",
         }
 
-        try{
-            const response = await approveTutor(tutorId,status, submitData);
-            console.log(response)
-            api.success({
-                message: "Success",
-                description: "Tutor has been approved",
-            });
-        }catch (error) {
+        const mailData = {
+            email: tutorInfo.email,
+            moderatorMessage: form.getFieldValue('mailMessage'),
+            approved: true
+        }
+
+        try {
+            await approveTutor(tutorId, status, submitData);
+            if (status === 'approved') {
+                await sendEmail(mailData);
+                api.success({
+                    message: "Success",
+                    description: "Tutor has been approved",
+                });
+            } else {
+                mailData.approved = false;
+                console.log(mailData);
+                await sendEmail(mailData);
+                api.success({
+                    message: "Success",
+                    description: "Tutor has been rejected",
+                });
+            }
+        } catch (error) {
             api.error({
                 message: "Error",
                 description: "Failed to submit tutor approval",
             });
+        } finally {
+            setLoading(false);
+            props.onReload && props.onReload();
+            setIsFormOpen(false);
         }
     };
 
@@ -180,9 +253,9 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 open={isFormOpen}
                 onCancel={handleCancel}
                 footer={[<FormStyled.ButtonDiv>
-                    <Button key="Cancel" 
-                        type="default" 
-                        onClick={handleCancel} 
+                    <Button key="Cancel"
+                        type="default"
+                        onClick={handleCancel}
                         style={{ marginRight: '3%', width: '20%' }}>
                         Cancel
                     </Button>
@@ -190,14 +263,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         key="submit"
                         type="default"
                         htmlType="submit"
-                        onClick={() => handleOk('rejected')}
+                        onClick={rejectValidation}
                         disabled={!agreement}
                         loading={loading}
                         form='verifyTutorForm'
-                        style={{ marginRight: '3%', 
-                            width: '35%', 
-                            fontWeight:`bold`,
-                            color: `${theme.colors.error}`}}
+                        style={{
+                            marginRight: '3%',
+                            width: '35%',
+                            fontWeight: `bold`,
+                            color: `${theme.colors.error}`
+                        }}
                     >
                         Reject
                     </Button>
@@ -205,14 +280,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         key="submit"
                         type="default"
                         htmlType="submit"
-                        onClick={() => handleOk('approved')}
+                        onClick={approveValidation}
                         disabled={!agreement}
                         loading={loading}
                         form='verifyTutorForm'
-                        style={{ marginRight: '2%', 
-                            width: '35%', 
-                            fontWeight:`bold`,
-                            color: `${theme.colors.success}`}}
+                        style={{
+                            marginRight: '2%',
+                            width: '35%',
+                            fontWeight: `bold`,
+                            color: `${theme.colors.success}`
+                        }}
                     >
                         Approve
                     </Button>
@@ -233,219 +310,242 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     size="middle"
                     style={{ rowGap: `10px` }}
                 >
-                    {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
+                    <Skeleton loading={loading}>
+                        {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
 
-                    {tutorInfo.avatarUrl ? (
-                        <Avatar
-                            size={100}
-                            src={tutorInfo.avatarUrl}
-                            style={{
-                                borderRadius: '15px',
-                                marginRight: '10px',
-                            }}
-                        />
-                    ) : (
-                        <Avatar
-                            size={100}
-                            icon={<UserOutlined />}
-                            style={{
-                                borderRadius: '15px',
-                                marginRight: '10px',
-                            }}
-
-                        />
-                    )}
-
-                    <Col sm={12}>
-                        <div>
-                            <Styled.ModalStudentInfo
+                        {tutorInfo.avatarUrl ? (
+                            <Avatar
+                                size={100}
+                                src={tutorInfo.avatarUrl}
                                 style={{
-                                    fontSize: '16px',
-                                    fontWeight: 'bold',
-                                    fontStyle: 'italic',
+                                    borderRadius: '15px',
+                                    marginRight: '10px',
                                 }}
-                            >
-                                {tutorInfo.fullName}
-                                <span style={{ color: `${theme.colors.textSecondary}`, fontWeight: `normal` }}>, {tutorInfo.gender}</span>
-                            </Styled.ModalStudentInfo>
-                            <Styled.ModalStudentInfo
+                            />
+                        ) : (
+                            <Avatar
+                                size={100}
+                                icon={<UserOutlined />}
                                 style={{
-                                    display: 'block',
-                                }}>
-                                <p>
-                                    Date of birth: {new Date(tutorInfo.dateOfBirth).toLocaleDateString()}
-                                </p>
-                                <p>
-                                    Email: {tutorInfo.email}
-                                </p>
-                                <p>
-                                    Phone: {tutorInfo.phoneNumber}
-                                </p>
-                                <p>
-                                    Address: {tutorInfo.address}
-                                </p>
+                                    borderRadius: '15px',
+                                    marginRight: '10px',
+                                }}
 
-                            </Styled.ModalStudentInfo>
+                            />
+                        )}
 
-                        </div>
-                    </Col>
-                    <Col sm={24}>
-                        <div style={{ display: `flex`, flexWrap: `wrap` }}>
-                            <FormItem
-                                name='teachingPricePerHour'
-                                label='Teaching Price Per Hour'
-                                style={{ width: `300px` }}
-                            >
-                                <div onClick={() => toggleSwitch('teachingPricePerHour')}>
-                                    <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
-                                </div>
-                            </FormItem>
+                        <Col sm={12}>
+                            <div>
+                                <Styled.ModalStudentInfo
+                                    style={{
+                                        fontSize: '16px',
+                                        fontWeight: 'bold',
+                                        fontStyle: 'italic',
+                                    }}
+                                >
+                                    {tutorInfo.fullName}
+                                    <span style={{ color: `${theme.colors.textSecondary}`, fontWeight: `normal` }}>, {tutorInfo.gender}</span>
+                                </Styled.ModalStudentInfo>
+                                <Styled.ModalStudentInfo
+                                    style={{
+                                        display: 'block',
+                                    }}>
+                                    <p>
+                                        Date of birth: {new Date(tutorInfo.dateOfBirth).toLocaleDateString()}
+                                    </p>
+                                    <p>
+                                        Email: {tutorInfo.email}
+                                    </p>
+                                    <p>
+                                        Phone: {tutorInfo.phoneNumber}
+                                    </p>
+                                    <p>
+                                        Address: {tutorInfo.address}
+                                    </p>
 
-                            <FormItem
-                                name='meetingLink'
-                                label='Meeting Link'
-                                style={{ width: `50%` }}
-                            >
-                                <div>
-                                    <span> {tutorInfo.meetingLink} </span>
-                                </div>
-                            </FormItem>
-                        </div>
-                        <FormItem
-                            name='videoIntroductionLink'
-                            label='Video Introduction'
-                        >
-                            {tutorInfo.videoIntroductionLink ?
-                                <Clickable>
-                                    <Flex onClick={() => toggleSwitch('videoIntroductionLink')}>
+                                </Styled.ModalStudentInfo>
 
-                                        <div
-                                            style={{
-                                                width: "70%",
-                                                height: "100%",
-                                                marginBottom: `20px`,
-                                                marginTop: `10px`
-                                            }}>
-                                            <div style={{
-                                                position: 'relative',
-                                                paddingTop: '56.25%',
-                                                width: '100%'
-                                            }}>
-                                                <ReactPlayer
-                                                    className="react-player"
-                                                    url={tutorInfo.videoIntroductionLink}
-                                                    controls={true}
-                                                    width="100%"
-                                                    height="100%"
-                                                    style={{
-                                                        position: 'absolute',
-                                                        top: 0,
-                                                        left: 0
-                                                    }}
-                                                />
-                                            </div>
-                                        </div>
-                                        <Switch
-                                            checkedChildren="Admit"
-                                            unCheckedChildren="Deny"
-                                            style={{ margin: `auto` }}
-                                            checked={switchStates.videoIntroductionLink}
-                                            onChange={(checked) => handleAcceptField('videoIntroductionLink', checked)}
-                                        />
-                                    </Flex>
-                                </Clickable>
-                                : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
-                        </FormItem>
-                        <FormStyled.FormItem
-                            name='backgroundDescription'
-                            label='Background Description'
-                        >
-                            {tutorInfo.backgroundDescription ?
-                                <Clickable onClick={() => toggleSwitch('backgroundDescription')}>
-                                    <p style={{ marginBottom: `10px` }}> {tutorInfo.backgroundDescription} </p>
-                                    <Switch
-                                        checkedChildren="Admit"
-                                        unCheckedChildren="Deny"
-                                        checked={switchStates.backgroundDescription}
-                                        onChange={(checked) => handleAcceptField('backgroundDescription', checked)}
-                                    />
-                                </Clickable>
-                                : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
-                        </FormStyled.FormItem>
-
-
-                        <FormStyled.FormItem
-                            name='subjects'
-                            label='Subjects'>
+                            </div>
+                        </Col>
+                    </Skeleton>
+                    <Skeleton loading={loading}>
+                        <Col sm={24}>
                             <div style={{ display: `flex`, flexWrap: `wrap` }}>
-                                {tutorInfo.subjects.map((item: string, index: number) => (
-                                    <Clickable key={index}
-                                        onClick={() => toggleSubject(item)}
+                                <FormItem
+                                    name='teachingPricePerHour'
+                                    label='Teaching Price Per Hour'
+                                    style={{ width: `300px` }}
+                                >
+                                    <div onClick={() => toggleSwitch('teachingPricePerHour')}>
+                                        <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
+                                    </div>
+                                </FormItem>
 
-                                        style={{ textAlign: `center` }}
-                                    >
-                                        <p style={{ marginBottom: `5px` }}>{item}</p>
+                                <FormItem
+                                    name='meetingLink'
+                                    label='Meeting Link'
+                                    style={{ width: `50%` }}
+                                >
+                                    <div>
+                                        <span> {tutorInfo.meetingLink} </span>
+                                    </div>
+                                </FormItem>
+                            </div>
+                            <FormItem
+                                name='videoIntroductionLink'
+                                label='Video Introduction'
+                            >
+                                {tutorInfo.videoIntroductionLink ?
+                                    <Clickable>
+                                        <Flex onClick={() => toggleSwitch('videoIntroductionLink')}>
+
+                                            <div
+                                                style={{
+                                                    width: "70%",
+                                                    height: "100%",
+                                                    marginBottom: `20px`,
+                                                    marginTop: `10px`
+                                                }}>
+                                                <div style={{
+                                                    position: 'relative',
+                                                    paddingTop: '56.25%',
+                                                    width: '100%'
+                                                }}>
+                                                    <ReactPlayer
+                                                        className="react-player"
+                                                        url={tutorInfo.videoIntroductionLink}
+                                                        controls={true}
+                                                        width="100%"
+                                                        height="100%"
+                                                        style={{
+                                                            position: 'absolute',
+                                                            top: 0,
+                                                            left: 0
+                                                        }}
+                                                    />
+                                                </div>
+                                            </div>
+                                            <Switch
+                                                checkedChildren="Admit"
+                                                unCheckedChildren="Deny"
+                                                style={{ margin: `auto` }}
+                                                checked={switchStates.videoIntroductionLink}
+                                                onChange={(checked) => handleAcceptField('videoIntroductionLink', checked)}
+                                            />
+                                        </Flex>
+                                    </Clickable>
+                                    : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
+                            </FormItem>
+                            <FormStyled.FormItem
+                                name='backgroundDescription'
+                                label='Background Description'
+                            >
+                                {tutorInfo.backgroundDescription ?
+                                    <Clickable onClick={() => toggleSwitch('backgroundDescription')}>
+                                        <p style={{ marginBottom: `10px` }}> {tutorInfo.backgroundDescription} </p>
                                         <Switch
                                             checkedChildren="Admit"
                                             unCheckedChildren="Deny"
-                                            checked={switchSubject[item as keyof typeof switchSubject]}
-                                            onChange={(checked) => handleAcceptField(item, checked)}
+                                            checked={switchStates.backgroundDescription}
+                                            onChange={(checked) => handleAcceptField('backgroundDescription', checked)}
                                         />
                                     </Clickable>
+                                    : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
+                            </FormStyled.FormItem>
+
+                            <FormStyled.FormItem
+                                name='subjects'
+                                label='Subjects'>
+                                <div style={{ display: `flex`, flexWrap: `wrap` }}>
+                                    {tutorInfo.subjects.map((item: string, index: number) => (
+                                        <Clickable key={index}
+                                            onClick={() => toggleSubject(item)}
+
+                                            style={{ textAlign: `center` }}
+                                        >
+                                            <p style={{ marginBottom: `5px` }}>{item}</p>
+                                            <Switch
+                                                checkedChildren="Admit"
+                                                unCheckedChildren="Deny"
+                                                checked={switchSubject[item as keyof typeof switchSubject]}
+                                                onChange={(checked) => handleAcceptField(item, checked)}
+                                            />
+                                        </Clickable>
+                                    ))}
+                                </div>
+                            </FormStyled.FormItem>
+                        </Col>
+                    </Skeleton>
+
+                    <Skeleton loading={loading}>
+                        <Col sm={24}>
+                            <FormStyled.FormItem
+                                name='educations'
+                                label='Diploma'
+                            >
+                                {tutorEducation.map((item: Education, index: number) => (
+                                    <EducationVerify education={item}
+                                        key={index}
+                                        handleFunction={handleAcceptedDiploma} />
                                 ))}
-                            </div>
-                        </FormStyled.FormItem>
-                    </Col>
 
-                    <Col sm={24}>
-                        <FormStyled.FormItem
-                            name='educations'
-                            label='Diploma'
-                        >
-                            {tutorEducation.map((item: Education, index: number) => (
-                                <EducationVerify education={item}
-                                    key={index}
-                                    handleFunction={handleAcceptedDiploma} />
-                            ))}
+                            </FormStyled.FormItem>
+                            <FormStyled.FormItem
+                                name='certificate'
+                                label='Certificate'
+                            >
+                                {tutorCertification.length !== 0 ? tutorCertification.map((item: Certificate, index: number) => (
+                                    <CertificateVerify certificate={item}
+                                        key={index}
+                                        handleFunction={handleAcceptedCertificate} />
+                                )) : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
 
-                        </FormStyled.FormItem>
-                        <FormStyled.FormItem
-                            name='certificate'
-                            label='Certificate'
-                        >
-                            {tutorCertification.length !== 0 ? tutorCertification.map((item: Certificate, index: number) => (
-                                <CertificateVerify certificate={item}
-                                    key={index}
-                                    handleFunction={handleAcceptedCertificate} />
-                            )) : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
+                            </FormStyled.FormItem>
+                            <FormStyled.FormItem
+                                name='availability'
+                                label='Availability'
+                            >
+                                {schedule ? (<TimeslotVerify schedule={schedule}
+                                    toggleSwitch={toggleSchedule}
+                                    switchStates={isScheduleAccepted}
+                                    handleChange={setIsScheduleAccepted} />)
+                                    : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
+                            </FormStyled.FormItem>
 
-                        </FormStyled.FormItem>
-                        <FormStyled.FormItem
-                            name='availability'
-                            label='Availability'
-                        >
-                            {schedule ? (<TimeslotVerify schedule={schedule}
-                                toggleSwitch={toggleSchedule}
-                                switchStates={isScheduleAccepted}
-                                handleChange={setIsScheduleAccepted} />)
-                                : <p style={{ color: `${theme.colors.textSecondary}` }}>Empty</p>}
-                        </FormStyled.FormItem>
-                        
-                    </Col>
-                    <div style={{textAlign:`center`, 
-                                    margin:`20px`, 
-                                    fontWeight:`bold`}}>
+                        </Col>
+                        <div style={{
+                        textAlign: `center`,
+                        margin: `20px`,
+                        fontWeight: `bold`
+                    }}>
                         <FormStyled.FormCheckbox
                             name='agreement'
                             style={{ margin: `0px`, color: `${theme.colors.black}` }}
                             checked={agreement}
                             defaultChecked={agreement}
                             onChange={(e) => setAgreement(e.target.checked)}
-                        >I have carefully checked all the tutor details 
-                        before submitting my decision</FormStyled.FormCheckbox>
+                        >I have carefully checked all the tutor details
+                            before submitting my decision</FormStyled.FormCheckbox>
 
                     </div>
                     
+                    {isRejected && (<FormStyled.FormItem
+                        name='mailMessage'
+                        label='Reject reason:'
+                        valuePropName="value"
+                    >
+                        <Select
+                            placeholder="Select a reason"
+                            style={{ width: '100%' }}>
+                                {tutorRejectionMessages.map((item, index) => (
+                                    <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
+                            </Select>
+                    </FormStyled.FormItem>)
+
+                    }
+                    </Skeleton>
+                    
+
                 </FormStyled.FormWrapper>
             </Modal>
         </>

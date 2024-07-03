@@ -69,7 +69,7 @@ export const MessageContent = styled.p<MessageProps>`
 export const SendMessage = styled.div`
     display: flex;
     align-items: end;
-
+    position: relative;
     padding: 16px;
     background: #fff;
     border-top: 1px solid #e8e8e8;
