@@ -70,4 +70,5 @@ export const StyledSider = styled(Sider)`
 export const StyledContent = styled(Content)`
     padding: 20px;
     background: #fff;
+    height: 100vh;
 `;
