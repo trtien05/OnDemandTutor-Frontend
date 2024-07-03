@@ -1,6 +1,7 @@
-import { useEffect, useState } from 'react';
-import TutorTable from './TutorTable';
+import React, { useEffect, useState } from 'react';
+
 import { getAccountByRole } from '../../../utils/accountAPI';
+import ModeratorTable from './ModeratorTable';
 
 interface Education {
   degreeType?: string;
@@ -18,16 +19,14 @@ interface Tutor {
   subjects: string[],
   averageRating?: number;
   loading: boolean;
-  status: string;
-  gender: string;
 };
 
-const ManageTutor = () => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+const ManageModerator = () => {
+  const [moderator, setModerator] = useState([]);
 
   const fetchApi = async () => {
-    const response = await getAccountByRole('TUTOR');
-    setTutors(response.data.content);
+    const response = await getAccountByRole('MODERATOR');
+    setModerator(response.data.content);
   }
 
   useEffect(() => {
@@ -37,17 +36,18 @@ const ManageTutor = () => {
   const handleReload = () => {
     fetchApi();
   }
+  console.log(moderator);
   return (
-    <div style={{ 'height': '85vh' }}>
-      <h2>Manage Tutor</h2>
+    <div style={{ 'height': '100vh' }}>
+      <h2>Manage Moderator</h2>
 
-      {tutors && (
+      {moderator && (
         <div style={{ 'marginTop': '20px' }}>
-          <TutorTable tutors={tutors} onReload={handleReload} />
+          <ModeratorTable tutors={moderator} onReload={handleReload} />
         </div>)
       }
     </div>
   );
 }
 
-export default ManageTutor;
+export default ManageModerator;

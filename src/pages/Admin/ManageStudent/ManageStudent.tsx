@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import TutorTable from './TutorTable';
+import StudentTable from './StudentTable';
 import { getAccountByRole } from '../../../utils/accountAPI';
 
 interface Education {
@@ -18,16 +18,14 @@ interface Tutor {
   subjects: string[],
   averageRating?: number;
   loading: boolean;
-  status: string;
-  gender: string;
 };
 
-const ManageTutor = () => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+const ManageStudent = () => {
+  const [students, setStudents] = useState([]);
 
   const fetchApi = async () => {
-    const response = await getAccountByRole('TUTOR');
-    setTutors(response.data.content);
+    const response = await getAccountByRole('STUDENT');
+    setStudents(response.data.content);
   }
 
   useEffect(() => {
@@ -37,17 +35,18 @@ const ManageTutor = () => {
   const handleReload = () => {
     fetchApi();
   }
+  console.log(students);
   return (
-    <div style={{ 'height': '85vh' }}>
-      <h2>Manage Tutor</h2>
+    <div style={{ 'height': '100vh' }}>
+      <h2>Manage Student</h2>
 
-      {tutors && (
+      {students && (
         <div style={{ 'marginTop': '20px' }}>
-          <TutorTable tutors={tutors} onReload={handleReload} />
+          <StudentTable tutors={students} onReload={handleReload} />
         </div>)
       }
     </div>
   );
 }
 
-export default ManageTutor;
+export default ManageStudent;
