@@ -1,15 +1,16 @@
 import { Badge, Table, Tag, Tooltip } from 'antd';
 import React from 'react';
-import DeleteTutor from '../DeleteTutor';
+import TutorDocument from '../../ManageDocument/TutorDocument';
 import { Tutor } from '../Tutor.type'
 import TutorInfo from './TutorInfo/TutorInfo';
 
 interface TutorTableProps {
   tutors: Tutor[];
   onReload: () => void;
+  manage: string;
 }
 
-const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
+const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => {
   const columns = [
     {
       title: 'Id',
@@ -45,8 +46,9 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       render: (_: any, record: Tutor) => (
         <>
           {/* <EditRoom record={record} onReload={onReload} /> */}
+          {manage.includes('tutor') ? 
           <TutorInfo tutorId={record.id} tutor={record} onReload={onReload} />
-
+          : <TutorDocument tutorId={record.id} tutor={record} onReload={onReload} />}
         </>
       )
     }

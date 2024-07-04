@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
-import TutorTable from './DisplayComponents/TutorTable';
-import { Tutor } from './Tutor.type';
-import { getTutorByStatus } from '../../../utils/moderatorAPI';
 
-const ManageTutor = () => {
+import { getTutorByStatus } from '../../../utils/moderatorAPI';
+import { Tutor } from '../ManageTutor/Tutor.type';
+import TutorTable from '../ManageTutor/DisplayComponents/TutorTable';
+const ManageDocument = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
 
   const fetchApi = async () => {
-    const response = await getTutorByStatus('PROCESSING');
+    const response = await getTutorByStatus('ACTIVE');
     setTutors(response.data.content);
   }
 
@@ -20,15 +20,15 @@ const ManageTutor = () => {
   }
   return (
     <div style={{ 'height': '100vh' }}>
-      <h2>Processing Tutor</h2>
+      <h2>Processing Tutor's Documents</h2>
 
       {tutors && (
         <div style={{ 'marginTop': '20px' }}>
-          <TutorTable tutors={tutors} onReload={handleReload} manage={'tutor'} />
+          <TutorTable tutors={tutors} onReload={handleReload} manage='document' />
         </div>)
       }
     </div>
   );
 }
 
-export default ManageTutor;
+export default ManageDocument;
