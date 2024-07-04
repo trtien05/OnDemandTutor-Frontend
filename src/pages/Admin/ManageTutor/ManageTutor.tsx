@@ -2,28 +2,9 @@ import { useEffect, useState } from 'react';
 import TutorTable from './TutorTable';
 import { getAccountByRole } from '../../../utils/accountAPI';
 
-interface Education {
-  degreeType?: string;
-  majorName?: string;
-  specialization?: string;
-  verified?: boolean;
-};
-
-interface Tutor {
-  id: number;
-  fullName?: string;
-  avatarUrl?: string;
-  teachingPricePerHour: number;
-  educations?: Education;
-  subjects: string[],
-  averageRating?: number;
-  loading: boolean;
-  status: string;
-  gender: string;
-};
 
 const ManageTutor = () => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+  const [tutors, setTutors] = useState([]);
 
   const fetchApi = async () => {
     const response = await getAccountByRole('TUTOR');
@@ -33,7 +14,7 @@ const ManageTutor = () => {
   useEffect(() => {
     fetchApi();
   }, [])
-
+  console.log(tutors)
   const handleReload = () => {
     fetchApi();
   }

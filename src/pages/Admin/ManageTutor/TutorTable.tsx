@@ -1,6 +1,8 @@
 import { Badge, Table, TableColumnsType, Tag, Tooltip } from 'antd';
 import React, { useState } from 'react';
 import DeleteTutor from './DeleteTutor';
+import EditTutor from './EditTutor'
+import { FaStar } from 'react-icons/fa';
 
 interface Education {
   degreeType?: string;
@@ -19,7 +21,8 @@ interface Tutor {
   averageRating?: number;
   loading: boolean;
   status: string;
-  gender: string;
+  gender: boolean;
+  dateOfBirth: string;
 };
 
 interface TutorTableProps {
@@ -73,6 +76,10 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       dataIndex: 'email',
     },
     {
+      title: 'Phone Number',
+      dataIndex: 'phoneNumber',
+    },
+    {
       title: 'Price Per Hour',
       dataIndex: 'teachingPricePerHour',
       render: (_, record) => formatPrice(record.teachingPricePerHour),
@@ -90,6 +97,14 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       ],
       onFilter: (value, record) => record.averageRating === value,
       sorter: (a, b) => (a.averageRating ?? 0) - (b.averageRating ?? 0),
+      render: (_, record) => (
+        <>
+          {record.averageRating &&
+            Array.from({ length: record.averageRating }).map((_, index) => (
+              <FaStar key={index} style={{ color: '#ffc107' }} />
+            ))}
+        </>
+      ),
     },
     {
       title: 'Status',
@@ -119,7 +134,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       dataIndex: 'action',
       render: (_: any, record: Tutor) => (
         <>
-          {/* <EditRoom record={record} onReload={onReload} /> */}
+          <EditTutor record={record} onReload={onReload} />
           <DeleteTutor record={record} onReload={onReload} />
 
         </>

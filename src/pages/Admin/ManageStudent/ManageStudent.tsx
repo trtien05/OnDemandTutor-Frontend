@@ -42,7 +42,7 @@ const ManageStudent = () => {
 
       {students && (
         <div style={{ 'marginTop': '20px' }}>
-          <StudentTable tutors={students} onReload={handleReload} />
+          <StudentTable students={students} onReload={handleReload} />
         </div>)
       }
     </div>

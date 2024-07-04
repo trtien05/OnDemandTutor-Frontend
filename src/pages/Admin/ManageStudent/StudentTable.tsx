@@ -1,37 +1,42 @@
 import { Badge, Table, TableColumnsType, Tag, Tooltip } from 'antd';
-import React from 'react';
-import DeleteTutor from './DeleteStudent';
+import React, { useState } from 'react';
 import DeleteStudent from './DeleteStudent';
+import EditStudent from './EditStudent';
 
-interface Education {
-  degreeType?: string;
-  majorName?: string;
-  specialization?: string;
-  verified?: boolean;
-};
 
-interface Tutor {
+
+interface Student {
   id: number;
   fullName?: string;
-  avatarUrl?: string;
-  teachingPricePerHour: number;
-  educations?: Education;
-  subjects: string[],
-  averageRating?: number;
+  gender?: boolean;
+  address?: string;
+  dateOfBirth?: string;
+  createAt?: string;
+  status?: string;
   loading: boolean;
 };
 
-interface TutorTableProps {
-  tutors: Tutor[];
+interface StudentTableProps {
+  students: Student[];
   onReload: () => void;
 }
-const formatPrice = (price: number) => {
-  const safePrice = Number(price) || 0;
-  return `${safePrice.toLocaleString()} đ`;
-}
 
-const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
-  const columns: TableColumnsType<Tutor> = [
+
+const StudentTable: React.FC<StudentTableProps> = ({ students, onReload }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(5);
+
+  const handleTableChange = (pagination: any) => {
+    setCurrentPage(pagination.current);
+    setPageSize(pagination.pageSize);
+  };
+  const columns: TableColumnsType<Student> = [
+    {
+      title: 'No',
+      dataIndex: 'index',
+      key: 'index',
+      render: (_text, _record, index) => (currentPage - 1) * pageSize + index + 1,
+    },
     {
       title: 'Student Name',
       dataIndex: 'fullName',
@@ -42,6 +47,12 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
     {
       title: 'Gender',
       dataIndex: 'gender',
+      filters: [
+        { text: 'Female', value: 'female' },
+        { text: 'Male', value: 'male' },
+
+      ],
+      onFilter: (value, record) => record.gender === value,
     },
     {
       title: 'Address',
@@ -52,35 +63,67 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
       dataIndex: 'email',
     },
     {
+      title: 'Phone Number',
+      dataIndex: 'phoneNumber',
+    },
+    {
       title: 'Date of Birth',
       dataIndex: 'dateOfBirth',
+      sorter: (a, b) => new Date(a.dateOfBirth ?? '').getTime() - new Date(b.dateOfBirth ?? '').getTime(),
+      sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Created At',
       dataIndex: 'createAt',
+      sorter: (a, b) => new Date(a.createAt ?? '').getTime() - new Date(b.createAt ?? '').getTime(),
+      sortDirections: ['descend', 'ascend'],
     },
     {
       title: 'Status',
       dataIndex: 'status',
-    },
+      filters: [
+        { text: 'ACTIVE', value: 'ACTIVE' },
+        { text: 'PROCESSING', value: 'PROCESSING' },
+        { text: 'BANNED', value: 'BANNED' },
+        { text: 'UNVERIFIED', value: 'UNVERIFIED' },
+      ],
+      onFilter: (value, record) => record.status === value,
+      render: (_, record) => (
 
+        <Tag color={
+          record.status === 'ACTIVE' ? 'green' :
+            record.status === 'PROCESSING' ? 'orange' :
+              record.status === 'BANNED' ? 'red' :
+                record.status === 'UNVERIFIED' ? 'gray' : ''
+        }>
+          {record.status}
+        </Tag>
+
+      )
+    },
     {
       title: 'Action',
       dataIndex: 'action',
-      render: (_: any, record: Tutor) => (
+      render: (_: any, record: Student) => (
         <>
-          {/* <EditRoom record={record} onReload={onReload} /> */}
+          <EditStudent record={record} onReload={onReload} />
           <DeleteStudent record={record} onReload={onReload} />
-
         </>
       )
     }
   ];
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} dataSource={tutors} />
+      <Table rowKey={'id'} columns={columns} dataSource={students}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          total: students.length,
+          showSizeChanger: false,
+        }}
+        onChange={handleTableChange} />
     </div>
   );
 }
 
-export default TutorTable;
+export default StudentTable;

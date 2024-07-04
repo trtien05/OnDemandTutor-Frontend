@@ -106,9 +106,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                   <div>
                     <Styled.BookingRatingAndPrice>{item.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
                   </div>
-                  <div>
-                    <Styled.IconStyleHeart />
-                  </div>
+
                 </Styled.BookingInformation>
                 <Styled.BookingThisTutor>
                   <Link to={route}>

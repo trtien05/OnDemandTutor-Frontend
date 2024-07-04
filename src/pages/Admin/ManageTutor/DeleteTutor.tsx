@@ -1,6 +1,7 @@
 import { Button, Popconfirm, Tooltip, message } from 'antd';
 import React from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
+import { deleteAccount } from '../../../utils/accountAPI';
 
 interface Record {
   id: number;
@@ -15,8 +16,7 @@ const DeleteTutor: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async (record: Record) => {
-    // const response = await deleteRoom(record.id);
-    const response = true;
+    const response = await deleteAccount(record.id);
     if (response) {
       onReload();
       messageApi.open({
