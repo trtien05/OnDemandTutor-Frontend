@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Flex, Form, Input, Modal, Select, Skeleton, Switch, notification } from "antd";
+import { Avatar, Button, Col, Flex, Form, Modal, Select, Skeleton, Switch, notification } from "antd";
 import { useEffect, useState } from "react";
 import * as FormStyled from "../../../../BecomeTutor/Form.styled";
 import * as Styled from '../../../../../components/QuestionList/Question.styled';
@@ -28,7 +28,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
     const [schedule, setSchedule] = useState<Schedule[]>([]); // Tutor schedule
     const [isScheduleAccepted, setIsScheduleAccepted] = useState(false); // Tutor schedule
     const [isFormOpen, setIsFormOpen] = useState(false);
-    const [tutorInfo, setTutorInfo] = useState(props.tutor); // Tutor info
+    const tutorInfo = props.tutor; // Tutor info
     const [tutorEducation, setTutorEducation] = useState<Education[]>([]); // Tutor education
     const [tutorCertification, setTutorCertification] = useState<Certificate[]>([]); // Tutor certification
     const [loading, setLoading] = useState(false);
@@ -170,19 +170,19 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             return sum === 0;
         }
         let mailMessage = `${approveForm.INTRO} <br/> <br/>`;
-        if (rejectFields) 
+        if (rejectFields)
             if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/>`;
-        else if (rejectSubject) 
+        else if (rejectSubject)
             if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/>`;
-        else if (rejectDocument) 
+        else if (rejectDocument)
             if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/>`;
-        else if (missingDescription) 
+        else if (missingDescription)
             if (missingSchedule()) mailMessage += `${approveMessages.MISSING_DESCIPRITON}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.MISSING_DESCIPRITON}<br/> <br/>`;
-        else if (rejectDescription) 
+        else if (rejectDescription)
             if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> `;
         else if (missingSchedule()) mailMessage += `${approveMessages.MISSING_SCHEDULE}<br/> <br/>`;
@@ -198,13 +198,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         if (!isRejected) {
             setLoading(true);
             setIsRejected(true);
+            form.resetFields(['mailMessage']);
+            // form.validateFields(['mailMessage'], { validateOnly: true });
             setTimeout(() => {
                 setLoading(false);
-            }, 500);
+            }, 200);
             return false;
         } else {
-
-            handleOk('rejected');
+            if (form.getFieldValue('mailMessage')) {
+                handleOk('rejected');
+            }
         }
     }
 
@@ -248,7 +251,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             setLoading(false);
             props.onReload && props.onReload();
             setIsFormOpen(false);
-            await sendEmail(mailData);            
+            await sendEmail(mailData);
         }
     };
 
@@ -278,7 +281,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     <Button
                         key="submit"
                         type="default"
-                        htmlType="submit"
+                        htmlType={isRejected?"submit":"button"}
                         onClick={rejectValidation}
                         disabled={!agreement}
                         loading={loading}
@@ -297,7 +300,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         type="default"
                         htmlType="submit"
                         onClick={approveValidation}
-                        disabled={!agreement}
+                        disabled={agreement ? isRejected : true}
                         loading={loading}
                         form='verifyTutorForm'
                         style={{
@@ -324,7 +327,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     requiredMark={false}
                     form={form}
                     size="middle"
-                    style={{ rowGap: `10px` }}
+                    style={{ rowGap: `0px` }}
                 >
                     <Skeleton loading={loading}>
                         {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
@@ -545,18 +548,28 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
 
                         </div>
 
-                        {isRejected && (<FormStyled.FormItem
-                            name='mailMessage'
-                            label='Reject reason:'
-                            valuePropName="value"
-                        >
-                            <Select
-                                placeholder="Select a reason"
-                                style={{ width: '100%' }}>
-                                {tutorRejectionMessages.map((item, index) => (
-                                    <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
-                            </Select>
-                        </FormStyled.FormItem>)
+                        {agreement && isRejected && (
+                            <><FormStyled.FormItem
+                                name='mailMessage'
+                                label='Reject reason:'
+                                valuePropName="value"
+                                rules={[{ required: true, message: 'Please select a reason for your rejection' }]}
+                                style={{ marginTop: `-10px` }}
+                                validateFirst
+                            >
+                                <Select
+                                    placeholder="Select a reason"
+                                    style={{ width: '100%' }}>
+                                    {tutorRejectionMessages.map((item, index) => (
+                                        <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
+                                </Select>
+                            </FormStyled.FormItem>
+                                <Button
+                                    type='link'
+                                    style={{ color: `${theme.colors.primary}`, textDecoration: 'underline', marginTop:`-5px`}}
+                                    onClick={() => { setIsRejected(false); setAgreement(false) }}>
+                                    I don't want to reject this application</Button>
+                            </>)
 
                         }
                     </Skeleton>
