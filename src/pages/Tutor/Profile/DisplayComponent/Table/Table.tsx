@@ -1,7 +1,7 @@
 import { Table, TableProps } from 'antd';
 import React from 'react'
 import { CertColumns, EducationColumns, TableData, } from './Table.type';
-import { Certificate, Education } from '../../pages/TutorProfile/TutorProfile.type';
+import { Certificate, Education } from '../../TutorProfile.type';
 
 const onChangeEducation: TableProps<Education>['onChange'] = (sorter, extra) => {
     console.log('params', sorter, extra);
