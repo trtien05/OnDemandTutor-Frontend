@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TutorTable from './DisplayComponents/TutorTable';
-import { Tutor, Education } from './Tutor.type';
+import { Tutor } from './Tutor.type';
 import { getTutorByStatus } from '../../../utils/moderatorAPI';
 
 const ManageTutor = () => {
@@ -18,7 +18,6 @@ const ManageTutor = () => {
   const handleReload = () => {
     fetchApi();
   }
-  console.log(tutors);
   return (
     <div style={{ 'height': '100vh' }}>
       <h2>Processing Tutor</h2>

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import * as FormStyled from '../../BecomeTutor/Form.styled'
+import * as FormStyled from '../../../BecomeTutor/Form.styled'
 import ReactPlayer from 'react-player';
 import { Button, Form, Input, notification } from 'antd';
 import { Details } from '../TutorProfile.type';
-import { updateTutorDescription } from '../../../utils/tutorAPI';
+import { updateTutorDescription } from '../../../../utils/tutorAPI';
 
 
 interface DescriptionFormProps {

@@ -10,24 +10,18 @@ const MenuSider: React.FC = () => {
 
   const items: MenuProps['items'] = [
     {
-      key: 'muc-0',
+      key: 'tutor',
       icon: <UserOutlined />,
       label: <Link to={config.routes.moderator.manageTutor}>Tutor</Link>,
-      children: [
-        {
-          key: 'muc_1-1',
-          label: 'Muc 1-1',
-        },
-      ],
     },
     {
-      key: 'muc-1',
+      key: 'question',
       icon: <QuestionCircleOutlined />,
       label: 'Question',
       
     },
     {
-      key: config.routes.admin.manageModerator,
+      key: 'document',
       icon: <FileDoneOutlined />,
       label: <Link to={config.routes.moderator.manageDocument}>Document</Link>,
     }

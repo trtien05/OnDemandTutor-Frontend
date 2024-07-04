@@ -1,5 +1,5 @@
 import { TableColumnsType } from "antd";
-import { Certificate, Education } from "../../pages/TutorProfile/TutorProfile.type";
+import { Certificate, Education } from "../../TutorProfile.type";
 
 export const EducationColumns: TableColumnsType<Education> = [
     {
