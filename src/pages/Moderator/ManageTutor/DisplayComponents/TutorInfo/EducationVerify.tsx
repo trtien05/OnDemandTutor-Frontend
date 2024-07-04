@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { Education } from '../../Tutor.type';
-import { RcFile } from 'antd/lib/upload';
-import { Flex, Image, Switch } from 'antd'
+import { Switch } from 'antd'
 import { Clickable } from './TutorInfo.styled';
 import FileViewer from '../../../../../components/FileViewer/FileViewer';
 interface EducationVerifyProps {
@@ -10,15 +9,8 @@ interface EducationVerifyProps {
 }
 
 const EducationVerify: React.FC<EducationVerifyProps> = (props) => {
-    const [previewImage, setPreviewImage] = useState<string | null>(null);
     const item: Education = props.education;
-    const [previewOpen, setPreviewOpen] = useState(false);
     const [switchStates, setSwitchStates] = useState(false);
-
-    const handlePreview = async (url: string) => {
-        setPreviewImage(url);
-        setPreviewOpen(true);
-    };
 
     const handleChange = (id: number, checked: boolean) => {
         props.handleFunction(id, checked);
