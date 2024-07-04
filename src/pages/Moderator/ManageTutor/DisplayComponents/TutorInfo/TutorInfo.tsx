@@ -162,33 +162,35 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         const rejectDescription = missingDescription === false && !(form.getFieldValue('backgroundDescription') && form.getFieldValue('videoIntroductionLink'));
         const rejectFields = (rejectDocument && rejectSubject)
             || (rejectDescription && rejectSubject) || (rejectDescription && rejectDocument);
-        const missingSchedule = schedule.length === 0;
+        const missingSchedule = () => {
+            let sum = 0;
+            schedule.map((item) => {
+                sum += item.timeslots.length;
+            })
+            return sum === 0;
+        }
         let mailMessage = `${approveForm.INTRO} <br/> <br/>`;
         if (rejectFields) 
-            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/>`;
         else if (rejectSubject) 
-            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/>`;
         else if (rejectDocument) 
-            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/>`;
         else if (missingDescription) 
-            if (missingSchedule) mailMessage += `${approveMessages.MISSING_DESCIPRITON}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            if (missingSchedule()) mailMessage += `${approveMessages.MISSING_DESCIPRITON}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            else mailMessage += `${approveMessages.MISSING_DESCIPRITON}<br/> <br/>`;
         else if (rejectDescription) 
-            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            if (missingSchedule()) mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
             else mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> `;
-        else if (missingSchedule) mailMessage += `${approveMessages.MISSING_SCHEDULE}<br/> <br/>`;
+        else if (missingSchedule()) mailMessage += `${approveMessages.MISSING_SCHEDULE}<br/> <br/>`;
         else form.setFieldValue('mailMessage', tutorApprovalMessages.fullyApproved);
 
         mailMessage += `${approveForm.ENDING}`;
 
         form.setFieldValue('mailMessage', mailMessage);
-        console.log('document:', rejectDocument);
-        console.log('subject:', rejectSubject);
-        console.log('description:', rejectDescription);
-        console.log('fields:', rejectFields);
-        console.log('missing:', missingDescription);
         handleOk('approved');
     }
 
@@ -226,15 +228,12 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         try {
             await approveTutor(tutorId, status, submitData);
             if (status === 'approved') {
-                await sendEmail(mailData);
                 api.success({
                     message: "Success",
                     description: "Tutor has been approved",
                 });
             } else {
                 mailData.approved = false;
-                console.log(mailData);
-                await sendEmail(mailData);
                 api.success({
                     message: "Success",
                     description: "Tutor has been rejected",
@@ -249,6 +248,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             setLoading(false);
             props.onReload && props.onReload();
             setIsFormOpen(false);
+            await sendEmail(mailData);            
         }
     };
 

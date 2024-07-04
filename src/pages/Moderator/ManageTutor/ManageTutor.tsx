@@ -18,7 +18,6 @@ const ManageTutor = () => {
   const handleReload = () => {
     fetchApi();
   }
-  console.log(tutors);
   return (
     <div style={{ 'height': '100vh' }}>
       <h2>Processing Tutor</h2>
