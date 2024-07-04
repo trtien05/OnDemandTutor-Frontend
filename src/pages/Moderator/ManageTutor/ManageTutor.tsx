@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import TutorTable from './DisplayComponents/TutorTable';
-import { Tutor, Education } from './Tutor.type';
+import { Tutor } from './Tutor.type';
 import { getTutorByStatus } from '../../../utils/moderatorAPI';
 
 const ManageTutor = () => {

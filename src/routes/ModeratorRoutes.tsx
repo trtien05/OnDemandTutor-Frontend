@@ -1,7 +1,7 @@
 import { Navigate } from "react-router-dom";
 import config from "../config";
 import { useAuth } from "../hooks";
-import ManageTutor from "../pages/Moderator/ManageTutors/ManageTutor";
+import ManageTutor from "../pages/Moderator/ManageTutor/ManageTutor";
 import ModeratorLayout from "../layouts/ModeratorLayout";
 
 
