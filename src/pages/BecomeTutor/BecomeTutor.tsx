@@ -238,11 +238,20 @@ const BecomeTutor = () => {
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
     if (accountId) {
+      try {
       const save = await saveData(values, accountId);
       const status = saveBecomeTutor(accountId);
+      console.log('status:', status)
+      console.log('save:', save)
       if (save!==undefined && status!==undefined) 
         navigate(config.routes.student.registerStatus, { state: 'sent' });
       else navigate(config.routes.student.registerStatus, { state: 'error' });
+      } catch (error: any) {
+        api.error({
+          message: 'Lỗi',
+          description: error.response ? error.response.data.message : error.message,
+        });
+      }
     }
     // api.success({
     //   message: 'Success',
@@ -302,29 +311,18 @@ const BecomeTutor = () => {
     try {
 
       await saveAccountDetails(tutorId, aboutValues, avatarURL)
-        .catch(error => {
-          console.error('Error saving account details:', error);
-        });
+       
       await saveEducations(tutorId, educationValues, diplomaURL)
-        .catch(error => {
-          console.error('Error saving educations:', error);
-        });
+       
       await saveCertificates(tutorId, certificationValues, certURL)
-        .catch(error => {
-          console.error('Error saving certificates:', error);
-        });
+       
       await saveTutorDescription(tutorId, descriptionValues)
-        .catch(error => {
-          console.error('Error saving tutor description:', error);
-        });
 
       await saveTutorAvailableTimeslots(tutorId, values)
-        .catch(error => {
-          console.error('Error saving tutor available timeslot:', error);
-        });
+      
       return 'Success'
-    } catch (error) {
-      console.error('Error during the process:', error);
+    } catch (error:any) {
+      return Promise.reject(error);
     }
   }
 
@@ -528,10 +526,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+       return Promise.reject(error);
     }
   }
 
@@ -565,12 +560,9 @@ const BecomeTutor = () => {
       console.log('Educations saved successfully:', responseData);
 
       // Return success response
-      return responseData;
+      return responseData
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -622,10 +614,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -676,10 +665,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -716,10 +702,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
