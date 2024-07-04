@@ -3,8 +3,8 @@ import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
 import { notification } from 'antd';
-import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
-import { getFullSchedule } from '../../../utils/tutorAPI';
+import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../../components/Schedule/Schedule.type';
+import { getFullSchedule } from '../../../../utils/tutorAPI';
 
 registerLicense("Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=");
 

@@ -7,7 +7,7 @@ import BecomeTutor from '../pages/BecomeTutor';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import MakePayment from '../pages/Payment/MakePayment';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
-import TutorProfile from '../pages/TutorProfile/TutorProfile';
+import TutorProfile from '../pages/Tutor/Profile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
 
 // import { Navigate, useLocation } from 'react-router-dom';

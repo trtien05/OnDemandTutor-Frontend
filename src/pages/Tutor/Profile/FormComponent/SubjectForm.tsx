@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import * as FormStyled from '../../BecomeTutor/Form.styled';
+import * as FormStyled from '../../../BecomeTutor/Form.styled';
 import { Button, Checkbox, Col, Form, Modal, Row, Select, notification, Typography } from 'antd';
 import { Certificate, Details, Education } from '../TutorProfile.type';
-import { FieldType } from '../../BecomeTutor/Form.fields';
-import { updateTutorDescription } from '../../../utils/tutorAPI';
+import { FieldType } from '../../../BecomeTutor/Form.fields';
+import { updateTutorDescription } from '../../../../utils/tutorAPI';
 import { ConsoleSqlOutlined } from '@ant-design/icons';
 const { Title } = Typography;
 

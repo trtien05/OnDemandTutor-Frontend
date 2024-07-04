@@ -1,23 +1,23 @@
 import { useEffect, useState } from 'react'
-import useDocumentTitle from '../../hooks/useDocumentTitle';
-import useAuth from '../../hooks/useAuth';
-import { getTutorById, getTutorStatistic } from '../../utils/tutorAPI';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import useAuth from '../../../hooks/useAuth';
+import { getTutorById, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
 import { Avatar, Col, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
-import Container from '../../components/Container';
+import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
 
-import { getTutorEducation } from '../../utils/tutorAPI';
-import TableComponent from '../../components/Table/Table';
-import { getTutorCertification } from '../../utils/tutorAPI';
+import { getTutorEducation } from '../../../utils/tutorAPI';
+import TableComponent from '../../../components/Table/Table';
+import { getTutorCertification } from '../../../utils/tutorAPI';
 import EducationForm from './FormComponent/EducationForm';
 import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import { useNavigate } from 'react-router-dom';
 import SubjectForm from './FormComponent/SubjectForm';
-import Schedule from '../../components/Schedule/Schedule';
+import Schedule from '../../../components/Schedule/Schedule';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 
