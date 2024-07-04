@@ -12,7 +12,7 @@ import EducationVerify from "./EducationVerify";
 import CertificateVerify from "./CertificateVerify";
 import TimeslotVerify from "./TimeslotVerify";
 import { approveTutor, sendEmail } from "../../../../../utils/moderatorAPI";
-import { tutorApprovalMessages, tutorRejectionMessages } from "../../emailMessages";
+import { approveForm, approveMessages, tutorApprovalMessages, tutorRejectionMessages } from "../../emailMessages";
 // import iconBachelor from '../../../assets/images/image13.png';
 interface TutorInfoProps {
     tutorId: number;
@@ -159,15 +159,31 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         const rejectDocument = (acceptedDiploma.length < tutorEducation.length) || (acceptedCertificate.length < tutorCertification.length);
         const rejectSubject = acceptedSubject.length < tutorInfo.subjects.length;
         const missingDescription = tutorInfo.backgroundDescription === null || tutorInfo.videoIntroductionLink === null;
-        const rejectDescription = missingDescription===false && (form.getFieldValue('backgroundDescription') && form.getFieldValue('videoIntroductionLink'));
-        const rejectFields = (rejectDocument && rejectSubject) 
-                    || (rejectDescription && rejectSubject) || (rejectDescription && rejectDocument);
-        if (rejectFields) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedFields);
-        else if (rejectSubject) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedSubject);
-        else if (rejectDocument) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedDocument);
-        else if (missingDescription) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithMissingDescription);
-        else if (rejectDescription) form.setFieldValue('mailMessage', tutorApprovalMessages.approveWithRejectedDescription);
+        const rejectDescription = missingDescription === false && !(form.getFieldValue('backgroundDescription') && form.getFieldValue('videoIntroductionLink'));
+        const rejectFields = (rejectDocument && rejectSubject)
+            || (rejectDescription && rejectSubject) || (rejectDescription && rejectDocument);
+        const missingSchedule = schedule.length === 0;
+        let mailMessage = `${approveForm.INTRO} <br/> <br/>`;
+        if (rejectFields) 
+            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            else mailMessage += `${approveMessages.REJECTED_FIELDS}<br/> <br/>`;
+        else if (rejectSubject) 
+            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            else mailMessage += `${approveMessages.REJECTED_SUBJECT}<br/> <br/>`;
+        else if (rejectDocument) 
+            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            else mailMessage += `${approveMessages.REJECTED_DOCUMENT}<br/> <br/>`;
+        else if (missingDescription) 
+            if (missingSchedule) mailMessage += `${approveMessages.MISSING_DESCIPRITON}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+        else if (rejectDescription) 
+            if (missingSchedule) mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> ${approveMessages.MISSING_SCHEDULE_ADDITIONAL} <br/> <br/> `;
+            else mailMessage += `${approveMessages.REJECTED_DESCRIPTION}<br/> <br/> `;
+        else if (missingSchedule) mailMessage += `${approveMessages.MISSING_SCHEDULE}<br/> <br/>`;
         else form.setFieldValue('mailMessage', tutorApprovalMessages.fullyApproved);
+
+        mailMessage += `${approveForm.ENDING}`;
+
+        form.setFieldValue('mailMessage', mailMessage);
         console.log('document:', rejectDocument);
         console.log('subject:', rejectSubject);
         console.log('description:', rejectDescription);
@@ -185,7 +201,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             }, 500);
             return false;
         } else {
-            
+
             handleOk('rejected');
         }
     }
@@ -514,37 +530,37 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
 
                         </Col>
                         <div style={{
-                        textAlign: `center`,
-                        margin: `20px`,
-                        fontWeight: `bold`
-                    }}>
-                        <FormStyled.FormCheckbox
-                            name='agreement'
-                            style={{ margin: `0px`, color: `${theme.colors.black}` }}
-                            checked={agreement}
-                            defaultChecked={agreement}
-                            onChange={(e) => setAgreement(e.target.checked)}
-                        >I have carefully checked all the tutor details
-                            before submitting my decision</FormStyled.FormCheckbox>
+                            textAlign: `center`,
+                            margin: `20px`,
+                            fontWeight: `bold`
+                        }}>
+                            <FormStyled.FormCheckbox
+                                name='agreement'
+                                style={{ margin: `0px`, color: `${theme.colors.black}` }}
+                                checked={agreement}
+                                defaultChecked={agreement}
+                                onChange={(e) => setAgreement(e.target.checked)}
+                            >I have carefully checked all the tutor details
+                                before submitting my decision</FormStyled.FormCheckbox>
 
-                    </div>
-                    
-                    {isRejected && (<FormStyled.FormItem
-                        name='mailMessage'
-                        label='Reject reason:'
-                        valuePropName="value"
-                    >
-                        <Select
-                            placeholder="Select a reason"
-                            style={{ width: '100%' }}>
+                        </div>
+
+                        {isRejected && (<FormStyled.FormItem
+                            name='mailMessage'
+                            label='Reject reason:'
+                            valuePropName="value"
+                        >
+                            <Select
+                                placeholder="Select a reason"
+                                style={{ width: '100%' }}>
                                 {tutorRejectionMessages.map((item, index) => (
                                     <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
                             </Select>
-                    </FormStyled.FormItem>)
+                        </FormStyled.FormItem>)
 
-                    }
+                        }
                     </Skeleton>
-                    
+
 
                 </FormStyled.FormWrapper>
             </Modal>
