@@ -35,7 +35,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
     {
       title: 'Phone number',
       dataIndex: 'phoneNumber',
-      key: 'teachingPricePerHour',
+      key: 'phoneNumber',
     },
 
     {

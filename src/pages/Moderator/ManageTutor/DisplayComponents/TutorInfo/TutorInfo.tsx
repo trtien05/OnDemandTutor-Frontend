@@ -198,13 +198,16 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         if (!isRejected) {
             setLoading(true);
             setIsRejected(true);
+            form.resetFields(['mailMessage']);
+            // form.validateFields(['mailMessage'], { validateOnly: true });
             setTimeout(() => {
                 setLoading(false);
-            }, 500);
+            }, 200);
             return false;
         } else {
-
-            handleOk('rejected');
+            if (form.getFieldValue('mailMessage')) {
+                handleOk('rejected');
+            }
         }
     }
 
@@ -278,7 +281,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     <Button
                         key="submit"
                         type="default"
-                        htmlType="submit"
+                        htmlType={isRejected?"submit":"button"}
                         onClick={rejectValidation}
                         disabled={!agreement}
                         loading={loading}
@@ -297,7 +300,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                         type="default"
                         htmlType="submit"
                         onClick={approveValidation}
-                        disabled={!agreement}
+                        disabled={agreement ? isRejected : true}
                         loading={loading}
                         form='verifyTutorForm'
                         style={{
@@ -324,7 +327,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     requiredMark={false}
                     form={form}
                     size="middle"
-                    style={{ rowGap: `10px` }}
+                    style={{ rowGap: `0px` }}
                 >
                     <Skeleton loading={loading}>
                         {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
@@ -545,18 +548,28 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
 
                         </div>
 
-                        {isRejected && (<FormStyled.FormItem
-                            name='mailMessage'
-                            label='Reject reason:'
-                            valuePropName="value"
-                        >
-                            <Select
-                                placeholder="Select a reason"
-                                style={{ width: '100%' }}>
-                                {tutorRejectionMessages.map((item, index) => (
-                                    <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
-                            </Select>
-                        </FormStyled.FormItem>)
+                        {agreement && isRejected && (
+                            <><FormStyled.FormItem
+                                name='mailMessage'
+                                label='Reject reason:'
+                                valuePropName="value"
+                                rules={[{ required: true, message: 'Please select a reason for your rejection' }]}
+                                style={{ marginTop: `-10px` }}
+                                validateFirst
+                            >
+                                <Select
+                                    placeholder="Select a reason"
+                                    style={{ width: '100%' }}>
+                                    {tutorRejectionMessages.map((item, index) => (
+                                        <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
+                                </Select>
+                            </FormStyled.FormItem>
+                                <Button
+                                    type='link'
+                                    style={{ color: `${theme.colors.primary}`, textDecoration: 'underline', marginTop:`-5px`}}
+                                    onClick={() => { setIsRejected(false); setAgreement(false) }}>
+                                    I don't want to reject this application</Button>
+                            </>)
 
                         }
                     </Skeleton>
