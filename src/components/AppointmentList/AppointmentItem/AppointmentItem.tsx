@@ -1,8 +1,7 @@
 import React from 'react';
-
-import {  Skeleton, Avatar } from 'antd';
+import { Skeleton, Avatar } from 'antd';
 import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined} from '@ant-design/icons'; // Import the UserOutlined icon
+import { CloseOutlined, UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
 import { TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
@@ -13,7 +12,7 @@ interface AppointmentItemProps {
     user?: UserType;
     onCancel: (timeslotId: number) => void; // Define the onCancel callback prop
     viewMode: 'Upcoming' | 'Past';
-    role: 'STUDENT'|'TUTOR';
+    role: 'STUDENT' | 'TUTOR';
 }
 
 // QuestionItemProps
@@ -92,7 +91,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                 >
 
                                     {appointmentDate.toLocaleString('en-US', { weekday: 'long' })},{' '}
-                                    {formatTime(startTime)} - {formatTime(endTime)}
+                                    {formatTime(startTime as string)} - {formatTime(endTime as string)}
 
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
@@ -153,22 +152,22 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                             <Reschedule tutorId={item.appointment.tutor.tutorId} oldBooking={item}/>
                             
                         </Styled.StyleCol> */}
-                                
-                                    <Styled.StyleCol
-                                        lg={2}
-                                        md={24}
-                                        sm={24}
-                                        xs={24}
-                                        style={{ textAlign: 'center' }}
-                                    >
-                                        {canReschedule && (
+
+                                <Styled.StyleCol
+                                    lg={2}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                    style={{ textAlign: 'center' }}
+                                >
+                                    {canReschedule && (
                                         <Reschedule
                                             tutorId={item.appointment.tutor.tutorId}
                                             oldBooking={item}
                                         />
                                     )}
-                                    </Styled.StyleCol>
-                                
+                                </Styled.StyleCol>
+
                                 <Styled.StyleCol
                                     lg={2}
                                     md={24}
