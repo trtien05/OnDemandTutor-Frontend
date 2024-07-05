@@ -1,15 +1,14 @@
-import { Avatar, Button, Col, Flex, Form, Input, Modal, Select, Skeleton, Switch, notification } from "antd";
+import { Avatar, Button, Col, Form, Modal, Select, Skeleton, notification } from "antd";
 import { useEffect, useState } from "react";
 import * as FormStyled from "../../BecomeTutor/Form.styled";
 import * as Styled from '../../../components/QuestionList/Question.styled';
 import { UserOutlined } from "@ant-design/icons";
-import { getFullSchedule, getTutorCertification, getTutorEducation } from "../../../utils/tutorAPI";
+import { getTutorCertification, getTutorEducation } from "../../../utils/tutorAPI";
 import { theme } from "../../../themes";
-import { Tutor, Education, Certificate, Schedule } from "../ManageTutor/Tutor.type";
-import ReactPlayer from "react-player";
-import { Clickable, FormItem } from "../ManageTutor/DisplayComponents/TutorInfo/TutorInfo.styled"
+import { Tutor, Education, Certificate } from "../ManageTutor/Tutor.type";
 import EducationVerify from "../ManageTutor/DisplayComponents/TutorInfo/EducationVerify";
 import CertificateVerify from "../ManageTutor/DisplayComponents/TutorInfo/CertificateVerify";
+import { sendEmail } from "../../../utils/moderatorAPI";
 // import iconBachelor from '../../../assets/images/image13.png';
 interface TutorInfoProps {
     tutorId: number;
@@ -22,23 +21,15 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
-    const [schedule, setSchedule] = useState<Schedule[]>([]); // Tutor schedule
-    const [isScheduleAccepted, setIsScheduleAccepted] = useState(false); // Tutor schedule
     const [isFormOpen, setIsFormOpen] = useState(false);
     const tutorInfo = props.tutor; // Tutor info
     const [tutorEducation, setTutorEducation] = useState<Education[]>([]); // Tutor education
     const [tutorCertification, setTutorCertification] = useState<Certificate[]>([]); // Tutor certification
     const [loading, setLoading] = useState(false);
     const [form] = Form.useForm();
-    const [switchStates, setSwitchStates] = useState({
-        videoIntroductionLink: false,
-        backgroundDescription: false,
-    });
-    const [switchSubject, setSwitchSubject] = useState({});
     const [agreement, setAgreement] = useState(false);
     const [acceptedDiploma, setAcceptedDiploma] = useState<number[]>([]);
     const [acceptedCertificate, setAcceptedCertificate] = useState<number[]>([]);
-    const [acceptedSubject, setAcceptedSubject] = useState<string[]>([]);
     const [isRejected, setIsRejected] = useState(false); // Tutor is rejected
 
     //---------------------- Fetch tutor info ----------------------
@@ -55,7 +46,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
                 if (certificate.data) {
                     setTutorCertification(certificate.data);
                 }
-                
+
             } catch (error) {
                 api.error({
                     message: "Error",
@@ -69,19 +60,6 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
     }, [])
 
     //---------------------- Handle accept field ----------------------
-
-    const handleAcceptField = (fieldName: string, checked: boolean) => {
-        if (checked) {
-            const value = tutorInfo[fieldName as keyof Tutor];
-            form.setFieldsValue({ [fieldName]: value });
-        } else form.setFieldsValue({ [fieldName]: null });
-        setSwitchStates((prevState) => ({ ...prevState, [fieldName]: checked }));
-    }
-
-    const toggleSwitch = (fieldName: string) => {
-        const currentValue = form.getFieldValue(fieldName);
-        handleAcceptField(fieldName, !currentValue);
-    };
 
     const handleAcceptedDiploma = (id: number, checked: boolean) => {
         if (checked) {
@@ -99,23 +77,6 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
         }
     }
 
-    const addSubject = (subject: string, checked: boolean) => {
-        if (checked) {
-            setAcceptedSubject((prevState) => [...prevState, subject]);
-        } else {
-            setAcceptedSubject((prevState) => prevState.filter((item) => item !== subject));
-        }
-        setSwitchSubject((prevState) => ({ ...prevState, [subject]: checked }));
-    };
-
-    const toggleSubject = (subject: string) => {
-        addSubject(subject, !switchSubject[subject as keyof typeof switchSubject]);
-    };
-
-    const toggleSchedule = () => {
-        setIsScheduleAccepted(!isScheduleAccepted);
-    };
-
     //---------------------- Handle submit form ----------------------
 
     function showModal() {
@@ -123,7 +84,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
     };
 
     const approveValidation = () => {
-        
+
 
         form.setFieldValue('mailMessage', '');
         handleOk('approved');
@@ -146,45 +107,42 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
 
     const handleOk = async (status: string) => {
         setLoading(true); // Set loading state to true when form is submitted
-        // const submitData = {
-        //     approvedSubjects: acceptedSubject,
-        //     approvedEducations: acceptedDiploma,
-        //     approvedCertificates: acceptedCertificate,
-        //     backgroundDescription: form.getFieldValue('backgroundDescription') ? form.getFieldValue('backgroundDescription') : "",
-        //     videoIntroductionLink: form.getFieldValue('videoIntroductionLink') ? form.getFieldValue('videoIntroductionLink') : "",
-        // }
+        const submitData = {
+            approvedEducations: acceptedDiploma,
+            approvedCertificates: acceptedCertificate,
+        }
 
-        // const mailData = {
-        //     email: tutorInfo.email,
-        //     moderatorMessage: form.getFieldValue('mailMessage'),
-        //     approved: true
-        // }
+        const mailData = {
+            email: tutorInfo.email,
+            moderatorMessage: form.getFieldValue('mailMessage'),
+            approved: true
+        }
 
-        // try {
-        //     await approveTutor(tutorId, status, submitData);
-        //     if (status === 'approved') {
-        //         api.success({
-        //             message: "Success",
-        //             description: "Tutor has been approved",
-        //         });
-        //     } else {
-        //         mailData.approved = false;
-        //         api.success({
-        //             message: "Success",
-        //             description: "Tutor has been rejected",
-        //         });
-        //     }
-        // } catch (error) {
-        //     api.error({
-        //         message: "Error",
-        //         description: "Failed to submit tutor approval",
-        //     });
-        // } finally {
-        //     setLoading(false);
-        //     props.onReload && props.onReload();
-        //     setIsFormOpen(false);
-        //     await sendEmail(mailData);            
-        // }
+        try {
+            //await approveTutor(tutorId, status, submitData);
+            if (status === 'approved') {
+                api.success({
+                    message: "Success",
+                    description: "Tutor has been approved",
+                });
+            } else {
+                mailData.approved = false;
+                api.success({
+                    message: "Success",
+                    description: "Tutor has been rejected",
+                });
+            }
+        } catch (error) {
+            api.error({
+                message: "Error",
+                description: "Failed to submit tutor approval",
+            });
+        } finally {
+            setLoading(false);
+            props.onReload && props.onReload();
+            setIsFormOpen(false);
+            await sendEmail(mailData);            
+        }
     };
 
     const handleCancel = () => {
