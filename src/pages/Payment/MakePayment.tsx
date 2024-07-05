@@ -1,5 +1,5 @@
 import { Col, Typography, Space, Button, notification, Statistic } from 'antd';
-import React, { useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
@@ -18,10 +18,6 @@ import useAuth from '../../hooks/useAuth';
 const { Title, Text } = Typography;
 const { Countdown } = Statistic;
 
-interface CountdownTimerProps {
-  duration: number; // in seconds
-  onExpire: () => void;
-}
 
 interface Education {
   degreeType?: string;
@@ -62,7 +58,7 @@ export function toScheduleString(schedule: Schedule) {
     month: 'long',
     day: 'numeric'
   });
-  
+
   scheduleString = dateString + " at " + schedule.startTime + " - " + schedule.endTime;
   return scheduleString;
 }
@@ -89,7 +85,7 @@ const MakePayment = () => {
       if (location.state) {
         await setAppointmentData(location.state.appointmentData);
         await setTutorId(appointmentData.tutor.tutorId);
-      } else  navigate(config.routes.public.home)
+      } else navigate(config.routes.public.home)
     })
   }, []);
 
@@ -140,7 +136,7 @@ const MakePayment = () => {
       };
 
       fetchTutor();
-    } else  navigate(config.routes.public.home);
+    } else navigate(config.routes.public.home);
   }, [appointmentData, appointmentData.tutor.tutorId])
 
 
@@ -274,7 +270,7 @@ const MakePayment = () => {
               </Styled.TutorItem>
               <Styled.BorderLine />
               <div style={{ marginLeft: `20px` }}>
-              <p>Subject: {appointmentData.subjectName}</p>
+                <p>Subject: {appointmentData.subjectName}</p>
                 {schedule?.map((schedule: Schedule, index: number) => (
                   <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split(' at ')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split(' at ')[1]} </span></p>
                 )

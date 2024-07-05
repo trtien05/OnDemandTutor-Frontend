@@ -1,6 +1,6 @@
 import * as Styled from './Home.styled';
 
-import { Col, Collapse, theme, Row, Skeleton, List } from 'antd';
+import { Col, Collapse, theme, Row } from 'antd';
 import { CSSProperties, useEffect, useState } from 'react';
 
 import Container from '../../components/Container';

@@ -42,7 +42,7 @@ const StudentAppointment = () => {
   useEffect(() => {
     if (!user) return;
     setInitLoading(true);
-    const baseUrl: string = `http://localhost:8080/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
 
     fetch(baseUrl)
       .then((res) => res.json())

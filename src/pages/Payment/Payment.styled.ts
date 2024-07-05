@@ -1,13 +1,13 @@
-import { Form, Row, Typography } from 'antd';
+import { Row } from 'antd';
 import styled, { css } from 'styled-components';
 import { theme } from '../../themes';
 import Title from 'antd/es/typography/Title';
 
 export const CheckoutWrapper = styled.div`
-margin: 50px 10%;
-${({ theme }) => theme.breakpoints.down('sm')} {
-    margin: 20px;
-}
+    margin: 50px 10%;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+        margin: 20px;
+    }
     padding: 27px 50px;
     background-color: #fff;
     border-radius: 15px;
@@ -19,7 +19,6 @@ ${({ theme }) => theme.breakpoints.down('sm')} {
         font-weight: 500;
         line-height: 1.5;
     }
-
 `;
 
 export const PriceCalculation = styled.div`
@@ -75,7 +74,6 @@ export const PriceCalculation = styled.div`
     }
 `;
 
-
 export const CheckoutPayment = styled.div`
     margin-top: 36px;
     padding: 16px 20px 36px;
@@ -97,7 +95,6 @@ export const CheckoutPayment = styled.div`
     }
 
     & .ant-radio-wrapper:hover {
-        
     }
 
     & .ant-radio-wrapper:has(:checked) figure {
@@ -205,7 +202,7 @@ export const BorderLine = styled.hr`
     opacity: 20%;
     width: 100%;
     margin: 20px 0;
-`
+`;
 
 export const TutorItem = styled(Row)`
     display: flex;
@@ -224,11 +221,9 @@ export const TutorImage = styled.img`
     border-radius: 10px;
     display: flex;
     ${({ theme }) => theme.breakpoints.down('sm')} {
- 
-    margin-right: 15px;
-    max-width: 100%;
-    max-height: 100%;
-    
+        margin-right: 15px;
+        max-width: 100%;
+        max-height: 100%;
     }
 `;
 export const ResponsiveStyle = styled.div`
@@ -241,7 +236,7 @@ export const ResponsiveStyle = styled.div`
         justify-content: center;
         flex-wrap: wrap;
     }
-`
+`;
 
 export const TutorName = styled(Title)`
     &.ant-typography {
@@ -261,7 +256,6 @@ export const TutorEducationBachelorImage = styled.img`
     max-height: 20px;
     max-width: 20px;
     align-items: center;
-
 `;
 export const TutorEducationBachelor = styled.span`
     margin: 0 5px;

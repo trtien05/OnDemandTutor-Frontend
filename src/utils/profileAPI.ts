@@ -1,8 +1,5 @@
 import { Dayjs } from 'dayjs';
-import { get, post, put, remove } from './apiCaller';
-
-import { Gender, Role } from './enums';
-import { RcFile } from 'antd/es/upload';
+import { get, put } from './apiCaller';
 
 interface UpdateAccount {
     fullName: string;
@@ -13,7 +10,6 @@ interface UpdateAccount {
     address: string | null;
     avatarUrl?: string;
 }
-
 
 export const getLearnStatistic = (accountId: number) => {
     return get(`/api/statistics/${accountId}/learn-statistics`);
@@ -34,7 +30,6 @@ export const getLearnStatistic = (accountId: number) => {
 // export const getCustomerDetail = (userId: number, start: string, end: string) => {
 //     return get(`/account/customers/${userId}`, { start, end });
 // };
-
 
 // export const uploadAvatar = (userId: number, avatar: RcFile) => {
 //     const data = new FormData();
