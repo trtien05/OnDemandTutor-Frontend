@@ -3,7 +3,7 @@ import { storage } from "../utils/firebase";
 import { UploadFile } from "antd";
 
 export const validateFileType = (
-  { type, name }: UploadFile,
+  { type }: UploadFile,
   allowedTypes?: string
 ) => {
   if (!allowedTypes) {

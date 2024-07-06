@@ -15,7 +15,6 @@ import EducationForm from './FormComponent/EducationForm';
 import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
-import { useNavigate } from 'react-router-dom';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 
@@ -39,7 +38,6 @@ const TutorProfile = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const [statistic, setStatistic] = useState<any>([]);
-    const navigate = useNavigate();
 
     //---------------------FETCH DATA---------------------
     useEffect(() => {
@@ -234,15 +232,6 @@ const TutorProfile = () => {
                                                         </Flex>
                                                     </Skeleton>
                                                </Style.ProfileInfoBox>
-                                               {/* <div style={{textAlign:`right`}}>
-                                             { user?.id && tutorDetails && 
-                                             tutorEducation && tutorCert &&
-                                             <SubjectForm tutorId={user?.id} 
-                                                isUpdate={isUpdate}
-                                                tutorDetails={tutorDetails} 
-                                                educationData={tutorEducation? tutorEducation:[]}
-                                                certificateData={tutorCert? tutorCert:[]} />}
-                                                </div> */}
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>

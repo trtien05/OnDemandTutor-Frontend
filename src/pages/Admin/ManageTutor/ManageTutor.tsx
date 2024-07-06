@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom'
 import { Button } from 'antd';
 import TutorTable from './TutorTable';
-import { getListTutor } from '../../../utils/tutorAPI';
+import { getTutorList } from '../../../utils/tutorAPI';
 
 interface Education {
   degreeType?: string;

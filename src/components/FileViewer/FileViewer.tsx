@@ -1,6 +1,5 @@
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Image } from 'antd'
-import { Clickable } from '../../pages/Moderator/ManageTutor/DisplayComponents/TutorInfo/TutorInfo.styled';
 interface FileViewerProps {
   fileUrl: string;
   alt: string;

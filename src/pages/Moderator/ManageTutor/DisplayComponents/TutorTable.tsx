@@ -1,4 +1,4 @@
-import { Badge, Table, Tag, Tooltip } from 'antd';
+import {Table} from 'antd';
 import React from 'react';
 import TutorDocument from '../../ManageDocument/TutorDocument';
 import { Tutor } from '../Tutor.type'

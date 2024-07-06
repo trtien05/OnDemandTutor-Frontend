@@ -250,7 +250,9 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         } finally {
             setLoading(false);
             props.onReload && props.onReload();
-            setIsFormOpen(false);
+            setTimeout(() => {
+                setIsFormOpen(false);
+            }, 2000);
             sendEmail(mailData);
         }
     };

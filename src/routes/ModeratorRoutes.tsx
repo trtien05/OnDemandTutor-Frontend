@@ -1,4 +1,3 @@
-import { Navigate } from "react-router-dom";
 import config from "../config";
 import { useAuth } from "../hooks";
 import ManageTutor from "../pages/Moderator/ManageTutor/ManageTutor";
@@ -9,6 +8,7 @@ import ManageDocument from "../pages/Moderator/ManageDocument/ManageDocument";
 // Authorization
 const ModeratorRouter = () => {
     const { role } = useAuth();
+    console.log(role)
     // return role === Role.ADMIN ? <AdminLayout /> : <Navigate to="/" />;
     return <ModeratorLayout />;
 

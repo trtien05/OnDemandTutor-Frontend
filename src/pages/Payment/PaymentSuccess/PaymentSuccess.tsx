@@ -1,7 +1,7 @@
 import { Skeleton, notification, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react'
 import { checkPaymentStatus } from '../../../utils/paymentAPI';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import cookieUtils from '../../../utils/cookieUtils';
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import * as Styled from '../Payment.styled';

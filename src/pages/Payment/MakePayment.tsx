@@ -74,7 +74,7 @@ const MakePayment = () => {
 
   const [tutorId, setTutorId] = useState<number>(appointmentData ? appointmentData.tutor.tutorId ? appointmentData.tutor.tutorId : 0 : 0); // [TODO] Replace any with the correct type
   const selectedSchedule = location.state ? location.state.selectedSchedule ? location.state.selectedSchedule : null : null;
-  const [deadline, setDeadline] = useState(new Date().getTime() + 15 * 60 * 1000); // 15 minutes
+  const deadline = new Date().getTime() + 15 * 60 * 1000; // 15 minutes
   const navigate = useNavigate();
   const { user } = useAuth();
 

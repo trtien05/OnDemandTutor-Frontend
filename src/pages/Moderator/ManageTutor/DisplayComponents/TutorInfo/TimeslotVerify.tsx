@@ -32,13 +32,6 @@ const TimeslotVerify: React.FC<TimeslotVerifyProps> = (props) => {
                 )}
 
             </div>
-            {/* <Switch
-            checkedChildren="Accepted"
-            unCheckedChildren="Rejected"
-            checked={props.switchStates}
-            style={{ margin: `auto` }}
-            onChange={}
-        /> */}
         </div>
     )
 }
