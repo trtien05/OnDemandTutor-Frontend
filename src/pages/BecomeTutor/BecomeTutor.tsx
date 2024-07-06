@@ -237,7 +237,6 @@ const BecomeTutor = () => {
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
-    console.log(values)
     if (accountId) {
       try {
         const save = await saveData(values, accountId);
@@ -313,20 +312,17 @@ const BecomeTutor = () => {
     try {
 
       await saveAccountDetails(tutorId, aboutValues, avatarURL)
-
+       
       await saveEducations(tutorId, educationValues, diplomaURL)
-
+       
       await saveCertificates(tutorId, certificationValues, certURL)
-
+       
       await saveTutorDescription(tutorId, descriptionValues)
-        .catch(error => {
-          console.error('Error saving tutor description:', error);
-        });
 
       await saveTutorAvailableTimeslots(tutorId, values)
-
+      
       return 'Success'
-    } catch (error: any) {
+    } catch (error:any) {
       return Promise.reject(error);
     }
   }
@@ -499,6 +495,7 @@ const BecomeTutor = () => {
     try {
       const response = await becomeTutor(tutorId);
       console.log(' saved successfully:', response);
+      return 'success'
     } catch (error: any) {
       api.error({
         message: 'Lỗi',
@@ -564,12 +561,9 @@ const BecomeTutor = () => {
       console.log('Educations saved successfully:', responseData);
 
       // Return success response
-      return responseData;
+      return responseData
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -621,10 +615,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -675,10 +666,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -715,10 +703,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 

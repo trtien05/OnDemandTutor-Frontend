@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '../../../themes';
-import { Button, Input, List, Row, Select } from 'antd';
+import { Button, Input, List, Row, Select, Segmented } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 
@@ -184,4 +184,17 @@ export const StyledSelect = styled(Select)`
 `;
 export const TitleWrapper = styled.div`
     margin:0;
+`;
+export const StyledSegmented = styled(Segmented)`
+  .ant-segmented-item {
+    background-color: white;
+    color: ${theme.colors.primary};
+    &.ant-segmented-item-selected {
+      background-color: ${theme.colors.primary};
+      color: white;
+    }
+  }
+//   .ant-segmented-thumb {
+//     display: none; /* Hide the default thumb */
+//   }
 `;

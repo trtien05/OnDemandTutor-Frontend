@@ -2,7 +2,7 @@ import styled, { css } from 'styled-components';
 import { theme } from '../../themes';
 
 export const CheckSection = styled.section`
-    margin: 72px 0 134px;
+    margin: 130px 0 40px;
 `;
 
 export const CheckInner = styled.div`

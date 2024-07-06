@@ -230,7 +230,7 @@ export const Rating = styled(Rate)`
 `;
 
 export const AvatarStyled = styled(Avatar)`
-    margin-right: 16px;
+    align-self: start;
 `;
 export const ResumeSection = styled.div``;
 
@@ -318,6 +318,7 @@ export const SectionInfor = styled.div`
     margin-bottom: 50px;
 `;
 export const TitleWrapper = styled.div`
+    display: flex;
     margin-bottom: 30px;
 `;
 export const ButtonWrapper = styled.div`

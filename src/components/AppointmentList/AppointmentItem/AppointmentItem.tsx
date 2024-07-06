@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { Col, Skeleton, Avatar, Modal } from 'antd';
-import iconBachelor from '../../../assets/images/image13.png';
+import React from 'react';
+
+import {  Skeleton, Avatar } from 'antd';
 import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined, CalendarOutlined, ExclamationCircleOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
-import { Appointment, TimeSlot } from '../Appointment.type';
+import { CloseOutlined, UserOutlined} from '@ant-design/icons'; // Import the UserOutlined icon
+import { TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
 import { theme } from '../../../themes';
@@ -12,25 +12,23 @@ interface AppointmentItemProps {
     item: TimeSlot;
     user?: UserType;
     onCancel: (timeslotId: number) => void; // Define the onCancel callback prop
-    viewMode: 'Upcoming' | 'Past'; 
+    viewMode: 'Upcoming' | 'Past';
+    role: 'STUDENT'|'TUTOR';
 }
 
 // QuestionItemProps
-const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel, viewMode }) => {
-    const { startTime, endTime, scheduleDate, appointment,  } = item;
+const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewMode, role }) => {
+    const { startTime, endTime, scheduleDate, appointment } = item;
     // const timeslot = item.timeslots[0];
     const appointmentDate = new Date(`${scheduleDate}T${startTime}`);
-    const isTutor = user?.role === 'TUTOR';
+    const isTutor = role === 'TUTOR';
     const displayPerson = isTutor ? appointment.student : appointment.tutor;
-    const currentDate = new Date();
-    const timeDiff = (appointmentDate.getTime() - currentDate.getTime()) / (1000 * 60 * 60); // difference in hours
-    const showReschedule = timeDiff > 24;
-    const showCancel = timeDiff <= 24;
+    const canReschedule = appointmentDate.getTime() - new Date().getTime() > 24 * 60 * 60 * 1000;
     // Helper function to format time to "HH:mm"
-  const formatTime = (time: string) => {
-    const [hours, minutes] = time.split(':');
-    return `${hours}:${minutes}`;
-  };
+    const formatTime = (time: string) => {
+        const [hours, minutes] = time.split(':');
+        return `${hours}:${minutes}`;
+    };
 
     return (
         <Skeleton avatar title={false} loading={item.loading} active>
@@ -46,10 +44,13 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                         fontWeight: 'bold',
                                         textAlign: 'center',
                                         display: 'block',
-                                        color:`${theme.colors.primary}`
+                                        color: `${theme.colors.primary}`,
                                     }}
                                 >
-                                    {appointmentDate.toLocaleString('default', { month: 'short' }).toUpperCase()}
+
+
+                                    {appointmentDate.toLocaleString('en-US', { month: 'short' }).toUpperCase()}
+
                                 </Styled.QuestionRow>
 
                                 <Styled.QuestionRow
@@ -58,7 +59,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                         textAlign: 'center',
                                         display: 'block',
                                         fontWeight: 'bold',
-                                        color:`${theme.colors.primary}`
+                                        color: `${theme.colors.primary}`,
                                     }}
                                 >
                                     {appointmentDate.getDate()}
@@ -83,10 +84,16 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                         <Styled.StyleCol lg={5} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
-                                    style={{ fontSize: '16px', alignContent: 'center',  fontWeight:'500' }}
+                                    style={{
+                                        fontSize: '16px',
+                                        alignContent: 'center',
+                                        fontWeight: '500',
+                                    }}
                                 >
-                                    {appointmentDate.toLocaleString('default', { weekday: 'long' })}
-                                    , {formatTime(startTime)} - {formatTime(endTime)}
+
+                                    {appointmentDate.toLocaleString('en-US', { weekday: 'long' })},{' '}
+                                    {formatTime(startTime)} - {formatTime(endTime)}
+
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
@@ -106,35 +113,37 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                                 >
                                     {displayPerson.fullName},
                                 </Styled.QuestionRowSpan>
-                                <Styled.QuestionRowSpan>{appointment.subjectName}</Styled.QuestionRowSpan>
+                                <Styled.QuestionRowSpan>
+                                    {appointment.subjectName}
+                                </Styled.QuestionRowSpan>
                             </Styled.QuestionRow>
                         </Styled.StyleCol>
                         <Styled.StyleCol lg={3} md={24} sm={24} xs={24}>
                             <Styled.QuestionContent>
                                 {viewMode === 'Upcoming' && (
-                                <Styled.QuestionRow
-                                    style={{
-                                        fontSize: '16px',
-                                        fontWeight: 'bold',
-                                        textDecoration: 'underline',
-                                        color:`${theme.colors.primary}`
-                                    }}
-                                >
-                                    <a
-                                        href={appointment.tutor.meetingLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{color:`${theme.colors.primary}`} }
+                                    <Styled.QuestionRow
+                                        style={{
+                                            fontSize: '16px',
+                                            fontWeight: 'bold',
+                                            textDecoration: 'underline',
+                                            color: `${theme.colors.primary}`,
+                                        }}
                                     >
-                                        Meet Link
-                                    </a>
-                                </Styled.QuestionRow>
+                                        <a
+                                            href={appointment.tutor.meetingLink}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            style={{ color: `${theme.colors.primary}` }}
+                                        >
+                                            Meet Link
+                                        </a>
+                                    </Styled.QuestionRow>
                                 )}
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        {viewMode==='Upcoming' && (
+                        {viewMode === 'Upcoming' && (
                             <>
-                        <Styled.StyleCol
+                                {/* <Styled.StyleCol
                             lg={2}
                             md={24}
                             sm={24}
@@ -143,21 +152,40 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, user, onCancel,
                         >
                             <Reschedule tutorId={item.appointment.tutor.tutorId} oldBooking={item}/>
                             
-                        </Styled.StyleCol>
-                        <Styled.StyleCol
-                            lg={2}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            style={{ textAlign: 'center' }}
-                        >
-                            <CloseOutlined
-                                style={{ color: '#B52121', fontSize: '20px', cursor: 'pointer' }}
-                                onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
-                            />
-                            
-                        </Styled.StyleCol>
-                        </>
+                        </Styled.StyleCol> */}
+                                
+                                    <Styled.StyleCol
+                                        lg={2}
+                                        md={24}
+                                        sm={24}
+                                        xs={24}
+                                        style={{ textAlign: 'center' }}
+                                    >
+                                        {canReschedule && (
+                                        <Reschedule
+                                            tutorId={item.appointment.tutor.tutorId}
+                                            oldBooking={item}
+                                        />
+                                    )}
+                                    </Styled.StyleCol>
+                                
+                                <Styled.StyleCol
+                                    lg={2}
+                                    md={24}
+                                    sm={24}
+                                    xs={24}
+                                    style={{ textAlign: 'center' }}
+                                >
+                                    <CloseOutlined
+                                        style={{
+                                            color: '#B52121',
+                                            fontSize: '20px',
+                                            cursor: 'pointer',
+                                        }}
+                                        onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
+                                    />
+                                </Styled.StyleCol>
+                            </>
                         )}
                     </Styled.QuestionItem>
                 </Styled.BoxHover>

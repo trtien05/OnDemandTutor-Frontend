@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Card, Tabs, Button, Rate, Skeleton, Row, Col, List, Avatar } from "antd";
-import { useDocumentTitle } from "../../hooks";
+import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
+import { useAuth, useDocumentTitle } from "../../hooks";
 import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
-import Title from "antd/es/typography/Title";
 import * as Styled from './TutorDetail.styled';
-import { Schedule as ScheduleData, ScheduleEvent } from '../../components/Schedule/Schedule.type';
 
 import iconEducation from "../../assets/images/image12.png";
 import iconPerson from "../../assets/images/image14.png";
@@ -15,6 +13,8 @@ import Schedule from "../../components/Schedule/Schedule";
 import BookTutor from "../../components/Popup/BookTutor";
 import { UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { getTutorBooked } from "../../utils/studentAPI";
+import Feedback from "../../components/Popup/Feedback";
 
 const { TabPane } = Tabs;
 
@@ -47,10 +47,8 @@ interface Certification {
 
 const TutorDetail: React.FC = () => {
   useDocumentTitle("Tutor Detail | MyTutor");
-
-  const [selectedId, setSelectedId] = useState<number[]>([]);
-  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
-
+  const { user } = useAuth();
+  
   const aboutRef = useRef<HTMLDivElement>(null);
   const scheduleRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
@@ -85,6 +83,9 @@ const TutorDetail: React.FC = () => {
   const tutorId: number = parseInt(window.location.pathname.split('/')[2]);
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
+  const [tutorBooked, setTutorBooked] = useState<Tutor[]>([]);
+  const [tutorFeedback, setTutorFeedback] = useState(false);
+
   const [reviews, setReviews] = useState<Reviews[]>([]);
   const [educations, setEducations] = useState<Education[]>([]);
   const [certification, setCertification] = useState<Certification[]>([]);
@@ -93,27 +94,55 @@ const TutorDetail: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState<number>(0);
 
+  const [api, contextHolderNotification] = notification.useNotification({
+    top: 100,
+  });
+
+  const fetchReviews = async () => {
+    try {
+      const reviewsResponse = await getTutorReviews(tutorId, page, 3);
+      setReviews(reviewsResponse.data.content);
+    } catch (error) {
+      console.error('Failed to fetch reviews', error);
+      setError("Failed to fetch reviews");
+    }
+  };
+
+  const handleReload = () => {
+    fetchReviews();
+  }
+
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        //Fetch Tutor Data
+        // Fetch Tutor Data
         const tutorResponse = await getTutorById(tutorId);
         setTutor(tutorResponse.data);
 
-        // Fetch Reviews Data
-        const reviewsResponse = await getTutorReviews(tutorId, page, 1);
-        setReviews(reviewsResponse.data.content);
+        // // Fetch Reviews Data
+        await fetchReviews();
 
-        //Fetch Education Data
-        const educationResponse = await getTutorEducation(tutorId);
+        // Fetch Education Data
+        const educationResponse = await getTutorEducation(tutorId, 'true');
         setEducations(educationResponse.data);
 
-
-        //Fetch Certificate Data
-        const cetificateResponse = await getTutorCertification(tutorId);
+        // Fetch Certificate Data
+        const cetificateResponse = await getTutorCertification(tutorId, 'true');
         setCertification(cetificateResponse.data);
 
+        // Fetch Booked Tutor Data
+        if (user?.id) {
+          const bookedtutorResponse = await getTutorBooked(user.id);
+          setTutorBooked(bookedtutorResponse.data);
+          // Check if tutor with specific tutorId is booked
+          const isTutorBooked = bookedtutorResponse.data.some(
+            (bookedTutor: { id: number; }) => bookedTutor.id === tutorId
+          );
+
+          // Set tutorFeedback based on the check
+          setTutorFeedback(isTutorBooked);
+        }
 
       } catch (err) {
         setError("Failed to fetch tutor details");
@@ -123,13 +152,20 @@ const TutorDetail: React.FC = () => {
     };
 
     fetchData();
-  }, [tutorId]);
+  }, [tutorId, user?.id]);
   const navigate = useNavigate();
-  console.log(tutorId);
-
+  console.log(tutorBooked);
   const handleSendMessage = () => {
-    navigate(`/chat-room`, { state: { tutorId: tutor?.id, tutorName: tutor?.fullName, tutorAvatar: tutor?.avatarUrl } });
+    if (user?.role === 'STUDENT') {
+      navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
+    } else {
+      api.warning({
+        message: 'Warning',
+        description: 'You can not send messages to other tutor!',
+      })
+    }
   };
+
   const onLoadMore = async () => {
     setLoading(true);
     try {
@@ -152,216 +188,217 @@ const TutorDetail: React.FC = () => {
     return <div>{error}</div>;
   }
 
-
   const loadMore = !loading ? (
     <Row>
       <Col lg={24} md={24} xs={24} sm={24} >
         <Styled.ButtonWrapper>
           <Styled.SeeMoreButton onClick={onLoadMore}>More Reviews</Styled.SeeMoreButton>
-
         </Styled.ButtonWrapper>
       </Col>
     </Row>
   ) : null;
-
   return (
-    <Styled.TutorDetailBackground>
-      <Container>
-        {tutor && (
-          <Row justify='space-between'>
-            <Col lg={12} md={12} sm={12} xs={24}>
-              <Styled.TutorInfoCard>
-                <Col>
-                  {tutor.avatarUrl ? (
-                    <Avatar
-                      src={tutor.avatarUrl}
-                      icon={<UserOutlined />}
-                      size={150}
-                      style={{
-                        width: '210px',
-                        height: '210px',
-                        borderRadius: '50px',
-                        marginRight: '20px'
+    <>
+      {contextHolderNotification}
 
-                      }}
-                    />
-                  ) : (
-                    <Avatar
-                      size={150}
-                      icon={<UserOutlined />}
-                      style={{
-                        width: '210px',
-                        height: '210px',
-                        borderRadius: '25px',
-                        marginRight: '20px'
+      <Styled.TutorDetailBackground>
+        <Container>
+          {tutor && (
+            <Row justify='space-between'>
+              <Col lg={12} md={12} sm={12} xs={24}>
+                <Styled.TutorInfoCard>
+                  <Col>
+                    {tutor.avatarUrl ? (
+                      <Avatar
+                        src={tutor.avatarUrl}
+                        icon={<UserOutlined />}
+                        size={150}
+                        style={{
+                          width: '210px',
+                          height: '210px',
+                          borderRadius: '50px',
+                          marginRight: '20px'
 
-                      }}
-                    />
-                  )}
-                </Col>
-                <Col>
-                  <Styled.TutorDetails>
-                    <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
-                    <Styled.BestTutorEducation>
-                      <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                      {educations.map((education, index) => (
-                        <React.Fragment key={education.id}>
-                          <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
-                          {index < educations.length - 1 && ', '}
-                        </React.Fragment>
-                      ))}
+                        }}
+                      />
+                    ) : (
+                      <Avatar
+                        size={150}
+                        icon={<UserOutlined />}
+                        style={{
+                          width: '210px',
+                          height: '210px',
+                          borderRadius: '25px',
+                          marginRight: '20px'
 
-                    </Styled.BestTutorEducation>
-                    <Styled.BestTutorEducation>
-                      <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                      {educations.map((education, index) => (
-                        <React.Fragment key={education.id}>
-                          <Styled.BestTutorEducationBachelor>{education.specialization}</Styled.BestTutorEducationBachelor>
-                          {index < educations.length - 1 && ', '}
-                        </React.Fragment>
-                      ))}
-                    </Styled.BestTutorEducation>
-                    <Styled.BestTutorStudent>
-                      <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
-                      <Styled.BestTutorEducationBachelor>55 students taught</Styled.BestTutorEducationBachelor>
-                    </Styled.BestTutorStudent>
-                    <Styled.BestTutorDescription>{tutor.backgroundDescription}</Styled.BestTutorDescription>
-                  </Styled.TutorDetails>
-                </Col>
-              </Styled.TutorInfoCard>
-              <div>
-                <Styled.StyledTabs defaultActiveKey="1" onTabClick={handleTabClick}>
-                  <TabPane tab="About" key="1" />
-                  <TabPane tab="Schedule" key="2" />
-                  <TabPane tab="Review" key="3" />
-                  <TabPane tab="Resume" key="4" />
-                </Styled.StyledTabs>
-                <Styled.SectionInfor ref={aboutRef}>
-                  <Styled.TitleWrapper>
-                    <Styled.TitleDetail level={4}>ABOUT THE TUTOR</Styled.TitleDetail>
-                  </Styled.TitleWrapper>
-                  <p>{tutor.backgroundDescription}</p>
-                </Styled.SectionInfor>
-                <Styled.SectionInfor ref={scheduleRef}>
-                  <Styled.TitleWrapper>
-                    <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
-                  </Styled.TitleWrapper>
-                  <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
-
-                </Styled.SectionInfor>
-                <Styled.SectionInfor ref={reviewRef}>
-                  <Styled.TitleWrapper>
-                    <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
-                  </Styled.TitleWrapper>
-                  <List
-                    className="demo-loadmore-list"
-                    loading={loading}
-                    itemLayout="horizontal"
-                    loadMore={loadMore}
-                    dataSource={reviews}
-                    renderItem={(item) => (
-                      <List.Item>
-                        <Skeleton avatar title={false} loading={item.loading} active>
-                          <Styled.ReviewCard>
-                            <Styled.ReviewHeader>
-                              <Styled.AvatarStyled src={item.avatarUrl} />
-                              <div>
-                                <Styled.StudentName>{item.createdBy}</Styled.StudentName>
-                                <Styled.DateRated>{item.createdAt}</Styled.DateRated>
-                                <Styled.Rating disabled defaultValue={item.rating} />
-                              </div>
-                            </Styled.ReviewHeader>
-                            <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
-                          </Styled.ReviewCard>
-                        </Skeleton>
-                      </List.Item>
+                        }}
+                      />
                     )}
-                  />
-                </Styled.SectionInfor>
-                <Styled.ResumeSection ref={resumeRef}>
-                  <Styled.TitleWrapper>
-                    <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
-                  </Styled.TitleWrapper>
-                  {(educations.length > 0) && (
-                    <Styled.Section>
-                      <Col lg={4} md={4} sm={4} xs={4}>
-                        <Styled.SectionHeader>Education</Styled.SectionHeader>
-                      </Col>
-                      <Col lg={20} md={20} sm={20} xs={20}>
-                        <Styled.SectionContent>
-                          {educations.map((education) => (
-                            <Styled.Item key={education.id}>
-                              <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
-                              <Styled.Description>
-                                {education.universityName}<br />
-                                {education.degreeType}
-                              </Styled.Description>
-                            </Styled.Item>
-                          ))}
-                        </Styled.SectionContent>
-                      </Col>
-                    </Styled.Section>
-                  )}
-                  {(certification.length > 0) && (
-                    <Styled.Section>
-                      <Col lg={4} md={4} sm={4} xs={4}>
-                        <Styled.SectionHeader>Certification</Styled.SectionHeader>
-                      </Col>
-                      <Col lg={20} md={20} sm={20} xs={20}>
-                        <Styled.SectionContent>
-                          {certification.map((certification) => (
-                            <Styled.Item key={certification.id}>
-                              <Styled.Year>{certification.issuedBy} - {certification.issuedYear}</Styled.Year>
-                              <Styled.Description>
-                                {certification.certificateName}<br />
-                                {certification.subject}
-                              </Styled.Description>
-                            </Styled.Item>
-                          ))}
-                        </Styled.SectionContent>
-                      </Col>
-                    </Styled.Section>
-                  )}
+                  </Col>
+                  <Col>
+                    <Styled.TutorDetails>
+                      <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
+                      <Styled.BestTutorEducation>
+                        <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
+                        {educations.map((education, index) => (
+                          <React.Fragment key={education.id}>
+                            <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
+                            {index < educations.length - 1 && ', '}
+                          </React.Fragment>
+                        ))}
 
-                </Styled.ResumeSection>
-              </div>
-            </Col>
-            <Col lg={9} md={9} sm={9} xs={24}>
-              <Styled.TutorVideoCard>
-                <Styled.TutorVideo>
-                  {tutor.videoIntroductionLink && (
-                    <iframe
-                      width="100%"
-                      height="100%"
+                      </Styled.BestTutorEducation>
+                      <Styled.BestTutorEducation>
+                        <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
+                        {educations.map((education, index) => (
+                          <React.Fragment key={education.id}>
+                            <Styled.BestTutorEducationBachelor>{education.specialization}</Styled.BestTutorEducationBachelor>
+                            {index < educations.length - 1 && ', '}
+                          </React.Fragment>
+                        ))}
+                      </Styled.BestTutorEducation>
+                      <Styled.BestTutorStudent>
+                        <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
+                        <Styled.BestTutorEducationBachelor>55 students taught</Styled.BestTutorEducationBachelor>
+                      </Styled.BestTutorStudent>
+                      <Styled.BestTutorDescription>{tutor.backgroundDescription}</Styled.BestTutorDescription>
+                    </Styled.TutorDetails>
+                  </Col>
+                </Styled.TutorInfoCard>
+                <div>
+                  <Styled.StyledTabs defaultActiveKey="1" onTabClick={handleTabClick}>
+                    <TabPane tab="About" key="1" />
+                    <TabPane tab="Schedule" key="2" />
+                    <TabPane tab="Review" key="3" />
+                    <TabPane tab="Resume" key="4" />
+                  </Styled.StyledTabs>
+                  <Styled.SectionInfor ref={aboutRef}>
+                    <Styled.TitleWrapper>
+                      <Styled.TitleDetail level={4}>ABOUT THE TUTOR</Styled.TitleDetail>
+                    </Styled.TitleWrapper>
+                    <p>{tutor.backgroundDescription}</p>
+                  </Styled.SectionInfor>
+                  <Styled.SectionInfor ref={scheduleRef}>
+                    <Styled.TitleWrapper>
+                      <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
+                    </Styled.TitleWrapper>
+                    <Schedule tutorId={tutorId} />
 
-                      style={{ borderRadius: '30px' }}
-                      src={getEmbedUrl(tutor.videoIntroductionLink)}
-                      title="YouTube video player"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    ></iframe>
-                  )}
-                </Styled.TutorVideo>
-                <Styled.BookingInformation>
-                  <div style={{ textAlign: 'center' }}>
-                    <div style={{ display: 'flex' }}>
-                      <Styled.IconStyleStart />
-                      <Styled.BookingRatingAndPrice>{tutor.averageRating}</Styled.BookingRatingAndPrice>
+                  </Styled.SectionInfor>
+                  <Styled.SectionInfor ref={reviewRef}>
+                    <Styled.TitleWrapper style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
+                      <Feedback tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
+                    </Styled.TitleWrapper>
+                    <List
+                      loading={loading}
+                      itemLayout="horizontal"
+                      loadMore={loadMore}
+                      dataSource={reviews}
+                      renderItem={(item) => (
+                        <List.Item>
+                          <Skeleton avatar title={false} loading={item.loading} active>
+                            <Styled.ReviewCard>
+                              <Styled.ReviewHeader>
+                                <Styled.AvatarStyled src={item.avatarUrl} />
+                                <div>
+                                  <Styled.StudentName>{item.createdBy}</Styled.StudentName>
+                                  <Styled.DateRated>{item.createdAt}</Styled.DateRated>
+                                  <Styled.Rating disabled defaultValue={item.rating} />
+                                </div>
+                              </Styled.ReviewHeader>
+                              <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
+                            </Styled.ReviewCard>
+                          </Skeleton>
+                        </List.Item>
+                      )}
+                    />
+                  </Styled.SectionInfor>
+                  <Styled.ResumeSection ref={resumeRef}>
+                    <Styled.TitleWrapper>
+                      <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
+                    </Styled.TitleWrapper>
+                    {(educations.length > 0) && (
+                      <Styled.Section>
+                        <Col lg={4} md={4} sm={4} xs={4}>
+                          <Styled.SectionHeader>Education</Styled.SectionHeader>
+                        </Col>
+                        <Col lg={20} md={20} sm={20} xs={20}>
+                          <Styled.SectionContent>
+                            {educations.map((education) => (
+                              <Styled.Item key={education.id}>
+                                <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
+                                <Styled.Description>
+                                  {education.universityName}<br />
+                                  {education.degreeType}
+                                </Styled.Description>
+                              </Styled.Item>
+                            ))}
+                          </Styled.SectionContent>
+                        </Col>
+                      </Styled.Section>
+                    )}
+                    {(certification.length > 0) && (
+                      <Styled.Section>
+                        <Col lg={4} md={4} sm={4} xs={4}>
+                          <Styled.SectionHeader>Certification</Styled.SectionHeader>
+                        </Col>
+                        <Col lg={20} md={20} sm={20} xs={20}>
+                          <Styled.SectionContent>
+                            {certification.map((certification) => (
+                              <Styled.Item key={certification.id}>
+                                <Styled.Year>{certification.issuedBy} - {certification.issuedYear}</Styled.Year>
+                                <Styled.Description>
+                                  {certification.certificateName}<br />
+                                  {certification.subject}
+                                </Styled.Description>
+                              </Styled.Item>
+                            ))}
+                          </Styled.SectionContent>
+                        </Col>
+                      </Styled.Section>
+                    )}
+
+                  </Styled.ResumeSection>
+                </div>
+              </Col>
+              <Col lg={9} md={9} sm={9} xs={24}>
+                <Styled.TutorVideoCard>
+                  <Styled.TutorVideo>
+                    {tutor.videoIntroductionLink && (
+                      <iframe
+                        width="100%"
+                        height="100%"
+
+                        style={{ borderRadius: '30px' }}
+                        src={getEmbedUrl(tutor.videoIntroductionLink)}
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    )}
+                  </Styled.TutorVideo>
+                  <Styled.BookingInformation>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ display: 'flex' }}>
+                        <Styled.IconStyleStart />
+                        <Styled.BookingRatingAndPrice>{tutor.averageRating}</Styled.BookingRatingAndPrice>
+                      </div>
                     </div>
-                  </div>
-                  <div>
-                    <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
-                  </div>
-                </Styled.BookingInformation>
-                <BookTutor tutorId={tutorId} />
-                <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
-                <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
-              </Styled.TutorVideoCard>
-            </Col>
-          </Row>
-        )}
-      </Container>
-    </Styled.TutorDetailBackground>
+                    <div>
+                      <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
+                    </div>
+                  </Styled.BookingInformation>
+                  <BookTutor tutorId={tutorId} />
+                  <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
+                  <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
+                </Styled.TutorVideoCard>
+              </Col>
+            </Row>
+          )}
+        </Container>
+      </Styled.TutorDetailBackground>
+    </>
   );
 };
 

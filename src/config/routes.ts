@@ -16,17 +16,32 @@ const routes = {
     },
     student: {
         profile: '/profile',
-        studentSchedule: '/student-schedule',
+        studySchedule: '/study-schedule',
         makePayment: '/make-payment',
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
         chatRoom: '/chat-room',
+        registerStatus:'/register-status',
     },
     tutor: {
         makePayment: '/make-payment',
+        studySchedule: '/study-schedule',
+        teachingSchedule: '/teaching-schedule',
         paymentSuccess: '/confirm-payment',
         profile: '/tutor-profile',
         tutorSchedule: '/tutor-schedule',
+    },
+    admin: {
+        dashboard: '/admin',
+        manageTutor: '/admin/tutors',
+        manageModerator: '/admin/moderator',
+        manageStudent: '/admin/student',
+    },
+    moderator: {
+        main: '/moderator',
+        manageTutor: 'tutors',
+        manageQuestion: 'questions',
+        manageDocument: 'documents',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',

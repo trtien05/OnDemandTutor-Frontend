@@ -9,19 +9,20 @@ import Footer from '../../layouts/MainLayout/Footer';
 
 
 const HomeLayout = () => {
-    const { role, user } = useAuth();
+    const { role, user, status } = useAuth();
     const menu = role ? menuLogged(user as PIIProps) : menuUnLogged();
 
     return (
         <>
             <Header
                 role={role}
+                status={status}
                 navbar={navbar}
                 menu={menu}
                 avatarUrl={user?.avatarUrl}
             />
 
-            <main>
+            <main style={{ marginTop: '100px' }}>
                 <Outlet />
             </main>
 

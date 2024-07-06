@@ -41,38 +41,34 @@ const Form1: React.FC<Form1Props> = ({
     if (newFileList.length < 1) {
       setFileList(newFileList);
     } else {
-      setFileList(newFileList);
-      if (!validateFileSize(newFileList[0], 5)) {
-        newFileList[0].status = 'error';
-        newFileList[0].response = 'File size must be less than 5MB';
-        return;
-      }
-      if (!validateFileType(newFileList[0], 'image/png') &&
-        !validateFileType(newFileList[0], 'image/jpg') &&
-        !validateFileType(newFileList[0], 'image/jpeg')) {
-        newFileList[0].status = 'error';
-        newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
-        return;
-      };
-
-      for (let index = 0; index < newFileList.length; index++) {
-        newFileList[index].status = 'done'
-      }
-    }
+    setFileList(newFileList);
+    if(!validateFileSize(newFileList[0], 5)) {
+      newFileList[0].status = 'error';
+      newFileList[0].response = 'File size must be less than 5MB';
+      return;}
+    if(!validateFileType(newFileList[0], 'image/png') &&
+    !validateFileType(newFileList[0], 'image/jpg') && 
+    !validateFileType(newFileList[0], 'image/jpeg') ) {
+      newFileList[0].status = 'error';
+      newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
+      return;};
+    
+    for (let index = 0; index < newFileList.length; index++) {
+      newFileList[index].status = 'done'
+    }}
   };
 
   useEffect(() => {
-    if (!initialValues) {
-      form.setFieldsValue({
-        fullName: dataSource.fullName,
-        email: dataSource.email,
-        phoneNumber: dataSource.phoneNumber,
-        address: dataSource.address,
-        dayOfBirth: dataSource.dateOfBirth ? dayjs(dataSource.dateOfBirth, 'YYYY-MM-DD') : null,
-        gender: dataSource.gender ? `${(dataSource.gender as string).slice(0, 1).toUpperCase()}${(dataSource.gender as string).slice(1)}` : null,
-      });
-    }
-    window.scrollTo({ top: 100, behavior: "smooth" });
+    if (!initialValues){
+    form.setFieldsValue({ 
+      fullName: dataSource.fullName,
+      email: dataSource.email,
+      phoneNumber: dataSource.phoneNumber,
+      address: dataSource.address,
+      dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
+      gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
+     });}
+     window.scrollTo({ top: 100, behavior: "smooth" });
   }, [dataSource]);
 
   const getBase64 = (file: RcFile) =>
@@ -96,11 +92,10 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
-    if (values.gender && values.gender.includes('ale'))
-      values.gender = form.getFieldValue('gender').includes('Female') ? 'true' : 'false';
+    if (values.gender && values.gender.includes('ale')) 
+      values.gender = form.getFieldValue('gender').includes('Female')?'true':'false';
     if (fileList[0] && fileList[0].status === 'done') {
-      onFinish({ ...values, fileList });
-    }
+    onFinish({ ...values, fileList });}
     else onFinish({ ...values, fileList: [] });
   };
 
@@ -168,7 +163,7 @@ const Form1: React.FC<Form1Props> = ({
                 }
               ]
             }
-            tooltip={{ title: 'Please upload an avatar!' }}
+            tooltip={{title: 'Please upload an avatar!'}}
           // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
           >
             <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
@@ -177,7 +172,6 @@ const Form1: React.FC<Form1Props> = ({
                 quality={1}
                 showReset
                 showGrid
-
               >
                 <Upload
                   name="avatar"

@@ -15,7 +15,7 @@ import { AppointmentStatus } from '../../../utils/enums';
 import { set } from 'date-fns';
 
 const StudentAppointment = () => {
-  useDocumentTitle("Appointment | MyTutor")
+  useDocumentTitle("My Schedule | MyTutor")
 
   
   const [initLoading, setInitLoading] = useState(true);
@@ -57,21 +57,21 @@ const StudentAppointment = () => {
     window.scrollTo(0, 0);
     console.log(baseUrl);
 
-  }, [appointmentsPerPage, currentPage, user, viewMode, update]);
+  }, [appointmentsPerPage, currentPage, user, viewMode, update, isDone]);
 
   const handleTabChange = (value: string) => {
     setViewMode(value as 'Upcoming' | 'Past');
   };
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  const filteredAppointments = () => {
-    if (viewMode === 'Upcoming') {
-        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.PAID);
-    } else if (viewMode === 'Past') {
-        return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.DONE);
-    } else {
-        return [];
-    }
-};
+//   const filteredAppointments = () => {
+//     if (viewMode === 'Upcoming') {
+//         return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.PAID);
+//     } else if (viewMode === 'Past') {
+//         return list.filter(timeSlot => timeSlot.appointment.appointmentStatus === AppointmentStatus.DONE);
+//     } else {
+//         return [];
+//     }
+// };
 // const checkCancel = (timeslotId: number) => {
 //   let checkCancel = false;
 //   const appointment = list.find(item => item.timeslotId === timeslotId);
@@ -95,7 +95,7 @@ const confirmCancel = (timeslotId: number) => {
   modal.confirm({
     centered: true,
     title: 'Do you want to cancel this lesson?',
-    content: 'Since this time slot is within 24 hours prior to the appointment, you cannot reschedule this. Do you want to proceed?',
+    content: 'Cancel this timeslot will not be refunded. Do you want to proceed?',
     icon: <ExclamationCircleOutlined />,
     okText: 'Confirm',
     onOk: () => handleCancelAppointment(timeslotId),
@@ -118,13 +118,13 @@ const handleCancelAppointment = (timeslotId: number) => {
 };
 
   return (
-    <div style={{backgroundColor:'#fff', marginBottom:'-50px'}}>
+    <div style={{backgroundColor:'#fff', paddingBottom:'30px'}}>
     {contextHolder}
     {contextHolderModal}
       <Styled.TitleWrapper>
         <Container >
         <Styled.RowWrapper>
-          <Segmented<string>
+          <Styled.StyledSegmented
                     options={['Upcoming', 'Past']}
                     onChange={handleTabChange}
                     value={viewMode}
@@ -132,13 +132,13 @@ const handleCancelAppointment = (timeslotId: number) => {
           </Styled.RowWrapper>
           <Divider/>
           <Styled.TotalTutorAvaiable level={1}>
-          {viewMode} Lessons
+          {viewMode} Study Lessons
           </Styled.TotalTutorAvaiable>
           
         </Container>
       </Styled.TitleWrapper>
 
-      <AppointmentList initLoading={initLoading} list={filteredAppointments()} onCancel={confirmCancel} viewMode={viewMode} />
+      <AppointmentList initLoading={initLoading} list={list} onCancel={confirmCancel} viewMode={viewMode} role='STUDENT' />
 
       {totalPages > 1 &&
         <AppointmentPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
