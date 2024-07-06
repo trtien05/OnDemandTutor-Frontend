@@ -17,7 +17,7 @@ const SearchQuestions = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Question[]>([]);
-  const [data, setData] = useState<Question[]>([]);
+  // const [data, setData] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionPerPage] = useState(4);
   const [totalAmountQuestions, setTotalAmountQuestions] = useState(0);
@@ -61,7 +61,7 @@ const SearchQuestions = () => {
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
-        setData(res.content);
+        // setData(res.content);
         setList(res.content);
         setTotalAmountQuestions(res.totalElements);
         setTotalPages(res.totalPages);

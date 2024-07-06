@@ -2,7 +2,8 @@ import { TableColumnsType, Typography } from "antd";
 import { Question } from "../../../../components/QuestionList/Question.type";
 import { Payment, TimeSlot } from "../../../../components/AppointmentList/Appointment.type";
 const { Text } = Typography;
-import dayjs, { format } from 'dayjs';
+import dayjs from 'dayjs';
+import { Key } from "react";
 function toTimeSlotString(timeSlot: TimeSlot) {
     let timeSlotsString = '';
     const dateString = new Date(timeSlot.scheduleDate).toLocaleDateString('en-US', {
@@ -19,7 +20,7 @@ export const QuestionColumns: TableColumnsType<Question> = [
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (text, record, index) => index + 1,
+        render: (index) => index + 1,
         showSorterTooltip: { target: 'full-header' },
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,
@@ -52,7 +53,7 @@ export const PaymentColumns: TableColumnsType<Payment> = [
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (text, record, index) => index + 1,
+        render: ( index) => index + 1,
         showSorterTooltip: { target: 'full-header' },
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,
@@ -79,7 +80,7 @@ export const PaymentColumns: TableColumnsType<Payment> = [
         dataIndex: 'timeslots',
         render: (timeslots) => (
             <div>
-                {timeslots.map((slot, index) => (
+                {timeslots.map((slot: TimeSlot, index: Key | null | undefined) => (
                     <Text key={index} style={{ display: 'block' }}>
                         {toTimeSlotString(slot)}
                     </Text>
