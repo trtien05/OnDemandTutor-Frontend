@@ -64,7 +64,7 @@ const Schedule: React.FC<ScheduleProps> = ({
           let newSchedule: ScheduleData[] = [];
           let updateSchedule = response.data.schedules;
           const currentDate = new Date(startDate);
-          updateSchedule.forEach((day: ScheduleDay, dayIndex: number) => {
+          updateSchedule.forEach((day: ScheduleDay) => {
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
                 const demo = new Date()
@@ -222,37 +222,41 @@ const Schedule: React.FC<ScheduleProps> = ({
 
 
   if (isScheduleLoaded) return (
-    <div>
-      <ScheduleStyle.ScheduleWrapper
-        hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
-      >
-        <ScheduleComponent
-          key={tutorId} // Add key to force re-render
-          // style={{maxHeight: '300px'}}
-          height='300px'
-          selectedDate={today}
-          minDate={today}
-          maxDate={next7Days}
-          startHour={start}
-          endHour={end}
-          eventSettings={{ ...eventSettings, template: eventTemplate }}
-
-          eventClick={selectedId ? onEventClick : () => { }}
-          eventRendered={selectedId ? onEventRendered : defaultEventRendered}
-          actionBegin={onActionBegin}
-          popupOpen={onPopupOpen}
-
+    <>
+      {contextHolder}
+      <div>
+        <ScheduleStyle.ScheduleWrapper
+          hideToolBar={scheduleType?.includes('tutorProfile') ? true : false}
         >
-          <ViewsDirective>
-            <ViewDirective option="Day" interval={7} />
-          </ViewsDirective>
-          <Inject services={[Day]} />
-        </ScheduleComponent>
-      </ScheduleStyle.ScheduleWrapper>
-      {scheduleType?.includes('tutorProfile') ?
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>) :
-        schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
-    </div>
+          <ScheduleComponent
+            key={tutorId} // Add key to force re-render
+            // style={{maxHeight: '300px'}}
+            height='300px'
+            selectedDate={today}
+            minDate={today}
+            maxDate={next7Days}
+            startHour={start}
+            endHour={end}
+            eventSettings={{ ...eventSettings, template: eventTemplate }}
+
+            eventClick={selectedId ? onEventClick : () => { }}
+            eventRendered={selectedId ? onEventRendered : defaultEventRendered}
+            actionBegin={onActionBegin}
+            popupOpen={onPopupOpen}
+
+          >
+            <ViewsDirective>
+              <ViewDirective option="Day" interval={7} />
+            </ViewsDirective>
+            <Inject services={[Day]} />
+          </ScheduleComponent>
+        </ScheduleStyle.ScheduleWrapper>
+        {scheduleType?.includes('tutorProfile') ?
+          schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>) :
+          schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>)}
+      </div>
+    </>
+
   )
 }
 

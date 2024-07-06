@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input, Select, UploadFile, Typography, message, Form, Col } from 'antd';
+import { Button, Modal, Input, Select, UploadFile, Typography, message, Form } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
@@ -9,7 +9,8 @@ import { createQuestion } from '../../../utils/questionAPI';
 import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../config';
-import { RcFile } from 'antd/es/upload';
+const { Title } = Typography;
+
 interface CreateQuestionProps {
     messageApi: any;
 }
@@ -20,8 +21,10 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    console.log(confirmLoading)
 
     const [modalData, setModalData] = useState(null);
+    console.log(modalData)
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
@@ -146,7 +149,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         { label: 'History', value: 'History' },
         { label: 'Coding', value: 'Coding' },
     ];
-    const { Title } = Typography;
     return (
         <>
             <Button

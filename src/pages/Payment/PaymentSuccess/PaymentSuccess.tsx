@@ -22,7 +22,6 @@ const PaymentSuccess = () => {
     const [loading, setLoading] = useState<boolean>(true);
     const [paymentResponse, setPaymentResponse] = useState<any>();
     const [bookingData, setBookingData] = useState<any>();
-    const navigate = useNavigate();
 
     // Ref to prevent double API call
     const hasFetched = useRef(false);

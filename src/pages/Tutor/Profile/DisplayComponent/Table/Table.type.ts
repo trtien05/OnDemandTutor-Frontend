@@ -6,7 +6,7 @@ export const EducationColumns: TableColumnsType<Education> = [
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (text, record, index) => index + 1,
+        render: (index) => index + 1,
         // showSorterTooltip: { target: 'full-header' },
         // defaultSortOrder: 'ascend',
         // sorter: (a, b) => a.id - b.id,
@@ -39,7 +39,7 @@ export const EducationColumns: TableColumnsType<Education> = [
     {
         title: 'Is Verified',
         dataIndex: 'verified',
-        sorter: (a, b) => a.verified.localeCompare(b.verified)
+        sorter: (a, b) => a.verified.localeCompare(b.verified),
     },
 ];
 
@@ -48,7 +48,7 @@ export const CertColumns: TableColumnsType<Certificate> = [
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (text, record, index) => index + 1,
+        render: (index) => index + 1,
         showSorterTooltip: { target: 'full-header' },
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,

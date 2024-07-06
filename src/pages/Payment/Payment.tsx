@@ -1,5 +1,5 @@
-import { Col, message, Grid, Space, Typography, Row, Button } from 'antd';
-import React, { useState } from 'react'
+import { Col, message, Space, Typography, Button } from 'antd';
+import { useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
@@ -34,9 +34,7 @@ interface Tutor {
 };
 
 const Payment = () => {
-  const [messageApi, contextHolder] = message.useMessage();
   const [loading, setLoading] = useState<boolean>(true);
-  const screens = Grid.useBreakpoint();
 
   const ScheduleMockup: Schedule[] = [
     { id: 1, scheduleDate: '2024-06-09', startTime: '07:00', endTime: '10:00' },
@@ -89,7 +87,6 @@ const Payment = () => {
 
   return (
     <>
-      {contextHolder}
       {/* <Row> */}
       <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
         <Col xl={13} lg={13} sm={24} xs={24} >

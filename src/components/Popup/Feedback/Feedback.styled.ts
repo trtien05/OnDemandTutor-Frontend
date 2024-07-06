@@ -1,12 +1,9 @@
 import styled from 'styled-components';
 import { theme } from '../../../themes/index';
 import { Button, Form, Typography } from 'antd';
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
 export const ButtonDiv = styled.div`
-    // display: flex;
-    // justifyContent: flex-end;
-    // alignSelf: flex-end;
     width: 100%;
     margintop: 20px;
     display: flex;
