@@ -1,10 +1,8 @@
-import { Button, Col, Collapse, Image, List, Row, Typography } from 'antd';
+import { Collapse, List, Row, Typography } from 'antd';
 
 // import ServiceList from '@/components/ServiceList';
 import styled from 'styled-components';
 import { theme } from '../../themes';
-import Icon from '@ant-design/icons/lib/components/Icon';
-import { RightCircleOutlined } from '@ant-design/icons';
 
 const { Title, Paragraph } = Typography;
 
@@ -37,7 +35,7 @@ export const BestServiceTitle = styled(Title)`
     text-align: center;
     &.ant-typography {
         color: #fff;
-        margin-bottom: 16px;
+        margin-bottom: 12px;
         font-size: 4rem;
         font-weight: 700;
         line-height: 1.25;
@@ -307,7 +305,7 @@ export const QuestionTitle = styled(Title)`
 `;
 
 export const QuestionSection = styled.section`
-    padding: 150px 0;
+    padding: 50px 0;
 `;
 export const BookingInformation = styled.div`
     display: flex;

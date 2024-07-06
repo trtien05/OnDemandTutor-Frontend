@@ -170,7 +170,7 @@ export const TurtorVideo = styled.div<{ translate?: number }>`
 
 export const TutorFilteredSection = styled.section`
     margin-top: 20px;
-    margin-bottom: 80px;
+    margin-bottom: 40px;
 `;
 export const TotalTutorAvaiable = styled(Title)`
     &.ant-typography {
@@ -196,6 +196,9 @@ export const InputStyled = styled(Input)`
 
 export const ButtonStyled = styled(Button)`
     border-radius: 15px;
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        width: 100%;
+    }
 `;
 
 export const StyledSelect = styled(Select)`

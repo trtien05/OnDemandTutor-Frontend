@@ -1,4 +1,4 @@
-import { ItemType } from 'antd/es/menu/hooks/useItems';
+import { ItemType } from 'antd/es/menu/interface';
 
 export type MenuType = {
     key: string;
@@ -8,15 +8,14 @@ export type MenuType = {
 
 // Personal Identifiable Information
 export type PIIProps = {
-    avatar?: string;
+    avatarUrl?: string;
     fullName: string;
 };
 
 export type HeaderProps = {
     role: string | null;
+    status:string|null;
     navbar: MenuType[];
     menu: ItemType[];
-    cartItems: number;
-    avatar?: string;
-    userId?: number;
+    avatarUrl?: string;
 };

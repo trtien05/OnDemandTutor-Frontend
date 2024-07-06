@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Select, Row, Col, message } from 'antd';
 import * as Styled from './SearchQuestions.styled';
 import Container from '../../components/Container';
@@ -24,7 +24,10 @@ const SearchQuestions = () => {
   const [totalPages, setTotalPages] = useState(0);
   const [messageApi, contextHolder] = message.useMessage();
   const [searchUrl, setSearchUrl] = useState('');
-  
+
+  const handleSubject = (value: unknown) => {
+    setSubject(value as string);
+  }
   const handleSave = () => {
     const searchCriteria = {
       subject,
@@ -44,7 +47,7 @@ const SearchQuestions = () => {
   };
 
   useEffect(() => {
-    
+
     const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     let url: string = '';
 
@@ -69,40 +72,41 @@ const SearchQuestions = () => {
     console.log(url);
 
   }, [currentPage, searchUrl]);
-  console.log(currentPage)
 
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-const options = [
-        { label: 'Mathematics', value: 'Mathematics' },
-        { label: 'Chemistry', value: 'Chemistry' },
-        { label: 'Biology', value: 'Biology' },
-        { label: 'Literature', value: 'Literature' },
-        { label: 'English', value: 'English' },
-        { label: 'IELTS', value: 'IELTS' },
-        { label: 'TOEFL', value: 'TOEFL' },
-        { label: 'TOEIC', value: 'TOEIC' },
-        { label: 'Physics', value: 'Physics' },
-        { label: 'Geography', value: 'Geography' },
-        { label: 'History', value: 'History' },
-        { label: 'Coding', value: 'Coding' },
-    ];
+  const options = [
+    { label: 'All', value: 'all' },
+    { label: 'Mathematics', value: 'Mathematics' },
+    { label: 'Chemistry', value: 'Chemistry' },
+    { label: 'Biology', value: 'Biology' },
+    { label: 'Literature', value: 'Literature' },
+    { label: 'English', value: 'English' },
+    { label: 'IELTS', value: 'IELTS' },
+    { label: 'TOEFL', value: 'TOEFL' },
+    { label: 'TOEIC', value: 'TOEIC' },
+    { label: 'Physics', value: 'Physics' },
+    { label: 'Geography', value: 'Geography' },
+    { label: 'History', value: 'History' },
+    { label: 'Coding', value: 'Coding' }
+
+  ];
   return (
     <>
-    {contextHolder}
+      {contextHolder}
       <Styled.FilterSection>
         <Container>
           <Styled.SearchWrapper>
-          
+
             <Row justify='space-between' align='middle' gutter={[20, 20]} style={{ width: '100%' }} >
               <Col xs={24} sm={12} md={4} lg={6}>
-                <Styled.StyledSelect placeholder="Subject" onChange={setSubject}>
-                {options.map((option, index) => (
+                <Styled.StyledSelect placeholder="Subject" onChange={handleSubject}>
+                  {options.map((option, index) => (
                     <Option key={index} value={option.value}>
-                        {option.label}
+                      {option.label}
                     </Option>
-                ))}
+                  ))}
                 </Styled.StyledSelect>
               </Col>
               <Col xs={24} sm={12} md={8} lg={10}>
@@ -114,12 +118,12 @@ const options = [
               </Col>
 
               <Col xs={24} sm={12} md={4} lg={2} >
-                <Styled.ButtonStyled type="primary" onClick={handleSave} style={{width:'100%'}}>Save</Styled.ButtonStyled>
+                <Styled.ButtonStyled type="primary" onClick={handleSave} style={{ width: '100%' }}>Save</Styled.ButtonStyled>
               </Col>
               <Col xs={24} sm={12} md={8} lg={6}>
-                <CreateQuestion messageApi={messageApi}/>
+                <CreateQuestion messageApi={messageApi} />
               </Col>
-              
+
             </Row>
           </Styled.SearchWrapper>
         </Container>

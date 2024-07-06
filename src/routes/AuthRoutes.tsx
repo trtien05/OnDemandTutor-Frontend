@@ -15,7 +15,7 @@ const AuthRouter = () => {
     return !role ? <Outlet /> : <Navigate to="/" />;
 };
 
-// Define routes for customer
+// Define routes for student
 const AuthRoutes = {
     element: <AuthRouter />,
     children: [
@@ -24,7 +24,6 @@ const AuthRoutes = {
         { path: config.routes.public.verifyCode, element: <VerifyCode /> },
         { path: config.routes.public.forgotPassword, element: <ForgotPassword /> },
         { path: config.routes.public.setPassword, element: <SetPassword /> },
-        
     ],
 };
 

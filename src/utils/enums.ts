@@ -35,11 +35,11 @@ export enum Subject {
 }
 
 
-export enum AccountStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'UNVERIFIED',
-    PROCESSING = 'PROCESSING',
-    BANNED = 'BANNED',
+export const AccountStatus: { [key: string]: string } = {
+    ACTIVE : 'ACTIVE',
+    INACTIVE : 'UNVERIFIED',
+    PROCESSING : 'PROCESSING',
+    BANNED : 'BANNED',
 }
 
 export const Role: { [key: string]: string } = {
@@ -254,7 +254,15 @@ export enum CancelOption {
 }
 
 export enum Gender {
-    MALE = 'MALE',
-    FEMALE = 'FEMALE',
-    OTHER = 'OTHER',
+    MALE = 0,
+    FEMALE = 1,
+    
+}
+export enum AppointmentStatus {
+    PENDING_PAYMENT= 'PENDING_PAYMENT',
+    PAID = 'PAID',
+    FAILED = 'FAILED',
+    CANCELED = 'CANCELED',
+    REFUNDED = 'REFUNDED',
+    DONE = 'DONE',
 }

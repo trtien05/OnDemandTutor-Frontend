@@ -1,4 +1,3 @@
-import { UploadFile } from "antd";
 
 export interface Question {
         id: number;
