@@ -23,7 +23,7 @@ export interface Tutor {
     videoIntroductionLink: string | null;
     subjects: string[];
     educations: Education[];
-    status?: AccountStatus;
+    status: AccountStatus;
     createdAt?: string;
     description?: string | null;
 }

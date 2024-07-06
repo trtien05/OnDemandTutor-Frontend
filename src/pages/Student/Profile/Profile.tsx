@@ -11,6 +11,7 @@ import {
     Row,
     Skeleton,
     Spin,
+    Table,
     Typography,
     UploadFile,
     notification,
@@ -31,7 +32,7 @@ import 'dayjs/locale/vi';
 import calendar from 'dayjs/plugin/calendar';
 
 import fallbackImage from '@/assets/images/fallback-img.png';
-import { getLearnStatistic, getProfile, updateProfile } from '../../../utils/profileAPI';
+import { getLearnStatistic, getPaymentHistory, getProfile, updateProfile } from '../../../utils/profileAPI';
 import { Subject, Role, Gender } from '../../../utils/enums';
 
 // import InfiniteScroll from '@/components/InfiniteScroll';
@@ -47,6 +48,8 @@ import { UserType } from '../../../hooks/useAuth';
 import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles';
 import { uploadAvatar } from '../../../utils/UploadImg';
 import React from 'react';
+import { PaymentColumns, QuestionColumns } from './Table/Table.type';
+import { Payment } from '../../../components/AppointmentList/Appointment.type';
 
 dayjs.locale('vi');
 dayjs.extend(calendar);
@@ -68,6 +71,7 @@ const Profile = () => {
     const fieldComponents = useRef<JSX.Element[]>([]);
     const [imageUrl, setImageUrl] = useState<string>('');
     const [learnStatistic, setLearnStatistic] = useState<LearnStatistic>();
+    const [paymentHistory, setPaymentHistory] = useState<Payment[]>([]); // Add paymentHistory state
     const [loading, setLoading] = useState<boolean>(false);
     const [reload, setReload] = useState<boolean>(false);
     
@@ -112,7 +116,10 @@ const Profile = () => {
                 
                 
                 const { data } = await getLearnStatistic(user.id);
+                
                 setLearnStatistic(data);
+                const { data: paymentData } = await getPaymentHistory(user.id);
+                setPaymentHistory(paymentData.content || []);
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -427,10 +434,43 @@ const Profile = () => {
                                         </Flex>
                                     </Col>
                                 </Row>
-                            </ProfileWrapper>
-
-                            
+                            </ProfileWrapper>                   
                         </Flex>
+                        <Flex vertical>
+                        <ProfileWrapper style={{marginTop:'10px'}}>
+                                <Row gutter={44}>
+                                
+                                    <Col span={24}>
+                                        
+                                        <St.CustomerInfoItem vertical gap={10} >
+                                            <Title level={3}>Your questions</Title>
+                                            
+                                            </St.CustomerInfoItem  >    
+                                            <Table
+                                                columns={QuestionColumns}
+                                                // dataSource={tableData.EducationData}
+                                                // onChange={onChangeEducation}
+                                                showSorterTooltip={{ target: 'sorter-icon' }}
+                                            />
+                                    </Col>
+
+                                    <Col span={24}>
+                                        
+                                        <St.CustomerInfoItem vertical gap={10} >
+                                            <Title level={3}>Payment History</Title>
+                                        </St.CustomerInfoItem>
+                                        <Table
+                                                columns={PaymentColumns}
+                                                dataSource={paymentHistory}
+                                                // onChange={onChangeEducation}
+                                                showSorterTooltip={{ target: 'sorter-icon' }}
+                                            />    
+                                        
+                                    </Col>
+                                    
+                                </Row>
+                                </ProfileWrapper>
+                            </Flex>
                     </Spin>
                 </Container>
             </ProfileContainer>
