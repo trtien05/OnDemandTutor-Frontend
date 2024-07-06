@@ -8,7 +8,8 @@ import { theme } from "../../../themes";
 import { Tutor, Education, Certificate } from "../ManageTutor/Tutor.type";
 import EducationVerify from "../ManageTutor/DisplayComponents/TutorInfo/EducationVerify";
 import CertificateVerify from "../ManageTutor/DisplayComponents/TutorInfo/CertificateVerify";
-import { sendEmail } from "../../../utils/moderatorAPI";
+import { approveDocument, sendEmail } from "../../../utils/moderatorAPI";
+import { approveMessages, rejectMessages } from "./emailMessages";
 // import iconBachelor from '../../../assets/images/image13.png';
 interface TutorInfoProps {
     tutorId: number;
@@ -30,7 +31,6 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
     const [agreement, setAgreement] = useState(false);
     const [acceptedDiploma, setAcceptedDiploma] = useState<number[]>([]);
     const [acceptedCertificate, setAcceptedCertificate] = useState<number[]>([]);
-    const [isRejected, setIsRejected] = useState(false); // Tutor is rejected
 
     //---------------------- Fetch tutor info ----------------------
     useEffect(() => {
@@ -38,11 +38,11 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
             try {
                 setLoading(true);
 
-                const education = await getTutorEducation(tutorId, '');
+                const education = await getTutorEducation(tutorId, 'false');
                 if (education.data) {
                     setTutorEducation(education.data);
                 }
-                const certificate = await getTutorCertification(tutorId, '');
+                const certificate = await getTutorCertification(tutorId, 'false');
                 if (certificate.data) {
                     setTutorCertification(certificate.data);
                 }
@@ -84,25 +84,21 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
     };
 
     const approveValidation = () => {
-
-
-        form.setFieldValue('mailMessage', '');
-        handleOk('approved');
-    }
-
-    const rejectValidation = () => {
-        if (!isRejected) {
-            setLoading(true);
-            setIsRejected(true);
-            setTimeout(() => {
-                setLoading(false);
-            }, 500);
-            return false;
+        let type: string;
+        if (acceptedDiploma.length === 0 && acceptedCertificate.length === 0) {
+            form.setFieldValue('mailMessage', rejectMessages);
+            type = 'rejected';
         } else {
-
-            handleOk('rejected');
+            if (acceptedDiploma.length !== tutorEducation.length || acceptedCertificate.length !== tutorCertification.length) {
+                form.setFieldValue('mailMessage', approveMessages.partiallyApproved);
+            } else {
+                form.setFieldValue('mailMessage', approveMessages.fullyApproved);
+            }
+            type = 'approved';
         }
+        handleOk(type);
     }
+
 
 
     const handleOk = async (status: string) => {
@@ -119,29 +115,26 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
         }
 
         try {
-            //await approveTutor(tutorId, status, submitData);
-            if (status === 'approved') {
-                api.success({
-                    message: "Success",
-                    description: "Tutor has been approved",
-                });
-            } else {
+            await approveDocument(tutorId, submitData);
+            if (status === 'rejected') {
                 mailData.approved = false;
-                api.success({
-                    message: "Success",
-                    description: "Tutor has been rejected",
-                });
             }
+            api.success({
+                message: "Success",
+                description: "Document approval has been sent",
+            });
         } catch (error) {
             api.error({
                 message: "Error",
                 description: "Failed to submit tutor approval",
             });
         } finally {
-            setLoading(false);
             props.onReload && props.onReload();
-            setIsFormOpen(false);
-            await sendEmail(mailData);            
+            setTimeout(() => {
+                setLoading(false);
+                setIsFormOpen(false);
+            }, 1000);
+            sendEmail('document', mailData);
         }
     };
 
@@ -316,22 +309,8 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
 
                         </div>
 
-                        {isRejected && (<FormStyled.FormItem
-                            name='mailMessage'
-                            label='Reject reason:'
-                            valuePropName="value"
-                        >
-                            <Select
-                                placeholder="Select a reason"
-                                style={{ width: '100%' }}>
-                                {/* {tutorRejectionMessages.map((item, index) => (
-                                    <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))} */}
-                            </Select>
-                        </FormStyled.FormItem>)
 
-                        }
                     </Skeleton>
-
 
                 </FormStyled.FormWrapper>
             </Modal>

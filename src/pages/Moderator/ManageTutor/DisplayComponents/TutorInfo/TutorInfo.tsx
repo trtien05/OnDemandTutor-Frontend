@@ -248,12 +248,12 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 description: "Failed to submit tutor approval",
             });
         } finally {
-            setLoading(false);
             props.onReload && props.onReload();
             setTimeout(() => {
+                setLoading(false);
                 setIsFormOpen(false);
-            }, 2000);
-            sendEmail(mailData);
+            }, 1000);
+            sendEmail('', mailData);
         }
     };
 
@@ -283,7 +283,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     <Button
                         key="submit"
                         type="default"
-                        htmlType={isRejected?"submit":"button"}
+                        htmlType={isRejected ? "submit" : "button"}
                         onClick={rejectValidation}
                         disabled={!agreement}
                         loading={loading}
@@ -568,7 +568,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                             </FormStyled.FormItem>
                                 <Button
                                     type='link'
-                                    style={{ color: `${theme.colors.primary}`, textDecoration: 'underline', marginTop:`-5px`}}
+                                    style={{ color: `${theme.colors.primary}`, textDecoration: 'underline', marginTop: `-5px` }}
                                     onClick={() => { setIsRejected(false); setAgreement(false) }}>
                                     I don't want to reject this application</Button>
                             </>)
