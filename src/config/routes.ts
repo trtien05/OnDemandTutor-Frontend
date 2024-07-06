@@ -21,6 +21,7 @@ const routes = {
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
         chatRoom: '/chat-room',
+        registerStatus:'/register-status',
     },
     tutor: {
         makePayment: '/make-payment',
@@ -30,6 +31,18 @@ const routes = {
         profile: '/tutor-profile',
         tutorSchedule: '/tutor-schedule',
         chatRoom: '/chat-room',
+    },
+    admin: {
+        dashboard: '/admin',
+        manageTutor: '/admin/tutors',
+        manageModerator: '/admin/moderator',
+        manageStudent: '/admin/student',
+    },
+    moderator: {
+        main: '/moderator',
+        manageTutor: 'tutors',
+        manageQuestion: 'questions',
+        manageDocument: 'documents',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',

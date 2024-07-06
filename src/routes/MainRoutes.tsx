@@ -7,7 +7,7 @@ import BecomeTutor from '../pages/BecomeTutor';
 import SearchTutors from '../pages/SearchTutors/SearchTutors';
 import MakePayment from '../pages/Payment/MakePayment';
 import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
-import TutorProfile from '../pages/TutorProfile/TutorProfile';
+import TutorProfile from '../pages/Tutor/Profile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
 
 // import { Navigate, useLocation } from 'react-router-dom';
@@ -15,13 +15,19 @@ import SearchQuestions from '../pages/Questions/SearchQuestions';
 import Profile from '../pages/Student/Profile/Profile';
 import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 import TutorDetail from '../pages/TutorDetail';
-import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
 import ChatRoom from '../pages/ChatRoom';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks';
+import { Role } from '../utils/enums';
+import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
+import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 
 
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
+    const { role } = useAuth();
 
+    if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
     return <MainLayout />;
 };
 
@@ -41,6 +47,7 @@ const publicRoutes = {
 const studentRoutes = {
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
+        { path: config.routes.student.registerStatus, element: <RegisterStatus /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.profile, element: <Profile /> },
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
