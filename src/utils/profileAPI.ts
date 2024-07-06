@@ -14,7 +14,9 @@ interface UpdateAccount {
 export const getLearnStatistic = (accountId: number) => {
     return get(`/api/statistics/${accountId}/learn-statistics`);
 };
-
+export const getPaymentHistory = (accountId: number) => {
+    return get(`/api/appointments/accounts/${accountId}`);
+};
 // export const getInfoCurrentUser = () => {
 //     return get(`/account/current`);
 // };

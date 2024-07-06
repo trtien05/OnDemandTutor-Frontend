@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Select, Row, Col, message } from 'antd';
+import { Select, Row, Col, message, Skeleton } from 'antd';
 import * as Styled from './SearchQuestions.styled';
 import Container from '../../components/Container';
 import QuestionList from '../../components/QuestionList/QuestionList'
@@ -17,7 +17,7 @@ const SearchQuestions = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Question[]>([]);
-  const [data, setData] = useState<Question[]>([]);
+  // const [data, setData] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionPerPage] = useState(4);
   const [totalAmountQuestions, setTotalAmountQuestions] = useState(0);
@@ -47,7 +47,7 @@ const SearchQuestions = () => {
   };
 
   useEffect(() => {
-
+    
     const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     let url: string = '';
 
@@ -56,12 +56,12 @@ const SearchQuestions = () => {
     } else {
       url = baseUrl + searchUrl
     }
-
+    setInitLoading(true);
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
-        setData(res.content);
+        // setData(res.content);
         setList(res.content);
         setTotalAmountQuestions(res.totalElements);
         setTotalPages(res.totalPages);
@@ -128,7 +128,7 @@ const SearchQuestions = () => {
           </Styled.SearchWrapper>
         </Container>
       </Styled.FilterSection>
-
+      <Skeleton title={false} loading={initLoading} active>
       <Styled.TitleWrapper>
         <Container>
           <Styled.TotalTutorAvaiable level={1}>
@@ -142,6 +142,7 @@ const SearchQuestions = () => {
       {totalPages > 1 &&
         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
       }
+      </Skeleton>
     </>
 
 

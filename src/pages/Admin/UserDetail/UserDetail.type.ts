@@ -1,5 +1,5 @@
-import { UserType } from '../../../hooks/useAuth';
-import { AccountStatus, Gender, Degree, AppointmentStatus } from '../../../utils/enums';
+
+import { AccountStatus, Gender, Degree } from '../../../utils/enums';
 
 export interface Education {
     majorName: string;
@@ -23,12 +23,12 @@ export interface Tutor {
     videoIntroductionLink: string | null;
     subjects: string[];
     educations: Education[];
-    status?: AccountStatus;
+    status: typeof AccountStatus;
     createdAt?: string;
     description?: string | null;
 }
 
-export interface Student extends UserType {
+export interface Student  {
     id: number;
     address: string | null;
     avatarUrl: string;
@@ -39,7 +39,7 @@ export interface Student extends UserType {
     fullName: string;
     gender: Gender;
     phoneNumber: string;
-    status: AccountStatus;
+    status: typeof AccountStatus;
 }
 
 

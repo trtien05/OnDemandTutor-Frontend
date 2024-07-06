@@ -73,14 +73,14 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
             const values = await form.validateFields();
             const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
             const uploadedFiles = await Promise.all(
-                fileList.map(async (file: UploadFile, index) => {
+                fileList.map(async (file: UploadFile) => {
                     if (file.originFileObj) {
                         const url = await uploadCreateQuestionFiles(
                             user?.id || 0,
                             file.originFileObj,
                             'CreateQuestion',
                             dateCreated,
-                            index,
+                            // index,
                         );
                         // console.log(`Uploaded file ${index} URL:`, url);
                         return { ...file, url };

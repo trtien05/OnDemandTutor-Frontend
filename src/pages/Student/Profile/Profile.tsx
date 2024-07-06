@@ -2,24 +2,21 @@ import {
     Avatar,
     Button,
     Col,
-    DatePicker,
     Flex,
     Form,
-    Image,
-    List,
     Modal,
     Row,
     Skeleton,
     Spin,
+    Table,
     Typography,
     UploadFile,
     notification,
 } from 'antd';
-// import { TimeRangePickerProps } from 'antd/lib';
-// import locale from 'antd/es/date-picker/locale/vi_VN';
+
 import {
     ExclamationCircleOutlined,
-    // Loading3QuartersOutlined,
+    
     UserOutlined,
 } from '@ant-design/icons';
 import Upload, { RcFile } from 'antd/es/upload';
@@ -30,9 +27,9 @@ import dayjs from 'dayjs';
 import 'dayjs/locale/vi';
 import calendar from 'dayjs/plugin/calendar';
 
-import fallbackImage from '@/assets/images/fallback-img.png';
-import { getLearnStatistic, getProfile, updateProfile } from '../../../utils/profileAPI';
-import { Subject, Role, Gender } from '../../../utils/enums';
+
+import { getLearnStatistic, getPaymentHistory, updateProfile } from '../../../utils/profileAPI';
+import { Gender } from '../../../utils/enums';
 
 // import InfiniteScroll from '@/components/InfiniteScroll';
 import { theme } from '../../../themes';
@@ -43,16 +40,17 @@ import * as St from '../../Admin/UserDetail/UserDetail.styled';
 
 import { fields } from './Profile.fields';
 import { ProfileContainer, ProfileWrapper } from './Profile.styled';
-import { UserType } from '../../../hooks/useAuth';
-import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles';
+
 import { uploadAvatar } from '../../../utils/UploadImg';
-import React from 'react';
+
+import { PaymentColumns, QuestionColumns } from './Table/Table.type';
+import { Payment } from '../../../components/AppointmentList/Appointment.type';
 
 dayjs.locale('vi');
 dayjs.extend(calendar);
 
 const { Title, Paragraph, Text } = Typography;
-const { RangePicker } = DatePicker;
+// const { RangePicker } = DatePicker;
 
 const Profile = () => {
     useDocumentTitle('Profile | MyTutor');
@@ -68,8 +66,9 @@ const Profile = () => {
     const fieldComponents = useRef<JSX.Element[]>([]);
     const [imageUrl, setImageUrl] = useState<string>('');
     const [learnStatistic, setLearnStatistic] = useState<LearnStatistic>();
+    const [paymentHistory, setPaymentHistory] = useState<Payment[]>([]); // Add paymentHistory state
     const [loading, setLoading] = useState<boolean>(false);
-    const [reload, setReload] = useState<boolean>(false);
+    // const [reload, setReload] = useState<boolean>(false);
     
 
     useEffect(() => {
@@ -101,7 +100,7 @@ const Profile = () => {
                 setLoading(false);
             }
         })();
-    }, [reload, user]);
+    }, [api, form, user]);
     
     useEffect(() => {
         (async () => {
@@ -112,7 +111,10 @@ const Profile = () => {
                 
                 
                 const { data } = await getLearnStatistic(user.id);
+                
                 setLearnStatistic(data);
+                const { data: paymentData } = await getPaymentHistory(user.id);
+                setPaymentHistory(paymentData.content || []);
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -122,7 +124,7 @@ const Profile = () => {
                 setLoading(false);
             }
         })();
-    }, [reload, user]);
+    }, [api, user]);
     const confirm = () => {
         modal.confirm({
             centered: true,
@@ -427,10 +429,43 @@ const Profile = () => {
                                         </Flex>
                                     </Col>
                                 </Row>
-                            </ProfileWrapper>
-
-                            
+                            </ProfileWrapper>                   
                         </Flex>
+                        <Flex vertical>
+                        <ProfileWrapper style={{marginTop:'10px'}}>
+                                <Row gutter={44}>
+                                
+                                    <Col span={24}>
+                                        
+                                        <St.CustomerInfoItem vertical gap={10} >
+                                            <Title level={3}>Your questions</Title>
+                                            
+                                            </St.CustomerInfoItem  >    
+                                            <Table
+                                                columns={QuestionColumns}
+                                                // dataSource={tableData.EducationData}
+                                                // onChange={onChangeEducation}
+                                                showSorterTooltip={{ target: 'sorter-icon' }}
+                                            />
+                                    </Col>
+
+                                    <Col span={24}>
+                                        
+                                        <St.CustomerInfoItem vertical gap={10} >
+                                            <Title level={3}>Payment History</Title>
+                                        </St.CustomerInfoItem>
+                                        <Table
+                                                columns={PaymentColumns}
+                                                dataSource={paymentHistory}
+                                                // onChange={onChangeEducation}
+                                                showSorterTooltip={{ target: 'sorter-icon' }}
+                                            />    
+                                        
+                                    </Col>
+                                    
+                                </Row>
+                                </ProfileWrapper>
+                            </Flex>
                     </Spin>
                 </Container>
             </ProfileContainer>

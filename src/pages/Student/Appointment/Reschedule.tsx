@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Button, Form, Modal, Select, notification } from 'antd';
+import { Button, Form, Modal, notification } from 'antd';
 import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
 import config from '../../../config';
 import useAuth from '../../../hooks/useAuth';
@@ -66,7 +66,7 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
     form.validateFields(['selectedSlots']);
   }, [selectedSchedule]);
 
-  const handleOk = async (values: any) => {
+  const handleOk = async () => {
     setLoading(true); // Set loading state to true when form is submitted
     form.validateFields(['selectedSlots'])
       .then(async () => {

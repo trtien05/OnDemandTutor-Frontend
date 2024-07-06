@@ -48,3 +48,16 @@ export interface TimeSlot{
     appointment: Appointment;
     loading: boolean;
 }
+export interface Payment {
+    id: number;
+    createdAt: Date | string | null;
+    description: string | null;
+    subjectName: string;
+    status: AppointmentStatus;
+    tutor: Tutor;
+    student: Student;
+    studentId: number;
+    tuition: number;
+    timeslots: TimeSlot[];
+    loading: boolean;
+}
