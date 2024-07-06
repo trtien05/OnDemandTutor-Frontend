@@ -34,30 +34,45 @@ const Form1: React.FC<Form1Props> = ({
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [previewImage, setPreviewImage] = useState<string>('');
   const [form] = Form.useForm();
 
   const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-    if(!validateFileSize(newFileList[0], 5)) return;
-    if(!validateFileType(newFileList[0], 'image/png') &&
-    !validateFileType(newFileList[0], 'image/jpg') && 
-    !validateFileType(newFileList[0], 'image/jpeg') ) return;
-    for (let index = 0; index < newFileList.length; index++) {
-      newFileList[index].status = 'done'
+    if (newFileList.length < 1) {
+      setFileList(newFileList);
+    } else {
+      setFileList(newFileList);
+      if (!validateFileSize(newFileList[0], 5)) {
+        newFileList[0].status = 'error';
+        newFileList[0].response = 'File size must be less than 5MB';
+        return;
+      }
+      if (!validateFileType(newFileList[0], 'image/png') &&
+        !validateFileType(newFileList[0], 'image/jpg') &&
+        !validateFileType(newFileList[0], 'image/jpeg')) {
+        newFileList[0].status = 'error';
+        newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
+        return;
+      };
+
+      for (let index = 0; index < newFileList.length; index++) {
+        newFileList[index].status = 'done'
+      }
     }
   };
 
   useEffect(() => {
-    form.setFieldsValue({ 
-      fullName: dataSource.fullName,
-      email: dataSource.email,
-      phoneNumber: dataSource.phoneNumber,
-      address: dataSource.address,
-      dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
-      gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
-     });
-     window.scrollTo({ top: 100, behavior: "smooth" });
+    if (!initialValues) {
+      form.setFieldsValue({
+        fullName: dataSource.fullName,
+        email: dataSource.email,
+        phoneNumber: dataSource.phoneNumber,
+        address: dataSource.address,
+        dayOfBirth: dataSource.dateOfBirth ? dayjs(dataSource.dateOfBirth, 'YYYY-MM-DD') : null,
+        gender: dataSource.gender ? `${(dataSource.gender as string).slice(0, 1).toUpperCase()}${(dataSource.gender as string).slice(1)}` : null,
+      });
+    }
+    window.scrollTo({ top: 100, behavior: "smooth" });
   }, [dataSource]);
 
   const getBase64 = (file: RcFile) =>
@@ -72,13 +87,21 @@ const Form1: React.FC<Form1Props> = ({
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
-    setPreviewImage(file.url || file.preview);
+    if (file.url) {
+      setPreviewImage(file.url);
+    } else if (file.preview) {
+      setPreviewImage(file.preview);
+    }
     setPreviewOpen(true);
   };
 
   const handleFinish = (values: any) => {
-    console.log(form.getFieldsValue())
-    onFinish({ ...values, fileList });
+    if (values.gender && values.gender.includes('ale'))
+      values.gender = form.getFieldValue('gender').includes('Female') ? 'true' : 'false';
+    if (fileList[0] && fileList[0].status === 'done') {
+      onFinish({ ...values, fileList });
+    }
+    else onFinish({ ...values, fileList: [] });
   };
 
   return (
@@ -145,6 +168,7 @@ const Form1: React.FC<Form1Props> = ({
                 }
               ]
             }
+            tooltip={{ title: 'Please upload an avatar!' }}
           // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
           >
             <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
@@ -163,7 +187,10 @@ const Form1: React.FC<Form1Props> = ({
                   onChange={onChange}
                   onPreview={handlePreview}
                   accept=".jpg,.jpeg,.png"
-                  // beforeUpload={() => false} // Prevent upload by return false
+                  beforeUpload={(file) => {
+                    setFileList([...fileList, file])
+                    return false;
+                  }} // Prevent upload by return false
                   // beforeUpload={beforeUpload} 
                   style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
                 >
