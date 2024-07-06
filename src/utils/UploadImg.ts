@@ -18,7 +18,10 @@ export const validateFileSize = (file: UploadFile, size: number) => {
   if (file.originFileObj){
   if (file.originFileObj.size) {
     return file.originFileObj.size <= size*1024*1024;
-  }}
+  }} else if (file.size) {
+    return file.size <= size*1024*1024;
+  }
+  return false;
 }
 
 export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, index: number, handleChange: (url: string) => void) => {

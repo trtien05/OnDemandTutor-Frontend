@@ -1,6 +1,6 @@
-import { Skeleton, notification, Typography } from 'antd';
-import { useEffect, useRef, useState } from 'react'
-import { useLocation, useNavigate } from 'react-router-dom';
+import { Skeleton, Typography } from 'antd';
+import { useEffect, useState } from 'react'
+import { useLocation } from 'react-router-dom';
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import * as Styled from '../../Payment/Payment.styled';
 import Container from '../../../components/Container/Container';

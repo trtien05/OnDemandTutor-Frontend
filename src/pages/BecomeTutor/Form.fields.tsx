@@ -2,9 +2,8 @@ import { Input, DatePicker, Select, GetProps, UploadFile } from 'antd';
 import { Rule, RuleObject } from 'antd/es/form';
 import locale from 'antd/es/date-picker/locale/vi_VN'
 import * as Enum from '../../utils/enums';
-import dayjs, { Dayjs } from 'dayjs';
+import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
-import type { DatePickerProps } from 'antd';
 import { validateFileSize } from '../../utils/UploadImg';
 
 // import 'moment/locale/vi';

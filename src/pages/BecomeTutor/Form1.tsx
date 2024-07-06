@@ -6,7 +6,7 @@ import {
   Form,
 } from "antd";
 import ImgCrop from "antd-img-crop";
-import Upload, { RcFile } from "antd/es/upload";
+import Upload, { RcFile, UploadChangeParam } from "antd/es/upload";
 import { useEffect, useState } from "react";
 import { aboutForm } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
@@ -37,38 +37,43 @@ const Form1: React.FC<Form1Props> = ({
   const [previewImage, setPreviewImage] = useState<string>('');
   const [form] = Form.useForm();
 
-  const onChange = ({ fileList: newFileList }) => {
+  const onChange = ({ fileList: newFileList }: UploadChangeParam<UploadFile>) => {
     if (newFileList.length < 1) {
       setFileList(newFileList);
-    } else {
-    setFileList(newFileList);
-    if(!validateFileSize(newFileList[0], 5)) {
-      newFileList[0].status = 'error';
-      newFileList[0].response = 'File size must be less than 5MB';
-      return;}
-    if(!validateFileType(newFileList[0], 'image/png') &&
-    !validateFileType(newFileList[0], 'image/jpg') && 
-    !validateFileType(newFileList[0], 'image/jpeg') ) {
-      newFileList[0].status = 'error';
-      newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
-      return;};
-    
-    for (let index = 0; index < newFileList.length; index++) {
-      newFileList[index].status = 'done'
-    }}
+    }
+    else {
+      setFileList(newFileList);
+      if (!validateFileSize(newFileList[0], 5)) {
+        newFileList[0].status = 'error';
+        newFileList[0].response = 'File size must be less than 5MB';
+        return;
+      }
+      if (!validateFileType(newFileList[0], 'image/png') &&
+        !validateFileType(newFileList[0], 'image/jpg') &&
+        !validateFileType(newFileList[0], 'image/jpeg')) {
+        newFileList[0].status = 'error';
+        newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
+        return;
+      };
+
+      for (let index = 0; index < newFileList.length; index++) {
+        newFileList[index].status = 'done'
+      }
+    }
   };
 
   useEffect(() => {
-    if (!initialValues){
-    form.setFieldsValue({ 
-      fullName: dataSource.fullName,
-      email: dataSource.email,
-      phoneNumber: dataSource.phoneNumber,
-      address: dataSource.address,
-      dayOfBirth:dataSource.dateOfBirth?dayjs(dataSource.dateOfBirth,'YYYY-MM-DD'):null,
-      gender: dataSource.gender?`${(dataSource.gender as string).slice(0,1).toUpperCase()}${(dataSource.gender as string).slice(1)}`:null,
-     });}
-     window.scrollTo({ top: 100, behavior: "smooth" });
+    if (!initialValues) {
+      form.setFieldsValue({
+        fullName: dataSource.fullName,
+        email: dataSource.email,
+        phoneNumber: dataSource.phoneNumber,
+        address: dataSource.address,
+        dayOfBirth: dataSource.dateOfBirth ? dayjs(dataSource.dateOfBirth, 'YYYY-MM-DD') : null,
+        gender: dataSource.gender ? `${(dataSource.gender as string).slice(0, 1).toUpperCase()}${(dataSource.gender as string).slice(1)}` : null,
+      });
+    }
+    window.scrollTo({ top: 100, behavior: "smooth" });
   }, [dataSource]);
 
   const getBase64 = (file: RcFile) =>
@@ -78,24 +83,27 @@ const Form1: React.FC<Form1Props> = ({
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
+
   const handlePreview = async (file: UploadFile) => {
 
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
-    if (file.url) {
-      setPreviewImage(file.url);
-    } else if (file.preview) {
+
+    if (file.preview) {
       setPreviewImage(file.preview);
+    } else if (file.url) {
+      setPreviewImage(file.url);
     }
     setPreviewOpen(true);
   };
 
   const handleFinish = (values: any) => {
-    if (values.gender && values.gender.includes('ale')) 
-      values.gender = form.getFieldValue('gender').includes('Female')?'true':'false';
+    if (values.gender && values.gender.includes('ale'))
+      values.gender = form.getFieldValue('gender').includes('Female') ? 'true' : 'false';
     if (fileList[0] && fileList[0].status === 'done') {
-    onFinish({ ...values, fileList });}
+      onFinish({ ...values, fileList });
+    }
     else onFinish({ ...values, fileList: [] });
   };
 
@@ -147,9 +155,6 @@ const Form1: React.FC<Form1Props> = ({
             Tutors who look friendly and professional get the most students
           </FormStyled.FormDescription>
           <br />
-          {/* <FormStyled.FormContainer style={{  margin: "auto"}}> */}
-
-
 
           <FormStyled.FormItem
             name="avatar"
@@ -163,8 +168,7 @@ const Form1: React.FC<Form1Props> = ({
                 }
               ]
             }
-            tooltip={{title: 'Please upload an avatar!'}}
-          // style={{ display: `flex`, alignItems: `center`, justifyContent: `center`}}
+            tooltip={{ title: 'Please upload an avatar!' }}
           >
             <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
               <ImgCrop
@@ -175,17 +179,11 @@ const Form1: React.FC<Form1Props> = ({
               >
                 <Upload
                   name="avatar"
-                  // action=''
                   listType="picture-card"
                   fileList={fileList}
                   onChange={onChange}
                   onPreview={handlePreview}
                   accept=".jpg,.jpeg,.png"
-                  beforeUpload={(file) => {
-                    setFileList([...fileList, file])
-                    return false;
-                  }} // Prevent upload by return false
-                  // beforeUpload={beforeUpload} 
                   style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
                 >
                   {fileList.length < 1 && "+ Upload"}
@@ -193,7 +191,6 @@ const Form1: React.FC<Form1Props> = ({
               </ImgCrop>
             </div>
           </FormStyled.FormItem>
-          {/* </FormStyled.FormContainer> */}
 
           {previewImage && (
             <Image
@@ -224,8 +221,6 @@ const Form1: React.FC<Form1Props> = ({
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
-            // checked={isCheckedBox.current}
-            // onChange={(e) => setAgreement(e.target.checked)}
             >
               By clicking Save and continue, I confirm that I’m over 18 years
               old. I also have read and agreed with the{" "}
