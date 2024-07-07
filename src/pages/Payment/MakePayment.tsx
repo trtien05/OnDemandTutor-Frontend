@@ -204,6 +204,7 @@ const MakePayment = () => {
         const totalHour = calculateTotalHour(schedule);
         const price = totalHour * tutor.teachingPricePerHour;
         await cookieUtils.setItem('bookingData', JSON.stringify({
+          appointmentId: appointmentData.id,
           tutor: tutor,
           schedule: schedule,
           subject: appointmentData.subjectName,
