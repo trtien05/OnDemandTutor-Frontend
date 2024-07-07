@@ -1,5 +1,6 @@
 import { Dayjs } from 'dayjs';
-import { get, put } from './apiCaller';
+import { get, put, remove } from './apiCaller';
+import { QuestionStatus } from './enums';
 
 interface UpdateAccount {
     fullName: string;
@@ -17,48 +18,30 @@ export const getLearnStatistic = (accountId: number) => {
 export const getPaymentHistory = (accountId: number) => {
     return get(`/api/appointments/accounts/${accountId}`);
 };
-// export const getInfoCurrentUser = () => {
-//     return get(`/account/current`);
-// };
+export const getStudentOneQuestion = (accountId: number, questionId: number) => {
+    return get(`/api/students/${accountId}/questions/${questionId}`);
+};
 
 // export const getAllAccount = () => {
 //     return get('/auth/all');
 // };
 
-// export const banAccount = (userId: number) => {
-//     return remove(`/account/ban/${userId}`);
-// };
+export const deleteQuestion = (accountId: number, questionId:number) => {
+    return remove(`/api/students/${accountId}/questions/${questionId}`);
+};
 
-// export const getCustomerDetail = (userId: number, start: string, end: string) => {
-//     return get(`/account/customers/${userId}`, { start, end });
-// };
+export const getStudentListQuestion = (accountId: number) => {
+    return get(`/api/students/${accountId}/questions`);
+};
 
-// export const uploadAvatar = (userId: number, avatar: RcFile) => {
-//     const data = new FormData();
-
-//     data.append('file', avatar);
-//     data.append('imageType', ImageEnum.AVATAR);
-//     data.append('entityId', userId.toString());
-
-//     return post('/upload', data);
-// };
-
-// export const getStaffDetail = (staffId: number, start: string, end: string) => {
-//     return get(`/account/staffs/${staffId}`, { start, end });
-// };
 
 export const updateProfile = (accountId: number, updateInfo: UpdateAccount) => {
     return put(`/api/accounts/${accountId}/update-details`, updateInfo);
 };
 
-// export const inactiveAccount = (userId: number) => {
-//     return remove(`/account/inactive/${userId}`);
-// };
-
-// export const createStaffAccount = (data: object) => {
-//     return post(`/account/create-staff`, data);
-// };
-
-// export const updateRole = (userId: number, role: typeof Role) => {
-//     return put(`/account/role`, {}, { userId, role });
-// };
+export const updateQuestionStatus = (userId: number, questionId: number, newStatus: QuestionStatus) => {
+    return put(`/api/students/${userId}/update-questions-status/${questionId}?status=${newStatus}`);
+};
+export const updateQuestionContent = (userId: number, questionId: number) => {
+    return put(`/api/students/${userId}/questions/${questionId}`);
+};
