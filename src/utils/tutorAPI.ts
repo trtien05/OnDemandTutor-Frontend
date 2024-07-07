@@ -4,6 +4,10 @@ export const getTutorList = () => {
     return get(`/api/tutors?pageNo=0&pageSize=3&sortBy=rating`);
 };
 
+export const getListTutor = () => {
+    return get(`/api/tutors`);
+};
+
 export const getTutorById = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}`);
 };

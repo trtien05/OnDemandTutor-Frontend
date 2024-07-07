@@ -31,6 +31,12 @@ const routes = {
         tutorSchedule: '/tutor-schedule',
         chatRoom: '/chat-room',
     },
+    admin: {
+        dashboard: '/admin',
+        manageTutor: '/admin/tutors',
+        manageModerator: '/admin/moderator',
+        manageStudent: '/admin/student',
+    },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',
     },

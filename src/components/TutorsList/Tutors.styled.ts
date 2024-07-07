@@ -3,7 +3,7 @@ import { theme } from '../../themes';
 import { List, Row } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { FaRegHeart, FaStar } from 'react-icons/fa';
+import { FaStar } from 'react-icons/fa';
 
 export const FilterSection = styled.section`
     border-radius: 0px 0px 100px 100px;
@@ -112,20 +112,7 @@ export const IconStyleStart = styled(FaStar)`
         height: 18px;
     }
 `;
-export const IconStyleHeart = styled(FaRegHeart)`
-    width: 18px;
-    height: 18px;
-    color: #b94ab7;
-    margintop: 10px;
-    ${({ theme }) => theme.breakpoints.down('xl')} {
-        width: 25px;
-        height: 25px;
-    }
-    ${({ theme }) => theme.breakpoints.down('lg')} {
-        width: 18px;
-        height: 18px;
-    }
-`;
+
 export const BookingRatingAndPrice = styled(Title)`
     &.ant-typography {
         color: ${theme.colors.primary};
