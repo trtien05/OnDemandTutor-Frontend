@@ -19,7 +19,7 @@ const ManageTutor = () => {
     fetchApi();
   }
   return (
-    <div style={{ 'height': '85vh' }}>
+    <div style={{ 'height': '100vh' }}>
       <h2>Manage Tutor</h2>
 
       {tutors && (

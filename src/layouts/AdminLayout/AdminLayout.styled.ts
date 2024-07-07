@@ -64,6 +64,7 @@ export const StyledSider = styled(Sider)`
     top: 70px;
     left: 0;
     z-index: 1;
+    border-right: 1px solid #ddd;
     height: calc(100vh);
 `;
 

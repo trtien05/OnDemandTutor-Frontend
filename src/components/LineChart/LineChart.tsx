@@ -1,4 +1,4 @@
-import { Line } from '@ant-design/plots';
+import { Area } from '@ant-design/plots';
 import { useEffect, useState } from 'react';
 import { getTuitionSum } from '../../utils/statisticAPI.ts'
 
@@ -17,13 +17,12 @@ const LineChart = () => {
 
   const config = {
     data,
+    padding: [40, 40, 80, 60],
     xField: 'date',
-    padding: [40, 60, 80, 60],
     yField: 'totalTuition',
     xAxis: {
       tickCount: 5,
     },
-
     smooth: true,
     point: {
       size: 2.5,
@@ -36,10 +35,11 @@ const LineChart = () => {
       start: 0.1,
       end: 0.5,
     },
+
     color: '#B94AB7'
   };
   return (
-    <Line {...config} />
+    <Area {...config} />
 
   )
 }

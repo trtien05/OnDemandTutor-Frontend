@@ -18,13 +18,15 @@ const PieChart = () => {
     angleField: 'tutorCount',
     colorField: 'subjectName',
     radius: 0.7,
+    innerRadius: 0.6,
+
     legend: {
       visible: true,
       position: 'bottom' as 'bottom',
-      layout: 'horizontal' as 'horizontal', // Đặt layout của chú thích thành ngang để hiển thị nhiều chú thích hơn
+      layout: 'horizontal' as 'horizontal',
       itemName: {
         style: {
-          fontSize: 14, // Điều chỉnh kích thước chữ để phù hợp hơn
+          fontSize: 14,
         },
       },
     },
@@ -39,6 +41,17 @@ const PieChart = () => {
         type: 'element-active',
       },
     ],
+    statistic: {
+      title: undefined,
+      content: {
+        style: {
+          whiteSpace: 'pre-wrap',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+        },
+        content: '',
+      },
+    },
   };
   return (
     <Pie {...config} />

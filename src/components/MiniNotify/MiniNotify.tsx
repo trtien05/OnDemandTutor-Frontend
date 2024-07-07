@@ -1,40 +1,53 @@
 import React from 'react';
-import { Dropdown, Button, MenuProps } from 'antd';
-import { BellOutlined } from '@ant-design/icons';
+import { Dropdown, Button, MenuProps, Space, Avatar, Typography, Divider, Menu } from 'antd';
+import { BellOutlined, EditOutlined, LogoutOutlined, ProjectOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
 import * as Styled from './MiniNotify.syled';
+import { UserType } from '../../hooks/useAuth';
+const { Text } = Typography;
+
+type MiniNotifyProps = {
+  user: UserType | undefined;
+};
 
 const items: MenuProps['items'] = [
   {
-    key: '1',
+    key: 'edit-profile',
     label: (
-      <Styled.Item>
-        <Styled.ItemIcon>
-          <BellOutlined />
-        </Styled.ItemIcon>
-        <Styled.ItemContent>
-          <Styled.ItemTitle>ABC</Styled.ItemTitle>
-          <Styled.ItemTime>8 min</Styled.ItemTime>
-        </Styled.ItemContent>
-      </Styled.Item>
+      <Space>
+        <EditOutlined />
+        Edit Profile
+      </Space>
     ),
   },
   {
-    key: '2',
+    key: 'account-settings',
     label: (
-      <Styled.Item>
-        <Styled.ItemIcon>
-          <BellOutlined />
-        </Styled.ItemIcon>
-        <Styled.ItemContent>
-          <Styled.ItemTitle>BCD</Styled.ItemTitle>
-          <Styled.ItemTime>8 min</Styled.ItemTime>
-        </Styled.ItemContent>
-      </Styled.Item>
+      <Space>
+        <SettingOutlined />
+        Account Settings
+      </Space>
+    ),
+  },
+  {
+    key: 'projects',
+    label: (
+      <Space>
+        <ProjectOutlined />
+        Projects
+      </Space>
+    ),
+  },
+  {
+    key: 'logout',
+    label: (
+      <Space>
+        <LogoutOutlined />
+        Logout
+      </Space>
     ),
   },
 ];
-
-const MiniNotify: React.FC = () => {
+const MiniNotify: React.FC<MiniNotifyProps> = ({ user }) => {
   return (
     <div>
       <Dropdown
@@ -44,15 +57,30 @@ const MiniNotify: React.FC = () => {
           <>
             <Styled.Dropdown>
               <Styled.Head>
-                <span><BellOutlined /> Notification</span>
-                <Button type='link' size='small'>View All</Button>
+                <div style={{ display: 'flex', alignItems: 'center' }}>
+                  <Avatar size={40} src={user?.avatarUrl} alt="avatar" />
+                  <div style={{ marginLeft: 10 }}>
+                    <Text strong>{user?.fullName}</Text>
+                    <br />
+                    <Text type="secondary">{user?.role}</Text>
+                  </div>
+                </div>
               </Styled.Head>
-              <Styled.Body>{menus}</Styled.Body>
+              <Styled.Body>
+                {menus}
+              </Styled.Body>
             </Styled.Dropdown>
           </>
         )}
       >
-        <Button icon={<BellOutlined />}></Button>
+
+        <Space style={{ cursor: 'pointer' }}>
+          {user ? (
+            <Avatar size={40} src={user.avatarUrl} alt="avatar" />
+          ) : (
+            <Avatar size={40} icon={<UserOutlined />} />
+          )}
+        </Space>
       </Dropdown>
     </div>
   );
