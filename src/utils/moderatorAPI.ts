@@ -4,6 +4,11 @@ export const getTutorByStatus = (status: string) => {
     return get(`/api/moderators/tutors?status=${status}`);
 };
 
+export const getTutorWithPendingDocument = () => {
+    return get(`/api/moderators/documents/tutors`);
+
+}
+
 export const approveTutor = (tutorId: number, status:string, data: any) => {
     return put(`/api/moderators/tutors/${tutorId}?status=${status}`, data);
 }

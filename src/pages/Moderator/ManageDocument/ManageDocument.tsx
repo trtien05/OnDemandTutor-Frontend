@@ -1,13 +1,13 @@
 import { useEffect, useState } from 'react';
 
-import { getTutorByStatus } from '../../../utils/moderatorAPI';
+import { getTutorWithPendingDocument } from '../../../utils/moderatorAPI';
 import { Tutor } from '../ManageTutor/Tutor.type';
 import TutorTable from '../ManageTutor/DisplayComponents/TutorTable';
 const ManageDocument = () => {
   const [tutors, setTutors] = useState<Tutor[]>([]);
 
   const fetchApi = async () => {
-    const response = await getTutorByStatus('ACTIVE');
+    const response = await getTutorWithPendingDocument();
     setTutors(response.data.content);
   }
 
