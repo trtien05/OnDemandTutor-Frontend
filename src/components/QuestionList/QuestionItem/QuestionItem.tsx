@@ -43,7 +43,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
         setOpen(true);
     };
     const handleCancel = () => {
-        console.log('Clicked cancel button');
+        // console.log('Clicked cancel button');
         setOpen(false);
     };
     //This function extracts the file extension from the URL correctly
