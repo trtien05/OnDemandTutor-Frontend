@@ -65,7 +65,7 @@ const Dashboard: React.FC = () => {
               <LineChartOutlined style={{ fontSize: '24px', color: '#52c41a' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              {/* <Styled.Title>{profit?.profit.toLocaleString()}đ</Styled.Title> */}
+              <Styled.Title>{profit?.profit.toLocaleString()}đ</Styled.Title>
               <Styled.Description>Profit/{profit?.month}</Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
