@@ -12,7 +12,7 @@ import ManageModerator from "../pages/Admin/ManageModerator/ManageModerator";
 // Authorization
 const AdminRouter = () => {
     const { role } = useAuth();
-    // return role === Role.ADMIN ? <AdminLayout /> : <Navigate to="/" />;
+    return role === Role.ADMIN ? <AdminLayout /> : <Navigate to="/" />;
     return <AdminLayout />;
 
 };

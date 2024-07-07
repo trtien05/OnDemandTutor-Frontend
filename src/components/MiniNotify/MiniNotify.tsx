@@ -1,8 +1,11 @@
 import React from 'react';
-import { Dropdown, Button, MenuProps, Space, Avatar, Typography, Divider, Menu } from 'antd';
-import { BellOutlined, EditOutlined, LogoutOutlined, ProjectOutlined, SettingOutlined, UserOutlined } from '@ant-design/icons';
+import { Dropdown, MenuProps, Space, Avatar, Typography } from 'antd';
+import { EditOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import * as Styled from './MiniNotify.syled';
 import { UserType } from '../../hooks/useAuth';
+import cookieUtils from '../../utils/cookieUtils';
+import config from '../../config';
+import { Link } from 'react-router-dom';
 const { Text } = Typography;
 
 type MiniNotifyProps = {
@@ -19,35 +22,21 @@ const items: MenuProps['items'] = [
       </Space>
     ),
   },
-  {
-    key: 'account-settings',
-    label: (
-      <Space>
-        <SettingOutlined />
-        Account Settings
-      </Space>
-    ),
-  },
-  {
-    key: 'projects',
-    label: (
-      <Space>
-        <ProjectOutlined />
-        Projects
-      </Space>
-    ),
-  },
+
   {
     key: 'logout',
     label: (
-      <Space>
-        <LogoutOutlined />
-        Logout
-      </Space>
+      <Link to={config.routes.public.login} onClick={() => cookieUtils.clear()}>
+        <Space >
+          <LogoutOutlined />
+          Logout
+        </Space>
+      </Link>
     ),
   },
 ];
 const MiniNotify: React.FC<MiniNotifyProps> = ({ user }) => {
+
   return (
     <div>
       <Dropdown

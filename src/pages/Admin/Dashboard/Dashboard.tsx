@@ -9,20 +9,30 @@ import TopTutor from '../../../components/TopTutor/TopTutor';
 import { getNumberOfRole, getProfitThisMonth, getRevenueThisMonth } from '../../../utils/statisticAPI';
 import { DollarCircleOutlined, LineChartOutlined, OrderedListOutlined, UserOutlined } from '@ant-design/icons';
 
+interface Revenue {
+  revenue: number;
+  month: string;
+}
+
+interface Profit {
+  profit: number;
+  month: string;
+}
+
 const Dashboard: React.FC = () => {
-  const [revenue, setRevenue] = useState(0);
-  const [profit, setProfit] = useState(0);
+  const [revenue, setRevenue] = useState<Revenue | null>(null);
+  const [profit, setProfit] = useState<Profit | null>(null);
   const [numTutor, setNumTutor] = useState(0);
   const [numStudent, setNumStudent] = useState(0);
   useEffect(() => {
     const fetchData = async () => {
       // Fetch Revenue Data
       const responseRevenue = await getRevenueThisMonth();
-      setRevenue(responseRevenue.data.revenue)
+      setRevenue(responseRevenue.data)
 
       // Fetch Profit Data
       const responseProfit = await getProfitThisMonth();
-      setProfit(responseProfit.data.revenue)
+      setProfit(responseProfit.data)
 
       // Fetch Revenue Data
       const responseNumTutor = await getNumberOfRole('TUTOR');
@@ -35,7 +45,6 @@ const Dashboard: React.FC = () => {
     fetchData();
   }, [])
 
-
   return (
     <div style={{ height: '150vh' }}>
       <Row gutter={[20, 20]}>
@@ -45,8 +54,8 @@ const Dashboard: React.FC = () => {
               <DollarCircleOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              <Styled.Title>{revenue.toLocaleString()}đ</Styled.Title>
-              <Styled.Description>Revenue</Styled.Description>
+              <Styled.Title>{revenue?.revenue.toLocaleString()}đ</Styled.Title>
+              <Styled.Description>Revenue/{revenue?.month}</Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
         </Col>
@@ -56,8 +65,8 @@ const Dashboard: React.FC = () => {
               <LineChartOutlined style={{ fontSize: '24px', color: '#52c41a' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              <Styled.Title>{profit}</Styled.Title>
-              <Styled.Description>Profit</Styled.Description>
+              {/* <Styled.Title>{profit?.profit.toLocaleString()}đ</Styled.Title> */}
+              <Styled.Description>Profit/{profit?.month}</Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
         </Col>
