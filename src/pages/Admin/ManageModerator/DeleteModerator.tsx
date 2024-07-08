@@ -12,7 +12,7 @@ interface DeleteTutorProps {
   onReload: () => void;
 }
 
-const DeleteTutor: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
+const DeleteModerator: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async (record: Record) => {
@@ -43,4 +43,4 @@ const DeleteTutor: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
   );
 }
 
-export default DeleteTutor;
+export default DeleteModerator;

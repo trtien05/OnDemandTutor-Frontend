@@ -5,7 +5,7 @@ import Sider from 'antd/es/layout/Sider';
 
 export const StyledLayout = styled(Layout)`
     & .ant-layout {
-        background: #fff;
+        background-color: #fff;
     }
 `;
 
@@ -16,7 +16,8 @@ export const Header = styled.header`
     border: 1px solid #ddd;
     position: sticky;
     top: 0;
-    z-index: 1;
+    left: 0;
+    z-index: 999;
 `;
 
 export const Logo = styled.div`
@@ -58,16 +59,25 @@ export const Main = styled(Layout)`
         margin-left: 80px;
     }
 `;
-
+const calculateHeight = () => `calc(100vh - 70px)`;
 export const StyledSider = styled(Sider)`
     position: fixed !important;
     top: 70px;
     left: 0;
     z-index: 1;
-    height: calc(100vh);
+    border-right: 1px solid #ddd;
+    height: ${calculateHeight()};
+    background: #fff !important;
 `;
 
 export const StyledContent = styled(Content)`
     padding: 20px;
     background: #fff;
+    height: 210vh;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        height: 290vh;
+    }
+    ${({ theme }) => theme.breakpoints.down('lg')} {
+        height: 430vh;
+    }
 `;

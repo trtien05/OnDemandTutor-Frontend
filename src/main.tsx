@@ -7,13 +7,6 @@ import GlobalStyles from './themes/globalStyles.ts';
 import { DefaultTheme, ThemeProvider } from 'styled-components';
 import { createStyledBreakpointsTheme } from 'styled-breakpoints';
 import { ConfigProvider, App as AppAntd } from 'antd';
-// import { Provider } from 'react-redux';
-// import { store } from './store';
-// Add this line to polyfill global
-
-// import type global from './global.ts';
-// (window as any).global = global;
-
 
 export const breakpoints = {
   xs: '360px',
@@ -31,7 +24,7 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <ThemeProvider theme={theme}>
-      <ConfigProvider  theme={AntdThemeConfig}>
+      <ConfigProvider theme={AntdThemeConfig}>
         <AppAntd>
           <App />
         </AppAntd>

@@ -1,45 +1,25 @@
-import React, { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom'
-import { Button } from 'antd';
+import { useEffect, useState } from 'react';
 import TutorTable from './TutorTable';
-import { getTutorList } from '../../../utils/tutorAPI';
+import { getAccountByRole } from '../../../utils/accountAPI';
 
-interface Education {
-  degreeType?: string;
-  majorName?: string;
-  specialization?: string;
-  verified?: boolean;
-};
-
-interface Tutor {
-  id: number;
-  fullName?: string;
-  avatarUrl?: string;
-  teachingPricePerHour: number;
-  educations?: Education;
-  subjects: string[],
-  averageRating?: number;
-  loading: boolean;
-};
 
 const ManageTutor = () => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
+  const [tutors, setTutors] = useState([]);
 
   const fetchApi = async () => {
-    const response = await getListTutor();
+    const response = await getAccountByRole('TUTOR');
     setTutors(response.data.content);
   }
 
   useEffect(() => {
     fetchApi();
   }, [])
-
+  console.log(tutors)
   const handleReload = () => {
     fetchApi();
   }
-  console.log(tutors);
   return (
-    <div style={{ 'height': '100vh' }}>
+    <div>
       <h2>Manage Tutor</h2>
 
       {tutors && (

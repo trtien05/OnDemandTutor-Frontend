@@ -9,10 +9,11 @@ import logo from '../../assets/svg/logo.png';
 import MiniNotify from '../../components/MiniNotify/MiniNotify';
 import MenuSider from '../../components/MenuSider/MenuSider';
 import * as Styled from './AdminLayout.styled'
+import { useAuth } from '../../hooks';
 
 const AdminLayout: React.FC = () => {
   const [collapsed, setCollapsed] = useState<boolean>(false);
-
+  const { user } = useAuth();
   return (
     <Styled.StyledLayout>
       <Styled.Header>
@@ -27,7 +28,7 @@ const AdminLayout: React.FC = () => {
             />
           </div>
           <div className="right">
-            <MiniNotify />
+            <MiniNotify user={user} />
           </div>
         </Styled.Nav>
       </Styled.Header>
@@ -37,7 +38,7 @@ const AdminLayout: React.FC = () => {
           breakpoint='lg'
           onBreakpoint={(broken: boolean) => setCollapsed(broken)}
           theme='light'
-          style={{ 'backgroundColor': '#fff' }}
+          style={{ 'backgroundColor': '#fff !important' }}
         >
           <MenuSider />
         </Styled.StyledSider>

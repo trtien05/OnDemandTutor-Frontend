@@ -10,15 +10,13 @@ import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import TutorProfile from '../pages/Tutor/Profile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
 
-// import { Navigate, useLocation } from 'react-router-dom';
-// import cookieUtils from '../utils/cookieUtils';
+import { Navigate } from 'react-router-dom';
+import { useAuth } from '../hooks';
+import { Role } from '../utils/enums';
 import Profile from '../pages/Student/Profile/Profile';
 import StudentAppointment from '../pages/Student/Appointment/StudentAppointment';
 import TutorDetail from '../pages/TutorDetail';
 import ChatRoom from '../pages/ChatRoom';
-import { Navigate } from 'react-router-dom';
-import { useAuth } from '../hooks';
-import { Role } from '../utils/enums';
 import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
 import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 
@@ -26,7 +24,6 @@ import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
     const { role } = useAuth();
-
     if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
     return <MainLayout />;
 };

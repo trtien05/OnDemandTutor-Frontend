@@ -7,16 +7,17 @@ interface Record {
   id: number;
 }
 
-interface DeleteTutorProps {
+interface DeleteStudentProps {
   record: Record;
   onReload: () => void;
 }
 
-const DeleteTutor: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
+const DeleteStudent: React.FC<DeleteStudentProps> = ({ record, onReload }) => {
   const [messageApi, contextHolder] = message.useMessage();
 
   const handleDelete = async (record: Record) => {
     const response = await deleteAccount(record.id);
+    // const response = true;
     if (response) {
       onReload();
       messageApi.open({
@@ -43,4 +44,4 @@ const DeleteTutor: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
   );
 }
 
-export default DeleteTutor;
+export default DeleteStudent;
