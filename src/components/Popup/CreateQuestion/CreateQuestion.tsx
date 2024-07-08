@@ -18,17 +18,17 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
     const { user, role } = useAuth();
     const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    // const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-    console.log(confirmLoading)
+    
 
-    const [modalData, setModalData] = useState(null);
-    console.log(modalData)
+    // const [modalData, setModalData] = useState(null);
+    
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
-        console.log('role:', role);
+        
         if (role === 'STUDENT') {
             setOpen(true);
         } else if (role === 'TUTOR') {
@@ -88,13 +88,13 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 }),
             );
             values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
-            setModalData(values);
+            // setModalData(values);
             // console.log('Clicked OK with values:', values);
-            setConfirmLoading(true);
+            // setConfirmLoading(true);
             await saveQuestion(user?.id || 0, values);
             setTimeout(() => {
                 setOpen(false);
-                setConfirmLoading(false);
+                // setConfirmLoading(false);
                 setLoading(false);
                 form.resetFields();
                 setFileList([]);

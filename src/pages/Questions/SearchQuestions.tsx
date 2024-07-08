@@ -29,10 +29,10 @@ const SearchQuestions = () => {
     setSubject(value as string);
   }
   const handleSave = () => {
-    const searchCriteria = {
-      subject,
-      searchKeyword,
-    };
+    // const searchCriteria = {
+    //   subject,
+    //   searchKeyword,
+    // };
     let url = ``;
 
     if (subject !== 'all') {
@@ -42,7 +42,7 @@ const SearchQuestions = () => {
       url += `&questionContent=${searchKeyword}`;
     }
     setSearchUrl(url);
-    console.log(searchCriteria)
+    // console.log(searchCriteria)
     // console.log(searchUrl);
   };
 
@@ -71,7 +71,7 @@ const SearchQuestions = () => {
       })
       .catch((err) => console.error('Failed to fetch questions:', err));
     window.scrollTo(0, 0);
-    console.log(url);
+    // console.log(url);
 
   }, [currentPage, searchUrl]);
 
