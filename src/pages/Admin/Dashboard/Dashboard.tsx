@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { Col, Row } from 'antd';
 import * as Styled from './Dashboard.syled'
-import PieChart from '../../../components/PieChart/PieChart'
-import LineChart from '../../../components/LineChart/LineChart'
-import ColumnChart from '../../../components/ColumnChart/ColumnChart'
+// import PieChart from '../../../components/PieChart/PieChart'
+// import LineChart from '../../../components/LineChart/LineChart'
+// import ColumnChart from '../../../components/ColumnChart/ColumnChart'
 import Title from 'antd/es/typography/Title';
 import TopTutor from '../../../components/TopTutor/TopTutor';
 import { getNumberOfRole, getProfitThisMonth, getRevenueThisMonth } from '../../../utils/statisticAPI';
@@ -98,13 +98,13 @@ const Dashboard: React.FC = () => {
         <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
             <Title level={5} style={{ color: '#B94AB7' }}>Total Revenue</Title>
-            <LineChart />
+            {/* <LineChart /> */}
           </Styled.StyledBox>
         </Col>
         <Col xxl={9} xl={9} lg={9} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
             <Title level={5} style={{ color: '#B94AB7' }}>Distribution of Tutors by Subject</Title>
-            <PieChart />
+            {/* <PieChart /> */}
           </Styled.StyledBox>
         </Col>
       </Row>
@@ -112,7 +112,7 @@ const Dashboard: React.FC = () => {
         <Col xxl={9} xl={9} lg={24} md={24} sm={24} xs={24}>
           <Styled.StyledBox>
             <Title level={5} style={{ color: '#B94AB7' }}>Revenue by Subjects</Title>
-            <ColumnChart />
+            {/* <ColumnChart /> */}
           </Styled.StyledBox>
         </Col>
         <Col xxl={15} xl={15} lg={24} md={24} sm={24} xs={24}>

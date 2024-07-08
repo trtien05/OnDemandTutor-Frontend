@@ -20,3 +20,7 @@ export const sendEmail = (approvalType:string, data: any) => {
 export const approveDocument = (tutorId:number, data: any) => {
     return put(`/api/moderators/documents/${tutorId}`, data);
 }
+
+export const getQuestionByStatus = (status: string) => {
+    return get(`/api/moderators/questions?status=${status}`);
+}
