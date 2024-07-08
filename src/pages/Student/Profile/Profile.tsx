@@ -205,7 +205,7 @@ const Profile = () => {
             await updateProfile(user.id, {
                 fullName: values.fullName,
                 dateOfBirth: dayjs(values.dateOfBirth),
-                gender: values.gender === Gender.MALE ? true : false,
+                gender: values.gender === Gender.FEMALE ? true : false,
                 phoneNumber: values.phoneNumber,
                 email: user.email,
                 address: values.address,
