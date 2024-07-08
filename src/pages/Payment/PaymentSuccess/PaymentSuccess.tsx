@@ -1,7 +1,7 @@
 import { Skeleton, notification, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react'
 import { checkPaymentStatus } from '../../../utils/paymentAPI';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import cookieUtils from '../../../utils/cookieUtils';
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import * as Styled from '../Payment.styled';
@@ -10,6 +10,7 @@ import { AiOutlineCheckCircle, AiOutlineCloseCircle } from 'react-icons/ai';
 import { theme } from '../../../themes';
 import { toScheduleString } from '../MakePayment';
 import { Schedule } from '../../../components/Schedule/Schedule.type';
+import { sendBookingEmail } from '../../../utils/tutorBookingAPI';
 const { Title, Text } = Typography;
 
 const PaymentSuccess = () => {
@@ -35,7 +36,7 @@ const PaymentSuccess = () => {
                 setLoading(true);
                 if (location.search) {
                     const response = await checkPaymentStatus(location.search);
-                    console.log(response)
+                    console.log(response);
                     if (response.status === 200) {
                         setPaymentResponse(response);
                         setBookingData(cookieUtils.getItem('bookingData'));
@@ -55,6 +56,12 @@ const PaymentSuccess = () => {
             }
         })();
     }, [])
+
+    useEffect(() => {
+        if (paymentResponse && paymentResponse.status === 200 && bookingData) {
+            sendBookingEmail(bookingData.appointmentId);
+        }
+    }, [paymentResponse])
 
 
     return (
@@ -88,7 +95,7 @@ const PaymentSuccess = () => {
                                             <Text>
                                                 <p style={{ textAlign: `right` }}>Subject: {bookingData.subject}</p>
                                                 {bookingData.schedule.map((schedule: Schedule, index: number) => (
-                                                    <p key={index} style={{ lineHeight: `100%`, textAlign: `right` }}>{toScheduleString(schedule).split('at')[0]} at <span style={{ color: `${theme.colors.primary}` }}>{toScheduleString(schedule).split('at')[1]} </span></p>
+                                                    <p key={index} style={{ lineHeight: `100%`, textAlign: `right` }}>{toScheduleString(schedule).split(' at ')[0]} at <span style={{ color: `${theme.colors.primary}` }}>{toScheduleString(schedule).split(' at ')[1]} </span></p>
                                                 )
                                                 )}
                                             </Text>

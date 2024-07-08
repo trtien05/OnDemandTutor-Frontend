@@ -5,7 +5,6 @@ import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
-import { ScheduleEvent } from '../../components/Schedule/Schedule.type';
 
 import iconEducation from "../../assets/images/image12.png";
 import iconPerson from "../../assets/images/image14.png";
@@ -49,9 +48,7 @@ interface Certification {
 const TutorDetail: React.FC = () => {
   useDocumentTitle("Tutor Detail | MyTutor");
   const { user } = useAuth();
-  const [selectedId, setSelectedId] = useState<number[]>([]);
-  const [selectedSchedule, setSelectedSchedule] = useState<ScheduleEvent[]>([]);
-
+  
   const aboutRef = useRef<HTMLDivElement>(null);
   const scheduleRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
@@ -137,11 +134,11 @@ const TutorDetail: React.FC = () => {
         await fetchReviews();
 
         // Fetch Education Data
-        const educationResponse = await getTutorEducation(tutorId, true);
+        const educationResponse = await getTutorEducation(tutorId, 'true');
         setEducations(educationResponse.data);
 
         // Fetch Certificate Data
-        const cetificateResponse = await getTutorCertification(tutorId, true);
+        const cetificateResponse = await getTutorCertification(tutorId, 'true');
         setCertification(cetificateResponse.data);
 
         // Fetch Booked Tutor Data
@@ -177,10 +174,18 @@ const TutorDetail: React.FC = () => {
     fetchData();
   }, [tutorId, user?.id]);
   const navigate = useNavigate();
-  console.log(tutorBooked);
+
   const handleSendMessage = () => {
+
     if (user?.role === 'STUDENT') {
-      navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
+      if (!tutorFeedback) {
+        api.warning({
+          message: 'You did NOT register this tutor!',
+          description: 'You can not send message!',
+        })
+      } else {
+        navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
+      }
     } else {
       api.warning({
         message: 'Warning',
@@ -208,7 +213,7 @@ const TutorDetail: React.FC = () => {
       });
     }
   };
-
+  console.log(tutor);
   const loadMore = !loading ? (
     <Row>
       <Col lg={24} md={24} xs={24} sm={24} >
@@ -308,7 +313,7 @@ const TutorDetail: React.FC = () => {
                     <Styled.TitleWrapper>
                       <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
                     </Styled.TitleWrapper>
-                    <Schedule tutorId={tutorId} setSelectedId={setSelectedId} setSelectedSchedule={setSelectedSchedule} selectedId={selectedId} selectedSchedule={selectedSchedule} />
+                    <Schedule tutorId={tutorId} />
 
                   </Styled.SectionInfor>
                 </Skeleton>

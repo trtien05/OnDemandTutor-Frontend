@@ -80,7 +80,6 @@ const useAuth = () => {
             setLoading(true);
 
             // Set role
-            
             setRole(getRole());
             setStatus(getStatus());
 
