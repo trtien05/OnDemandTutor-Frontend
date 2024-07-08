@@ -21,16 +21,20 @@ function toTimeSlotString(timeSlot: TimeSlot) {
 }
 const handleUpdateStatus = async (questionId: number, accountId: number, currentStatus: QuestionStatus, setReloadKey: React.Dispatch<React.SetStateAction<boolean>>) => {
     if (currentStatus !== QuestionStatus.SOLVED && currentStatus !== QuestionStatus.UNSOLVED) return;
-    Modal.confirm({
-        title: 'Confirm Update Status',
-        content:
-            'Are you sure you want to update the status of this question? You cannot undo this action after confirm.',
-        onOk: async () => {
-            
-            let newStatus = QuestionStatus.UNSOLVED;
+    let newStatus = QuestionStatus.UNSOLVED;
             if (currentStatus === QuestionStatus.UNSOLVED) {
                 newStatus = QuestionStatus.SOLVED;
             } 
+    Modal.confirm({
+        title: 'Confirm Update Status',
+        content:
+            `Are you sure you want to update status ${currentStatus} to ${newStatus}? You cannot undo this action after confirm.`,
+        onOk: async () => {
+            
+            // let newStatus = QuestionStatus.UNSOLVED;
+            // if (currentStatus === QuestionStatus.UNSOLVED) {
+            //     newStatus = QuestionStatus.SOLVED;
+            // } 
                 try {
                     await updateQuestionStatus(accountId, questionId,newStatus);
                     notification.success({
