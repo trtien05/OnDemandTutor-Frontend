@@ -11,7 +11,6 @@
   },
   "dependencies": {
     "@ant-design/charts": "^1.4.3",
-    "@ant-design/compatible": "^5.1.2",
     "@ant-design/icons": "^4.6.0",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
@@ -19,7 +18,7 @@
     "@stomp/stompjs": "^7.0.0",
     "@syncfusion/ej2-base": "^25.2.7",
     "@syncfusion/ej2-react-schedule": "^25.2.7",
-    "antd": "^4.23.0",
+    "antd": "^4.6.3",
     "antd-img-crop": "^4.22.0",
     "axios": "^1.5.0",
     "crypto-browserify": "^3.12.0",
