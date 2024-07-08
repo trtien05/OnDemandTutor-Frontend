@@ -7,6 +7,7 @@ import { Key } from 'react';
 import { DeleteOutlined } from '@ant-design/icons';
 import { deleteQuestion, updateQuestionStatus } from '../../../../utils/profileAPI';
 import { QuestionStatus } from '../../../../utils/enums';
+import { theme } from '../../../../themes';
 
 function toTimeSlotString(timeSlot: TimeSlot) {
     let timeSlotsString = '';
@@ -195,5 +196,8 @@ export const PaymentColumns: TableColumnsType<Payment> = [
         title: 'Status',
         dataIndex: 'status',
         sorter: (a, b) => a.status.localeCompare(b.status),
+        render: (status) => (
+            <p style={{color:`${theme.colors.primary}`}}>{status}</p>
+        )
     },
 ];

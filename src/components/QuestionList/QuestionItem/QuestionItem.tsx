@@ -57,7 +57,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
     //to determine the file type and render the image or link accordingly.
     const renderQuestionFile = (url: string) => {
         const fileExtension = getFileExtension(url);
-        console.log(fileExtension); // for debugging
+        // console.log(fileExtension); // for debugging
 
         if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
