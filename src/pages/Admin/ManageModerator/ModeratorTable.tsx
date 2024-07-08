@@ -1,8 +1,7 @@
-import { Badge, Table, TableColumnsType, Tag, Tooltip } from 'antd';
+import { Table, TableColumnsType, Tag } from 'antd';
 import React, { useState } from 'react';
 import DeleteModerator from './DeleteModerator';
 import EditModerator from './EditModerator';
-
 
 interface Moderator {
   id: number;
@@ -115,7 +114,9 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload })
           total: moderators.length,
           showSizeChanger: false,
         }}
-        onChange={handleTableChange} />
+        onChange={handleTableChange}
+        scroll={{ x: true }}
+      />
     </div>
   );
 }

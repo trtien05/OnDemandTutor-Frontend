@@ -73,11 +73,5 @@ export const StyledSider = styled(Sider)`
 export const StyledContent = styled(Content)`
     padding: 20px;
     background: #fff;
-    height: 210vh;
-    ${({ theme }) => theme.breakpoints.down('xl')} {
-        height: 290vh;
-    }
-    ${({ theme }) => theme.breakpoints.down('lg')} {
-        height: 430vh;
-    }
+    min-height: 210vh;
 `;

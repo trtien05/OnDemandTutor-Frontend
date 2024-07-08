@@ -177,10 +177,18 @@ const TutorDetail: React.FC = () => {
     fetchData();
   }, [tutorId, user?.id]);
   const navigate = useNavigate();
-  console.log(tutorBooked);
+
   const handleSendMessage = () => {
+
     if (user?.role === 'STUDENT') {
-      navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
+      if (!tutorFeedback) {
+        api.warning({
+          message: 'You did NOT register this tutor!',
+          description: 'You can not send message!',
+        })
+      } else {
+        navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
+      }
     } else {
       api.warning({
         message: 'Warning',
@@ -208,7 +216,7 @@ const TutorDetail: React.FC = () => {
       });
     }
   };
-
+  console.log(tutor);
   const loadMore = !loading ? (
     <Row>
       <Col lg={24} md={24} xs={24} sm={24} >

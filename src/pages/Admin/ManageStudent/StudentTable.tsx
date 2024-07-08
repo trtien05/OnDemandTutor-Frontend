@@ -1,4 +1,4 @@
-import { Badge, Table, TableColumnsType, Tag, Tooltip } from 'antd';
+import { Table, TableColumnsType, Tag } from 'antd';
 import React, { useState } from 'react';
 import DeleteStudent from './DeleteStudent';
 import EditStudent from './EditStudent';
@@ -121,6 +121,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload }) => {
           total: students.length,
           showSizeChanger: false,
         }}
+        scroll={{ x: true }}
         onChange={handleTableChange} />
     </div>
   );
