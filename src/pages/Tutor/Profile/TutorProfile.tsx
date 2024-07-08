@@ -1,23 +1,20 @@
 import { useEffect, useState } from 'react'
-import useDocumentTitle from '../../hooks/useDocumentTitle';
-import useAuth from '../../hooks/useAuth';
-import { getTutorById, getTutorStatistic } from '../../utils/tutorAPI';
+import useDocumentTitle from '../../../hooks/useDocumentTitle';
+import useAuth from '../../../hooks/useAuth';
+import { getTutorById, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
 import { Avatar, Col, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
-import Container from '../../components/Container';
+import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
 
-import { getTutorEducation } from '../../utils/tutorAPI';
-import TableComponent from '../../components/Table/Table';
-import { getTutorCertification } from '../../utils/tutorAPI';
+import { getTutorEducation } from '../../../utils/tutorAPI';
+import TableComponent from './DisplayComponent/Table/Table';
+import { getTutorCertification } from '../../../utils/tutorAPI';
 import EducationForm from './FormComponent/EducationForm';
 import CertificationForm from './FormComponent/CertificationForm';
 import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
-import { useNavigate } from 'react-router-dom';
-import SubjectForm from './FormComponent/SubjectForm';
-import Schedule from '../../components/Schedule/Schedule';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 
@@ -37,11 +34,10 @@ const TutorProfile = () => {
     // const [checkUser, isCheckUser] = useState<boolean>(false);
     const [updateCert, isUpdateCert] = useState<boolean>(false);
     const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
-    const { user, role } = useAuth();
+    const { user, role, status } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const [statistic, setStatistic] = useState<any>([]);
-    const navigate = useNavigate();
 
     //---------------------FETCH DATA---------------------
     useEffect(() => {
@@ -49,7 +45,7 @@ const TutorProfile = () => {
             setLoading(true);
             try {
                 
-                if (!user || !(role == "TUTOR")) return;
+                if (!user || !(role === "TUTOR") || (role==="TUTOR" && status ==="PROCESSING" )) return;
                 const { data } = await getTutorById(user.id);
                 await setTutorDetails({
                     backgroundDescription: data.backgroundDescription,
@@ -58,6 +54,7 @@ const TutorProfile = () => {
                     videoIntroductionLink: data.videoIntroductionLink,
                     subjects: data.subjects,
                 });
+                
                 
                 const response = await getTutorStatistic(user.id);
                 if (response) {
@@ -81,7 +78,7 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-                const education = (await getTutorEducation(user.id)).data;
+                const education = (await getTutorEducation(user.id,'')).data;
 
                 await setTutorEducation(
                     education.map((education: any) => ({
@@ -112,7 +109,7 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-                const certificate = (await getTutorCertification(user.id)).data;
+                const certificate = (await getTutorCertification(user.id,'')).data;
 
                 await setTutorCert(
                     certificate.map((certificate: any) => ({
@@ -235,15 +232,6 @@ const TutorProfile = () => {
                                                         </Flex>
                                                     </Skeleton>
                                                </Style.ProfileInfoBox>
-                                               <div style={{textAlign:`right`}}>
-                                             { user?.id && tutorDetails && 
-                                             tutorEducation && tutorCert &&
-                                             <SubjectForm tutorId={user?.id} 
-                                                isUpdate={isUpdate}
-                                                tutorDetails={tutorDetails} 
-                                                educationData={tutorEducation? tutorEducation:[]}
-                                                certificateData={tutorCert? tutorCert:[]} />}
-                                                </div>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>
@@ -285,7 +273,7 @@ const TutorProfile = () => {
                                             {tableDisplay.includes("education") ? (<>
                                                 <TableComponent dataType={tableDisplay}
                                                     EducationData={tutorEducation} />
-                                                {user?.id && tutorEducation?.length &&
+                                                {user?.id && tutorEducation &&
                                                     <EducationForm tutorId={user?.id}
                                                         lastIndex={tutorEducation?.length}
                                                         isUpdate={isUpdateEducation} />}

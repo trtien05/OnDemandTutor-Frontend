@@ -1,16 +1,12 @@
-import { TableColumnsType } from 'antd';
-import { Certificate, Education } from '../../pages/TutorProfile/TutorProfile.type';
+import { TableColumnsType } from "antd";
+import { Certificate, Education } from "../../TutorProfile.type";
 
 export const EducationColumns: TableColumnsType<Education> = [
     {
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (index) => index + 1,
-        // showSorterTooltip: { target: 'full-header' },
-        // defaultSortOrder: 'ascend',
-        // sorter: (a, b) => a.id - b.id,
-        // sortDirections: ['ascend', 'descend'],
+        render: (_, __, index) => index + 1,
     },
     {
         title: 'Degree Type',
@@ -48,11 +44,7 @@ export const CertColumns: TableColumnsType<Certificate> = [
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (index) => index + 1,
-        showSorterTooltip: { target: 'full-header' },
-        defaultSortOrder: 'ascend',
-        sorter: (a, b) => a.id - b.id,
-        sortDirections: ['ascend', 'descend'],
+        render: (_,__,index) => index + 1
     },
     {
         title: 'Certificate Name',

@@ -6,6 +6,7 @@ import { InboxOutlined } from '@ant-design/icons';
 import * as FormStyled from "./Form.styled";
 
 import useDocumentTitle from "../../hooks/useDocumentTitle";
+import { UploadChangeParam } from "antd/es/upload";
 
 const Form3 = ({
   certificate,
@@ -31,8 +32,8 @@ const Form3 = ({
     }
     return e?.fileList.length > 0 ? [e.fileList[e.fileList.length - 1]] : [];
   };
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList[newFileList.length - 1]);
+  const onChange = ({ fileList: newFileList }: UploadChangeParam<UploadFile>) => {
+    setFileList([newFileList[newFileList.length - 1]]);
   };
   return (
     <Col

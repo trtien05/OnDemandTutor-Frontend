@@ -80,7 +80,6 @@ const useAuth = () => {
             setLoading(true);
 
             // Set role
-            console.log("JWT: ", cookieUtils.decodeJwt());
             setRole(getRole());
             setStatus(getStatus());
 

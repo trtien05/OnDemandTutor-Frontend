@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import * as FormStyled from '../../BecomeTutor/Form.styled'
+import * as FormStyled from '../../../BecomeTutor/Form.styled'
 import ReactPlayer from 'react-player';
 import { Button, Form, Input, notification } from 'antd';
 import { Details } from '../TutorProfile.type';
-import { updateTutorDescription } from '../../../utils/tutorAPI';
+import { updateTutorDescription } from '../../../../utils/tutorAPI';
 
 
 interface DescriptionFormProps {
@@ -13,10 +13,9 @@ interface DescriptionFormProps {
 }
 
 const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
-    const [tutorDetails, setTutorDetails] = useState<any>(props.tutorDetails);
+    const tutorDetails = props.tutorDetails;
     const tutorId = props.tutorId;
     const [url, setUrl] = useState<string>("");
-    const [priceValue, setPriceValue] = useState<string>("");
     const [form] = Form.useForm();
     const [api, contextHolder] = notification.useNotification({
         top: 100,
@@ -44,16 +43,6 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
             setUrl(url);
         } else {
             setUrl("");
-        }
-    };
-
-    const onChange = (value: number | string | null) => {
-        if (typeof value === "string") {
-            setPriceValue(value);
-        } else if (value === null) {
-            setPriceValue("");
-        } else {
-            setPriceValue(value.toString());
         }
     };
 
@@ -166,7 +155,6 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                         style={{ width: '100%' }}
                         formatter={formatter}
                         parser={parser}
-                        onChange={onChange}
                     >
                     </FormStyled.NumberInput>
                 </FormStyled.FormItem>
@@ -180,7 +168,6 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                     $width={"100%"}
                     label="Profile description"
                     rules={[{
-                        required: true,
                         max: 255,
                         message: "Profile description cannot exceed 255 characters.",
                     }]}>
@@ -231,12 +218,12 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                         placeholder="Paste a Youtube link to your video"
                     ></Input>
                 </FormStyled.FormItem>
-                {tutorDetails.videoIntroductionLink && (
+                {(url || tutorDetails.videoIntroductionLink) && (
                     <div style={{ width: "100%", height: "100%", marginBottom: `20px`, marginTop:`10px` }}>
                         <div style={{ position: 'relative', paddingTop: '56.25%', width: '100%' }}>
                             <ReactPlayer
                                 className="react-player"
-                                url={tutorDetails.videoIntroductionLink}
+                                url={url? url : tutorDetails.videoIntroductionLink}
                                 controls={true}
                                 width="100%"
                                 height="100%"

@@ -1,10 +1,10 @@
-import { Button, Form, Grid, Input, Modal, TimePicker, notification } from "antd";
-import * as FormStyled from "../../BecomeTutor/Form.styled";
+import { Button, Form, Grid, Modal, TimePicker, notification } from "antd";
+import * as FormStyled from "../../../BecomeTutor/Form.styled";
 import dayjs, { Dayjs } from 'dayjs';
 import { useState } from "react";
-import { FieldType } from "../../BecomeTutor/Form.fields";
-import { theme } from "../../../themes";
-import { updateSchedule } from "../../../utils/tutorAPI";
+import { FieldType } from "../../../BecomeTutor/Form.fields";
+import { theme } from "../../../../themes";
+import { updateSchedule } from "../../../../utils/tutorAPI";
 const { useBreakpoint } = Grid;
 
 interface ScheduleProps {

@@ -2,11 +2,10 @@ import { Day, ActionEventArgs, EventRenderedArgs, EventSettingsModel, Inject, Po
 import { registerLicense } from '@syncfusion/ej2-base';
 import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
-import { notification } from 'antd';
-import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../components/Schedule/Schedule.type';
-import { getFullSchedule } from '../../../utils/tutorAPI';
+import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../../components/Schedule/Schedule.type';
+import { getFullSchedule } from '../../../../utils/tutorAPI';
 
-registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=');
+registerLicense("Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=");
 
 
 interface ScheduleProps {
@@ -19,14 +18,11 @@ interface ScheduleProps {
   update?: boolean;
 }
 
-const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSelectedId, setSelectedSchedule, selectedId, selectedSchedule, update }) => {
+const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
-  const [api, contextHolder] = notification.useNotification({
-    top: 100,
-  });
+ 
   const [isScheduleLoaded, setIsScheduleLoaded] = useState<boolean>(false);
-  const [startDate, setStartDate] = useState<Date>(new Date());
 
   useEffect(() => {
     setTimeout(() => {
@@ -46,7 +42,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
             start.setDate(start.getDate() -1);
           }
           const startDate = new Date(start);
-          setStartDate(startDate);
           let newSchedule: ScheduleData[] = [];
           const date = startDate.getDate();
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
@@ -71,7 +66,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, setSe
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
       } catch (error: any) {
-        api.error({
+        console.error({
           message: 'Error',
           description: error.response ? error.response.data : error.message,
         });

@@ -1,12 +1,11 @@
 import { Button, Form, Modal, UploadFile, notification } from "antd";
-import useAuth from "../../../hooks/useAuth";
 import { useCallback, useState } from "react";
-import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
-import { FieldType, certificateForm } from "../../BecomeTutor/Form.fields";
+import * as FormStyled from '../../../BecomeTutor/Form.styled';
+import { FieldType, certificateForm } from "../../../BecomeTutor/Form.fields";
 import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
-import { uploadImage } from "../../../utils/UploadImg";
-import { addCertificates } from "../../../utils/tutorRegisterAPI";
+import { uploadImage } from "../../../../utils/UploadImg";
+import { addCertificates } from "../../../../utils/tutorRegisterAPI";
 
 interface CertProps {
   tutorId: number;

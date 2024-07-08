@@ -3,7 +3,7 @@ import { storage } from "../utils/firebase";
 import { UploadFile } from "antd";
 
 export const validateFileType = (
-  { type, name }: UploadFile,
+  { type }: UploadFile,
   allowedTypes?: string
 ) => {
   if (!allowedTypes) {
@@ -15,9 +15,13 @@ export const validateFileType = (
 };
 
 export const validateFileSize = (file: UploadFile, size: number) => {
-  if (file.size) {
+  if (file.originFileObj){
+  if (file.originFileObj.size) {
+    return file.originFileObj.size <= size*1024*1024;
+  }} else if (file.size) {
     return file.size <= size*1024*1024;
   }
+  return false;
 }
 
 export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, index: number, handleChange: (url: string) => void) => {
@@ -28,7 +32,7 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
   }
 
   //By creating a reference to a file, your app gains access to it.
-  const imageRef = ref(storage, `${tutorId}/${sectionName}_${index}`);
+  const imageRef = ref(storage, `${tutorId}/${sectionName}_${index}.${file.type.split('/')[1]}`);
   try {
 
     const uploadResult = await uploadBytes(imageRef, file)

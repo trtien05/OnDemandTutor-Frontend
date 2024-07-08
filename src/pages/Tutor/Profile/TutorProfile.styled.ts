@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import { theme } from '../../themes';
+import { theme } from '../../../themes';
 import { Flex } from 'antd';
 
 export const ProfileContainer = styled.section`

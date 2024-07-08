@@ -1,11 +1,11 @@
 import { Button, Form, Modal, UploadFile, notification } from "antd";
-import { useEffect, useState } from "react";
-import * as FormStyled from '../../../pages/BecomeTutor/Form.styled';
-import { FieldType, educationForm } from "../../BecomeTutor/Form.fields";
+import { useState } from "react";
+import * as FormStyled from '../../../BecomeTutor/Form.styled';
+import { FieldType, educationForm } from "../../../BecomeTutor/Form.fields";
 import Dragger from "antd/es/upload/Dragger";
 import { InboxOutlined } from "@ant-design/icons";
-import { addEducations } from "../../../utils/tutorRegisterAPI";
-import { uploadImage } from "../../../utils/UploadImg";
+import { addEducations } from "../../../../utils/tutorRegisterAPI";
+import { uploadImage } from "../../../../utils/UploadImg";
 
 interface EducationProps {
     tutorId: number;
