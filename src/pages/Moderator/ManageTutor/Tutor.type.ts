@@ -1,3 +1,4 @@
+import { Question } from './../../../components/QuestionList/Question.type';
 
 export type Education = {
     id:number;

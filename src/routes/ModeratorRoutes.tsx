@@ -3,6 +3,7 @@ import { useAuth } from "../hooks";
 import ManageTutor from "../pages/Moderator/ManageTutor/ManageTutor";
 import ModeratorLayout from "../layouts/ModeratorLayout";
 import ManageDocument from "../pages/Moderator/ManageDocument/ManageDocument";
+import ManageQuestion from "../pages/Moderator/ManageQuestion/ManageQuestion";
 
 
 // Authorization
@@ -21,7 +22,7 @@ const ModeratorRoutes = {
     children: [
         { path: config.routes.moderator.manageTutor, element: <ManageTutor /> },
         { path: config.routes.moderator.manageDocument, element: <ManageDocument /> },
-        // { path: config.routes.admin.manageStudent, element: <Dashboard /> },
+         { path: config.routes.moderator.manageQuestion, element: <ManageQuestion /> },
 
     ],
 };
