@@ -101,7 +101,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                 {displayPerson.avatarUrl ? (
                                     <Avatar size={64} src={displayPerson.avatarUrl} />
                                 ) : (
-                                    <Avatar size={64} icon={<UserOutlined />} />
+                                    <Avatar size={64} icon={<UserOutlined onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />} />
                                 )}
 
                                 <Styled.QuestionRowSpan
@@ -182,7 +182,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                             cursor: 'pointer',
                                         }}
                                         onClick={() => onCancel(item.timeslotId)} // Changed to arrow function to prevent immediate invocation
-                                    />
+                                        onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
                                 </Styled.StyleCol>
                             </>
                         )}
