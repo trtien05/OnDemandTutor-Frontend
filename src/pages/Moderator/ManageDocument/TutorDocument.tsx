@@ -1,4 +1,4 @@
-import { Avatar, Button, Col, Form, Modal, Select, Skeleton, notification } from "antd";
+import { Avatar, Button, Col, Form, Modal, Skeleton, notification } from "antd";
 import { useEffect, useState } from "react";
 import * as FormStyled from "../../BecomeTutor/Form.styled";
 import * as Styled from '../../../components/QuestionList/Question.styled';
