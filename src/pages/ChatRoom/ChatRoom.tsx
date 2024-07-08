@@ -88,7 +88,7 @@ const ChatRoom: React.FC = () => {
   }, [privateChats, tab]);
 
   const connect = () => {
-    let Sock = new SockJS('https://my-tutor-render.onrender.com/ws');
+    let Sock = new SockJS('http://localhost:8080/ws');
     stompClient = over(Sock);
     stompClient.connect({}, onConnected, onError);
   };
@@ -100,7 +100,7 @@ const ChatRoom: React.FC = () => {
 
   const fetchMessages = async () => {
     try {
-      const response = await fetch(`https://my-tutor-render.onrender.com/api/messages/accounts/${user?.id}`);
+      const response = await fetch(`http://localhost:8080/api/messages/accounts/${user?.id}`);
       const data: ChatMessage[] = await response.json();
       const chats = new Map(privateChats);
       const accounts = new Map(account);

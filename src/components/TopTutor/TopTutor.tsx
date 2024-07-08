@@ -1,8 +1,7 @@
-import { Table } from "antd";
 import { useEffect, useState } from "react";
 import { getTopTutorsByRating } from "../../utils/statisticAPI";
 import { FaStar } from "react-icons/fa";
-import * as Styled from './TopTutor.styled';
+import { Table } from "antd";
 
 const TopTutor = () => {
   const [tutors, setTutors] = useState([]);
@@ -71,10 +70,11 @@ const TopTutor = () => {
   ];
 
   return (
-    <Styled.TableStyled
+    <Table
       columns={columns}
       dataSource={tutors}
       pagination={false}
+      style={{ padding: '25px 0' }}
       scroll={{ x: true }}
     />
   );

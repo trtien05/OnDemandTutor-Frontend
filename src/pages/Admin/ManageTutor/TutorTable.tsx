@@ -1,4 +1,4 @@
-import { Badge, Table, TableColumnsType, Tag, Tooltip } from 'antd';
+import { Table, TableColumnsType, Tag } from 'antd';
 import React, { useState } from 'react';
 import DeleteTutor from './DeleteTutor';
 import EditTutor from './EditTutor'
@@ -150,6 +150,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
         showSizeChanger: false,
       }} dataSource={tutors}
         onChange={handleTableChange}
+        scroll={{ x: true }}
       />
     </div>
   );
