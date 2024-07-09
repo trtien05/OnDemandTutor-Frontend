@@ -47,9 +47,9 @@ const SearchQuestions = () => {
   };
 
   useEffect(() => {
-    
+
     // const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
-    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
 
     let url: string = '';
 
@@ -131,19 +131,19 @@ const SearchQuestions = () => {
         </Container>
       </Styled.FilterSection>
       <Skeleton title={false} loading={initLoading} active>
-      <Styled.TitleWrapper>
-        <Container>
-          <Styled.TotalTutorAvaiable level={1}>
-            {totalAmountQuestions} questions available
-          </Styled.TotalTutorAvaiable>
-        </Container>
-      </Styled.TitleWrapper>
+        <Styled.TitleWrapper>
+          <Container>
+            <Styled.TotalTutorAvaiable level={1}>
+              {totalAmountQuestions} questions available
+            </Styled.TotalTutorAvaiable>
+          </Container>
+        </Styled.TitleWrapper>
 
-      <QuestionList initLoading={initLoading} list={list} />
+        <QuestionList initLoading={initLoading} list={list} />
 
-      {totalPages > 1 &&
-        <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-      }
+        {totalPages > 1 &&
+          <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+        }
       </Skeleton>
     </>
 
