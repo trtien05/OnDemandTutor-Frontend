@@ -1,4 +1,3 @@
-
 import useAuth from '../../hooks/useAuth';
 import { theme } from '../../themes';
 
