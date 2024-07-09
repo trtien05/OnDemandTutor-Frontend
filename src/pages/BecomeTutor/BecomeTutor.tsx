@@ -1,4 +1,4 @@
-import { Steps, Typography, TimePicker, notification, message } from "antd";
+import { Steps, Typography, TimePicker, notification } from "antd";
 import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs, { Dayjs } from 'dayjs'
@@ -13,15 +13,22 @@ import {
   addEducations, updateDetails, addCertificates,
   addTutorDescription, becomeTutor, addAvailableSchedule,
   getAccountById
-} from "../../api/tutorRegisterAPI";
+} from "../../utils/tutorRegisterAPI";
 import useAuth from '../../hooks/useAuth';
 import { uploadImage } from "../../utils/UploadImg";
 import { useNavigate } from "react-router-dom";
+import * as Styled from './BecomeTutor.style'
+import Container from "../../components/Container";
+import { AiOutlineCheckCircle, AiOutlineExclamationCircle } from "react-icons/ai";
+import config from "../../config";
+
+const { Title } = Typography;
 
 const BecomeTutor = () => {
-  const [aboutValues, setAboutValues] = useState(null);
-  const [educationValues, setEducationValues] = useState(null);
-  const [certificationValues, setCertificationValues] = useState(null);
+  const [aboutValues, setAboutValues] = useState<any>();
+  const [accountId, setAccountId] = useState<number>();
+  const [educationValues, setEducationValues] = useState<any>();
+  const [certificationValues, setCertificationValues] = useState<any>();
   const [descriptionValues, setDescriptionValues] = useState(null);
   const [timePriceValues, setTimePriceValues] = useState(null);
   const [agreement, setAgreement] = useState<boolean>(false);
@@ -31,7 +38,6 @@ const BecomeTutor = () => {
   ]);
   const navigate = useNavigate();
 
-  const [messageApi, contextHolder] = message.useMessage();
   const [certificate, setCertificate] = useState<FieldType[][]>([
     certificateForm,
   ]);
@@ -41,10 +47,33 @@ const BecomeTutor = () => {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+  const { user } = useAuth();
 
-  const accountId = 1;
+  //Check User is it Student 
+  useEffect(() => {
+    setAccountId(user?.id);
+  }, [user]);
+  // setAccountId(user?.id);
+
+  async function fetchAccount(tutorId: number) {
+    try {
+      const response = await getAccountById(tutorId);
+      setDataSource(response.data)
+    } catch (error: any) {
+      api.error({
+        message: 'Lỗi',
+        description: error.response ? error.response.data : error.message,
+      });
+    }
+  }
+
+  useEffect(() => {
+    if (accountId) {
+      fetchAccount(accountId);
+    }
+  }, [accountId])
+
   const [dataSource, setDataSource] = useState([])
-  const { Title } = Typography;
 
   const handleAvatarURL = (url: string) => {
     setAvatarURL(url)
@@ -100,7 +129,7 @@ const BecomeTutor = () => {
       .map(field => field.initialValue)
       .filter(Boolean) as [Dayjs, Dayjs][];
 
-    let latestEndTime: Dayjs | null = null;
+    let latestEndTime: Dayjs;
 
     existingTimes.forEach(timeslot => {
       if (timeslot && timeslot[1]) {
@@ -114,9 +143,9 @@ const BecomeTutor = () => {
       disabledHours: () => {
         const hours = Array.from({ length: 24 }, (_, i) => i);
         if (!latestEndTime) {
-          return hours.filter(hour => hour < 5 || hour > 22);
+          return [];
         } else {
-          return hours.filter(hour => hour < 5 || hour > 22 || hour < latestEndTime.hour());
+          return hours.filter(hour => hour < latestEndTime.hour());
         }
       },
       disabledMinutes: (selectedHour: number) => {
@@ -134,8 +163,8 @@ const BecomeTutor = () => {
 
   const validateRange = (_: unknown, value: [Dayjs, Dayjs]) => {
     const [start, end] = value;
-    if (end.diff(start, 'minutes') > 240 || end.diff(start, 'hours') < 1) {
-      return Promise.reject('The time range cannot exceed 4 hours');
+    if (end.diff(start, 'minutes') > 180 || end.diff(start, 'hours') < 1) {
+      return Promise.reject('The time range cannot exceed 3 hours');
     }
     return Promise.resolve();
   };
@@ -154,7 +183,7 @@ const BecomeTutor = () => {
         },
         {
           validator: validateRange,
-          message: 'A timeslot must be at least 1 hour and must not exceed 4 hours.',
+          message: 'A timeslot must be at least 1 hour and must not exceed 3 hours.',
         },
       ],
       children: (
@@ -163,7 +192,7 @@ const BecomeTutor = () => {
           format={'HH:mm'}
           minuteStep={15}
           value={initialValue}
-          placeholder={['From','To']}
+          placeholder={['From', 'To']}
           onChange={(times) => handleInputChange(day, index, times)}
           disabledTime={() => getDisabledTime(day, index, timeslotForm)}
           style={{ width: `100%` }} />
@@ -183,14 +212,11 @@ const BecomeTutor = () => {
   //----------------------------FINISH ABOUT FORM----------------------------------
   const onFinishAboutForm = (values: any) => {
     setAboutValues(values);
-    console.log(values);
-    saveBecomeTutor(accountId);
 
     next();
   };
 
   const onFinishEducationForm = (values: any) => {
-
     setEducationValues(values);
     next();
   };
@@ -202,66 +228,78 @@ const BecomeTutor = () => {
   //-----------------------------------FINISH DESCRIPTION FORM---------------------------
   const onFinishDescriptionForm = (values: any) => {
     setDescriptionValues(values);
-    saveToFirebase(accountId)
+    if (accountId) {
+      saveToFirebase(accountId)
+    }
     next();
   };
 
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
     setTimePriceValues(values);
-    console.log(
-      aboutValues,
-      educationValues,
-      certificationValues,
-      descriptionValues,
-      values,
-      avatarURL,
-      diplomaURL,
-      certURL
-    );
-
-    // Example tutorId
-
-    await saveData(values, accountId);
-    messageApi.success('Your Form has been Sent.');
-    setTimeout(() => {
-      navigate('/');
-    }, 2000);
+    if (accountId) {
+      try {
+        const save = await saveData(values, accountId);
+        const status = saveBecomeTutor(accountId);
+        console.log('status:', status)
+        console.log('save:', save)
+        if (save !== undefined && status !== undefined)
+          navigate(config.routes.student.registerStatus, { state: 'sent' });
+        else navigate(config.routes.student.registerStatus, { state: 'error' });
+      } catch (error: any) {
+        api.error({
+          message: 'Lỗi',
+          description: error.response ? error.response.data.message : error.message,
+        });
+      }
+    }
+    // api.success({
+    //   message: 'Success',
+    //   description: 'Your form has been Sent',
+    // });
+    // setTimeout(() => {
+    //   navigate('/');
+    // }, 2000);
 
     next();
   };
 
   const saveToFirebase = async (tutorId: number) => {
     //upload avatar to firebase
-
-    const avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)
-    //upload diploma to firebase
-    const numberOfEntries1 = Math.max(
-      ...Object.keys(educationValues)
-        .filter(key => key.includes('_'))
-        .map(key => {
-          const lastPart = key.split('_').pop();
-          return lastPart ? parseInt(lastPart, 10) : 0;
-        })
-    ) + 1;
-    const diplomaUploadPromises = [];
-    for (let i = 0; i < numberOfEntries1; i++) {
-      diplomaUploadPromises.push(uploadImage(tutorId, educationValues[`diplomaVerification_${i}`][0].originFileObj, 'diploma', i, handleDiplomaURLChange));
+    let avatarUploadPromise
+    if (aboutValues && aboutValues.fileList[0] && accountId) {
+      avatarUploadPromise = uploadImage(tutorId, aboutValues.fileList[0].originFileObj, 'avatar', accountId, handleAvatarURL)
     }
-
-    //upload cert to firebase
-    const certificateUploadPromises = []
-    if (certificationValues[`certificateVerification_0`]) {
-      const numberOfEntries2 = Math.max(
-        ...Object.keys(certificationValues)
+    //upload diploma to firebase
+    const diplomaUploadPromises = [];
+    if (educationValues != null) {
+      const numberOfEntries1 = Math.max(
+        ...Object.keys(educationValues)
           .filter(key => key.includes('_'))
           .map(key => {
             const lastPart = key.split('_').pop();
             return lastPart ? parseInt(lastPart, 10) : 0;
           })
       ) + 1;
-      for (let i = 0; i < numberOfEntries2; i++) {
-        certificateUploadPromises.push(uploadImage(tutorId, certificationValues[`certificateVerification_${i}`][0].originFileObj, 'certificate', i, handleCertificateURLChange));
+      for (let i = 0; i < numberOfEntries1; i++) {
+        diplomaUploadPromises.push(uploadImage(tutorId, educationValues[`diplomaVerification_${i}`][0].originFileObj, 'diploma', i, handleDiplomaURLChange));
+      }
+    }
+    //upload cert to firebase
+    const certificateUploadPromises = [];
+    if (certificationValues != null) {
+      if (certificationValues[`certificateVerification_0`]) {
+        const numberOfEntries2 = Math.max(
+          ...Object.keys(certificationValues)
+            .filter(key => key.includes('_'))
+            .map(key => {
+              const lastPart = key.split('_').pop();
+              return lastPart ? parseInt(lastPart, 10) : 0;
+            })
+        ) + 1;
+        for (let i = 0; i < numberOfEntries2; i++) {
+          certificateUploadPromises.push(uploadImage(tutorId, certificationValues[`certificateVerification_${i}`][0].originFileObj, 'certificate', i, handleCertificateURLChange));
+        }
       }
     }
     if (certificateUploadPromises.length > 0) {
@@ -274,28 +312,18 @@ const BecomeTutor = () => {
     try {
 
       await saveAccountDetails(tutorId, aboutValues, avatarURL)
-        .catch(error => {
-          console.error('Error saving account details:', error);
-        });
+       
       await saveEducations(tutorId, educationValues, diplomaURL)
-        .catch(error => {
-          console.error('Error saving educations:', error);
-        });
+       
       await saveCertificates(tutorId, certificationValues, certURL)
-        .catch(error => {
-          console.error('Error saving certificates:', error);
-        });
+       
       await saveTutorDescription(tutorId, descriptionValues)
-        .catch(error => {
-          console.error('Error saving tutor description:', error);
-        });
 
       await saveTutorAvailableTimeslots(tutorId, values)
-        .catch(error => {
-          console.error('Error saving tutor available timeslot:', error);
-        });
-    } catch (error) {
-      console.error('Error during the process:', error);
+      
+      return 'Success'
+    } catch (error:any) {
+      return Promise.reject(error);
     }
   }
 
@@ -467,6 +495,7 @@ const BecomeTutor = () => {
     try {
       const response = await becomeTutor(tutorId);
       console.log(' saved successfully:', response);
+      return 'success'
     } catch (error: any) {
       api.error({
         message: 'Lỗi',
@@ -476,22 +505,6 @@ const BecomeTutor = () => {
   }
   //------------------------------------FETCH ACCOUNT DETAILS API----------------------------
 
-  async function fetchAccount(tutorId: number) {
-    try {
-      const response = await getAccountById(tutorId);
-      setDataSource(response.data)
-      console.log(response.data)
-    } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
-    }
-  }
-
-  useEffect(() => {
-    fetchAccount(accountId);
-  }, [accountId])
 
   async function saveAccountDetails(tutorId: number, formData: any, url: any) {
 
@@ -514,10 +527,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -526,8 +536,7 @@ const BecomeTutor = () => {
     return {
       fullName: formData[`fullName`],
       phoneNumber: formData[`phoneNumber`],
-      email: formData[`email`],
-      dayOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
+      dateOfBirth: formData[`dayOfBirth`].format('YYYY-MM-DD'),
       gender: formData[`gender`],
       address: formData[`address`],
       avatarUrl: url,
@@ -535,7 +544,6 @@ const BecomeTutor = () => {
   }
   //------------------------------------FETCH EDUCATION API----------------------------
   async function saveEducations(tutorId: number, formData: any, url: any) {
-    console.log(url)
     // Get JSON body from form data
     const jsonRequestBody = convertEducationFormData(formData, url);
 
@@ -553,12 +561,9 @@ const BecomeTutor = () => {
       console.log('Educations saved successfully:', responseData);
 
       // Return success response
-      return responseData;
+      return responseData
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -610,10 +615,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -664,10 +666,7 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
@@ -688,12 +687,10 @@ const BecomeTutor = () => {
 
     // Get JSON body from form data
     const jsonRequestBody = convertTimeslotsToJSON(formData);
-    const noOfWeeks = formData[`noOfWeek`];
-    console.log(noOfWeeks);
     try {
 
       // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
-      const responseData = await addAvailableSchedule(noOfWeeks, tutorId, jsonRequestBody);
+      const responseData = await addAvailableSchedule(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
@@ -706,28 +703,21 @@ const BecomeTutor = () => {
       // Return success response
       return responseData;
     } catch (error: any) {
-      api.error({
-        message: 'Lỗi',
-        description: error.response ? error.response.data : error.message,
-      });
+      return Promise.reject(error);
     }
   }
 
   function convertTimeslotsToJSON(formData: any) {
     const daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"];
-    const jsonResult = [];
+    const jsonResult: { startTime: any; endTime: any; dayOfWeek: number; }[] = [];
 
     daysOfWeek.forEach((day, index) => {
       // Check for timeslots for the current day
       for (let i = 0; formData[`${day}_timeslot_${i}`]; i++) {
         const timeslot = formData[`${day}_timeslot_${i}`];
         if (timeslot && timeslot.length === 2) {
-          // for (let i = timeslot[0].$H; i < timeslot[1].$H; i++) {
           const startTime = timeslot[0].format("HH:mm:ss");
           const endTime = timeslot[1].format("HH:mm:ss");
-          // const start = moment().set({ hour: i, minute: 0, second: 0 });
-          // const endTime = moment(start).add(1, 'hour').format("HH:mm:ss");
-          // const startTime = start.format("HH:mm:ss");
 
           jsonResult.push({
             startTime,
@@ -745,40 +735,52 @@ const BecomeTutor = () => {
   //----------------------------------------------------------------------------------------
   return (
     <>
-      <div style={{ background: `white`, padding: `3% ` }}>
-        {contextHolder}
-        <Title
-          style={{
-            color: `${theme.colors.primary}`,
-            textTransform: `capitalize`,
-            textAlign: `center`
-          }}
-        >
-          Become our tutor!
-        </Title>
-        <div
-          style={{
-            margin: `5%`,
-          }}
-        >
-          {/* disabled={isDisabled(0)} */}
-          <Steps current={current} onChange={goTo}>
-            <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
-            <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
-            <Steps.Step
-              disabled={isDisabled(2)}
-              title="Certification"
-            ></Steps.Step>
-            <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
-            <Steps.Step
-              disabled={isDisabled(4)}
-              title="Availability & Pricing"
-            ></Steps.Step>
-          </Steps>
+      {user?.role === "STUDENT" ? (
+        <div style={{ background: `white`, padding: `3%` }}>
+          {contextHolderNotification}
+          <Title
+            style={{
+              color: `${theme.colors.primary}`,
+              textTransform: `capitalize`,
+              textAlign: `center`,
+            }}
+          >
+            Become our tutor!
+          </Title>
+          <div style={{ margin: `5%` }}>
+            <Steps current={current} onChange={goTo}>
+              <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
+              <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
+              <Steps.Step disabled={isDisabled(2)} title="Certification"></Steps.Step>
+              <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
+              <Steps.Step disabled={isDisabled(4)} title="Availability & Pricing"></Steps.Step>
+            </Steps>
+          </div>
+          {step}
         </div>
-
-        {step}
-      </div>
+      ) : user?.role === "TUTOR" && user?.status === "PROCESSING" ? (
+        <Styled.CheckSection>
+          <Container>
+            <Styled.CheckInner>
+              <Styled.CheckErrorMsg>
+                <AiOutlineExclamationCircle size={80} color={theme.colors.yellow} />
+                <Title level={2}>Your Tutor Form Is Under Processing</Title>
+              </Styled.CheckErrorMsg>
+            </Styled.CheckInner>
+          </Container>
+        </Styled.CheckSection>
+      ) : user?.role === "TUTOR" && user?.status === "ACTIVE" ? (
+        <Styled.CheckSection>
+          <Container>
+            <Styled.CheckInner>
+              <Styled.CheckErrorMsg>
+                <AiOutlineCheckCircle size={80} color={theme.colors.success} />
+                <Title level={2}>You Are Our Tutor</Title>
+              </Styled.CheckErrorMsg>
+            </Styled.CheckInner>
+          </Container>
+        </Styled.CheckSection>
+      ) : null}
     </>
   );
 };

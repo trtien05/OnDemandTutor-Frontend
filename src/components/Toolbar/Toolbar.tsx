@@ -1,49 +1,27 @@
-import { Avatar, Badge, Dropdown, Space } from 'antd';
+import { Avatar, Dropdown, Space } from 'antd';
 import UserOutlined from '@ant-design/icons';
-import { AiOutlineShoppingCart } from 'react-icons/ai';
 
-import Link from '../../components/Link';
-import Notify from '../../components/Notify';
-import config from '../../config';
-import { theme } from '../../themes';
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
 import { ToolbarProps } from './Toolbar.type';
 import * as Styled from './Toolbar.styled';
+import Link from '../Link';
+import config from '../../config';
+import { theme } from '../../themes';
 
 const Toolbar = ({
     menu,
-    notifications,
-    cartItems = -1,
-    avatar,
-    handleReadAll,
-    handleReadOne,
+    avatar
 }: ToolbarProps) => {
     return (
         <Styled.ToolbarAvatarWrapper>
-            {notifications && (
-                <Badge
-                    count={notifications.filter((notification) => !notification.read).length}
-                    showZero
-                >
-                    <Notify
-                        items={notifications}
-                        handleReadAll={handleReadAll}
-                        handleReadOne={handleReadOne}
-                    />
-                </Badge>
-            )}
-
-            {/* {cartItems >= 0 && (
-                <Badge showZero count={cartItems}>
-                    <Link to={config.routes.customer.cart}>
-                        <AiOutlineShoppingCart
-                            size={28}
-                            color={theme.colors.textPrimary}
-                            cursor="pointer"
-                        />
-                    </Link>
-                </Badge>
-            )} */}
+            <Link to={config.routes.student.chatRoom}>
+                <IoChatboxEllipsesOutline
+                    size={28}
+                    color={theme.colors.primary}
+                    cursor="pointer"
+                />
+            </Link>
 
             <Dropdown menu={{ items: menu }} arrow placement="bottomRight" trigger={['click']}>
                 <Space style={{ cursor: 'pointer' }}>

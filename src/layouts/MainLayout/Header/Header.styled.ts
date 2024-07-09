@@ -1,4 +1,4 @@
-import { Button, Col, List } from 'antd';
+import { Col, List } from 'antd';
 import styled, { css } from 'styled-components';
 
 import Link from '../../../components/Link';
@@ -8,7 +8,12 @@ export const Header = styled.header<{ $isScroll: boolean }>`
     width: 100%;
     padding: 24px 0;
     background-color: #fff;
-
+    height: 100px;
+    position: fixed;
+    top: 0;
+    right: 0;
+    left: 0;
+    z-index: 100;
     ${(props) =>
         props.$isScroll &&
         css`
@@ -24,7 +29,7 @@ export const Navbar = styled(List)`
         align-items: center;
         justify-content: center;
 
-        column-gap: 76px;
+        column-gap: 100px;
     }
 `;
 
@@ -59,54 +64,6 @@ export const NavbarLink = styled(Link)`
         width: 100%;
         left: 0;
         bottom: 1px;
-    }
-`;
-
-export const HeaderButton = styled(Button)`
-    --height: 40px;
-
-    display: flex;
-    align-items: center;
-    justify-content: center;
-
-    margin-left: auto;
-    min-width: 112px;
-    height: var(--height);
-    line-height: var(--height);
-    background-color: ${theme.colors.secondary};
-    border-radius: 2px;
-    border: 1px solid ${theme.colors.secondary};
-
-    &::before {
-        content: '';
-        position: absolute;
-        inset: 0;
-        background-color: ${theme.colors.white};
-        border-radius: 2px;
-        transform: scaleX(0);
-        transition: ${theme.transition.primary};
-    }
-
-    & span {
-        position: relative;
-        color: ${theme.colors.white};
-        font-size: 1.6rem;
-        font-weight: 500;
-        line-height: 1.5;
-        text-transform: uppercase;
-        transition: ${theme.transition.primary};
-    }
-
-    &.ant-btn.ant-btn-default:hover {
-        border-color: ${theme.colors.secondary};
-    }
-
-    &:hover::before {
-        transform: scaleX(1);
-    }
-
-    &:hover span {
-        color: ${theme.colors.secondary};
     }
 `;
 

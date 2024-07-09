@@ -1,10 +1,9 @@
 import * as Styled from './DefaultBanner.styled';
 
 import Container from '../../../components/Container';
-import { Col, Row, Typography } from 'antd';
+import { Typography } from 'antd';
 import bannerImg from '../../../assets/images/banner-img.png';
 import fallbackImg from '../../../assets/images/fallback-img.png';
-import './style.css'
 const { Text } = Typography;
 
 const DefaultBanner = () => {

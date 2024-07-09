@@ -53,15 +53,15 @@ export const loginFields: FieldType[] = [
             {
                 required: true,
                 max: 16,
-                pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
+                pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[.@#$%^&+=!])(?=\S+$).{8,16}/,
                 message:
-                    'Must be between 8 and 16 characters, including a number, one uppercase letter, and one lowercase letter.',
+                    'Must be 8-16 characters, with at least 1 number, 1 uppercase, 1 lowercase, and 1 special character.',
             },
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
                 }
                 placeholder=" "
             />
@@ -125,15 +125,15 @@ export const registerFields: FieldType[] = [
             {
                 required: true,
                 max: 16,
-                pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
+                pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[.@#$%^&+=!])(?=\S+$).{8,16}/,
                 message:
-                    'Must be between 8 and 16 characters, including a number, one uppercase letter, and one lowercase letter.',
+                    'Must be 8-16 characters, with at least 1 number, 1 uppercase, 1 lowercase, and 1 special character.',
             },
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
                 }
                 placeholder=" "
             />
@@ -170,15 +170,15 @@ export const setPasswordFields: FieldType[] = [
             {
                 required: true,
                 max: 16,
-                pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z]).{8,16}$/,
+                pattern: /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[.@#$%^&+=!])(?=\S+$).{8,16}/,
                 message:
-                    'Must be between 8 and 16 characters, including a number, one uppercase letter, and one lowercase letter.',
+                    'Must be 8-16 characters, with at least 1 number, 1 uppercase, 1 lowercase, and 1 special character.',
             },
         ],
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
                 }
                 placeholder=" "
             />
@@ -206,7 +206,7 @@ export const setPasswordFields: FieldType[] = [
         children: (
             <Input.Password
                 iconRender={(visible) =>
-                    visible ? <EyeOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : <EyeInvisibleOutlinedIcon onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} />
+                    visible ? <EyeOutlinedIcon /> : <EyeInvisibleOutlinedIcon />
                 }
                 placeholder=" "
             />

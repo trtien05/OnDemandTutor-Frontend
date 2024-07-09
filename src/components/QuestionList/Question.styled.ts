@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '../../themes';
-import { List, Row,Image } from 'antd';
+import { List, Row, Image } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 
@@ -18,7 +18,6 @@ export const TutorItem = styled(List.Item)`
 export const BoxHover = styled.div`
     position: relative;
     margin-bottom: 30px;
-    
 `;
 
 export const QuestionItem = styled(Row)`
@@ -144,6 +143,9 @@ export const Button = styled.button`
     border-radius: 50px;
     background-color: #fff;
     font-size: 12px;
+    position: absolute;
+    top: 24px;
+    right: 10px;
     ${({ theme }) => theme.breakpoints.down('md')} {
         // width: 150px;
     }
@@ -178,4 +180,3 @@ export const ModalStudentInfo = styled.div`
     // font-style: italic;
     display: flex;
 `;
-
