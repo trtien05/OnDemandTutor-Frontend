@@ -58,7 +58,6 @@ const SearchQuestions = () => {
     } else {
       url = baseUrl + searchUrl
     }
-    setInitLoading(true);
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
@@ -130,21 +129,19 @@ const SearchQuestions = () => {
           </Styled.SearchWrapper>
         </Container>
       </Styled.FilterSection>
-      <Skeleton title={false} loading={initLoading} active>
-        <Styled.TitleWrapper>
-          <Container>
-            <Styled.TotalTutorAvaiable level={1}>
-              {totalAmountQuestions} questions available
-            </Styled.TotalTutorAvaiable>
-          </Container>
-        </Styled.TitleWrapper>
+      <Styled.TitleWrapper>
+        <Container>
+          <Styled.TotalTutorAvaiable level={1}>
+            {totalAmountQuestions} questions available
+          </Styled.TotalTutorAvaiable>
+        </Container>
+      </Styled.TitleWrapper>
 
-        <QuestionList initLoading={initLoading} list={list} />
+      <QuestionList initLoading={initLoading} list={list} />
 
-        {totalPages > 1 &&
-          <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-        }
-      </Skeleton>
+      {totalPages > 1 &&
+        <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
+      }
     </>
 
 
