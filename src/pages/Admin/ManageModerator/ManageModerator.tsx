@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import { getAccountByRole } from '../../../utils/accountAPI';
 import ModeratorTable from './ModeratorTable';
