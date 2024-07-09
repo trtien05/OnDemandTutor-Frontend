@@ -1,10 +1,10 @@
-import  { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { message, Divider, Modal } from 'antd';
 import * as Styled from '../../Student/Appointment/Appointment.styled';
 import Container from '../../../components/Container/Container';
 import AppointmentList from '../../../components/AppointmentList/AppointmentList'
 import { useAuth, useDocumentTitle } from '../../../hooks';
-import type {  TimeSlot } from '../../../components/AppointmentList/Appointment.type';
+import type { TimeSlot } from '../../../components/AppointmentList/Appointment.type';
 
 import AppointmentPagination from '../../Student/Appointment/AppointmentPagination/AppointmentPagination';
 // import CreateQuestion from '../../../components/Popup/CreateQuestion/CreateQuestion';
@@ -41,7 +41,7 @@ const StudentAppointment = () => {
   useEffect(() => {
     if (!user) return;
     setInitLoading(true);
-    const baseUrl: string = `http://localhost:8080/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
 
     fetch(baseUrl)
       .then((res) => res.json())
@@ -62,7 +62,7 @@ const StudentAppointment = () => {
     setViewMode(value as 'Upcoming' | 'Past');
   };
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
-  
+
   const confirmCancel = (timeslotId: number) => {
     modal.confirm({
       centered: true,

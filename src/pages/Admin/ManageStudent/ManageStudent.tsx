@@ -2,24 +2,6 @@ import { useEffect, useState } from 'react';
 import StudentTable from './StudentTable';
 import { getAccountByRole } from '../../../utils/accountAPI';
 
-interface Education {
-  degreeType?: string;
-  majorName?: string;
-  specialization?: string;
-  verified?: boolean;
-};
-
-interface Tutor {
-  id: number;
-  fullName?: string;
-  avatarUrl?: string;
-  teachingPricePerHour: number;
-  educations?: Education;
-  subjects: string[],
-  averageRating?: number;
-  loading: boolean;
-};
-
 const ManageStudent = () => {
   const [students, setStudents] = useState([]);
 

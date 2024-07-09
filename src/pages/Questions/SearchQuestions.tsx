@@ -47,9 +47,9 @@ const SearchQuestions = () => {
   };
 
   useEffect(() => {
-    
+
     // const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
-    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
+    const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
 
     let url: string = '';
 
@@ -58,7 +58,6 @@ const SearchQuestions = () => {
     } else {
       url = baseUrl + searchUrl
     }
-    setInitLoading(true);
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
@@ -130,7 +129,6 @@ const SearchQuestions = () => {
           </Styled.SearchWrapper>
         </Container>
       </Styled.FilterSection>
-      <Skeleton title={false} loading={initLoading} active>
       <Styled.TitleWrapper>
         <Container>
           <Styled.TotalTutorAvaiable level={1}>
@@ -144,7 +142,6 @@ const SearchQuestions = () => {
       {totalPages > 1 &&
         <Pagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
       }
-      </Skeleton>
     </>
 
 

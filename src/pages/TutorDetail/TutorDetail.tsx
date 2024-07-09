@@ -48,7 +48,7 @@ interface Certification {
 const TutorDetail: React.FC = () => {
   useDocumentTitle("Tutor Detail | MyTutor");
   const { user } = useAuth();
-  
+
   const aboutRef = useRef<HTMLDivElement>(null);
   const scheduleRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
@@ -83,6 +83,7 @@ const TutorDetail: React.FC = () => {
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
   const [tutorBooked, setTutorBooked] = useState<Tutor[]>([]);
+  console.log(tutorBooked);
   const [tutorFeedback, setTutorFeedback] = useState(false);
   const [statusFeedback, setStatusFeedback] = useState(false);
   const [totalTaughtStudent, setTotalTaughtStudent] = useState(0);
