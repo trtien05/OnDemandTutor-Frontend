@@ -1,5 +1,5 @@
 const rejectForm = {
-    INTRO: "We regret to inform you that all the documents you submitted have been reviewed and could not be approved. <br/> <br/> For your documents to be approved, please ensure they meet the following requirements:",
+    INTRO: "After careful review, we could not approve the documents you submitted. <br/> <br/> For your documents to be approved, please ensure they meet the following requirements:",
     ENDING: "The rejected documents have been deleted from our system. You can review the feedback provided, make the necessary updates, and resubmit your documents for review. If you have any questions or need assistance, feel free to reach out to us.",
 }
 
@@ -23,7 +23,7 @@ const rejectReasons = [
 ]
 
 const approveForm = {
-    INTRO: "We are pleased to inform you that the documents you submitted have been reviewed and approved.",
+    INTRO: "After careful review, the documents you submitted have been approved.",
     ADDITIONAL: "However, some documents are rejected as they do not meet the following requirements:",
     ENDING: "Thank you for providing the necessary documentation. You can now view the verified documents in your Tutoring Info."
 }

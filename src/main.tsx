@@ -22,7 +22,7 @@ const theme: DefaultTheme = createStyledBreakpointsTheme({
 });
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
-  <StrictMode>
+  // <StrictMode>
     <ThemeProvider theme={theme}>
       <ConfigProvider theme={AntdThemeConfig}>
         <AppAntd>
@@ -31,5 +31,5 @@ ReactDOM.createRoot(document.getElementById('root')!).render(
         <GlobalStyles />
       </ConfigProvider>
     </ThemeProvider>
-  </StrictMode>
+  // </StrictMode>
 )

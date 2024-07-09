@@ -1,6 +1,6 @@
 import React from 'react';
 import { Dropdown, MenuProps, Space, Avatar, Typography } from 'antd';
-import { EditOutlined, LogoutOutlined, UserOutlined } from '@ant-design/icons';
+import { LogoutOutlined, UserOutlined } from '@ant-design/icons';
 import * as Styled from './MiniNotify.syled';
 import { UserType } from '../../hooks/useAuth';
 import cookieUtils from '../../utils/cookieUtils';
