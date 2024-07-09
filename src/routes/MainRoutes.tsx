@@ -25,6 +25,7 @@ import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 const MainRouter = () => {
     const { role } = useAuth();
     if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
+    if (role === Role.MODERATOR) return <Navigate to={config.routes.moderator.main} />;
     return <MainLayout />;
 };
 

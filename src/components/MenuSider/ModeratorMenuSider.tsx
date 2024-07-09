@@ -17,7 +17,7 @@ const MenuSider: React.FC = () => {
     {
       key: 'question',
       icon: <QuestionCircleOutlined />,
-      label: 'Question',
+      label: <Link to={config.routes.moderator.manageQuestion}>Question</Link>,
       
     },
     {

@@ -1,17 +1,17 @@
 import { useEffect, useState } from 'react';
 
-import { getTutorWithPendingDocument } from '../../../utils/moderatorAPI';
-import { Tutor } from '../ManageTutor/Tutor.type';
-import TutorTable from '../ManageTutor/DisplayComponents/TutorTable';
+import { getQuestionByStatus } from '../../../utils/moderatorAPI';
+import { Question } from '../../../components/QuestionList/Question.type';
+import QuestionTable from './QuestionTable';
 import { Skeleton } from 'antd';
-const ManageDocument = () => {
-  const [tutors, setTutors] = useState<Tutor[]>([]);
-  const [loading, setLoading] = useState(true);
 
+const ManageQuestion = () => {
+  const [questions, setQuestions] = useState<Question[]>([]);
+  const [loading, setLoading] = useState(true);
   const fetchApi = async () => {
     try {
-      const response = await getTutorWithPendingDocument();
-      setTutors(response.data.content);
+      const response = await getQuestionByStatus('PROCESSING');
+      setQuestions(response.data.content);
     } finally {
       setLoading(false);
     }
@@ -29,11 +29,11 @@ const ManageDocument = () => {
       <h2>Processing Tutor's Documents</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>
-          <TutorTable tutors={tutors} onReload={handleReload} manage='document' />
+          <QuestionTable questions={questions} onReload={handleReload} />
         </div>
       </Skeleton>
     </div>
   );
 }
 
-export default ManageDocument;
+export default ManageQuestion;

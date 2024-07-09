@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react'
-import { Image } from 'antd'
+import React, { useEffect, useRef, useState } from 'react'
+import { Button, Image } from 'antd'
+import { theme } from '../../themes';
 interface FileViewerProps {
   fileUrl: string;
   alt: string;
-  width: string;
+  width?: string;
   height?: string;
   borderRadius?: string;
 }
@@ -12,6 +13,7 @@ const FileViewer: React.FC<FileViewerProps> = (props) => {
   const [fileType, setFileType] = useState<string>('');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const iframeRef = useRef<HTMLIFrameElement>(null);
   const handlePreview = async (url: string) => {
     setPreviewImage(url);
     console.log(fileType)
@@ -21,6 +23,31 @@ const FileViewer: React.FC<FileViewerProps> = (props) => {
   const handleIframeClick = () => {
     window.open(props.fileUrl, '_blank');
   };
+
+  useEffect(() => {
+    const iframe = iframeRef.current;
+
+    if (iframe) {
+      const onLoad = () => {
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (iframeDoc) {
+          iframeDoc.addEventListener('click', handleIframeClick);
+        }
+      };
+
+      iframe.addEventListener('load', onLoad);
+
+      return () => {
+        iframe.removeEventListener('load', onLoad);
+        const iframeDoc = iframe.contentDocument || iframe.contentWindow?.document;
+        if (iframeDoc) {
+          iframeDoc.removeEventListener('click', handleIframeClick);
+        }
+      };
+    }
+  }, [iframeRef]);
+
+
   useEffect(() => {
     const getFileType = async () => {
       const decodedUrl = decodeURIComponent(props.fileUrl);
@@ -37,24 +64,27 @@ const FileViewer: React.FC<FileViewerProps> = (props) => {
       {fileType === 'pdf' ?
         (
           <>
-            <div 
-              style={{ position: 'relative', 
-                width: `${props.width}`, 
-                height:`${props.height?props.height:'unset'}` }}>
+            <div
+              style={{
+                position: 'relative',
+                width: `${props.width}`,
+                height: `${props.height ? props.height : 'unset'}`
+              }}>
               <iframe src={props.fileUrl}
                 width={props.width}
+                ref = {iframeRef}
                 style={{ borderRadius: `${props.borderRadius ? props.borderRadius : 0}` }} />
-              <div
-                onClick={handleIframeClick}
+              <Button
+                type="default"
                 style={{
                   position: 'absolute',
-                  top: 0,
-                  left: 0,
-                  width: '100%',
-                  height: '100%',
-                  cursor: 'pointer'
+                  bottom: '10px',
+                  right: '10px',
+                  zIndex: 999,
+                  color: `${theme.colors.primary}`,
+                  fontWeight: `bold`
                 }}
-              />
+                onClick={handleIframeClick}>View full</Button>
             </div>
 
           </>

@@ -9,9 +9,13 @@ import logo from '../../assets/svg/logo.png';
 import MiniNotify from '../../components/MiniNotify/MiniNotify';
 import MenuSider from '../../components/MenuSider/ModeratorMenuSider';
 import * as Styled from './ModeratorLayout.styled'
+import useAuth from '../../hooks/useAuth';
+import { useDocumentTitle } from '../../hooks';
 
 const ModeratorLayout: React.FC = () => {
+  useDocumentTitle('MyTutor | Moderator');
   const [collapsed, setCollapsed] = useState<boolean>(false);
+  const { user } = useAuth();
 
   return (
     <Styled.StyledLayout>
@@ -27,7 +31,7 @@ const ModeratorLayout: React.FC = () => {
             />
           </div>
           <div className="right">
-            <MiniNotify user={undefined} />
+            <MiniNotify user={user} />
           </div>
         </Styled.Nav>
       </Styled.Header>
