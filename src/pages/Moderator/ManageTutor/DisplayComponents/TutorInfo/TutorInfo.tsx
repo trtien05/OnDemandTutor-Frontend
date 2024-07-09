@@ -229,7 +229,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         }
 
         try {
-            await approveTutor(tutorId, status, submitData);
+            approveTutor(tutorId, status, submitData);
             if (status === 'approved') {
                 api.success({
                     message: "Success",

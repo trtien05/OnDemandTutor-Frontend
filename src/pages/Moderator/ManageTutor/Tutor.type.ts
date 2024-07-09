@@ -1,4 +1,3 @@
-
 export type Education = {
     id:number;
     majorName: string;

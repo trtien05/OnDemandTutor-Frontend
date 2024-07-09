@@ -115,7 +115,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
         }
 
         try {
-            await approveDocument(tutorId, submitData);
+            approveDocument(tutorId, submitData);
             if (status === 'rejected') {
                 mailData.approved = false;
             }
