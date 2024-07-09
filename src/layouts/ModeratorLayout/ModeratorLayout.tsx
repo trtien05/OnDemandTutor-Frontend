@@ -16,7 +16,7 @@ const ModeratorLayout: React.FC = () => {
   useDocumentTitle('MyTutor | Moderator');
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const { user } = useAuth();
-  
+
   return (
     <Styled.StyledLayout>
       <Styled.Header>
@@ -45,7 +45,7 @@ const ModeratorLayout: React.FC = () => {
         >
           <MenuSider />
         </Styled.StyledSider>
-        <Styled.StyledContent style={{width:`100%`, height:`562px`}}>
+        <Styled.StyledContent>
           <Outlet />
         </Styled.StyledContent>
       </Styled.Main>

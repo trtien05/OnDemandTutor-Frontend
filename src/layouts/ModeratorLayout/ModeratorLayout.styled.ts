@@ -58,16 +58,19 @@ export const Main = styled(Layout)`
         margin-left: 80px;
     }
 `;
+const calculateHeight = () => `calc(100vh - 70px)`;
 
 export const StyledSider = styled(Sider)`
     position: fixed !important;
     top: 70px;
     left: 0;
     z-index: 1;
-    height: calc(100vh);
+    height: ${calculateHeight()};
+    background: #fff !important;
 `;
 
 export const StyledContent = styled(Content)`
     padding: 20px;
     background: #fff;
+    min-height: 210vh;
 `;
