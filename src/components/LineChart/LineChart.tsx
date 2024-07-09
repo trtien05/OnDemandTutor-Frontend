@@ -1,4 +1,4 @@
-import { Area, Line } from '@ant-design/plots';
+import { Area } from '@ant-design/plots';
 import { useEffect, useState } from 'react';
 import { getTuitionSum } from '../../utils/statisticAPI.ts'
 import { format } from 'fecha';
