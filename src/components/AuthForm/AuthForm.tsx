@@ -116,7 +116,7 @@ const AuthForm = ({
                                         htmlType="submit"
                                         disabled={isSubmitting}
                                     >
-                                        {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : buttonTitle}
+                                        {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} /> : buttonTitle}
                                     </FormStyled.FormButton>
 
                                     {page === PageEnum.VERIFY_EMAIL && (
@@ -126,18 +126,20 @@ const AuthForm = ({
                                             onClick={onResend}
                                             disabled={isSubmitting}
                                         >
-                                            {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerEnterCapture={undefined} onPointerLeaveCapture={undefined} /> : 'Resend OTP Code'}
+                                            {isSubmitting ? <Loading3QuartersOutlined spin={true} onPointerOverCapture={undefined} onPointerMoveCapture={undefined} /> : 'Resend OTP Code'}
                                         </FormStyled.FormButtonResendCode>
                                     )}
                                 </FormStyled.FormItem>
                             </FormStyled.FormWrapper>
 
+                            {page === PageEnum.LOGIN && (
+                                <FormStyled.FormGoogleButton to={LOGIN_GOOGLE_URL}>
+                                    <FcGoogle />
+                                    <Text>Login with Google</Text>
+                                </FormStyled.FormGoogleButton>
+                            )}
 
 
-                            <FormStyled.FormGoogleButton to={LOGIN_GOOGLE_URL}>
-                                <FcGoogle />
-                                <Text>Tiếp Tục Với Google</Text>
-                            </FormStyled.FormGoogleButton>
 
 
 

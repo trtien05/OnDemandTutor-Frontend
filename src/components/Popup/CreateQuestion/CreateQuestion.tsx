@@ -1,33 +1,40 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input, Select, UploadFile, Typography, message, Form, Col } from 'antd';
+import { Button, Modal, Input, Select, UploadFile, Typography, message, Form } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
 import { theme } from '../../../themes';
 import { uploadCreateQuestionFiles } from '../../../utils/uploadCreateQuestionFiles'; // Adjust the import path if needed
-import { createQuestion } from '../../../api/questionAPI';
+import { createQuestion } from '../../../utils/questionAPI';
 import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../config';
-import { RcFile } from 'antd/es/upload';
+const { Title } = Typography;
+
 interface CreateQuestionProps {
     messageApi: any;
 }
 const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
-    const {user} = useAuth();
+    const { user, role } = useAuth();
     const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
+    // const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
+    
 
-    const [modalData, setModalData] = useState(null);
+    // const [modalData, setModalData] = useState(null);
+    
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
-        if(user?.role === 'STUDENT'){
+        
+        if (role === 'STUDENT') {
             setOpen(true);
-        }else{
+        } else if (role === 'TUTOR') {
+            messageApi.error('Tutor Cannot Create Question')
+        }
+        else {
             navigate(config.routes.public.login);
         }
     };
@@ -66,14 +73,14 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
             const values = await form.validateFields();
             const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
             const uploadedFiles = await Promise.all(
-                fileList.map(async (file: UploadFile, index) => {
+                fileList.map(async (file: UploadFile) => {
                     if (file.originFileObj) {
                         const url = await uploadCreateQuestionFiles(
-                            1,
+                            user?.id || 0,
                             file.originFileObj,
                             'CreateQuestion',
                             dateCreated,
-                            index,
+                            // index,
                         );
                         // console.log(`Uploaded file ${index} URL:`, url);
                         return { ...file, url };
@@ -81,13 +88,13 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 }),
             );
             values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
-            setModalData(values);
+            // setModalData(values);
             // console.log('Clicked OK with values:', values);
-            setConfirmLoading(true);
-            await saveQuestion(2, values);
+            // setConfirmLoading(true);
+            await saveQuestion(user?.id || 0, values);
             setTimeout(() => {
                 setOpen(false);
-                setConfirmLoading(false);
+                // setConfirmLoading(false);
                 setLoading(false);
                 form.resetFields();
                 setFileList([]);
@@ -105,14 +112,14 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     };
 
 
-    const handleFileSizeCheck = (file:any) => {
+    const handleFileSizeCheck = (file: any) => {
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
             message.error('File must be smaller than 5MB!');
         }
         return isLt5M;
     };
-    
+
     const onChange = (info: any) => {
         let newFileList = info.fileList;
 
@@ -142,7 +149,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         { label: 'History', value: 'History' },
         { label: 'Coding', value: 'Coding' },
     ];
-    const { Title } = Typography;
     return (
         <>
             <Button
@@ -159,7 +165,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 width={700}
                 styles={{
                     content: {
-                        borderRadius: '100px',
+                        borderRadius: '50px',
                         padding: '50px',
                         boxShadow: '-3px 7px 71px 30px rgba(185, 74, 183, 0.15)',
                     },
@@ -208,7 +214,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 >
                     <FormStyled.FormContainer>
                         <FormStyled.FormTitle>Subject</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="subject" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="subject" rules={[{ required: true, message: 'Please select a subject' }]}>
                             <Select size="large" placeholder="Select subject">
                                 {options.map((option, index) => (
                                     <Select.Option key={index} value={option.value}>
@@ -218,7 +224,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                             </Select>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Title</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="title" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="title" rules={[{ required: true, message: 'Please enter information for the title field' }]}>
                             <Input
                                 count={{
                                     show: true,
@@ -229,7 +235,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                             ></Input>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Enter your question</FormStyled.FormTitle>
-                        <FormStyled.FormItem name="content" rules={[{ required: true }]}>
+                        <FormStyled.FormItem name="content" rules={[{ required: true, message: 'Please enter your question' }]}>
                             <FormStyled.CommentInput
                                 count={{
                                     show: true,
@@ -243,10 +249,10 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                         <FormStyled.FormItem
                             name="questionFile"
                             valuePropName="fileList"
-                            getValueFromEvent={(e) => {
-                                console.log('Get value from event:', e); // Log the event to debug
-                                return Array.isArray(e) ? e : e && e.fileList;
-                            }}
+                        // getValueFromEvent={(e) => {
+                        //     console.log('Get value from event:', e); // Log the event to debug
+                        //     return Array.isArray(e) ? e : e && e.fileList;
+                        // }}
                         >
                             <Dragger
                                 name="questionFile"
