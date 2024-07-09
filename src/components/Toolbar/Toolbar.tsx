@@ -1,4 +1,4 @@
-import { Avatar, Badge, Dropdown, Space } from 'antd';
+import { Avatar, Dropdown, Space } from 'antd';
 import UserOutlined from '@ant-design/icons';
 
 import { IoChatboxEllipsesOutline } from "react-icons/io5";

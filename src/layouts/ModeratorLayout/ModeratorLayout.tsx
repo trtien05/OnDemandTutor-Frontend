@@ -27,7 +27,7 @@ const ModeratorLayout: React.FC = () => {
             />
           </div>
           <div className="right">
-            <MiniNotify />
+            <MiniNotify user={undefined} />
           </div>
         </Styled.Nav>
       </Styled.Header>
