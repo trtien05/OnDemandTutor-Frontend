@@ -34,7 +34,6 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
 
   return (
     <Skeleton avatar title={true} loading={item.loading} active>
-
       <Col lg={24} md={24} sm={24} xs={24}>
         <Styled.BoxHover>
 
