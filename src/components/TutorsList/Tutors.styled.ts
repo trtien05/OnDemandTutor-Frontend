@@ -41,7 +41,8 @@ export const BestTutorImage = styled.img`
 `;
 
 export const BestTutorContent = styled.div`
-    margin: 30px 0;
+    margin: 20px 0;
+    min-width: max-content;
     color: ${theme.colors.primary};
 `;
 
@@ -66,12 +67,8 @@ export const BestTutorEducationBachelorImage = styled.img`
 export const BestTutorEducationBachelor = styled.span`
     margin: 0 5px;
     line-height: 1.5;
-    margin: 0 3px;
 `;
-export const BestTutorStudent = styled.div`
-    display: flex;
-    margin: 10px 0;
-`;
+
 export const BestTutorStudentImage = styled.img`
     width: 17px;
     height: 17px;
