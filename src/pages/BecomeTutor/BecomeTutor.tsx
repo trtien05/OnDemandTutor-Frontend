@@ -51,8 +51,8 @@ const BecomeTutor = () => {
 
   //Check User is it Student 
   useEffect(() => {
-    if (!user) navigate(config.routes.public.login);
-    else setAccountId(user?.id);
+    // if (!user) navigate(config.routes.public.login);
+    setAccountId(user?.id);
   }, [user]);
   // setAccountId(user?.id);
 
@@ -65,7 +65,7 @@ const BecomeTutor = () => {
         message: 'Lỗi',
         description: error.response ? error.response.data : error.message,
       });
-    } 
+    }
   }
 
   useEffect(() => {
@@ -311,17 +311,17 @@ const BecomeTutor = () => {
     try {
 
       await saveAccountDetails(tutorId, aboutValues, avatarURL)
-       
+
       await saveEducations(tutorId, educationValues, diplomaURL)
-       
+
       await saveCertificates(tutorId, certificationValues, certURL)
-       
+
       await saveTutorDescription(tutorId, descriptionValues)
 
       await saveTutorAvailableTimeslots(tutorId, values)
-      
+
       return 'Success'
-    } catch (error:any) {
+    } catch (error: any) {
       return Promise.reject(error);
     }
   }
