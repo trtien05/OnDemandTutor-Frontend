@@ -202,7 +202,6 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
 
         // Get JSON body from form data
         const jsonRequestBody = convertTimeslotsToJSON(formData);
-        console.log(jsonRequestBody);
         try {
 
             // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
@@ -212,9 +211,6 @@ const ScheduleForm: React.FC<ScheduleProps> = (props) => {
             if (!api.success) {
                 throw new Error(`Error: ${responseData.statusText}`);
             }
-
-            // Get response data
-            console.log('Tutor available timeslots saved successfully:', responseData);
 
             // Return success response
             return responseData;

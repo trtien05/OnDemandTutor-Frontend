@@ -16,7 +16,6 @@ const FileViewer: React.FC<FileViewerProps> = (props) => {
   const iframeRef = useRef<HTMLIFrameElement>(null);
   const handlePreview = async (url: string) => {
     setPreviewImage(url);
-    console.log(fileType)
     setPreviewOpen(true);
   };
 

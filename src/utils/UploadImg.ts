@@ -25,7 +25,6 @@ export const validateFileSize = (file: UploadFile, size: number) => {
 }
 
 export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, index: number, handleChange: (url: string) => void) => {
-  console.log(file)
   if (!file) {
     console.log("No file selected for upload.");
     return;

@@ -212,10 +212,6 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
             if (!api.success) {
                 throw new Error(`Error: ${responseData.statusText}`);
             }
-
-            // Get response data
-            console.log('Tutor available timeslots saved successfully:', responseData);
-
             // Return success response
             return responseData;
         } catch (error: any) {

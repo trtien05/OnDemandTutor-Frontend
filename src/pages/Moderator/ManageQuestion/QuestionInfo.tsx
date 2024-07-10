@@ -47,7 +47,6 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
             return false;
         } else {
             if (form.getFieldValue('mailMessage')) {
-                console.log('rejected',form.getFieldValue('mailMessage'));
                 handleOk('rejected');
             }
         }
@@ -56,7 +55,6 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
     const onApprove = () => {
         form.resetFields(['mailMessage']);
         form.setFieldValue('mailMessage', questionApprovalMessages);
-        console.log('approved',form.getFieldValue('mailMessage'));
         handleOk('unsolved');
     }
 
@@ -70,7 +68,7 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
         }
 
         try {
-            approveQuestion(item.id, status);
+            await approveQuestion(item.id, status);
             if (status === 'unsolved') {
                 api.success({
                     message: "Success",
@@ -83,14 +81,15 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
                     description: "Question has been rejected",
                 });
             }
+            
         } catch (error) {
             api.error({
                 message: "Error",
                 description: "Failed to submit question approval",
             });
         } finally {
-            props.onReload && props.onReload();
             setTimeout(() => {
+                props.onReload && props.onReload();
                 setLoading(false);
                 setIsFormOpen(false);
             }, 1000);

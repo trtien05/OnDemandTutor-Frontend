@@ -9,6 +9,7 @@ const ManageTutor = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchApi = async () => {
+      setLoading(true);
     try {
       const response = await getTutorByStatus('PROCESSING');
       setTutors(response.data.content);

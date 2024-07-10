@@ -64,7 +64,7 @@ const BecomeTutor = () => {
         message: 'Lỗi',
         description: error.response ? error.response.data : error.message,
       });
-    }
+    } 
   }
 
   useEffect(() => {
@@ -241,8 +241,6 @@ const BecomeTutor = () => {
       try {
         const save = await saveData(values, accountId);
         const status = saveBecomeTutor(accountId);
-        console.log('status:', status)
-        console.log('save:', save)
         if (save !== undefined && status !== undefined)
           navigate(config.routes.student.registerStatus, { state: 'sent' });
         else navigate(config.routes.student.registerStatus, { state: 'error' });
@@ -377,7 +375,6 @@ const BecomeTutor = () => {
       $width: field.$width,
     }));
     setDiploma([...diploma, newForm]);
-    // console.log(form)
   };
 
   const handleAddCertificate = useCallback(() => {

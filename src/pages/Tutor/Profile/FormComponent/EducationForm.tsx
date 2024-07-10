@@ -132,9 +132,6 @@ const EducationForm: React.FC<EducationProps> = (props) => {
                 throw new Error(`Error: ${responseData.statusText}`);
             }
 
-            // Get response data
-            console.log('Educations saved successfully:', responseData);
-
             // Return success response
             return responseData;
         } catch (error: any) {

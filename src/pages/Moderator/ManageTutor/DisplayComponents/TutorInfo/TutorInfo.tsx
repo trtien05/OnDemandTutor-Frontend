@@ -199,7 +199,6 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
             setLoading(true);
             setIsRejected(true);
             form.resetFields(['mailMessage']);
-            // form.validateFields(['mailMessage'], { validateOnly: true });
             setTimeout(() => {
                 setLoading(false);
             }, 200);
@@ -229,7 +228,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
         }
 
         try {
-            approveTutor(tutorId, status, submitData);
+            await approveTutor(tutorId, status, submitData);
             if (status === 'approved') {
                 api.success({
                     message: "Success",
@@ -248,8 +247,8 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                 description: "Failed to submit tutor approval",
             });
         } finally {
-            props.onReload && props.onReload();
             setTimeout(() => {
+                props.onReload && props.onReload();
                 setLoading(false);
                 setIsFormOpen(false);
             }, 1000);

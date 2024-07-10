@@ -9,6 +9,7 @@ const ManageQuestion = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
   const fetchApi = async () => {
+    setLoading(true);
     try {
       const response = await getQuestionByStatus('PROCESSING');
       setQuestions(response.data.content);
@@ -26,7 +27,7 @@ const ManageQuestion = () => {
   }
   return (
     <div style={{ 'height': '100vh' }}>
-      <h2>Processing Tutor's Documents</h2>
+      <h2>Processing Question</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>
           <QuestionTable questions={questions} onReload={handleReload} />

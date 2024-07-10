@@ -142,9 +142,6 @@ const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
         throw new Error(`Error: ${responseData.statusText}`);
       }
 
-      // Get response data
-      console.log('Certificates saved successfully:', responseData);
-
       // Return success response
       return responseData;
     } catch (error: any) {

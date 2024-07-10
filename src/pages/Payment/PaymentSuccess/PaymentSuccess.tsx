@@ -36,7 +36,6 @@ const PaymentSuccess = () => {
                 setLoading(true);
                 if (location.search) {
                     const response = await checkPaymentStatus(location.search);
-                    console.log(response);
                     if (response.status === 200) {
                         setPaymentResponse(response);
                         setBookingData(cookieUtils.getItem('bookingData'));

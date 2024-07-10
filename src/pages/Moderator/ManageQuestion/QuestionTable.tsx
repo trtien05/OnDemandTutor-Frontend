@@ -11,10 +11,10 @@ interface TutorTableProps {
 const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
     const columns = [
         {
-            title: 'Id',
+            title: 'No',
             key: 'index',
-            dataIndex: 'id'
-            // render: (text: any, record:any , index:number) => index + 1,
+            dataIndex: 'id',
+            render: (_:unknown, __ :unknown, index:number) => index + 1,
         },
         {
             title: 'Title',
@@ -49,10 +49,6 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
             render: (_: any, record: Question) => (
                 <>
                 <QuestionInfo question={record} onReload={onReload} />
-                    {/* <EditRoom record={record} onReload={onReload} />
-                    {manage.includes('tutor') ?
-                        <TutorInfo tutorId={record.id} tutor={record} onReload={onReload} />
-                        : <TutorDocument tutorId={record.id} tutor={record} onReload={onReload} />} */}
                 </>
             )
         }

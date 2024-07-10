@@ -100,9 +100,6 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                 throw new Error(`Error: ${responseData.statusText}`);
             }
 
-            // Get response data
-            console.log('Tutor description saved successfully:', responseData);
-
             // Return success response
             return responseData;
         } catch (error: any) {
