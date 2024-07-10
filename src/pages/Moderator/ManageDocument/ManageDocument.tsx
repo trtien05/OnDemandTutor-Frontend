@@ -9,6 +9,7 @@ const ManageDocument = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchApi = async () => {
+    setLoading(true);
     try {
       const response = await getTutorWithPendingDocument();
       setTutors(response.data.content);

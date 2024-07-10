@@ -129,8 +129,8 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
                 description: "Failed to submit tutor approval",
             });
         } finally {
-            props.onReload && props.onReload();
             setTimeout(() => {
+            props.onReload && props.onReload();
                 setLoading(false);
                 setIsFormOpen(false);
             }, 1000);
