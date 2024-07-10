@@ -1,4 +1,4 @@
-import { Col, Typography, Space, Button, notification, Statistic } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic, Skeleton } from 'antd';
 import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -226,122 +226,122 @@ const MakePayment = () => {
     }
   }
 
-  if (loading) {
-    return <div>Loading...</div>; // Or your custom loading spinner
-  } else if (!loading && appointmentData && tutor !== null) {
+  if (appointmentData && tutor !== null) {
     return (
       <>
         {contextHolder}
         {/* <Row> */}
         <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
           <Col xl={13} lg={13} sm={24} xs={24} >
+            <Skeleton loading={loading}>
+              <Styled.CheckoutWrapper>
 
-            <Styled.CheckoutWrapper>
-
-              <Styled.TutorItem justify='space-between'>
-                <Styled.ResponsiveStyle>
-                  <Styled.TutorImage src={tutor?.avatarUrl} alt="tutor" />
-                  <Styled.TutorContent>
-                    <Styled.TutorName level={2}>{tutor?.fullName}</Styled.TutorName>
-                    <Styled.TutorEducation>
-                      <Styled.TutorEducationBachelorImage src={iconEducation} alt="education" />
-                      <Styled.TutorEducationBachelor>
-                        {tutor?.educations?.degreeType?.slice(0, 1)}{tutor?.educations?.degreeType?.slice(1).toLowerCase()}, {tutor?.educations?.majorName}
-                      </Styled.TutorEducationBachelor>
-
-                      <div>
-                        <Styled.TutorEducationBachelorImage src={iconBachelor} alt="subject" />
+                <Styled.TutorItem justify='space-between'>
+                  <Styled.ResponsiveStyle>
+                    <Styled.TutorImage src={tutor?.avatarUrl} alt="tutor" />
+                    <Styled.TutorContent>
+                      <Styled.TutorName level={2}>{tutor?.fullName}</Styled.TutorName>
+                      <Styled.TutorEducation>
+                        <Styled.TutorEducationBachelorImage src={iconEducation} alt="education" />
                         <Styled.TutorEducationBachelor>
-                          {tutor?.subjects.map((subject, index) => (
-                            <span key={index}>
-                              {subject}{index < tutor?.subjects.length - 1 && ', '}
-                            </span>
-                          ))}
+                          {tutor?.educations?.degreeType?.slice(0, 1)}{tutor?.educations?.degreeType?.slice(1).toLowerCase()}, {tutor?.educations?.majorName}
                         </Styled.TutorEducationBachelor>
-                      </div>
-                    </Styled.TutorEducation>
-                  </Styled.TutorContent>
-                </Styled.ResponsiveStyle>
-                {tutor?.averageRating && (<Styled.ResponsiveStyle>
-                  <img src={rating} style={{ maxWidth: `30px`, margin: `10px` }} />
-                  <span style={{ fontSize: `2rem`, color: `${theme.colors.primary}` }}>{tutor.averageRating}</span>
-                </Styled.ResponsiveStyle>)}
 
-              </Styled.TutorItem>
-              <Styled.BorderLine />
-              <div style={{ marginLeft: `20px` }}>
-                <p>Subject: {appointmentData.subjectName}</p>
-                {schedule?.map((schedule: Schedule, index: number) => (
-                  <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split(' at ')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split(' at ')[1]} </span></p>
-                )
-                )}
-                <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>
-              </div>
-              <Styled.BorderLine />
-              <Styled.PriceCalculation>
-                <Space>
-                  <Title level={3}>Tutor's price per hour</Title>
-                  <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString() : ''} VND</Text>
-                </Space>
+                        <div>
+                          <Styled.TutorEducationBachelorImage src={iconBachelor} alt="subject" />
+                          <Styled.TutorEducationBachelor>
+                            {tutor?.subjects.map((subject, index) => (
+                              <span key={index}>
+                                {subject}{index < tutor?.subjects.length - 1 && ', '}
+                              </span>
+                            ))}
+                          </Styled.TutorEducationBachelor>
+                        </div>
+                      </Styled.TutorEducation>
+                    </Styled.TutorContent>
+                  </Styled.ResponsiveStyle>
+                  {tutor?.averageRating && (<Styled.ResponsiveStyle>
+                    <img src={rating} style={{ maxWidth: `30px`, margin: `10px` }} />
+                    <span style={{ fontSize: `2rem`, color: `${theme.colors.primary}` }}>{tutor.averageRating}</span>
+                  </Styled.ResponsiveStyle>)}
 
-                <Space>
-                  <Title level={3}>Total hour</Title>
-                  <Text>
-                    {schedule ? calculateTotalHour(schedule) : ''} hour{schedule && calculateTotalHour(schedule) > 1 && 's'}
-                  </Text>
-                </Space>
+                </Styled.TutorItem>
+                <Styled.BorderLine />
+                <div style={{ marginLeft: `20px` }}>
+                  <p>Subject: {appointmentData.subjectName}</p>
+                  {schedule?.map((schedule: Schedule, index: number) => (
+                    <p key={index} style={{ lineHeight: `200%` }}>{toScheduleString(schedule).split(' at ')[0]} at <span style={{ fontWeight: `bold` }}>{toScheduleString(schedule).split(' at ')[1]} </span></p>
+                  )
+                  )}
+                  <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>
+                </div>
+                <Styled.BorderLine />
+                <Styled.PriceCalculation>
+                  <Space>
+                    <Title level={3}>Tutor's price per hour</Title>
+                    <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString() : ''} VND</Text>
+                  </Space>
 
-              </Styled.PriceCalculation>
-              <Styled.BorderLine />
+                  <Space>
+                    <Title level={3}>Total hour</Title>
+                    <Text>
+                      {schedule ? calculateTotalHour(schedule) : ''} hour{schedule && calculateTotalHour(schedule) > 1 && 's'}
+                    </Text>
+                  </Space>
 
-              <Styled.PriceCalculation>
+                </Styled.PriceCalculation>
+                <Styled.BorderLine />
 
-                <Space>
-                  <Title level={3} style={{ color: `${theme.colors.textPrimary}` }} >
-                    Total
-                  </Title>
-                  <Text>
-                    {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString() : ''} VND
-                  </Text>
-                </Space>
-                <p></p>
-              </Styled.PriceCalculation>
-            </Styled.CheckoutWrapper>
+                <Styled.PriceCalculation>
 
+                  <Space>
+                    <Title level={3} style={{ color: `${theme.colors.textPrimary}` }} >
+                      Total
+                    </Title>
+                    <Text>
+                      {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString() : ''} VND
+                    </Text>
+                  </Space>
+                  <p></p>
+                </Styled.PriceCalculation>
+              </Styled.CheckoutWrapper>
+            </Skeleton>
           </Col>
           {/* </Row> */}
           {/* <Row> */}
           <Col xl={10} lg={10} sm={24} xs={24}>
-            <Styled.CheckoutWrapper >
-              <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600` }} >Payment</Styled.TutorName>
-              <Styled.CheckoutPaymentImgWrapper>
-                <img
-                  src={vnpayLogo}
-                  loading="lazy"
-                  decoding="async"
-                  alt="VNPAY"
-                />
-              </Styled.CheckoutPaymentImgWrapper>
-              <Button
-                block
-                type="primary"
-                size="large"
-                onClick={handleOrder}
-              >
-                {loading ? (
-                  <Loading3QuartersOutlined
-                    spin
-                    style={{ fontSize: '1.6rem' }}
+            <Skeleton loading={loading}>
+              <Styled.CheckoutWrapper >
+                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600` }} >Payment</Styled.TutorName>
+                <Styled.CheckoutPaymentImgWrapper>
+                  <img
+                    src={vnpayLogo}
+                    loading="lazy"
+                    decoding="async"
+                    alt="VNPAY"
                   />
-                ) : (
-                  'Pay'
-                )}
-              </Button>
-              <Styled.BorderLine />
+                </Styled.CheckoutPaymentImgWrapper>
+                <Button
+                  block
+                  type="primary"
+                  size="large"
+                  onClick={handleOrder}
+                >
+                  {loading ? (
+                    <Loading3QuartersOutlined
+                      spin
+                      style={{ fontSize: '1.6rem' }}
+                    />
+                  ) : (
+                    'Pay'
+                  )}
+                </Button>
+                <Styled.BorderLine />
 
-              <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
+                <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
 
-            </Styled.CheckoutWrapper>
+              </Styled.CheckoutWrapper>
+            </Skeleton>
           </Col>
           {/* </Row> */}
         </div>

@@ -14,7 +14,7 @@ export enum Degree {
 }
 
 export enum Subject {
-    MATH = 'Math',
+    MATH = 'Mathematics',
     CHEMISTRY = 'Chemistry',
     BIOLOGY = 'Biology',
     PHYSICS = 'Physics',
