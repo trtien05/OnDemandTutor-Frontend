@@ -21,7 +21,7 @@ import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
 import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 
 
-//* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
+//* ====================  Authorization for PUBLIC ==================== */
 const MainRouter = () => {
     const { role } = useAuth();
     const { pathname } = useLocation();
@@ -38,12 +38,21 @@ const MainRouter = () => {
 
     return <MainLayout />;
 };
-
 const CustomerRouter = () => {
     const { role } = useAuth();
     return role === Role.STUDENT || role === Role.TUTOR ? <Outlet /> : <Navigate to={config.routes.public.login} />;
 };
-//* ==================== Define children routes: PUBLIC, CUSTOMER, NOT FOUND ==================== */
+
+const StudentRouter = () => {
+    const { role } = useAuth();
+    return role === Role.STUDENT ? <Outlet /> : <Navigate to={config.routes.public.login} />;
+};
+
+const TutorRouter = () => {
+    const { role } = useAuth();
+    return role === Role.TUTOR ? <Outlet /> : <Navigate to={config.routes.public.login} />;
+};
+//* ==================== Define children routes: PUBLIC, CUSTOMER, STUDENT, TUTOR, NOT FOUND ==================== */
 const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
@@ -54,39 +63,43 @@ const publicRoutes = {
     ],
 };
 
-const studentRoutes = {
+const customerRoutes = {
     element: <CustomerRouter />,
     children: [
-        { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
-        { path: config.routes.student.registerStatus, element: <RegisterStatus /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
-        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
-        { path: config.routes.student.profile, element: <Profile /> },
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
+        { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.chatRoom, element: <ChatRoom /> },
+        { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
+        { path: config.routes.student.profile, element: <Profile /> },
+        { path: config.routes.tutor.studySchedule, element: <StudentAppointment /> },
+        { path: config.routes.tutor.makePayment, element: <MakePayment /> },
+        { path: config.routes.tutor.paymentSuccess, element: <PaymentSuccess /> },
+        { path: config.routes.tutor.chatRoom, element: <ChatRoom /> }
+    ]
+};
+
+const studentRoutes = {
+    element: <StudentRouter />,
+    children: [
+        { path: config.routes.student.registerStatus, element: <RegisterStatus /> },
     ],
 };
 
 const tutorRoutes = {
-    element: <CustomerRouter />,
+    element: <TutorRouter />,
     children: [
         { path: config.routes.tutor.profile, element: <TutorProfile /> },
-        { path: config.routes.tutor.registerTutor, element: <BecomeTutor /> },
-        { path: config.routes.tutor.makePayment, element: <MakePayment /> },
-        { path: config.routes.tutor.paymentSuccess, element: <PaymentSuccess /> },
-        { path: config.routes.tutor.studySchedule, element: <StudentAppointment /> },
         { path: config.routes.tutor.teachingSchedule, element: <TutorAppointment /> },
-        { path: config.routes.tutor.chatRoom, element: <ChatRoom /> }
     ],
 };
-
 const notFoundRoutes = { path: '*', element: <NotFound /> };
 
 //* ==================== Define main routes ==================== */
 const MainRoutes = {
     path: '/',
     element: <MainRouter />,
-    children: [publicRoutes, studentRoutes, tutorRoutes, notFoundRoutes],
+    children: [publicRoutes, customerRoutes, studentRoutes, tutorRoutes, notFoundRoutes],
 };
 
 export default MainRoutes;
