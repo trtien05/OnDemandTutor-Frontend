@@ -21,7 +21,7 @@ const routes = {
         paymentSuccess: '/confirm-payment',
         registerTutor: '/register-tutor',
         chatRoom: '/chat-room',
-        registerStatus:'/register-status',
+        registerStatus: '/register-status',
     },
     tutor: {
         makePayment: '/make-payment',
@@ -29,8 +29,8 @@ const routes = {
         teachingSchedule: '/teaching-schedule',
         paymentSuccess: '/confirm-payment',
         profile: '/tutor-profile',
-        tutorSchedule: '/tutor-schedule',
         chatRoom: '/chat-room',
+        registerTutor: '/register-tutor',
     },
     admin: {
         dashboard: '/admin',
