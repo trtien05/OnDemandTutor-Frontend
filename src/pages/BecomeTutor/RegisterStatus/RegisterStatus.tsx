@@ -9,7 +9,7 @@ import { theme } from '../../../themes';
 const { Title, Text } = Typography;
 
 const RegisterStatus = () => {
-    useDocumentTitle('Application Status');
+    useDocumentTitle('Application Status | MyTutor');
 
     const location = useLocation();
     const [loading, setLoading] = useState<boolean>(true);
@@ -28,7 +28,7 @@ const RegisterStatus = () => {
                     <Container>
                         <Styled.CheckInner>
                             <Skeleton loading={loading}>
-                                {(location.state==='sent') ? (
+                                {(location.state === 'sent') ? (
                                     <>
                                         <Styled.CheckSuccessMsg>
                                             <AiOutlineCheckCircle
@@ -36,17 +36,17 @@ const RegisterStatus = () => {
                                                 color={theme.colors.success}
                                             />
                                             <Title level={2}>You application has been sent!</Title>
-                                            <Text>We have received your application and are processing it with careful thought.</Text> 
+                                            <Text>We have received your application and are processing it with careful thought.</Text>
                                         </Styled.CheckSuccessMsg>
-                                        
+
                                     </>) : (
-                                        <>
-                                    <Styled.CheckErrorMsg>
-                                        <AiOutlineCloseCircle size={80} color={theme.colors.error} />
-                                        <Title level={2}>There was an error sending your application</Title>
-                                    <Text>Please try again after a few minutes or contacting us for further support.</Text>
-                                        
-                                    </Styled.CheckErrorMsg>
+                                    <>
+                                        <Styled.CheckErrorMsg>
+                                            <AiOutlineCloseCircle size={80} color={theme.colors.error} />
+                                            <Title level={2}>There was an error sending your application</Title>
+                                            <Text>Please try again after a few minutes or contacting us for further support.</Text>
+
+                                        </Styled.CheckErrorMsg>
                                     </>
                                 )}
                             </Skeleton>

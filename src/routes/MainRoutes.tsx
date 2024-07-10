@@ -10,7 +10,7 @@ import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import TutorProfile from '../pages/Tutor/Profile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
 
-import { Navigate, useLocation } from 'react-router-dom';
+import { Navigate, Outlet, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Role } from '../utils/enums';
 import Profile from '../pages/Student/Profile/Profile';
@@ -33,19 +33,26 @@ const MainRouter = () => {
         !role &&
         (pathname.includes(config.routes.student.registerTutor))
     )
-        return <Navigate to={config.routes.public.login} />;
+        return <Outlet />;
 
 
     return <MainLayout />;
 };
 
+const StudentRouter = () => {
+    const { role } = useAuth();
+    return role === Role.STUDENT ? <Outlet /> : <Navigate to={config.routes.public.login} />;
+};
 
+const TutorRouter = () => {
+    const { role } = useAuth();
+    return role === Role.TUTOR ? <Outlet /> : <Navigate to={config.routes.public.login} />;
+};
 //* ==================== Define children routes: PUBLIC, CUSTOMER, NOT FOUND ==================== */
 const publicRoutes = {
     children: [
         { path: config.routes.public.home, element: <Home /> },
         { path: config.routes.public.searchTutors, element: <SearchTutors /> },
-        { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.public.searchQuestions, element: <SearchQuestions /> },
         { path: config.routes.public.searchTutors, element: <SearchTutors /> },
         { path: config.routes.public.tutorDetails, element: <TutorDetail /> },
@@ -53,20 +60,20 @@ const publicRoutes = {
 };
 
 const studentRoutes = {
+    element: <StudentRouter />,
     children: [
         { path: config.routes.student.registerTutor, element: <BecomeTutor /> },
         { path: config.routes.student.registerStatus, element: <RegisterStatus /> },
+        { path: config.routes.student.makePayment, element: <MakePayment /> },
         { path: config.routes.student.paymentSuccess, element: <PaymentSuccess /> },
         { path: config.routes.student.profile, element: <Profile /> },
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
-        { path: config.routes.student.makePayment, element: <MakePayment /> },
         { path: config.routes.student.chatRoom, element: <ChatRoom /> },
-
-
     ],
 };
 
 const tutorRoutes = {
+    element: <TutorRouter />,
     children: [
         { path: config.routes.tutor.profile, element: <TutorProfile /> },
         { path: config.routes.student.makePayment, element: <MakePayment /> },
@@ -74,7 +81,6 @@ const tutorRoutes = {
         { path: config.routes.student.studySchedule, element: <StudentAppointment /> },
         { path: config.routes.tutor.teachingSchedule, element: <TutorAppointment /> },
         { path: config.routes.tutor.chatRoom, element: <ChatRoom /> }
-
     ],
 };
 

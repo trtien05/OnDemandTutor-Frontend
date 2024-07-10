@@ -61,8 +61,7 @@ const SetPassword = () => {
 
     const description = (
         <SetPasswordDesc>
-            Must be 8 or more characters include a number, an uppercase letter, and a lowercase
-            letter.
+            Must be 8-16 characters, with at least 1 number, 1 uppercase, 1 lowercase, and 1 special character.
         </SetPasswordDesc>
     );
 

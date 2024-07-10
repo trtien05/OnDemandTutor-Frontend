@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Select, Row, Col, message } from 'antd';
+import { Select, Row, Col, message, Skeleton } from 'antd';
 import * as Styled from './SearchQuestions.styled';
 import Container from '../../components/Container';
 import QuestionList from '../../components/QuestionList/QuestionList'

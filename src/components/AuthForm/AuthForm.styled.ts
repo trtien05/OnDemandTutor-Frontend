@@ -55,7 +55,7 @@ export const FormContainer = styled.div`
 export const FormWrapper = styled(Form)`
     display: flex;
     flex-direction: column;
-    row-gap: 50px;
+    row-gap: 55px;
 `;
 
 export const FormTitle = styled(Title)`
