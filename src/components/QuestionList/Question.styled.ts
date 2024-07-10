@@ -160,7 +160,7 @@ export const Button = styled.button`
 
 export const TutorFilteredSection = styled.section`
     margin-top: 20px;
-    margin-bottom: 80px;
+    margin-bottom: 20px;
 `;
 export const TotalTutorAvaiable = styled(Title)`
     &.ant-typography {

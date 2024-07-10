@@ -9,7 +9,6 @@ import Pagination from '../../components/Pagination/Pagination';
 import CreateQuestion from '../../components/Popup/CreateQuestion/CreateQuestion';
 const { Option } = Select;
 
-
 const SearchQuestions = () => {
   useDocumentTitle("Search Question | MyTutor")
 
@@ -17,7 +16,6 @@ const SearchQuestions = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Question[]>([]);
-  // const [data, setData] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionPerPage] = useState(4);
   const [totalAmountQuestions, setTotalAmountQuestions] = useState(0);
@@ -29,10 +27,7 @@ const SearchQuestions = () => {
     setSubject(value as string);
   }
   const handleSave = () => {
-    // const searchCriteria = {
-    //   subject,
-    //   searchKeyword,
-    // };
+
     let url = ``;
 
     if (subject !== 'all') {
@@ -42,12 +37,11 @@ const SearchQuestions = () => {
       url += `&questionContent=${searchKeyword}`;
     }
     setSearchUrl(url);
-    // console.log(searchCriteria)
-    // console.log(searchUrl);
+
   };
 
   useEffect(() => {
-
+    setInitLoading(true);
     // const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
 
@@ -62,16 +56,11 @@ const SearchQuestions = () => {
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
-        // setData(res.content);
         setList(res.content);
         setTotalAmountQuestions(res.totalElements);
         setTotalPages(res.totalPages);
-        // console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
       })
-      .catch((err) => console.error('Failed to fetch questions:', err));
-    window.scrollTo(0, 0);
-    // console.log(url);
-
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage, searchUrl]);
 
 
@@ -132,7 +121,8 @@ const SearchQuestions = () => {
       <Styled.TitleWrapper>
         <Container>
           <Styled.TotalTutorAvaiable level={1}>
-            {totalAmountQuestions} questions available
+            {initLoading ? <Skeleton.Input active size='small' style={{ display: 'flex' }} /> : `${totalAmountQuestions}`} questions available
+
           </Styled.TotalTutorAvaiable>
         </Container>
       </Styled.TitleWrapper>

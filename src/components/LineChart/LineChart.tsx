@@ -1,7 +1,7 @@
 import { Area } from '@ant-design/plots';
 import { useEffect, useState } from 'react';
 import { getTuitionSum } from '../../utils/statisticAPI.ts'
-
+import { format } from 'fecha';
 
 const LineChart = () => {
   const [data, setData] = useState([]);
@@ -16,27 +16,24 @@ const LineChart = () => {
 
 
   const config = {
-    data,
-    padding: [40, 40, 80, 60],
-    xField: 'date',
+    data: data,
+    xField: (data: { date: string | number | Date; }) => new Date(data.date),
     yField: 'totalTuition',
-    xAxis: {
-      tickCount: 5,
+    axis: { y: { labelFormatter: '~s' } },
+    slider: {
+      x: { labelFormatter: (date: Date) => format(date, 'DD/MM/YYYY') },
     },
-    smooth: true,
-    point: {
-      size: 2.5,
-      shape: 'circle',
+    style: {
+      fill: 'linear-gradient(-90deg, white 0%, #B94AB7 100%)',
+    },
+    line: {
       style: {
         stroke: '#B94AB7',
+        strokeWidth: 2,
       },
     },
-    slider: {
-      start: 0.1,
-      end: 0.5,
-    },
+    height: 532,
 
-    color: '#B94AB7'
   };
   return (
     <Area {...config} />

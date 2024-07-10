@@ -89,7 +89,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
     return (
         <>
             {contextHolderNotification}
-            {/* <Skeleton avatar title={false} loading={item.loading} active> */}
             <Col lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
                     {/* justify="space-between" */}
@@ -262,7 +261,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                     )}
                 </Styled.QuestionRow>
             </Modal>
-            {/* </Skeleton> */}
         </>
 
     );

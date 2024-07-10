@@ -83,22 +83,25 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                   <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
                   {item.educations.map((education, index) => (
                     <Styled.BestTutorEducationBachelor key={index}>
-                      {index === 0 && education.majorName}
+                      {index === 0 && `${education.degreeType} of ${education.majorName}`}
                     </Styled.BestTutorEducationBachelor>
                   ))}
+
+                </Styled.BestTutorEducation>
+                <Styled.BestTutorEducation>
                   <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                  {item.educations.map((education, index) => (
+                  {item.subjects.map((subject, index) => (
                     <Styled.BestTutorEducationBachelor key={index}>
-                      {index === 0 && education.degreeType}
+                      {index === 0 && subject}
                     </Styled.BestTutorEducationBachelor>
                   ))}
                 </Styled.BestTutorEducation>
-                <Styled.BestTutorStudent>
+                <Styled.BestTutorEducation>
                   <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
                   <Styled.BestTutorEducationBachelor>
                     {totalTaughtStudent} students taught
                   </Styled.BestTutorEducationBachelor>
-                </Styled.BestTutorStudent>
+                </Styled.BestTutorEducation>
                 <Styled.BestTutorDescription>
                   {truncateText(item.backgroundDescription)}
                 </Styled.BestTutorDescription>

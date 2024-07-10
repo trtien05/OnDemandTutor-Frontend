@@ -18,42 +18,29 @@ const PieChart = () => {
     data,
     angleField: 'tutorCount',
     colorField: 'subjectName',
-    radius: 0.7,
     innerRadius: 0.6,
-
-    legend: {
-      visible: true,
-      position: 'bottom' as 'bottom',
-      layout: 'horizontal' as 'horizontal',
-      itemName: {
-        style: {
-          fontSize: 14,
-        },
-      },
-    },
-
-    label: {
-      content: '{name} {percentage}',
-
-    },
-    interactions: [
-
+    height: 532,
+    labels: [
+      { text: 'subjectName', style: { fontSize: 10, fontWeight: 'bold' } },
       {
-        type: 'element-active',
-      },
-    ],
-    statistic: {
-      title: undefined,
-      content: {
+        text: 'tutorCount',
         style: {
-          whiteSpace: 'pre-wrap',
-          overflow: 'hidden',
-          textOverflow: 'ellipsis',
+          fontSize: 9,
+          dy: 12
         },
-        content: '',
       },
+
+    ],
+    tooltip: false, // Tắt tooltip khi hover
+
+    style: {
+      stroke: '#fff',
+      inset: 1,
+      radius: 10,
     },
+
   };
+
   return (
     <Pie {...config} />
 

@@ -74,8 +74,9 @@ const TopTutor = () => {
       columns={columns}
       dataSource={tutors}
       pagination={false}
-      style={{ padding: '25px 0' }}
+      style={{ padding: '30px 0' }}
       scroll={{ x: true }}
+
     />
   );
 };

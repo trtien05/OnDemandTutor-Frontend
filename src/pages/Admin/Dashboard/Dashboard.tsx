@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Row } from 'antd';
+import { Col, Row, Skeleton } from 'antd';
 import * as Styled from './Dashboard.syled'
 import PieChart from '../../../components/PieChart/PieChart'
 import LineChart from '../../../components/LineChart/LineChart'
@@ -24,23 +24,31 @@ const Dashboard: React.FC = () => {
   const [profit, setProfit] = useState<Profit | null>(null);
   const [numTutor, setNumTutor] = useState(0);
   const [numStudent, setNumStudent] = useState(0);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchData = async () => {
-      // Fetch Revenue Data
-      const responseRevenue = await getRevenueThisMonth();
-      setRevenue(responseRevenue.data)
+      try {
+        // Fetch Revenue Data
+        const responseRevenue = await getRevenueThisMonth();
+        setRevenue(responseRevenue.data);
 
-      // Fetch Profit Data
-      const responseProfit = await getProfitThisMonth();
-      setProfit(responseProfit.data)
+        // Fetch Profit Data
+        const responseProfit = await getProfitThisMonth();
+        setProfit(responseProfit.data);
 
-      // Fetch Revenue Data
-      const responseNumTutor = await getNumberOfRole('TUTOR');
-      setNumTutor(responseNumTutor.data)
+        // Fetch Number of Tutors
+        const responseNumTutor = await getNumberOfRole('TUTOR');
+        setNumTutor(responseNumTutor.data);
 
-      // Fetch Revenue Data
-      const responseNumStudent = await getNumberOfRole('STUDENT');
-      setNumStudent(responseNumStudent.data)
+        // Fetch Number of Students
+        const responseNumStudent = await getNumberOfRole('STUDENT');
+        setNumStudent(responseNumStudent.data);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
     }
     fetchData();
   }, [])
@@ -54,8 +62,12 @@ const Dashboard: React.FC = () => {
               <DollarCircleOutlined style={{ fontSize: '24px', color: '#1890ff' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              <Styled.Title>{revenue?.revenue.toLocaleString()}đ</Styled.Title>
-              <Styled.Description>Revenue/{revenue?.month}</Styled.Description>
+              <Styled.Title>
+                {loading ? <Skeleton.Input active size="small" /> : `${revenue?.revenue.toLocaleString()}đ`}
+              </Styled.Title>
+              <Styled.Description>
+                {loading ? <Skeleton.Input active size="small" /> : `Revenue/${revenue?.month}`}
+              </Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
         </Col>
@@ -65,8 +77,12 @@ const Dashboard: React.FC = () => {
               <LineChartOutlined style={{ fontSize: '24px', color: '#52c41a' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              <Styled.Title>{profit?.profit.toLocaleString()}đ</Styled.Title>
-              <Styled.Description>Profit/{profit?.month}</Styled.Description>
+              <Styled.Title>
+                {loading ? <Skeleton.Input active size="small" /> : `${profit?.profit.toLocaleString()}đ`}
+              </Styled.Title>
+              <Styled.Description>
+                {loading ? <Skeleton.Input active size="small" /> : `Profit/${profit?.month}`}
+              </Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
         </Col>
@@ -76,7 +92,7 @@ const Dashboard: React.FC = () => {
               <OrderedListOutlined style={{ fontSize: '24px', color: '#faad14' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              <Styled.Title>{numTutor}</Styled.Title>
+              <Styled.Title>{loading ? <Skeleton.Input active size="small" /> : numTutor}</Styled.Title>
               <Styled.Description>Tutors</Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
@@ -87,7 +103,7 @@ const Dashboard: React.FC = () => {
               <UserOutlined style={{ fontSize: '24px', color: '#722ed1' }} />
             </Styled.IconWrapper>
             <Styled.ContentWrapper>
-              <Styled.Title>{numStudent}</Styled.Title>
+              <Styled.Title>{loading ? <Skeleton.Input active size="small" /> : numStudent}</Styled.Title>
               <Styled.Description>Students</Styled.Description>
             </Styled.ContentWrapper>
           </Styled.StyledBoxNumber>
@@ -98,13 +114,17 @@ const Dashboard: React.FC = () => {
         <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
             <Title level={5} style={{ color: '#B94AB7' }}>Total Revenue</Title>
-            <LineChart />
+            <Skeleton loading={loading} active>
+              <LineChart />
+            </Skeleton>
           </Styled.StyledBox>
         </Col>
         <Col xxl={9} xl={9} lg={9} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
             <Title level={5} style={{ color: '#B94AB7' }}>Distribution of Tutors by Subject</Title>
-            <PieChart />
+            <Skeleton loading={loading} active>
+              <PieChart />
+            </Skeleton>
           </Styled.StyledBox>
         </Col>
       </Row>
@@ -112,13 +132,18 @@ const Dashboard: React.FC = () => {
         <Col xxl={9} xl={9} lg={24} md={24} sm={24} xs={24}>
           <Styled.StyledBox>
             <Title level={5} style={{ color: '#B94AB7' }}>Revenue by Subjects</Title>
-            <ColumnChart />
+            <Skeleton loading={loading} active>
+              <ColumnChart />
+
+            </Skeleton>
           </Styled.StyledBox>
         </Col>
         <Col xxl={15} xl={15} lg={24} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
             <Title level={5} style={{ color: '#B94AB7' }}>Top Tutors</Title>
-            <TopTutor />
+            <Skeleton active loading={loading}>
+              <TopTutor />
+            </Skeleton>
           </Styled.StyledBox>
         </Col>
 

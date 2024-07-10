@@ -17,21 +17,19 @@ const ColumnChart = () => {
     data,
     xField: 'subjectName',
     yField: 'totalTuition',
-    padding: [40, 40, 100, 60],
+    legend: false,
+    height: 400,
+    axis: { y: { labelFormatter: '~s' } },
 
-    columnWidthRatio: 0.2,
-    xAxis: {
-      label: {
-        autoHide: false,
-        autoRotate: true,
-
-      },
-    },
     slider: {
-      start: 0.1,
-      end: 1,
+      x: 'subjectName',
     },
-    color: '#B94AB7'
+    scale: {
+      x: { padding: 0.1 },
+    },
+    style: {
+      fill: '#B94AB7',
+    },
   };
   return (
     <Column {...config} />

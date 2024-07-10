@@ -10,7 +10,7 @@ import PaymentSuccess from '../pages/Payment/PaymentSuccess/PaymentSuccess';
 import TutorProfile from '../pages/Tutor/Profile/TutorProfile';
 import SearchQuestions from '../pages/Questions/SearchQuestions';
 
-import { Navigate } from 'react-router-dom';
+import { Navigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks';
 import { Role } from '../utils/enums';
 import Profile from '../pages/Student/Profile/Profile';
@@ -24,8 +24,18 @@ import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
 //* ====================  Authorization for PUBLIC and CUSTOMER ==================== */
 const MainRouter = () => {
     const { role } = useAuth();
+    const { pathname } = useLocation();
+
     if (role === Role.ADMIN) return <Navigate to={config.routes.admin.dashboard} />;
     if (role === Role.MODERATOR) return <Navigate to={config.routes.moderator.main} />;
+
+    if (
+        !role &&
+        (pathname.includes(config.routes.student.registerTutor))
+    )
+        return <Navigate to={config.routes.public.login} />;
+
+
     return <MainLayout />;
 };
 
