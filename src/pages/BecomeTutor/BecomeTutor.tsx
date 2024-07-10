@@ -51,7 +51,8 @@ const BecomeTutor = () => {
 
   //Check User is it Student 
   useEffect(() => {
-    setAccountId(user?.id);
+    if (!user) navigate(config.routes.public.login);
+    else setAccountId(user?.id);
   }, [user]);
   // setAccountId(user?.id);
 
