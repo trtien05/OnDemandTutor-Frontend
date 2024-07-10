@@ -45,7 +45,7 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
         if (location.pathname !== config.routes.public.home) return;
 
         navigate(config.routes.public.home);
-        
+
     }, [location.search]);
 
     const transitionNavBar = () => {
@@ -66,16 +66,16 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
         //     key: 'tutor-profile',
         // },
         {
-            
-            label:role === 'TUTOR' && status === 'ACTIVE' ? 'My Schedule': <Link to={config.routes.student.studySchedule}>My Schedule</Link>,
+
+            label: role === 'TUTOR' && status === 'ACTIVE' ? 'My Schedule' : <Link to={config.routes.student.studySchedule}>My Schedule</Link>,
             key: 'my-schedule',
-            children: 
-            role === 'TUTOR' && status === 'ACTIVE'? 
-            [
-                { key: config.routes.student.studySchedule, label: <Link to={config.routes.student.studySchedule}>Study Session</Link> },
-                { key: config.routes.tutor.teachingSchedule, label: <Link to={config.routes.tutor.teachingSchedule}>Teaching Session</Link> },
-              ]
-            : undefined,
+            children:
+                role === 'TUTOR' && status === 'ACTIVE' ?
+                    [
+                        { key: config.routes.student.studySchedule, label: <Link to={config.routes.student.studySchedule}>Study Session</Link> },
+                        { key: config.routes.tutor.teachingSchedule, label: <Link to={config.routes.tutor.teachingSchedule}>Teaching Session</Link> },
+                    ]
+                    : undefined,
         },
         {
             type: 'divider',
@@ -132,8 +132,6 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
                                 avatar={avatarUrl}
                             />
                         </Col>
-                        
-                        
                     ) : (
                         <Col lg={3} md={0} sm={0} xs={0}>
                             <Styled.NavbarLink to={config.routes.public.login}>
@@ -144,8 +142,6 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
 
                     <Col lg={0}>
                         <Flex gap={16}>
-
-
                             <MobileMenu menu={menu} />
                         </Flex>
                     </Col>
