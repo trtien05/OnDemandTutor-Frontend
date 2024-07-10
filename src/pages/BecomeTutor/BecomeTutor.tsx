@@ -25,10 +25,10 @@ import config from "../../config";
 const { Title } = Typography;
 
 const BecomeTutor = () => {
-  const [aboutValues, setAboutValues] = useState<any>();
+  const [aboutValues, setAboutValues] = useState(null);
   const [accountId, setAccountId] = useState<number>();
-  const [educationValues, setEducationValues] = useState<any>();
-  const [certificationValues, setCertificationValues] = useState<any>();
+  const [educationValues, setEducationValues] = useState(null);
+  const [certificationValues, setCertificationValues] = useState(null);
   const [descriptionValues, setDescriptionValues] = useState(null);
   const [timePriceValues, setTimePriceValues] = useState(null);
   const [agreement, setAgreement] = useState<boolean>(false);
@@ -470,6 +470,7 @@ const BecomeTutor = () => {
       return aboutValues === null || agreement === false;
     }
     if (stepNumber == 2) {
+      console.log(educationValues)
       return aboutValues === null || educationValues === null;
     }
     if (stepNumber == 3) {
