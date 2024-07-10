@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Col, Skeleton, Avatar, Modal, notification } from 'antd';
+import { Col, Avatar, Modal, notification } from 'antd';
 import iconBachelor from '../../../assets/images/image13.png';
 import * as Styled from '../Question.styled';
 import { Question } from '../../QuestionList/Question.type';
