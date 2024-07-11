@@ -1,4 +1,4 @@
-import { Steps, Typography, TimePicker, notification } from "antd";
+import { Steps, Typography, TimePicker, notification, Spin } from "antd";
 import { useState, useCallback, useEffect } from "react";
 import { educationForm, certificateForm, FieldType } from "./Form.fields";
 import dayjs, { Dayjs } from 'dayjs'
@@ -47,16 +47,18 @@ const BecomeTutor = () => {
   const [api, contextHolderNotification] = notification.useNotification({
     top: 100,
   });
+  const [loading, setLoading] = useState<boolean>(false);
   const { user } = useAuth();
 
   //Check User is it Student 
   useEffect(() => {
-    // if (!user) navigate(config.routes.public.login);
+    if (user === null) navigate(config.routes.public.login);
     setAccountId(user?.id);
   }, [user]);
   // setAccountId(user?.id);
 
   async function fetchAccount(tutorId: number) {
+    setLoading(true);
     try {
       const response = await getAccountById(tutorId);
       setDataSource(response.data)
@@ -65,6 +67,8 @@ const BecomeTutor = () => {
         message: 'Lỗi',
         description: error.response ? error.response.data : error.message,
       });
+    } finally {
+      setLoading(false);
     }
   }
 
@@ -237,6 +241,7 @@ const BecomeTutor = () => {
 
   //---------------------------------FINISH TIMESLOT FORM-----------------------------
   const onFinishTimePriceForm = async (values: any) => {
+    setLoading(true);
     setTimePriceValues(values);
     if (accountId) {
       try {
@@ -245,6 +250,7 @@ const BecomeTutor = () => {
         if (save !== undefined && status !== undefined)
           navigate(config.routes.student.registerStatus, { state: 'sent' });
         else navigate(config.routes.student.registerStatus, { state: 'error' });
+
       } catch (error: any) {
         api.error({
           message: 'Lỗi',
@@ -737,25 +743,28 @@ const BecomeTutor = () => {
       {user?.role === "STUDENT" ? (
         <div style={{ background: `white`, padding: `3%` }}>
           {contextHolderNotification}
-          <Title
-            style={{
-              color: `${theme.colors.primary}`,
-              textTransform: `capitalize`,
-              textAlign: `center`,
-            }}
-          >
-            Become our tutor!
-          </Title>
-          <div style={{ margin: `5%` }}>
-            <Steps current={current} onChange={goTo}>
-              <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
-              <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
-              <Steps.Step disabled={isDisabled(2)} title="Certification"></Steps.Step>
-              <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
-              <Steps.Step disabled={isDisabled(4)} title="Availability & Pricing"></Steps.Step>
-            </Steps>
-          </div>
-          {step}
+          <Spin spinning={loading} tip="Loading...">
+            <Title
+              style={{
+                color: `${theme.colors.primary}`,
+                textTransform: `capitalize`,
+                textAlign: `center`,
+              }}
+            >
+              Become our tutor!
+            </Title>
+            <div style={{ margin: `5%` }}>
+              <Steps current={current} onChange={goTo}>
+                <Steps.Step disabled={isDisabled(0)} title="About"></Steps.Step>
+                <Steps.Step disabled={isDisabled(1)} title="Education"></Steps.Step>
+                <Steps.Step disabled={isDisabled(2)} title="Certification"></Steps.Step>
+                <Steps.Step disabled={isDisabled(3)} title="Description"></Steps.Step>
+                <Steps.Step disabled={isDisabled(4)} title="Availability & Pricing"></Steps.Step>
+              </Steps>
+            </div>
+            {step}
+          </Spin>
+
         </div>
       ) : user?.role === "TUTOR" && user?.status === "PROCESSING" ? (
         <Styled.CheckSection>
@@ -780,6 +789,7 @@ const BecomeTutor = () => {
           </Container>
         </Styled.CheckSection>
       ) : null}
+
     </>
   );
 };
