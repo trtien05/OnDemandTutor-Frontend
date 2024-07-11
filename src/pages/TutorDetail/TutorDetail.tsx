@@ -426,7 +426,6 @@ const TutorDetail: React.FC = () => {
                   </Styled.BookingInformation>
                   <BookTutor tutorId={tutorId} />
                   <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
-                  <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
                 </Styled.TutorVideoCard>
               </Col>
             </Skeleton>
