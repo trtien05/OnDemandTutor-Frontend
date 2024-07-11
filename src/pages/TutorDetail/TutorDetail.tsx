@@ -229,211 +229,208 @@ const TutorDetail: React.FC = () => {
       {contextHolderNotification}
       <Styled.TutorDetailBackground>
         <Container>
-          {tutor && (
-            <Row justify='space-between'>
-              <Col lg={12} md={12} sm={12} xs={24}>
-                <Skeleton paragraph={{ rows: 4 }} loading={loading} active>
-                  <Styled.TutorInfoCard>
-                    <Col>
-                      {tutor.avatarUrl ? (
-                        <Avatar
-                          src={tutor.avatarUrl}
-                          icon={<UserOutlined />}
-                          size={150}
-                          style={{
-                            width: '210px',
-                            height: '210px',
-                            borderRadius: '50px',
-                            marginRight: '20px'
+          <Row justify='space-between'>
+            <Col lg={12} md={12} sm={12} xs={24}>
+              <Skeleton paragraph={{ rows: 4 }} loading={loading} active>
+                <Styled.TutorInfoCard>
+                  <Col>
+                    {tutor?.avatarUrl ? (
+                      <Avatar
+                        src={tutor.avatarUrl}
+                        icon={<UserOutlined />}
+                        size={150}
+                        style={{
+                          width: '210px',
+                          height: '210px',
+                          borderRadius: '50px',
+                          marginRight: '20px'
 
-                          }}
-                        />
-                      ) : (
-                        <Avatar
-                          size={150}
-                          icon={<UserOutlined />}
-                          style={{
-                            width: '210px',
-                            height: '210px',
-                            borderRadius: '25px',
-                            marginRight: '20px'
+                        }}
+                      />
+                    ) : (
+                      <Avatar
+                        size={150}
+                        icon={<UserOutlined />}
+                        style={{
+                          width: '210px',
+                          height: '210px',
+                          borderRadius: '25px',
+                          marginRight: '20px'
 
-                          }}
-                        />
-                      )}
-                    </Col>
-                    <Col>
-                      <Styled.TutorDetails>
-                        <Styled.BestTutorName level={2}>{tutor.fullName}</Styled.BestTutorName>
-                        <Styled.BestTutorEducation>
-                          <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
-                          {educations.map((education, index) => (
-                            <React.Fragment key={education.id}>
-                              <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
-                              {index < educations.length - 1 && ', '}
-                            </React.Fragment>
-                          ))}
-
-                        </Styled.BestTutorEducation>
-                        <Styled.BestTutorEducation>
-                          <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                          {tutor.subjects.map((subject, index) => (
-                            <React.Fragment key={index}>
-                              <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
-                              {index < tutor.subjects.length - 1 && ', '}
-                            </React.Fragment>
-                          ))}
-                        </Styled.BestTutorEducation>
-                        <Styled.BestTutorStudent>
-                          <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
-                          <Styled.BestTutorEducationBachelor>{totalTaughtStudent} students taught</Styled.BestTutorEducationBachelor>
-                        </Styled.BestTutorStudent>
-                        <Styled.BestTutorDescription>{tutor.backgroundDescription}</Styled.BestTutorDescription>
-                      </Styled.TutorDetails>
-                    </Col>
-                  </Styled.TutorInfoCard>
-                </Skeleton>
-                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
-                  <Styled.StyledTabs defaultActiveKey="1" onTabClick={handleTabClick}>
-                    <TabPane tab="About" key="1" />
-                    <TabPane tab="Schedule" key="2" />
-                    <TabPane tab="Review" key="3" />
-                    <TabPane tab="Resume" key="4" />
-                  </Styled.StyledTabs>
-                </Skeleton>
-                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
-                  <Styled.SectionInfor ref={aboutRef}>
-                    <Styled.TitleWrapper>
-                      <Styled.TitleDetail level={4}>ABOUT THE TUTOR</Styled.TitleDetail>
-                    </Styled.TitleWrapper>
-                    <p>{tutor.backgroundDescription}</p>
-                  </Styled.SectionInfor>
-                </Skeleton>
-                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
-                  <Styled.SectionInfor ref={scheduleRef}>
-                    <Styled.TitleWrapper>
-                      <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
-                    </Styled.TitleWrapper>
-                    <Schedule tutorId={tutorId} />
-
-                  </Styled.SectionInfor>
-                </Skeleton>
-                <Skeleton style={{ marginTop: '10px' }} paragraph={{ rows: 4 }} loading={loading} active>
-                  <Styled.SectionInfor ref={reviewRef}>
-                    <Styled.TitleWrapper style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                      <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
-                      <Feedback statusFeedback={statusFeedback} tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
-                    </Styled.TitleWrapper>
-                    <List
-                      loading={loading}
-                      itemLayout="horizontal"
-                      loadMore={loadMore}
-                      dataSource={reviews}
-                      renderItem={(item) => (
-                        <List.Item>
-                          <Skeleton avatar title={false} loading={item.loading} active>
-                            <Styled.ReviewCard>
-                              <Styled.ReviewHeader>
-                                <Styled.AvatarStyled src={item.avatarUrl} />
-                                <div>
-                                  <Styled.StudentName>{item.createdBy}</Styled.StudentName>
-                                  <Styled.DateRated>{item.createdAt}</Styled.DateRated>
-                                  <Styled.Rating disabled defaultValue={item.rating} />
-                                </div>
-                              </Styled.ReviewHeader>
-                              <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
-                            </Styled.ReviewCard>
-                          </Skeleton>
-                        </List.Item>
-                      )}
-                    />
-                  </Styled.SectionInfor>
-                </Skeleton>
-                <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
-                  <Styled.ResumeSection ref={resumeRef}>
-                    <Styled.TitleWrapper>
-                      <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
-                    </Styled.TitleWrapper>
-                    {(educations.length > 0) && (
-                      <Styled.Section>
-                        <Col lg={4} md={4} sm={4} xs={4}>
-                          <Styled.SectionHeader>Education</Styled.SectionHeader>
-                        </Col>
-                        <Col lg={20} md={20} sm={20} xs={20}>
-                          <Styled.SectionContent>
-                            {educations.map((education) => (
-                              <Styled.Item key={education.id}>
-                                <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
-                                <Styled.Description>
-                                  {education.universityName}<br />
-                                  {education.degreeType}
-                                </Styled.Description>
-                              </Styled.Item>
-                            ))}
-                          </Styled.SectionContent>
-                        </Col>
-                      </Styled.Section>
+                        }}
+                      />
                     )}
-                    {(certification.length > 0) && (
-                      <Styled.Section>
-                        <Col lg={4} md={4} sm={4} xs={4}>
-                          <Styled.SectionHeader>Certification</Styled.SectionHeader>
-                        </Col>
-                        <Col lg={20} md={20} sm={20} xs={20}>
-                          <Styled.SectionContent>
-                            {certification.map((certification) => (
-                              <Styled.Item key={certification.id}>
-                                <Styled.Year>{certification.issuedBy} - {certification.issuedYear}</Styled.Year>
-                                <Styled.Description>
-                                  {certification.certificateName}<br />
-                                  {certification.subject}
-                                </Styled.Description>
-                              </Styled.Item>
-                            ))}
-                          </Styled.SectionContent>
-                        </Col>
-                      </Styled.Section>
-                    )}
+                  </Col>
+                  <Col>
+                    <Styled.TutorDetails>
+                      <Styled.BestTutorName level={2}>{tutor?.fullName}</Styled.BestTutorName>
+                      <Styled.BestTutorEducation>
+                        <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
+                        {educations.map((education, index) => (
+                          <React.Fragment key={education.id}>
+                            <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
+                            {index < educations.length - 1 && ', '}
+                          </React.Fragment>
+                        ))}
 
-                  </Styled.ResumeSection>
-                </Skeleton>
-              </Col>
-              <Skeleton style={{ marginTop: '30px', width: '30%' }} paragraph={{ rows: 4 }} loading={loading} active>
-                <Col lg={9} md={9} sm={9} xs={24}>
-                  <Styled.TutorVideoCard>
-                    <Styled.TutorVideo>
-                      {tutor.videoIntroductionLink && (
-                        <iframe
-                          width="100%"
-                          height="100%"
-
-                          style={{ borderRadius: '30px' }}
-                          src={getEmbedUrl(tutor.videoIntroductionLink)}
-                          title="YouTube video player"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        ></iframe>
-                      )}
-                    </Styled.TutorVideo>
-                    <Styled.BookingInformation>
-                      <div style={{ textAlign: 'center' }}>
-                        <div style={{ display: 'flex' }}>
-                          <Styled.IconStyleStart />
-                          <Styled.BookingRatingAndPrice>{tutor.averageRating}</Styled.BookingRatingAndPrice>
-                        </div>
-                      </div>
-                      <div>
-                        <Styled.BookingRatingAndPrice>{tutor.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
-                      </div>
-                    </Styled.BookingInformation>
-                    <BookTutor tutorId={tutorId} />
-                    <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
-                    <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
-                  </Styled.TutorVideoCard>
-                </Col>
+                      </Styled.BestTutorEducation>
+                      <Styled.BestTutorEducation>
+                        <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
+                        {tutor?.subjects.map((subject, index) => (
+                          <React.Fragment key={index}>
+                            <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
+                            {index < tutor?.subjects.length - 1 && ', '}
+                          </React.Fragment>
+                        ))}
+                      </Styled.BestTutorEducation>
+                      <Styled.BestTutorStudent>
+                        <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
+                        <Styled.BestTutorEducationBachelor>{totalTaughtStudent} students taught</Styled.BestTutorEducationBachelor>
+                      </Styled.BestTutorStudent>
+                      <Styled.BestTutorDescription>{tutor?.backgroundDescription}</Styled.BestTutorDescription>
+                    </Styled.TutorDetails>
+                  </Col>
+                </Styled.TutorInfoCard>
               </Skeleton>
-            </Row>
-          )}
+              <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
+                <Styled.StyledTabs defaultActiveKey="1" onTabClick={handleTabClick}>
+                  <TabPane tab="About" key="1" />
+                  <TabPane tab="Schedule" key="2" />
+                  <TabPane tab="Review" key="3" />
+                  <TabPane tab="Resume" key="4" />
+                </Styled.StyledTabs>
+              </Skeleton>
+              <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
+                <Styled.SectionInfor ref={aboutRef}>
+                  <Styled.TitleWrapper>
+                    <Styled.TitleDetail level={4}>ABOUT THE TUTOR</Styled.TitleDetail>
+                  </Styled.TitleWrapper>
+                  <p>{tutor?.backgroundDescription}</p>
+                </Styled.SectionInfor>
+              </Skeleton>
+              <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
+                <Styled.SectionInfor ref={scheduleRef}>
+                  <Styled.TitleWrapper>
+                    <Styled.TitleDetail level={4}>SCHEDULE</Styled.TitleDetail>
+                  </Styled.TitleWrapper>
+                  <Schedule tutorId={tutorId} />
+                </Styled.SectionInfor>
+              </Skeleton>
+              <Skeleton style={{ marginTop: '10px' }} paragraph={{ rows: 4 }} loading={loading} active>
+                <Styled.SectionInfor ref={reviewRef}>
+                  <Styled.TitleWrapper style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <Styled.TitleDetail level={4}>REVIEWS</Styled.TitleDetail>
+                    <Feedback statusFeedback={statusFeedback} tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
+                  </Styled.TitleWrapper>
+                  <List
+                    loading={loading}
+                    itemLayout="horizontal"
+                    loadMore={loadMore}
+                    dataSource={reviews}
+                    renderItem={(item) => (
+                      <List.Item>
+                        <Skeleton avatar title={false} loading={item.loading} active>
+                          <Styled.ReviewCard>
+                            <Styled.ReviewHeader>
+                              <Styled.AvatarStyled src={item.avatarUrl} />
+                              <div>
+                                <Styled.StudentName>{item.createdBy}</Styled.StudentName>
+                                <Styled.DateRated>{item.createdAt}</Styled.DateRated>
+                                <Styled.Rating disabled defaultValue={item.rating} />
+                              </div>
+                            </Styled.ReviewHeader>
+                            <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
+                          </Styled.ReviewCard>
+                        </Skeleton>
+                      </List.Item>
+                    )}
+                  />
+                </Styled.SectionInfor>
+              </Skeleton>
+              <Skeleton style={{ marginTop: '30px' }} paragraph={{ rows: 4 }} loading={loading} active>
+                <Styled.ResumeSection ref={resumeRef}>
+                  <Styled.TitleWrapper>
+                    <Styled.TitleDetail level={4}>RESUME</Styled.TitleDetail>
+                  </Styled.TitleWrapper>
+                  {(educations.length > 0) && (
+                    <Styled.Section>
+                      <Col lg={4} md={4} sm={4} xs={4}>
+                        <Styled.SectionHeader>Education</Styled.SectionHeader>
+                      </Col>
+                      <Col lg={20} md={20} sm={20} xs={20}>
+                        <Styled.SectionContent>
+                          {educations.map((education) => (
+                            <Styled.Item key={education.id}>
+                              <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
+                              <Styled.Description>
+                                {education.universityName}<br />
+                                {education.degreeType}
+                              </Styled.Description>
+                            </Styled.Item>
+                          ))}
+                        </Styled.SectionContent>
+                      </Col>
+                    </Styled.Section>
+                  )}
+                  {(certification.length > 0) && (
+                    <Styled.Section>
+                      <Col lg={4} md={4} sm={4} xs={4}>
+                        <Styled.SectionHeader>Certification</Styled.SectionHeader>
+                      </Col>
+                      <Col lg={20} md={20} sm={20} xs={20}>
+                        <Styled.SectionContent>
+                          {certification.map((certification) => (
+                            <Styled.Item key={certification.id}>
+                              <Styled.Year>{certification.issuedBy} - {certification.issuedYear}</Styled.Year>
+                              <Styled.Description>
+                                {certification.certificateName}<br />
+                                {certification.subject}
+                              </Styled.Description>
+                            </Styled.Item>
+                          ))}
+                        </Styled.SectionContent>
+                      </Col>
+                    </Styled.Section>
+                  )}
+
+                </Styled.ResumeSection>
+              </Skeleton>
+            </Col>
+            <Skeleton style={{ marginTop: '30px', width: '30%' }} paragraph={{ rows: 4 }} loading={loading} active>
+              <Col lg={9} md={9} sm={9} xs={24}>
+                <Styled.TutorVideoCard>
+                  <Styled.TutorVideo>
+                    {tutor?.videoIntroductionLink && (
+                      <iframe
+                        width="100%"
+                        height="100%"
+
+                        style={{ borderRadius: '30px' }}
+                        src={getEmbedUrl(tutor?.videoIntroductionLink)}
+                        title="YouTube video player"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowFullScreen
+                      ></iframe>
+                    )}
+                  </Styled.TutorVideo>
+                  <Styled.BookingInformation>
+                    <div style={{ textAlign: 'center' }}>
+                      <div style={{ display: 'flex' }}>
+                        <Styled.IconStyleStart />
+                        <Styled.BookingRatingAndPrice>{tutor?.averageRating}</Styled.BookingRatingAndPrice>
+                      </div>
+                    </div>
+                    <div>
+                      <Styled.BookingRatingAndPrice>{tutor?.teachingPricePerHour?.toLocaleString() + 'đ'}</Styled.BookingRatingAndPrice>
+                    </div>
+                  </Styled.BookingInformation>
+                  <BookTutor tutorId={tutorId} />
+                  <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
+                  <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
+                </Styled.TutorVideoCard>
+              </Col>
+            </Skeleton>
+          </Row>
         </Container>
       </Styled.TutorDetailBackground>
     </>

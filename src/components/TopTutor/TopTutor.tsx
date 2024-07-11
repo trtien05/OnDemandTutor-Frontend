@@ -51,7 +51,7 @@ const TopTutor = () => {
       title: 'Phone Number',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
-      width: 150,
+      width: 200,
     },
     {
       title: 'Price Per Hour',
