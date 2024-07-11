@@ -16,21 +16,21 @@ const routes = {
     },
     student: {
         profile: '/profile', // This can be accessed by both
-        makePayment: '/make-payment',
-        studySchedule: '/study-schedule',
-        paymentSuccess: '/confirm-payment',
-        chatRoom: '/chat-room',
-        registerTutor: '/register-tutor',
+        makePayment: '/make-payment', // This can be accessed by both
+        studySchedule: '/study-schedule', // This can be accessed by both
+        paymentSuccess: '/confirm-payment', // This can be accessed by both
+        chatRoom: '/chat-room', // This can be accessed by both
+        registerTutor: '/register-tutor', // This can be accessed by both
         registerStatus: '/register-status',
     },
     tutor: {
         profile: '/tutor-profile',
-        makePayment: '/make-payment',
-        studySchedule: '/study-schedule',
-        paymentSuccess: '/confirm-payment',
+        makePayment: '/make-payment', // This can be accessed by both
+        studySchedule: '/study-schedule', // This can be accessed by both
+        paymentSuccess: '/confirm-payment', // This can be accessed by both
         teachingSchedule: '/teaching-schedule',
-        chatRoom: '/chat-room',
-        registerTutor: '/register-tutor',
+        chatRoom: '/chat-room', // This can be accessed by both
+        registerTutor: '/register-tutor', // This can be accessed by both
     },
     admin: {
         dashboard: '/admin',
