@@ -25,12 +25,12 @@ import config from "../../config";
 const { Title } = Typography;
 
 const BecomeTutor = () => {
-  const [aboutValues, setAboutValues] = useState(null);
+  const [aboutValues, setAboutValues] = useState<any>(null);
   const [accountId, setAccountId] = useState<number>();
-  const [educationValues, setEducationValues] = useState(null);
-  const [certificationValues, setCertificationValues] = useState(null);
-  const [descriptionValues, setDescriptionValues] = useState(null);
-  const [timePriceValues, setTimePriceValues] = useState(null);
+  const [educationValues, setEducationValues] = useState<any>(null);
+  const [certificationValues, setCertificationValues] = useState<any>(null);
+  const [descriptionValues, setDescriptionValues] = useState<any>(null);
+  const [timePriceValues, setTimePriceValues] = useState<any>(null);
   const [agreement, setAgreement] = useState<boolean>(false);
   const [isTicked, setIsTicked] = useState<boolean>(false);
   const [diploma, setDiploma] = useState<FieldType[][]>([
