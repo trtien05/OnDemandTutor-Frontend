@@ -10,7 +10,7 @@ import EducationVerify from "../ManageTutor/DisplayComponents/TutorInfo/Educatio
 import CertificateVerify from "../ManageTutor/DisplayComponents/TutorInfo/CertificateVerify";
 import { approveDocument, sendEmail } from "../../../utils/moderatorAPI";
 import { approveMessages, rejectMessages } from "./emailMessages";
-// import iconBachelor from '../../../assets/images/image13.png';
+
 interface TutorInfoProps {
     tutorId: number;
     tutor: Tutor;
@@ -161,23 +161,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
                         style={{ marginRight: '3%', width: '35%' }}>
                         Cancel
                     </Button>
-                    {/* <Button
-                        key="submit"
-                        type="default"
-                        htmlType="submit"
-                        onClick={rejectValidation}
-                        disabled={!agreement}
-                        loading={loading}
-                        form='verifyTutorForm'
-                        style={{
-                            marginRight: '3%',
-                            width: '35%',
-                            fontWeight: `bold`,
-                            color: `${theme.colors.error}`
-                        }}
-                    >
-                        Reject
-                    </Button> */}
+                    
                     <Button
                         key="submit"
                         type="default"
@@ -213,7 +197,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
                     style={{ rowGap: `10px` }}
                 >
                     <Skeleton loading={loading}>
-                        {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
+                        
 
                         {tutorInfo.avatarUrl ? (
                             <Avatar

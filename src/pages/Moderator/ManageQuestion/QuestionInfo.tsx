@@ -160,7 +160,6 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
             >
 
                 <Skeleton loading={loading}>
-                    {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
                     <Col sm={24}>
                         <Styled.ModalStudentInfo>
                             <Col sm={3}>
