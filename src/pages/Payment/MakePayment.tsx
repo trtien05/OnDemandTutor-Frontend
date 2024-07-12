@@ -212,7 +212,7 @@ const MakePayment = () => {
           price: price,
         }));
       } else throw new Error("Can't send Tutor and Schedule data")
-      // window.open(data.paymentUrl)
+      
       setTutor(undefined);
       window.location.href = data.paymentUrl;
 
@@ -230,7 +230,7 @@ const MakePayment = () => {
     return (
       <>
         {contextHolder}
-        {/* <Row> */}
+      
         <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
           <Col xl={13} lg={13} sm={24} xs={24} >
             <Skeleton loading={loading}>
@@ -307,8 +307,7 @@ const MakePayment = () => {
               </Styled.CheckoutWrapper>
             </Skeleton>
           </Col>
-          {/* </Row> */}
-          {/* <Row> */}
+          
           <Col xl={10} lg={10} sm={24} xs={24}>
             <Skeleton loading={loading}>
               <Styled.CheckoutWrapper >
@@ -343,7 +342,7 @@ const MakePayment = () => {
               </Styled.CheckoutWrapper>
             </Skeleton>
           </Col>
-          {/* </Row> */}
+          
         </div>
 
       </>
