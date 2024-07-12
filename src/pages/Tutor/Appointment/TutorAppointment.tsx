@@ -44,7 +44,6 @@ const StudentAppointment = () => {
         setInitLoading(false);
         setList(res.content);
         setTotalPages(res.totalPages);
-        console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
       })
       .catch((err) => console.error('Failed to fetch tutor appointment:', err));
     window.scrollTo(0, 0);
