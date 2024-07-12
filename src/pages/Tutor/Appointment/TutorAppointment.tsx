@@ -11,6 +11,7 @@ import AppointmentPagination from '../../Student/Appointment/AppointmentPaginati
 
 import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
 import { ExclamationCircleOutlined } from '@ant-design/icons';
+import config from '../../../config';
 
 
 const StudentAppointment = () => {
@@ -41,7 +42,7 @@ const StudentAppointment = () => {
   useEffect(() => {
     if (!user) return;
     setInitLoading(true);
-    const baseUrl: string = `https://my-tutor-render.onrender.com/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
 
     fetch(baseUrl)
       .then((res) => res.json())

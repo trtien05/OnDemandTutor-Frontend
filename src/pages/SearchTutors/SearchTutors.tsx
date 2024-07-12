@@ -6,6 +6,7 @@ import TutorsList from '../../components/TutorsList/TutorsList'
 import { useDocumentTitle } from '../../hooks';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
 import Pagination from '../../components/Pagination/Pagination';
+import config from '../../config';
 const { Option } = Select;
 
 
@@ -67,8 +68,7 @@ const SearchTutors = () => {
 
   useEffect(() => {
     setInitLoading(true);
-    const baseUrl: string = `https://my-tutor-render.onrender.com/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
-    // const baseUrl: string = `https://my-tutor-render.onrender.com/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
 
     let url: string = '';
 

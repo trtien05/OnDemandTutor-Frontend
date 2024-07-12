@@ -130,7 +130,7 @@ const TutorDetail: React.FC = () => {
   const handleReload = () => {
     fetchReviews();
   }
-  console.log(tutorId)
+
   const onLoadMore = async () => {
     try {
       const newPage = page + 1;
@@ -235,7 +235,6 @@ const TutorDetail: React.FC = () => {
   };
 
 
-
   const loadMore = !loading ? (
     <Row>
       <Col lg={24} md={24} xs={24} sm={24} >
@@ -245,7 +244,7 @@ const TutorDetail: React.FC = () => {
       </Col>
     </Row>
   ) : null;
-  console.log(tutor)
+
   return (
     <>
       {contextHolderNotification}
@@ -297,13 +296,12 @@ const TutorDetail: React.FC = () => {
                       </Styled.BestTutorEducation>
                       <Styled.BestTutorEducation>
                         <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                        {tutor?.subjects.slice(0, 5).map((subject, index) => (
+                        {tutor?.subjects.map((subject, index) => (
                           <React.Fragment key={index}>
                             <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
-                            {index < 4 && ', '}
+                            {index < tutor?.subjects.length - 1 && ', '}
                           </React.Fragment>
                         ))}
-                        {tutor && tutor.subjects.length > 5 && '...'}
                       </Styled.BestTutorEducation>
                       <Styled.BestTutorStudent>
                         <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
