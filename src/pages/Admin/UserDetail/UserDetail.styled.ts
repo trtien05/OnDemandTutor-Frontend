@@ -60,7 +60,7 @@ export const CustomerInfoItem = styled(Flex)`
     width: 100%;
 
     & h3.ant-typography {
-        margin-bottom: 0;
+        margin-bottom: 10px;
         color: ${theme.colors.primary};
         font-size: 2.0rem;
         font-weight: 600;

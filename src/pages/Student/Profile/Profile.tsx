@@ -507,6 +507,7 @@ const Profile = () => {
                                     <Col span={24}>
                                         <St.CustomerInfoItem vertical gap={10}>
                                             <Title level={3}>Your questions</Title>
+                                            <strong>* Click on the status of the question to update it</strong>
                                         </St.CustomerInfoItem>
                                         <Table
                                             columns={modifiedQuestionColumns}
