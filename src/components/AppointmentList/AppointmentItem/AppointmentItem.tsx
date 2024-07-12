@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton, Avatar } from 'antd';
 import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
+import { CloseOutlined, UserOutlined } from '@ant-design/icons'; 
 import { TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
@@ -15,16 +15,21 @@ interface AppointmentItemProps {
     role: 'STUDENT' | 'TUTOR';
 }
 
-// QuestionItemProps
+
 const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewMode, role }) => {
+
     //Destructuring: Extracts startTime, endTime, scheduleDate, and appointment from the item prop.
     const { startTime, endTime, scheduleDate, appointment } = item; 
+
     //appointmentDate: Creates a new Date object for the appointment.
     const appointmentDate = new Date(`${scheduleDate}T${startTime}`); 
+
     const isTutor = role === 'TUTOR';
     const displayPerson = isTutor ? appointment.student : appointment.tutor;
+
     //Determines if the appointment can be rescheduled (if it's more than 24 hours away).
     const canReschedule = appointmentDate.getTime() - new Date().getTime() > 24 * 60 * 60 * 1000; 
+
     // Helper function to format time to "HH:mm"
     const formatTime = (time: string) => {
         const [hours, minutes] = time.split(':');
@@ -35,7 +40,6 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
         <Skeleton avatar title={false} loading={item.loading} active>
             <Styled.StyleCol lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
-                    {/* justify="space-between" */}
                     <Styled.QuestionItem>
                         <Styled.StyleCol lg={2} md={4} sm={4} xs={24}>
                             <Styled.QuestionContent>

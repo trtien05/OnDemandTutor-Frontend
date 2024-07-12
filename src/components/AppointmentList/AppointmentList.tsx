@@ -16,8 +16,6 @@ interface AppointmentListProps {
 }
 
 const AppointmentList: React.FC<AppointmentListProps> = ({ initLoading, list, onCancel, viewMode, role }) => {
-  // const {user} = useAuth();
-
   return (
     <>
       <Styled.TutorFilteredSection>
