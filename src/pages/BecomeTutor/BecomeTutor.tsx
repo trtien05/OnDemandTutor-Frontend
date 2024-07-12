@@ -245,7 +245,7 @@ const BecomeTutor = () => {
     if (accountId) {
       try {
         const save = await saveData(values, accountId);
-        const status = saveBecomeTutor();
+        const status = saveBecomeTutor(accountId);
         if (save !== undefined && status !== undefined)
           navigate(config.routes.student.registerStatus, { state: 'sent' });
         else navigate(config.routes.student.registerStatus, { state: 'error' });
@@ -486,8 +486,9 @@ const BecomeTutor = () => {
     }
   };
   //------------------------------------FETCH BECOME TUTOR API-------------------------------
-  async function saveBecomeTutor() {
+  async function saveBecomeTutor(tutorId:number) {
     try {
+      await becomeTutor(tutorId);
       return 'success'
     } catch (error: any) {
       api.error({
