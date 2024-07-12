@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { theme } from '../../../../themes';
 export const NavWrapper = styled.nav`
     display: flex;
-    // margin-bottom: 20px;
     padding-bottom:10px;
     list-style: none;
     padding: 0;
