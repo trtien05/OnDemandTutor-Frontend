@@ -99,7 +99,7 @@ const Profile = () => {
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
-                console.error(`get user: ${error}`);
+                
             } finally {
                 setLoading(false);
             }
@@ -250,7 +250,6 @@ const Profile = () => {
     };
     const renderQuestionFile = (url: string) => {
         const fileExtension = getFileExtension(url);
-        console.log(fileExtension); // for debugging
 
         if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
             return <Styled.QuestionImage src={url} alt="Question Image" />;

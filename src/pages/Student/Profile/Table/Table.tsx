@@ -171,7 +171,7 @@ export const PaymentColumns: TableColumnsType<Payment> = [
                 ))}
             </div>
         ),
-        // If you want to sort by the first timeslot's start time
+        // If sort by the first timeslot's start time
         sorter: (a, b) => {
             const aStartTime = dayjs(a.timeslots[0].startTime);
             const bStartTime = dayjs(b.timeslots[0].startTime);
