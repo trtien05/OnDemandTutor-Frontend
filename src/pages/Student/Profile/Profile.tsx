@@ -595,11 +595,6 @@ const Profile = () => {
                                     <Styled.QuestionRowSpan>
                                         {selectedItem?.subjectName}
                                     </Styled.QuestionRowSpan>
-                                    {/* <Styled.QuestionRowSpan>
-                                        Uploaded:{' '}
-                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
-                                    </Styled.QuestionRowSpan> */}
-
                                     {selectedItem?.modifiedAt && (
                                         <Styled.QuestionRowSpan>
                                             Modified:{' '}
