@@ -49,6 +49,7 @@ import { uploadAvatar } from '../../../utils/UploadImg';
 import { PaymentColumns, QuestionColumns } from './Table/Table';
 import { Payment } from '../../../components/AppointmentList/Appointment.type';
 import { Question } from '../../../components/QuestionList/Question.type';
+import FileViewer from '../../../components/FileViewer/FileViewer';
 
 dayjs.locale('vi');
 dayjs.extend(calendar);
@@ -255,14 +256,11 @@ const Profile = () => {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
         } else if (fileExtension === 'pdf') {
             return (
-                <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontStyle: 'italic', textDecoration: 'underline' }}
-                >
-                    Click to download PDF file
-                </a>
+                <FileViewer alt='image' 
+                fileUrl={url} 
+                width='600px'
+                height='300px' 
+                borderRadius='20px'/>
             );
         }
         return null;
