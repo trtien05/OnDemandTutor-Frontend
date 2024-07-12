@@ -63,15 +63,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
         } else if (fileExtension === 'pdf') {
             return (
-                // <a
-                //     href={url}
-                //     target="_blank"
-                //     rel="noopener noreferrer"
-                //     style={{ fontStyle: 'italic', textDecoration: 'underline' }}
-                // >
-                //     Click to download PDF file
-                // </a>
-
                 //Render pdf on the screen 
                 <FileViewer alt='image' 
                 fileUrl={url} 
