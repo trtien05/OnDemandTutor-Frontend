@@ -14,7 +14,7 @@ import { sendBookingEmail } from '../../../utils/tutorBookingAPI';
 const { Title, Text } = Typography;
 
 const PaymentSuccess = () => {
-    useDocumentTitle('Payment Status');
+    useDocumentTitle('Payment Status | MyTutor');
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });

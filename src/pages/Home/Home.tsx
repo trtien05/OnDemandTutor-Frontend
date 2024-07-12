@@ -242,10 +242,10 @@ const Home = () => {
                                     <Styled.FeedbackImg src={feedbackImg} alt="feedback" />
                                     <Styled.StudentInfor>
                                         <Styled.SchoolName>
-                                            College Student
+                                            FPT University
                                         </Styled.SchoolName>
                                         <Styled.StudentName>
-                                            ABC
+                                            Nguyen Van A
                                         </Styled.StudentName>
                                     </Styled.StudentInfor>
 

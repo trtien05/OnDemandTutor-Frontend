@@ -22,7 +22,7 @@ import DisplaySchedule from './DisplayComponent/DisplaySchedule';
 const { Title, Paragraph, Text } = Typography;
 
 const TutorProfile = () => {
-    useDocumentTitle('Tutor Profile');
+    useDocumentTitle('Tutor Profile | MyTutor');
     const [tutorDetails, setTutorDetails] = useState<Details>();
     const [tutorEducation, setTutorEducation] = useState<Education[]>();
     const [tutorCert, setTutorCert] = useState<Certificate[]>();
@@ -44,8 +44,8 @@ const TutorProfile = () => {
         (async () => {
             setLoading(true);
             try {
-                
-                if (!user || !(role === "TUTOR") || (role==="TUTOR" && status ==="PROCESSING" )) return;
+
+                if (!user || !(role === "TUTOR") || (role === "TUTOR" && status === "PROCESSING")) return;
                 const { data } = await getTutorById(user.id);
                 await setTutorDetails({
                     backgroundDescription: data.backgroundDescription,
@@ -54,8 +54,8 @@ const TutorProfile = () => {
                     videoIntroductionLink: data.videoIntroductionLink,
                     subjects: data.subjects,
                 });
-                
-                
+
+
                 const response = await getTutorStatistic(user.id);
                 if (response) {
                     setStatistic(response.data);
@@ -78,7 +78,7 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-                const education = (await getTutorEducation(user.id,'')).data;
+                const education = (await getTutorEducation(user.id, '')).data;
 
                 await setTutorEducation(
                     education.map((education: any) => ({
@@ -90,7 +90,7 @@ const TutorProfile = () => {
                         academicYear: `${education.startYear} - ${education.endYear}`,
                         verified: education.verified ? "Yes" : "No",
                     })));
-                
+
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -109,7 +109,7 @@ const TutorProfile = () => {
                 setLoading(true);
 
                 if (!user || !(role == "TUTOR")) return;
-                const certificate = (await getTutorCertification(user.id,'')).data;
+                const certificate = (await getTutorCertification(user.id, '')).data;
 
                 await setTutorCert(
                     certificate.map((certificate: any) => ({
@@ -119,7 +119,7 @@ const TutorProfile = () => {
                         issuedBy: certificate.issuedBy,
                         issuedYear: certificate.issuedYear,
                         verified: certificate.verified ? "Yes" : "No",
-                        subject: certificate.subject !== null?certificate.subject:"Other",
+                        subject: certificate.subject !== null ? certificate.subject : "Other",
                     })));
 
             } catch (error: any) {
@@ -168,7 +168,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {statistic?.totalLessons?statistic?.totalLessons:0}
+                                                                    {statistic?.totalLessons ? statistic?.totalLessons : 0}
                                                                 </Text>
                                                                 <Text>lessons</Text>
                                                             </Paragraph>
@@ -181,7 +181,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                {statistic?.totalIncome?Math.round((statistic?.totalIncome)).toLocaleString('en-US'):0}
+                                                                    {statistic?.totalIncome ? Math.round((statistic?.totalIncome)).toLocaleString('en-US') : 0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
@@ -199,7 +199,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                {statistic?.thisMonthLessons?statistic?.thisMonthLessons:0}
+                                                                    {statistic?.thisMonthLessons ? statistic?.thisMonthLessons : 0}
                                                                 </Text>
                                                                 <Text>lessons</Text>
                                                             </Paragraph>
@@ -212,7 +212,7 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                {statistic?.totalMonthlyIncome?Math.round(statistic?.totalMonthlyIncome).toLocaleString('en-US'):0}
+                                                                    {statistic?.totalMonthlyIncome ? Math.round(statistic?.totalMonthlyIncome).toLocaleString('en-US') : 0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
@@ -224,25 +224,25 @@ const TutorProfile = () => {
                                                 <Title level={3}>Teaching subject</Title>
                                                 <Style.ProfileInfoBox vertical gap={6}>
                                                     <Skeleton loading={loading} paragraph={false}>
-                                                        <Flex wrap='wrap' justify='flex-start' 
-                                                            style={{paddingLeft:`10px`}}>
+                                                        <Flex wrap='wrap' justify='flex-start'
+                                                            style={{ paddingLeft: `10px` }}>
                                                             {tutorDetails?.subjects.map(
                                                                 (subject, index) => (
-                                                                <Text key={index}>{subject}</Text>))}   
+                                                                    <Text key={index}>{subject}</Text>))}
                                                         </Flex>
                                                     </Skeleton>
-                                               </Style.ProfileInfoBox>
+                                                </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Title level={3}>Your schedule</Title>
                                                 <Skeleton loading={loading} paragraph={false}>
-                                                {user?.id &&
-                                                    (<div style={{ textAlign: `right` }}>
-                                                        <DisplaySchedule tutorId={user?.id} update={updateSchedule} />
-                                                        <AddTimeslot tutorId={user?.id} 
-                                                            isUpdate={isUpdateSchedule} 
-                                                            update={updateSchedule} />
-                                                        <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
+                                                    {user?.id &&
+                                                        (<div style={{ textAlign: `right` }}>
+                                                            <DisplaySchedule tutorId={user?.id} update={updateSchedule} />
+                                                            <AddTimeslot tutorId={user?.id}
+                                                                isUpdate={isUpdateSchedule}
+                                                                update={updateSchedule} />
+                                                            <ScheduleForm tutorId={user?.id} isUpdate={isUpdateSchedule} /></div>)}
                                                 </Skeleton>
                                             </Style.ProfileInfoItem>
                                         </Style.ProfileContent>
@@ -260,31 +260,31 @@ const TutorProfile = () => {
                             <Style.ProfileWrapper>
                                 <Row gutter={40}>
                                     <Col span={24}>
-                                    <Skeleton loading={loading} paragraph={false}>
-                                        <Flex vertical gap="middle" >
-                                            <Radio.Group defaultValue={tableDisplay}
-                                                onChange={(e) => setTableDisplay(e.target.value)}
-                                                buttonStyle="solid">
-                                                <Radio.Button value="education">Diplomas</Radio.Button>
-                                                <Radio.Button value="certificate">Certificates</Radio.Button>
-                                            </Radio.Group>
-                                        </Flex>
-                                        <div style={{ textAlign: `right`, margin: `20px`,overflow:`scroll` }}>
-                                            {tableDisplay.includes("education") ? (<>
-                                                <TableComponent dataType={tableDisplay}
-                                                    EducationData={tutorEducation} />
-                                                {user?.id && tutorEducation &&
-                                                    <EducationForm tutorId={user?.id}
-                                                        lastIndex={tutorEducation?.length}
-                                                        isUpdate={isUpdateEducation} />}
-                                            </>) : <><TableComponent dataType={tableDisplay}
-                                                CertificateData={tutorCert} />
-                                                {user?.id &&
-                                                    <CertificationForm tutorId={user?.id}
-                                                        lastIndex={tutorCert?.length}
-                                                        isUpdate={isUpdateCert} />
-                                                }</>}
-                                        </div>
+                                        <Skeleton loading={loading} paragraph={false}>
+                                            <Flex vertical gap="middle" >
+                                                <Radio.Group defaultValue={tableDisplay}
+                                                    onChange={(e) => setTableDisplay(e.target.value)}
+                                                    buttonStyle="solid">
+                                                    <Radio.Button value="education">Diplomas</Radio.Button>
+                                                    <Radio.Button value="certificate">Certificates</Radio.Button>
+                                                </Radio.Group>
+                                            </Flex>
+                                            <div style={{ textAlign: `right`, margin: `20px`, overflow: `scroll` }}>
+                                                {tableDisplay.includes("education") ? (<>
+                                                    <TableComponent dataType={tableDisplay}
+                                                        EducationData={tutorEducation} />
+                                                    {user?.id && tutorEducation &&
+                                                        <EducationForm tutorId={user?.id}
+                                                            lastIndex={tutorEducation?.length}
+                                                            isUpdate={isUpdateEducation} />}
+                                                </>) : <><TableComponent dataType={tableDisplay}
+                                                    CertificateData={tutorCert} />
+                                                    {user?.id &&
+                                                        <CertificationForm tutorId={user?.id}
+                                                            lastIndex={tutorCert?.length}
+                                                            isUpdate={isUpdateCert} />
+                                                    }</>}
+                                            </div>
                                         </Skeleton>
                                     </Col>
                                 </Row>

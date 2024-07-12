@@ -22,7 +22,7 @@ export const pages: DataType[] = [
 
     {
         key: 2,
-        title: 'Tutor',
+        title: 'Tutors',
         to: config.routes.public.searchTutors,
     },
     {

@@ -56,7 +56,7 @@ dayjs.extend(calendar);
 
 const { Title, Paragraph, Text } = Typography;
 const Profile = () => {
-    useDocumentTitle('Profile | MyTutor');
+    useDocumentTitle('Personal Profile | MyTutor');
 
     const { user } = useAuth();
 
@@ -93,7 +93,7 @@ const Profile = () => {
                     address: user.address,
                 });
                 setImageUrl(user.avatarUrl);
-                
+
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -104,7 +104,7 @@ const Profile = () => {
                 setLoading(false);
             }
         })();
-           
+
     }, [api, form, user, reloadKey]);
 
     useEffect(() => {
@@ -132,9 +132,9 @@ const Profile = () => {
                 setLoading(false);
             }
         })();
-        
+
     }, [api, user, reloadKey]);
-    
+
     const confirm = () => {
         modal.confirm({
             centered: true,
@@ -181,7 +181,7 @@ const Profile = () => {
             if (!url) return;
 
             setImageUrl(url);
-           
+
         } catch (error: any) {
             api.error({
                 message: 'Error',
@@ -212,9 +212,9 @@ const Profile = () => {
                 message: 'Success',
                 description: 'Your profile has been updated successfully.',
             });
-            
-            
-            
+
+
+
         } catch (error: any) {
             const errorMessage =
                 error.response && error.response.data
@@ -228,12 +228,12 @@ const Profile = () => {
             setLoading(false);
         }
     };
-    
+
     const handleUpdateProfileFailed = (values: any) => {
         console.log(values);
     };
-    
-    
+
+
     const handleView = (item: Question) => {
         setSelectedItem(item);
         setOpen(true);
@@ -256,11 +256,11 @@ const Profile = () => {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
         } else if (fileExtension === 'pdf') {
             return (
-                <FileViewer alt='image' 
-                fileUrl={url} 
-                width='600px'
-                height='300px' 
-                borderRadius='20px'/>
+                <FileViewer alt='image'
+                    fileUrl={url}
+                    width='600px'
+                    height='300px'
+                    borderRadius='20px' />
             );
         }
         return null;
