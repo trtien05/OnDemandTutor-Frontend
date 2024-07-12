@@ -6,7 +6,6 @@ import AppointmentList from '../../../components/AppointmentList/AppointmentList
 import { useAuth, useDocumentTitle } from '../../../hooks';
 import type { TimeSlot } from '../../../components/AppointmentList/Appointment.type';
 import AppointmentPagination from './AppointmentPagination/AppointmentPagination';
-// import CreateQuestion from '../../../components/Popup/CreateQuestion/CreateQuestion';
 import { cancelAppointment } from '../../../utils/appointmentAPI'; // Assuming you have a cancelAppointment function in appointmentAPI
 import { ExclamationCircleOutlined } from '@ant-design/icons';
 import config from '../../../config';
@@ -17,18 +16,13 @@ const StudentAppointment = () => {
 
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<TimeSlot[]>([]);
-  // const [data, setData] = useState<TimeSlot[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
   const [appointmentsPerPage] = useState(5);
   const [messageApi, contextHolder] = message.useMessage();
   const [modal, contextHolderModal] = Modal.useModal();
-  // const [currentTab, setCurrentTab] = useState<string>('Upcoming');
-  // const [loading, setLoading] = useState<boolean>(false);
   const { user } = useAuth();
   const [viewMode, setViewMode] = useState<'Upcoming' | 'Past'>('Upcoming'); // State to manage view mode
-  // const [modalVisible, setModalVisible] = useState(false);
-  // const [cancelAppointmentId, setCancelAppointmentId] = useState<number>(null);
   const [update, setIsUpdate] = useState(false);
 
   let isDone = false;
@@ -45,15 +39,11 @@ const StudentAppointment = () => {
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
-        // setData(res.content);
         setList(res.content);
         setTotalPages(res.totalPages);
-        console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
       })
       .catch((err) => console.error('Failed to fetch student appointment:', err));
     window.scrollTo(0, 0);
-    console.log(baseUrl);
-
   }, [appointmentsPerPage, currentPage, user, viewMode, update, isDone]);
 
   const handleTabChange = (value: any) => {
@@ -73,7 +63,6 @@ const StudentAppointment = () => {
     });
   };
   const handleCancelAppointment = (timeslotId: number) => {
-    // Perform cancellation logic
     if (!user) return;
     cancelAppointment(timeslotId, user.id)
       .then(() => {
