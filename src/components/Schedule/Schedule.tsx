@@ -172,7 +172,6 @@ const Schedule: React.FC<ScheduleProps> = ({
     const id = args.event.Id;
     setSchedule(prevSchedule =>
       prevSchedule.map(s =>
-        // s.id.toString() === id ? { ...s, isSelected: !s.isSelected } : s
         s.id === id ? { ...s, isSelected: !s.isSelected } : s
       )
     );
@@ -230,7 +229,6 @@ const Schedule: React.FC<ScheduleProps> = ({
         >
           <ScheduleComponent
             key={tutorId} // Add key to force re-render
-            // style={{maxHeight: '300px'}}
             height='300px'
             selectedDate={today}
             minDate={today}
