@@ -37,11 +37,10 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
 
         try {
             const responseData = await createQuestion(studentId, jsonBody);
-            console.log('Question saved successfully:', responseData);
             messageApi.success('Question saved successfully'); // Display success message
             return responseData;
         } catch (error: any) {
-            console.log(error);
+            messageApi.error('Failed to save question'); // Display error message
         }
     }
 
@@ -60,9 +59,11 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         setLoading(true);
         try {
             const values = await form.validateFields();
+
             // Get the current date in YYYY-MM-DD format then slit it
             //[0]accesses the first element of this array, which is the date part
             const dateCreated = new Date().toISOString().split('T')[0]; 
+
             const uploadedFiles = await Promise.all(
                 fileList.map(async (file: UploadFile) => {
                     if (file.originFileObj) {
@@ -86,7 +87,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 setFileList([]);
             }, 1000);
         } catch (info) {
-            console.log('Validate Failed:', info);
             setLoading(false);
         }
     };

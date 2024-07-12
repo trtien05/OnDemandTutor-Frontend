@@ -50,7 +50,6 @@ export const FormTitle = styled(Title)`
 
 export const FormDescription = styled(Text)`
     display: flex;
-    // display: block;
     text-align: left;
 
     column-gap: 8px;
@@ -87,9 +86,6 @@ export const NumberInput = styled(InputNumber)`
     }
 `;
 export const ButtonDiv = styled.div`
-    // display: flex;
-    // justifyContent: flex-end;
-    // alignSelf: flex-end;
     width: 100%;
     margintop: 20px;
     display: flex;
@@ -142,9 +138,6 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
 
     & .ant-form-item-control {
         position: relative;
-        // display: flex;
-        // align-items: center;
-        // justify-content: center;
         & .ant-form-item-control-input + div {
             position: relative;
             top: 100%;
