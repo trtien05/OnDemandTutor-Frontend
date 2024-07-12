@@ -71,6 +71,7 @@ const FileViewer: React.FC<FileViewerProps> = (props) => {
               }}>
               <iframe src={props.fileUrl}
                 width={props.width}
+                height={props.height? props.height : 'none'}
                 ref = {iframeRef}
                 style={{ borderRadius: `${props.borderRadius ? props.borderRadius : 0}` }} />
               <Button
