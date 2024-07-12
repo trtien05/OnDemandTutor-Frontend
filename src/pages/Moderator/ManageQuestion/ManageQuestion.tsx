@@ -26,7 +26,7 @@ const ManageQuestion = () => {
     fetchApi();
   }
   return (
-    <div style={{ 'height': '100vh' }}>
+    <div >
       <h2>Processing Question</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>

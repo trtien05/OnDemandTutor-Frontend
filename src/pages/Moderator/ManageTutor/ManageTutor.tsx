@@ -9,7 +9,7 @@ const ManageTutor = () => {
   const [loading, setLoading] = useState(true);
 
   const fetchApi = async () => {
-      setLoading(true);
+    setLoading(true);
     try {
       const response = await getTutorByStatus('PROCESSING');
       setTutors(response.data.content);
@@ -26,7 +26,7 @@ const ManageTutor = () => {
     fetchApi();
   }
   return (
-    <div style={{ 'height': '100vh' }}>
+    <div>
       <h2>Processing Tutor</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>

@@ -26,7 +26,7 @@ const ManageDocument = () => {
     fetchApi();
   }
   return (
-    <div style={{ 'height': '100vh' }}>
+    <div>
       <h2>Processing Tutor's Documents</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>
