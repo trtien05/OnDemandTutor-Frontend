@@ -143,19 +143,3 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
     }
 `;
 
-// export const ReviewContainer = styled(Card)`
-//     width: 100%;
-//     background: ${theme.colors.secondary};
-//     padding: 5%;
-//     margin-top: 24px;
-//     border-radius: 25px;
-
-//     & .ant-card-body {
-//         display: flex;
-//         flex-direction: row;
-//         flex-wrap: wrap;
-//         ${({ theme }) => theme.breakpoints.down('xs')} {
-//             flex-direction: column;
-//         }
-//     }
-// `;
