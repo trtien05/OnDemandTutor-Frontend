@@ -226,7 +226,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                                     max: 1000,
                                 }}
                                 placeholder="Type your question here"
-                                style={{ height: '200px' }}
+                                style={{ height: '200px', resize: 'none' }}
                             ></FormStyled.CommentInput>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Upload a File</FormStyled.FormTitle>
