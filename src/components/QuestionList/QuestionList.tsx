@@ -12,7 +12,7 @@ const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (prop
     <>
       <Styled.TutorFilteredSection>
         <Container>
-          <Styled.TutorFiltered>
+          <div>
             <Row justify='space-between'>
               <Col lg={24} md={24} xs={24} sm={24}>
                 <Skeleton style={{ padding: '30px', backgroundColor: '#fff', borderRadius: '50px', height: '80px' }} paragraph={{ rows: 3 }} avatar loading={props.initLoading} active>
@@ -28,7 +28,7 @@ const QuestionList: React.FC<{ list: Question[], initLoading: boolean }> = (prop
                 </Skeleton>
               </Col>
             </Row>
-          </Styled.TutorFiltered>
+            </div>
         </Container>
       </Styled.TutorFilteredSection>
     </>
