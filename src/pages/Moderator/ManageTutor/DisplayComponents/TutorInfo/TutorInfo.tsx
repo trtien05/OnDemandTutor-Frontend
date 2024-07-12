@@ -13,7 +13,7 @@ import CertificateVerify from "./CertificateVerify";
 import TimeslotVerify from "./TimeslotVerify";
 import { approveTutor, sendEmail } from "../../../../../utils/moderatorAPI";
 import { approveForm, approveMessages, tutorApprovalMessages, tutorRejectionMessages } from "../../emailMessages";
-// import iconBachelor from '../../../assets/images/image13.png';
+
 interface TutorInfoProps {
     tutorId: number;
     tutor: Tutor;
@@ -331,7 +331,6 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                     style={{ rowGap: `0px` }}
                 >
                     <Skeleton loading={loading}>
-                        {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
 
                         {tutorInfo.avatarUrl ? (
                             <Avatar
