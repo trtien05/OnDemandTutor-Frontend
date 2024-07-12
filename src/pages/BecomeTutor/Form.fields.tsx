@@ -6,8 +6,6 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { validateFileSize } from '../../utils/UploadImg';
 
-// import 'moment/locale/vi';
-// import locale from 'antd/es/locale/vi_VN';
 
 
 const { RangePicker } = DatePicker;
