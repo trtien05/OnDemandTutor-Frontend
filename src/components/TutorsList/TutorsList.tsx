@@ -3,7 +3,7 @@ import { Col, List, Row, Skeleton } from 'antd';
 import * as Styled from './Tutors.styled';
 import Container from '../Container';
 import { Tutor } from './Tutor.type';
-import TutorItem from './TutorItem/TutorItem'
+import TutorItem from './TutorItem/TutorItem';
 
 const TutorsList: React.FC<{ list: Tutor[], initLoading: boolean }> = (props) => {
   const [hoveredTutor, setHoveredTutor] = useState<Tutor>();
@@ -43,35 +43,32 @@ const TutorsList: React.FC<{ list: Tutor[], initLoading: boolean }> = (props) =>
                     )}
                   />
                 </Skeleton>
-
               </Col>
 
-              <Col lg={6} md={0} sm={0} xs={0} >
+              <Col lg={6} md={0} sm={0} xs={0}>
                 <Skeleton style={{ padding: '20px', backgroundColor: '#fff', borderRadius: '12px' }} paragraph={{ rows: 4 }} loading={props.initLoading} active>
-                  <Styled.TurtorVideo translate={typeof translateY === 'number' ? translateY : 0}>
-                    {hoveredTutor && hoveredTutor.videoIntroductionLink && (
-                      <iframe
-                        width="100%"
-                        height="100%"
-                        style={{ 'borderRadius': '12px' }}
-                        src={getEmbedUrl(hoveredTutor.videoIntroductionLink)}
-                        title="YouTube video player"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      ></iframe>
-                    )}
-                  </Styled.TurtorVideo>
+                  {props.list.length > 0 && (
+                    <Styled.TurtorVideo translate={typeof translateY === 'number' ? translateY : 0}>
+                      {hoveredTutor && hoveredTutor.videoIntroductionLink && (
+                        <iframe
+                          width="100%"
+                          height="100%"
+                          style={{ borderRadius: '12px' }}
+                          src={getEmbedUrl(hoveredTutor.videoIntroductionLink)}
+                          title="YouTube video player"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        ></iframe>
+                      )}
+                    </Styled.TurtorVideo>
+                  )}
                 </Skeleton>
-
               </Col>
-
             </Row>
-
           </Styled.TutorFiltered>
         </Container>
       </Styled.TutorFilteredSection>
     </>
-
   );
 }
 

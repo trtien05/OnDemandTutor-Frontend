@@ -65,7 +65,7 @@ export const BestTutorEducationBachelorImage = styled.img`
     height: 16px;
 `;
 export const BestTutorEducationBachelor = styled.span`
-    margin: 0 5px;
+    margin: 0 3px;
     line-height: 1.5;
 `;
 
@@ -179,14 +179,14 @@ export const ViewScheduleTutorButton = styled.button`
 export const TurtorVideo = styled.div<{ translate?: number }>`
     display: flex;
     justify-content: center;
-    align-items: center; /* Chú ý là "align-items", không phải "align-item" */
+    align-items: center;
     background: #fff;
     height: 200px;
     border-radius: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease;
-    transform: translateY(${(props) => props.translate}px); /* Sử dụng template literals và props */
+    transform: translateY(${(props) => props.translate}px);
 `;
 
 export const TutorFilteredSection = styled.section`

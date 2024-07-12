@@ -53,6 +53,7 @@ const TutorDetail: React.FC = () => {
   const scheduleRef = useRef<HTMLDivElement>(null);
   const reviewRef = useRef<HTMLDivElement>(null);
   const resumeRef = useRef<HTMLDivElement>(null);
+
   const handleTabClick = (key: string) => {
     let ref;
     switch (key) {
@@ -71,7 +72,16 @@ const TutorDetail: React.FC = () => {
       default:
         ref = aboutRef;
     }
-    ref?.current?.scrollIntoView({ behavior: "smooth" });
+    if (ref?.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+      setTimeout(() => {
+        const offset = 100;
+        window.scrollBy({
+          top: -offset,
+          behavior: "smooth"
+        });
+      }, 500);
+    }
   };
 
   const getEmbedUrl = (url: string): string => {
@@ -82,8 +92,6 @@ const TutorDetail: React.FC = () => {
   const tutorId: number = parseInt(window.location.pathname.split('/')[2]);
 
   const [tutor, setTutor] = useState<Tutor | null>(null);
-  const [tutorBooked, setTutorBooked] = useState<Tutor[]>([]);
-  console.log(tutorBooked);
   const [tutorFeedback, setTutorFeedback] = useState(false);
   const [statusFeedback, setStatusFeedback] = useState(false);
   const [totalTaughtStudent, setTotalTaughtStudent] = useState(0);
@@ -122,58 +130,84 @@ const TutorDetail: React.FC = () => {
   const handleReload = () => {
     fetchReviews();
   }
+  console.log(tutorId)
+  const onLoadMore = async () => {
+    try {
+      const newPage = page + 1;
+      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
+      const newReviewsList = newReviewsResponse.data.content;
+
+      if (newReviewsList.length === 0) {
+        api.info({
+          message: 'Done',
+          description: 'All reviews have been displayed!',
+        });
+        return;
+      }
+
+      setReviews((prevReviews) => [...prevReviews, ...newReviewsList]);
+      setPage(newPage);
+    } catch (err) {
+      console.error('Failed to load more reviews:', err);
+      api.error({
+        message: 'Error',
+        description: 'Failed to fetch more data.',
+      });
+    }
+  };
+
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        // Fetch Tutor Data
-        const tutorResponse = await getTutorById(tutorId);
+
+        // Fetch Tutor Data and Reviews Data in parallel
+        const [tutorResponse] = await Promise.all([
+          getTutorById(tutorId),
+          fetchReviews(),
+        ]);
+
         setTutor(tutorResponse.data);
 
-        // // Fetch Reviews Data
-        await fetchReviews();
+        // Fetch Education Data and Certificate Data in parallel
+        const [educationResponse, certificateResponse] = await Promise.all([
+          getTutorEducation(tutorId, 'true'),
+          getTutorCertification(tutorId, 'true'),
+        ]);
 
-        // Fetch Education Data
-        const educationResponse = await getTutorEducation(tutorId, 'true');
         setEducations(educationResponse.data);
+        setCertification(certificateResponse.data);
 
-        // Fetch Certificate Data
-        const cetificateResponse = await getTutorCertification(tutorId, 'true');
-        setCertification(cetificateResponse.data);
-
-        // Fetch Booked Tutor Data
+        // Fetch Booked Tutor Data and Status Feedback in parallel
         if (user?.id) {
-          const bookedtutorResponse = await getTutorBooked(user.id);
-          setTutorBooked(bookedtutorResponse.data);
-          // Check if tutor with specific tutorId is booked
-          const isTutorBooked = bookedtutorResponse.data.some(
-            (bookedTutor: { id: number; }) => bookedTutor.id === tutorId);
+          const [bookedTutorResponse] = await Promise.all([
+            getTutorBooked(user.id),
+            fetchStatusFeedback(),
+          ]);
 
-          // Set tutorFeedback based on the check
+          const isTutorBooked = bookedTutorResponse.data.some((bookedTutor: { id: number }) => bookedTutor.id === tutorId);
           setTutorFeedback(isTutorBooked);
         }
 
-        //Fetch Status feedback
-        await fetchStatusFeedback()
-
-        //Fetch Statistic Data
+        // Fetch Statistic Data
         const responseTutorStatistic = await getTutorStatistic(tutorId);
         setTotalTaughtStudent(responseTutorStatistic.data.totalTaughtStudent);
 
-      } catch {
+      } catch (error) {
+        console.error('Failed to fetch data:', error);
         api.error({
           message: 'Error',
-          description: 'Fail to fetch data.',
+          description: 'Failed to fetch data.',
         });
-      }
-      finally {
+      } finally {
         setLoading(false);
       }
     };
 
     fetchData();
   }, [tutorId, user?.id]);
+
   const navigate = useNavigate();
 
   const handleSendMessage = () => {
@@ -187,34 +221,21 @@ const TutorDetail: React.FC = () => {
       } else {
         navigate(`/chat-room`, { state: { id: tutor?.id, fullName: tutor?.fullName, avatar: tutor?.avatarUrl } });
       }
-    } else {
+    } else if (user?.role === 'TUTOR') {
       api.warning({
         message: 'Warning',
         description: 'You can not send messages to other tutor!',
       })
-    }
-  };
-
-  const onLoadMore = async () => {
-    try {
-      const newPage = page + 1;
-      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
-      if (newReviewsResponse.data.content.length <= 0) {
-        api.info({
-          message: 'Done',
-          description: 'All reviews have been displayed!',
-        })
-      }
-      setReviews((prevReviews) => [...prevReviews, ...newReviewsResponse.data.content]);
-      setPage(newPage);
-    } catch (err) {
-      api.error({
-        message: 'Error',
-        description: 'Fail to fetch data.',
+    } else {
+      api.warning({
+        message: 'You are not Our Student',
+        description: 'Please login to system.',
       });
     }
   };
-  console.log(tutor);
+
+
+
   const loadMore = !loading ? (
     <Row>
       <Col lg={24} md={24} xs={24} sm={24} >
@@ -224,6 +245,7 @@ const TutorDetail: React.FC = () => {
       </Col>
     </Row>
   ) : null;
+  console.log(tutor)
   return (
     <>
       {contextHolderNotification}
@@ -272,16 +294,16 @@ const TutorDetail: React.FC = () => {
                             {index < educations.length - 1 && ', '}
                           </React.Fragment>
                         ))}
-
                       </Styled.BestTutorEducation>
                       <Styled.BestTutorEducation>
                         <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                        {tutor?.subjects.map((subject, index) => (
+                        {tutor?.subjects.slice(0, 5).map((subject, index) => (
                           <React.Fragment key={index}>
                             <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
-                            {index < tutor?.subjects.length - 1 && ', '}
+                            {index < 4 && ', '}
                           </React.Fragment>
                         ))}
+                        {tutor && tutor.subjects.length > 5 && '...'}
                       </Styled.BestTutorEducation>
                       <Styled.BestTutorStudent>
                         <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
@@ -426,7 +448,6 @@ const TutorDetail: React.FC = () => {
                   </Styled.BookingInformation>
                   <BookTutor tutorId={tutorId} />
                   <Styled.SendMessageButton onClick={handleSendMessage}>Send message</Styled.SendMessageButton>
-                  <Styled.SendMessageButton>Save to my list</Styled.SendMessageButton>
                 </Styled.TutorVideoCard>
               </Col>
             </Skeleton>

@@ -39,10 +39,15 @@ const Feedback: React.FC<FeedbackProps> = (props) => {
       else {
         setIsFormOpen(true);
       }
-    } else {
+    } else if (role === 'TUTOR') {
       api.warning({
         message: 'You are Our tutor',
         description: 'You cannot provide feedback.',
+      });
+    } else {
+      api.warning({
+        message: 'You are not Our Student',
+        description: 'Please login to system.',
       });
     }
 
