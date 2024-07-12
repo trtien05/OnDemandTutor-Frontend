@@ -31,11 +31,6 @@ const handleUpdateStatus = async (questionId: number, accountId: number, current
         content:
             `Are you sure you want to update status ${currentStatus} to ${newStatus}? You cannot undo this action after confirm.`,
         onOk: async () => {
-            
-            // let newStatus = QuestionStatus.UNSOLVED;
-            // if (currentStatus === QuestionStatus.UNSOLVED) {
-            //     newStatus = QuestionStatus.SOLVED;
-            // } 
                 try {
                     await updateQuestionStatus(accountId, questionId,newStatus);
                     notification.success({
@@ -125,10 +120,6 @@ export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction
     {
         title: 'View',
         key: 'view',
-        // render: (_text, _record) => (
-        //     <Button icon={<EyeOutlined />} onClick={() => handleView(record)} />
-        // ),
-        
     },
     {
         title: 'Delete',
