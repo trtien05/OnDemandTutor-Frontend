@@ -31,7 +31,6 @@ const TutorProfile = () => {
     });
     const [update, isUpdate] = useState<boolean>(false);
     const [updateEducation, isUpdateEducation] = useState<boolean>(false);
-    // const [checkUser, isCheckUser] = useState<boolean>(false);
     const [updateCert, isUpdateCert] = useState<boolean>(false);
     const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
     const { user, role, status } = useAuth();

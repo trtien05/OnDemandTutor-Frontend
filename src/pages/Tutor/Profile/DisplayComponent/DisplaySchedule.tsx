@@ -154,7 +154,6 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, updat
       <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          // style={{maxHeight: '500px'}}
           height={300}
           
           startHour={start}

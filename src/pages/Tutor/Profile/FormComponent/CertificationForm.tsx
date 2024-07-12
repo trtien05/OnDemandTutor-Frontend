@@ -40,7 +40,6 @@ const CertificationForm: React.FC<CertProps> = (props) => {
   ]);
 
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
         return e;
     }
@@ -49,10 +48,6 @@ const CertificationForm: React.FC<CertProps> = (props) => {
 const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
     setFileList([newFileList[newFileList.length - 1]]);
 };
-
-  // const handleFinish = (values: any) => {
-  //     onFinish({ ...values, fileList })
-  // }
 
   const handleAddCertificate = useCallback(() => {
     const newFieldKey = certificate.length * certificateForm.length;
@@ -66,7 +61,6 @@ const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
       $width: field.$width,
     }));
     setCertificate((prevForm) => [...prevForm, newForm]);
-    // console.log(form)
   }, [certificate.length]);
 
   const handleRemoveCertificate = useCallback((formIndex: number) => {
@@ -134,7 +128,6 @@ const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
 
     try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
       const responseData = await addCertificates(tutorId, jsonRequestBody);
 
       // Check response status
