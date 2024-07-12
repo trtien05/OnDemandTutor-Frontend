@@ -1,9 +1,6 @@
-import { Flex, Input } from 'antd';
+import { Flex } from 'antd';
 import styled, { css } from 'styled-components';
 import { theme } from '../../../themes';
-
-const { Password } = Input;
-
 export const CustomerWrapper = styled.div`
     padding: 30px;
     background-color: ${theme.colors.white};
@@ -100,23 +97,6 @@ export const CustomerInfoBox = styled(Flex)`
             color: ${theme.colors.primary};
         }
     }
-`;
-
-export const CustomerIdentityCard = styled(Password)`
-    &.ant-input-password {
-        background-color: ${theme.colors.shadowButton};
-        border-color: ${theme.colors.borderInput};
-    }
-
-    & input.ant-input {
-        color: ${theme.colors.textQuaternary};
-        background-color: transparent;
-    }
-`;
-
-export const CustomerList = styled.div`
-    height: 515px;
-    overflow-y: scroll;
 `;
 
 export const CustomerItem = styled.article`
