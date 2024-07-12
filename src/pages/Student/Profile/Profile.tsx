@@ -54,8 +54,6 @@ dayjs.locale('vi');
 dayjs.extend(calendar);
 
 const { Title, Paragraph, Text } = Typography;
-// const { RangePicker } = DatePicker;
-
 const Profile = () => {
     useDocumentTitle('Profile | MyTutor');
 
@@ -93,9 +91,7 @@ const Profile = () => {
                     email: user.email,
                     address: user.address,
                 });
-                // console.log(user);
                 setImageUrl(user.avatarUrl);
-                // Get learn statistic
                 
             } catch (error: any) {
                 api.error({
@@ -200,7 +196,6 @@ const Profile = () => {
             setLoading(true);
 
             if (!user?.id) return;
-            // const gender = values.gender===1?false:true;
 
             await updateProfile(user.id, {
                 fullName: values.fullName,
@@ -516,10 +511,8 @@ const Profile = () => {
                                             <Title level={3}>Your questions</Title>
                                         </St.CustomerInfoItem>
                                         <Table
-                                            // columns={QuestionColumns}
                                             columns={modifiedQuestionColumns}
                                             dataSource={studentListQuestion}
-                                            // reloadKey = {reloadKey}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Question) => record.id.toString()}
                                             pagination={{ pageSize: 4 }}
@@ -533,7 +526,6 @@ const Profile = () => {
                                         <Table
                                             columns={PaymentColumns}
                                             dataSource={paymentHistory}
-                                            // onChange={onChangeEducation}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Payment) => record.id.toString()}
                                             pagination={{ pageSize: 4 }}
