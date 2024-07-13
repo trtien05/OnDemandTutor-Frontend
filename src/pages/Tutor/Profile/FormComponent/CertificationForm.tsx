@@ -41,13 +41,13 @@ const CertificationForm: React.FC<CertProps> = (props) => {
 
   const normFile = (e: any) => {
     if (Array.isArray(e)) {
-        return e;
+      return e;
     }
     return e?.fileList.length > 0 ? [e.fileList[e.fileList.length - 1]] : [];
-};
-const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
+  };
+  const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
     setFileList([newFileList[newFileList.length - 1]]);
-};
+  };
 
   const handleAddCertificate = useCallback(() => {
     const newFieldKey = certificate.length * certificateForm.length;
@@ -139,7 +139,7 @@ const onChange = ({ fileList: newFileList }: { fileList: UploadFile[] }) => {
       return responseData;
     } catch (error: any) {
       api.error({
-        message: 'Lỗi',
+        message: 'Error',
         description: error.response ? error.response.data : error.message,
       });
     }

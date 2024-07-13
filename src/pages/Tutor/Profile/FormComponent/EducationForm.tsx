@@ -134,7 +134,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
             return responseData;
         } catch (error: any) {
             api.error({
-                message: 'Lỗi',
+                message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
         }

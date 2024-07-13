@@ -63,7 +63,7 @@ const BecomeTutor = () => {
       setDataSource(response.data)
     } catch (error: any) {
       api.error({
-        message: 'Lỗi',
+        message: 'Error',
         description: error.response ? error.response.data : error.message,
       });
     } finally {
@@ -252,7 +252,7 @@ const BecomeTutor = () => {
 
       } catch (error: any) {
         api.error({
-          message: 'Lỗi',
+          message: 'Error',
           description: error.response ? error.response.data.message : error.message,
         });
       }
@@ -486,13 +486,13 @@ const BecomeTutor = () => {
     }
   };
   //------------------------------------FETCH BECOME TUTOR API-------------------------------
-  async function saveBecomeTutor(tutorId:number) {
+  async function saveBecomeTutor(tutorId: number) {
     try {
       await becomeTutor(tutorId);
       return 'success'
     } catch (error: any) {
       api.error({
-        message: 'Lỗi',
+        message: 'Error',
         description: error.response ? error.response.data : error.message,
       });
     }
