@@ -91,7 +91,7 @@ const FormComponent: React.FC = () => {
         {
             key: 3,
             label: 'Bank Account Owner Name',
-            name: 'bankAccountOwnerName',
+            name: 'bankAccountOwner',
             rules: [
                 { required: true, message: 'Please enter the account owner name' },
                 { min: 2, message: 'Name must be at least 2 characters long' },
