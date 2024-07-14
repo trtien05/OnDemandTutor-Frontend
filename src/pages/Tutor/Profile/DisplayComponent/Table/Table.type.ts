@@ -3,12 +3,6 @@ import { Certificate, Education } from "../../TutorProfile.type";
 
 export const EducationColumns: TableColumnsType<Education> = [
     {
-        title: 'No',
-        dataIndex: 'id',
-        key: 'index',
-        render: (_, __, index) => index + 1,
-    },
-    {
         title: 'Degree Type',
         dataIndex: 'degreeType',
         sorter: (a, b) => a.degreeType.localeCompare(b.degreeType),
@@ -40,12 +34,6 @@ export const EducationColumns: TableColumnsType<Education> = [
 ];
 
 export const CertColumns: TableColumnsType<Certificate> = [
-    {
-        title: 'No',
-        dataIndex: 'id',
-        key: 'index',
-        render: (_,__,index) => index + 1
-    },
     {
         title: 'Certificate Name',
         dataIndex: 'certificateName',

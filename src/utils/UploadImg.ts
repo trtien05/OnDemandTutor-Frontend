@@ -26,7 +26,6 @@ export const validateFileSize = (file: UploadFile, size: number) => {
 
 export const uploadImage = async (tutorId: number, file: File | null, sectionName: string, index: number, handleChange: (url: string) => void) => {
   if (!file) {
-    console.log("No file selected for upload.");
     return;
   }
 
@@ -38,19 +37,16 @@ export const uploadImage = async (tutorId: number, file: File | null, sectionNam
 
     // Get the download URL
     const url = await getDownloadURL(uploadResult.ref);
-    console.log(`File available at: ${url}`);
     if (url) {
       handleChange(url);
     }
   } catch (error) {
-    console.log(`Upload failed: ${error}`);
+    console.error(`Upload failed: ${error}`);
   }
 
 }
 export const uploadAvatar = async (userId: number, file: File | null, sectionName: string) => {
-  console.log(file)
   if (!file) {
-    console.log("No file selected for upload.");
     return;
   }
 
@@ -62,10 +58,9 @@ export const uploadAvatar = async (userId: number, file: File | null, sectionNam
 
     // Get the download URL
     const url = await getDownloadURL(uploadResult.ref);
-    console.log(`File available at: ${url}`);
     return url;
   } catch (error) {
-    console.log(`Upload failed: ${error}`);
+    console.error(`Upload failed: ${error}`);
   }
 
 }
