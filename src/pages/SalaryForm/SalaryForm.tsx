@@ -6,9 +6,11 @@ import * as FormStyled from '../BecomeTutor/Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
 import { postTutorSalary } from '../../utils/salaryAPI';
-import { useLocation } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
+import config from '../../config';
 const { Option } = Select;
 const { Title } = Typography;
+
 type FieldType = {
     key: number;
     label: string;
@@ -36,26 +38,40 @@ const validateBankAccountNumber = (_: unknown, value: string) => {
     return Promise.resolve();
 };
 
-const SalaryForm: React.FC =  () => {
+const SalaryForm: React.FC = () => {
+    const navigate = useNavigate();
     useDocumentTitle('Withdraw salary');
-    useEffect(() => {
-        window.scrollTo({ top: 100, behavior: 'smooth' });
-    }, []);
+
     const [banks, setBanks] = useState<{ id: number; name: string }[]>([]);
     const [form] = Form.useForm();
     const fieldComponents = useRef<JSX.Element[]>([]);
     const [api, contextHolderNotification] = notification.useNotification({
         top: 100,
-      });
-      //useLocation gives you access to the current location object, which contains information about the current URL, 
-      //including the pathname, search, hash, and state.
+    });
+
+    //useLocation gives access to the current location object, which contains information about the current URL,
+    //including the pathname, search, hash, and state.
     const location = useLocation();
-    //checks if location.state exists -> checks if location.state.month exists. 
-    //If both -> assigns the value of location.state.month to the month variable. 
+
+    //checks if location.state exists -> checks if location.state.month exists.
+    //If both -> assigns the value of location.state.month to the month variable.
     //Otherwise, it assigns null to month.
-    const month = location.state ? location.state.month ? location.state.month : null : null;
-    const year = location.state ? location.state.year ? location.state.year : null : null;
-    const tutorId = location.state ? location.state.tutorId ? location.state.tutorId : null : null;
+    const month = location.state ? (location.state.month ? location.state.month : null) : null;
+    const year = location.state ? (location.state.year ? location.state.year : null) : null;
+    const tutorId = location.state
+        ? location.state.tutorId
+            ? location.state.tutorId
+            : null
+        : null;
+
+    useEffect(() => {
+        window.scrollTo({ top: 100, behavior: 'smooth' });
+        // Navigate to home if month or year is not provided
+        if (month === null || year === null) {
+            navigate(config.routes.public.home);
+        }
+    }, [month, year, navigate]);
+    
     useEffect(() => {
         const fetchBanks = async () => {
             try {
@@ -119,14 +135,7 @@ const SalaryForm: React.FC =  () => {
             name: 'month',
             initialValue: month,
             rules: [{ required: true, message: 'Please select a month' }],
-            component: (
-                <Input
-                    size="large"
-                    value={month}
-                    disabled
-                    style={{ width: '100%' }}
-                />
-            ),
+            component: <Input size="large" value={month} disabled style={{ width: '100%' }} />,
             halfWidth: true,
         },
         {
@@ -135,19 +144,12 @@ const SalaryForm: React.FC =  () => {
             name: 'year',
             initialValue: year,
             rules: [{ required: true, message: 'Please select a year' }],
-            component: (
-                <Input
-                    size="large"
-                    value={year}
-                    disabled
-                    style={{ width: '100%' }}
-                />
-            ),
+            component: <Input size="large" value={year} disabled style={{ width: '100%' }} />,
             halfWidth: true,
         },
     ];
 
-    const handleFinish = async(values: any) => {
+    const handleFinish = async (values: any) => {
         try {
             const { bankAccountNumber, bankAccountOwner, bankName } = values;
             await postTutorSalary(tutorId, {
@@ -161,7 +163,7 @@ const SalaryForm: React.FC =  () => {
                 message: 'Success',
                 description: 'Your request has been submitted.',
             });
-        } catch (error:any) {
+        } catch (error: any) {
             const errorMessage =
                 error.response && error.response.data
                     ? JSON.stringify(error.response.data)
@@ -172,7 +174,6 @@ const SalaryForm: React.FC =  () => {
             });
         }
     };
-
 
     return (
         <div style={{ background: `white`, padding: `3%` }}>
