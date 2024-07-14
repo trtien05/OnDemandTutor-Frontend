@@ -17,7 +17,7 @@ import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
-import dayjs, {Dayjs} from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../config';
 
@@ -78,31 +78,29 @@ const TutorProfile = () => {
 
     // Fetch monthly statistic
     const fetchMonthlyStat = async (month: number, year: number) => {
-            try {
-                setMonthlyLoading(true);
+        try {
+            setMonthlyLoading(true);
 
-                if (!user || !(role === "TUTOR")) return;
-                const response = await getTutorMonthlyStatistic(user.id, month, year);
-                if (response) {
-                    console.log(response)
-                    setMonthlyStat({...response.data, month:month, year: year, canGetSalary: salaryState(month, year)});
-                    console.log(monthlyStat)
-                }
-            } catch (error: any) {
-                api.error({
-                    message: 'Error',
-                    description: error.response ? error.response.data : error.message,
-                });
-            } finally {
-                setMonthlyLoading(false);
+            if (!user || !(role === "TUTOR")) return;
+            const response = await getTutorMonthlyStatistic(user.id, month, year);
+            if (response) {
+                setMonthlyStat({ ...response.data, month: month, year: year, canGetSalary: salaryState(month, year, response.data.totalIncome) });
             }
+        } catch (error: any) {
+            api.error({
+                message: 'Error',
+                description: error.response ? error.response.data : error.message,
+            });
+        } finally {
+            setMonthlyLoading(false);
         }
+    }
 
     useEffect(() => {
         setMonthlyLoading(true);
         fetchMonthlyStat(dayjs().month() + 1, dayjs().year());
         setMonthlyLoading(false);
-    },[user]);
+    }, [user]);
 
     const onMonthlyStatChange = (date: Dayjs) => {
         setMonthlyLoading(true);
@@ -110,23 +108,27 @@ const TutorProfile = () => {
         setMonthlyLoading(false);
     }
 
-    const salaryState = (month: number, year: number) => {
+    const salaryState = (month: number, year: number, salary: number) => {
         if (dayjs().year() === year && dayjs().month() === month - 1) {
+            return false;
+        }
+
+        if (salary === 0) {
             return false;
         }
         return true;
     }
 
-    
+
     const onWithdrawClick = () => {
         const data = {
             tutorId: user?.id,
             month: monthlyStat.month,
             year: monthlyStat.year
         }
-        navigate(config.routes.tutor.withdrawRequest, {state: data});
+        navigate(config.routes.tutor.withdrawRequest, { state: data });
     }
-    
+
     // Fetch education
     useEffect(() => {
         (async () => {
@@ -227,7 +229,7 @@ const TutorProfile = () => {
                                                                 <Text>
                                                                     {statistic?.totalLessons ? statistic?.totalLessons : 0}
                                                                 </Text>
-                                                                <Text>lesson{statistic?.totalLessons>1?'s':''}</Text>
+                                                                <Text>lesson{statistic?.totalLessons > 1 ? 's' : ''}</Text>
                                                             </Paragraph>
                                                         </Flex>
 
@@ -238,10 +240,10 @@ const TutorProfile = () => {
                                                                 <Text>
                                                                     {statistic?.totalTaughtStudent ? statistic?.totalTaughtStudent : 0}
                                                                 </Text>
-                                                                <Text>student{statistic?.totalTaughtStudent>1?'s':''}</Text>
+                                                                <Text>student{statistic?.totalTaughtStudent > 1 ? 's' : ''}</Text>
                                                             </Paragraph>
                                                         </Flex>
-                                                   
+
                                                         <Flex justify="space-between">
                                                             <Text>Income made:</Text>
 
@@ -257,13 +259,13 @@ const TutorProfile = () => {
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
                                                 <Flex justify='space-between'>
-                                                <Title level={3}>Monthly</Title>
-                                                <DatePicker
-                                                    format='MM/YYYY'
-                                                    picker='month'
-                                                    style={{ width: '150px' }}
-                                                    onChange={onMonthlyStatChange}
-                                                    defaultValue={dayjs()}
+                                                    <Title level={3}>Monthly</Title>
+                                                    <DatePicker
+                                                        format='MM/YYYY'
+                                                        picker='month'
+                                                        style={{ width: '150px' }}
+                                                        onChange={onMonthlyStatChange}
+                                                        defaultValue={dayjs()}
                                                     />
                                                 </Flex>
                                                 <Style.ProfileInfoBox vertical gap={6}>
@@ -273,9 +275,9 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {monthlyStat.totalLessons?monthlyStat.totalLessons:0}
+                                                                    {monthlyStat.totalLessons ? monthlyStat.totalLessons : 0}
                                                                 </Text>
-                                                                <Text>lesson{monthlyStat.totalLessons>1?'s':''}</Text>
+                                                                <Text>lesson{monthlyStat.totalLessons > 1 ? 's' : ''}</Text>
                                                             </Paragraph>
                                                         </Flex>
 
@@ -284,12 +286,12 @@ const TutorProfile = () => {
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {monthlyStat.totalTaughtStudent?monthlyStat.totalTaughtStudent:0}
+                                                                    {monthlyStat.totalTaughtStudent ? monthlyStat.totalTaughtStudent : 0}
                                                                 </Text>
-                                                                <Text>student{monthlyStat.totalTaughtStudent>1?'s':''}</Text>
+                                                                <Text>student{monthlyStat.totalTaughtStudent > 1 ? 's' : ''}</Text>
                                                             </Paragraph>
                                                         </Flex>
-                                                    
+
                                                         <Flex justify="space-between">
                                                             <Text>Income made:</Text>
 
@@ -301,16 +303,18 @@ const TutorProfile = () => {
                                                             </Paragraph>
                                                         </Flex>
 
-                                                        {monthlyStat.canGetSalary && 
-                                                        <Flex justify="space-between">
-                                                            <Text>Withdraw salary:</Text>
+                                                        {monthlyStat.canGetSalary &&
+                                                            <Flex justify="space-between">
+                                                                <Text>Withdraw salary:</Text>
 
-                                                            <Paragraph>
-                                                                <Text>
-                                                                    <Button onClick={onWithdrawClick} type='link' style={{fontSize:`1.6rem`,fontWeight:`500`}}> Withdraw </Button>
-                                                                    </Text>
-                                                            </Paragraph>
-                                                        </Flex>}
+                                                                <Paragraph>
+                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" ? <Text>
+                                                                        <Button onClick={onWithdrawClick} type='link' 
+                                                                        style={{ fontSize: `1.6rem`, fontWeight: `500` }}> 
+                                                                            Withdraw </Button>
+                                                                    </Text> : monthlyStat.withdrawRequestStatus}
+                                                                </Paragraph>
+                                                            </Flex>}
                                                     </Skeleton>
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
