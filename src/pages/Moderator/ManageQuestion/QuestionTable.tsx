@@ -55,7 +55,7 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
     ];
     return (
         <div>
-            <Table rowKey={'id'} columns={columns} dataSource={questions} />;
+            <Table rowKey={'id'} pagination={{pageSize:7}} columns={columns} dataSource={questions} />;
         </div>
     );
 }

@@ -55,7 +55,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => 
   ];
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} dataSource={tutors} />;
+      <Table rowKey={'id'} columns={columns} dataSource={tutors} pagination={{pageSize:7}} />;
     </div>
   );
 }
