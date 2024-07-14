@@ -16,7 +16,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => 
       title: 'No',
       key: 'index',
       dataIndex: 'id',
-      render: (_:unknown, __ :unknown, index:number) => index + 1,
+      render: (_: unknown, __: unknown, index: number) => index + 1 + pagination.pageSize * (pagination.current - 1),
     },
     {
       title: 'Tutor Name',
@@ -45,7 +45,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => 
       key: 'action',
       render: (_: any, record: Tutor) => (
         <>
-          {/* <EditRoom record={record} onReload={onReload} /> */}
           {manage.includes('tutor') ? 
           <TutorInfo tutorId={record.id} tutor={record} onReload={onReload} />
           : <TutorDocument tutorId={record.id} tutor={record} onReload={onReload} />}
@@ -53,9 +52,30 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => 
       )
     }
   ];
+
+  const [pagination, setPagination] = React.useState({
+    current: 1,
+    pageSize: 7,
+});
+
+const handleTableChange = (pagination: any) => {
+    setPagination(pagination);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} dataSource={tutors} pagination={{pageSize:7}} />;
+      <Table rowKey={'id'} 
+        columns={columns} 
+        dataSource={tutors} 
+        pagination={{
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          total: tutors.length,
+          onChange: (page, pageSize) => {
+              handleTableChange({ current: page, pageSize });
+          }
+      }} />;
     </div>
   );
 }
