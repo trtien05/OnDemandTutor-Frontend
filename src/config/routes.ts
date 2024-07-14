@@ -37,6 +37,7 @@ const routes = {
         manageTutor: '/admin/tutors',
         manageModerator: '/admin/moderator',
         manageStudent: '/admin/student',
+        manageSalary: '/admin/salary',
     },
     moderator: {
         main: '/moderator',
