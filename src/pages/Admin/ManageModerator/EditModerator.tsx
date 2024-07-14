@@ -59,7 +59,6 @@ const EditModerator: React.FC<EditProps> = ({ record, onReload }) => {
     if (values.dateOfBirth) {
       values.dateOfBirth = values.dateOfBirth.format('YYYY-MM-DD');
     }
-    console.log(values)
     try {
       const response = await updateAccount(record.id, values);
       if (response.status === 200) {

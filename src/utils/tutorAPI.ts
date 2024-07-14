@@ -35,6 +35,10 @@ export const getTutorStatistic = (tutorId: number) => {
     return get(`/api/statistics/${tutorId}/teach-statistics`);
 };
 
+export const getTutorMonthlyStatistic = (tutorId: number, month: number, year: number) => {
+    return get(`/api/statistics/${tutorId}/teach-statistics?month=${month}&year=${year}`);
+};
+
 export const addTimeslot = (tutorId: number, requestBody: any) => {
     return post(`/api/schedules/tutors/${tutorId}/timeslots`, requestBody);
 };
