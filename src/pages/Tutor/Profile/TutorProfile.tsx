@@ -76,7 +76,7 @@ const TutorProfile = () => {
     // Fetch monthly statistic
     const fetchMonthlyStat = async (month: number, year: number) => {
             try {
-                setLoading(true);
+                setMonthlyLoading(true);
 
                 if (!user || !(role === "TUTOR")) return;
                 const response = await getTutorMonthlyStatistic(user.id, month, year);
@@ -90,9 +90,15 @@ const TutorProfile = () => {
                     description: error.response ? error.response.data : error.message,
                 });
             } finally {
-                setLoading(false);
+                setMonthlyLoading(false);
             }
         }
+
+    useEffect(() => {
+        setMonthlyLoading(true);
+        fetchMonthlyStat(dayjs().month() + 1, dayjs().year());
+        setMonthlyLoading(false);
+    },[user]);
 
     const onMonthlyStatChange = (date: Dayjs) => {
         setMonthlyLoading(true);
@@ -193,17 +199,25 @@ const TutorProfile = () => {
                                                     <Skeleton loading={loading} paragraph={false}>
                                                         <Flex justify="space-between">
                                                             <Text>Total lessons:</Text>
-
                                                             <Paragraph>
                                                                 <Text>
                                                                     {statistic?.totalLessons ? statistic?.totalLessons : 0}
                                                                 </Text>
-                                                                <Text>lessons</Text>
+                                                                <Text>lesson{statistic?.totalLessons>1?'s':''}</Text>
                                                             </Paragraph>
                                                         </Flex>
-                                                    </Skeleton>
 
-                                                    <Skeleton loading={loading} paragraph={false}>
+                                                        <Flex justify="space-between">
+                                                            <Text>Total students:</Text>
+
+                                                            <Paragraph>
+                                                                <Text>
+                                                                    {statistic?.totalTaughtStudent ? statistic?.totalTaughtStudent : 0}
+                                                                </Text>
+                                                                <Text>student{statistic?.totalTaughtStudent>1?'s':''}</Text>
+                                                            </Paragraph>
+                                                        </Flex>
+                                                   
                                                         <Flex justify="space-between">
                                                             <Text>Income made:</Text>
 
@@ -237,18 +251,27 @@ const TutorProfile = () => {
                                                                 <Text>
                                                                     {monthlyStat.totalLessons?monthlyStat.totalLessons:0}
                                                                 </Text>
-                                                                <Text>lessons</Text>
+                                                                <Text>lesson{monthlyStat.totalLessons>1?'s':''}</Text>
                                                             </Paragraph>
                                                         </Flex>
-                                                    </Skeleton>
 
-                                                    <Skeleton loading={loading} paragraph={false}>
+                                                        <Flex justify="space-between">
+                                                            <Text>Total students:</Text>
+
+                                                            <Paragraph>
+                                                                <Text>
+                                                                    {monthlyStat.totalTaughtStudent?monthlyStat.totalTaughtStudent:0}
+                                                                </Text>
+                                                                <Text>student{monthlyStat.totalTaughtStudent>1?'s':''}</Text>
+                                                            </Paragraph>
+                                                        </Flex>
+                                                    
                                                         <Flex justify="space-between">
                                                             <Text>Income made:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {statistic?.totalMonthlyIncome ? Math.round(statistic?.totalMonthlyIncome).toLocaleString('en-US') : 0}
+                                                                    {monthlyStat?.totalIncome ? Math.round(monthlyStat?.totalIncome).toLocaleString('en-US') : 0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
