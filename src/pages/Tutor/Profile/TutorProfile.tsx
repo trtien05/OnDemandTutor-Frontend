@@ -3,7 +3,7 @@ import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import useAuth from '../../../hooks/useAuth';
 import { getTutorById, getTutorMonthlyStatistic, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Col, DatePicker, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
+import { Avatar, Button, Col, DatePicker, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -17,7 +17,9 @@ import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
-import dayjs, {Dayjs} from 'dayjs'
+import dayjs, {Dayjs} from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import config from '../../../config';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -39,6 +41,7 @@ const TutorProfile = () => {
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const [statistic, setStatistic] = useState<any>([]);
     const [monthlyStat, setMonthlyStat] = useState<any>([]);
+    const navigate = useNavigate();
 
     //---------------------FETCH DATA---------------------
     useEffect(() => {
@@ -82,7 +85,8 @@ const TutorProfile = () => {
                 const response = await getTutorMonthlyStatistic(user.id, month, year);
                 if (response) {
                     console.log(response)
-                    setMonthlyStat(response.data);
+                    setMonthlyStat({...response.data, month:month, year: year, canGetSalary: salaryState(month, year)});
+                    console.log(monthlyStat)
                 }
             } catch (error: any) {
                 api.error({
@@ -105,7 +109,25 @@ const TutorProfile = () => {
         fetchMonthlyStat(date.month() + 1, date.year());
         setMonthlyLoading(false);
     }
+
+    const salaryState = (month: number, year: number) => {
+        if (dayjs().year() === year && dayjs().month() === month - 1) {
+            return false;
+        }
+        return true;
+    }
+
     
+    const onWithdrawClick = () => {
+        const data = {
+            tutorId: user?.id,
+            month: monthlyStat.month,
+            year: monthlyStat.year
+        }
+        navigate(config.routes.tutor.withdrawRequest, {state: data});
+    }
+    
+    // Fetch education
     useEffect(() => {
         (async () => {
             try {
@@ -137,6 +159,7 @@ const TutorProfile = () => {
         })();
     }, [user, updateEducation]);
 
+    // Fetch certification
     useEffect(() => {
         (async () => {
             try {
@@ -167,6 +190,7 @@ const TutorProfile = () => {
             }
         })();
     }, [user, updateCert]);
+
 
 
     return (
@@ -276,6 +300,17 @@ const TutorProfile = () => {
                                                                 <Text>VND</Text>
                                                             </Paragraph>
                                                         </Flex>
+
+                                                        {monthlyStat.canGetSalary && 
+                                                        <Flex justify="space-between">
+                                                            <Text>Withdraw salary:</Text>
+
+                                                            <Paragraph>
+                                                                <Text>
+                                                                    <Button onClick={onWithdrawClick} type='link' style={{fontSize:`1.6rem`,fontWeight:`500`}}> Withdraw </Button>
+                                                                    </Text>
+                                                            </Paragraph>
+                                                        </Flex>}
                                                     </Skeleton>
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
