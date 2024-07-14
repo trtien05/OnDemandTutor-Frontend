@@ -1,8 +1,8 @@
 import { Button, Form, Modal, Select, Tooltip, notification, Row, Col, Checkbox, Input } from 'antd';
 import React, { useState } from 'react';
 import { EditOutlined } from '@ant-design/icons';
-import { updateAccount } from '../../../utils/accountAPI';
 import { theme } from '../../../themes';
+import { changeWithdrawRequest } from '../../../utils/salaryAPI';
 
 interface Record {
   id: number;
@@ -50,29 +50,29 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
     setIsModalOpen(false);
   };
 
-  const handleFinish = (values: any) => {
-    // try {
-    //   const response = await updateAccount(record.id, values);
-    //   if (response.status === 200) {
-    //     apiNoti.success({
-    //       message: "Update Successful",
-    //       description: `Successfully updated : ${record.bankAccountOwner}`
-    //     });
-    //     onReload();
-    //     setIsModalOpen(false);
-    //   }
-    // } catch (error: any) {
-    //   apiNoti.error({
-    //     message: "Update Failed",
-    //     description: ` ${error.response.data.message}`
-    //   });
-    // }
+  const handleFinish = async (values: any) => {
+
     const payload = {
       withdrawRequestId: record.id,
       updatedStatus: values.updatedStatus,
       ...(values.updatedStatus === 'REJECTED' && { rejectReason: values.rejectReason })
     };
-    console.log(payload)
+    try {
+      const response = await changeWithdrawRequest(payload);
+      if (response.status === 200) {
+        apiNoti.success({
+          message: "Update Successful",
+          description: `Successfully updated : ${record.bankAccountOwner}`
+        });
+        onReload();
+        setIsModalOpen(false);
+      }
+    } catch (error: any) {
+      apiNoti.error({
+        message: "Update Failed",
+        description: ` ${error.response.data.message}`
+      });
+    }
   }
   const handleStatusChange = (value: string) => {
     setStatus(value);
