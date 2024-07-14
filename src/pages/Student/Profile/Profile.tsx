@@ -230,7 +230,11 @@ const Profile = () => {
     };
 
     const handleUpdateProfileFailed = (values: any) => {
-        console.log(values);
+        console.log("Error: ",values);
+        api.error({
+            message: 'Error',
+            description: 'Something wrong occured. Please try again later.',
+        });
     };
 
 

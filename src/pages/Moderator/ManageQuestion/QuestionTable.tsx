@@ -14,7 +14,7 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
             title: 'No',
             key: 'index',
             dataIndex: 'id',
-            render: (_:unknown, __ :unknown, index:number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1 + pagination.pageSize * (pagination.current - 1),
         },
         {
             title: 'Title',
@@ -53,9 +53,30 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
             )
         }
     ];
+
+    const [pagination, setPagination] = React.useState({
+        current: 1,
+        pageSize: 7,
+    });
+
+    const handleTableChange = (pagination: any) => {
+        setPagination(pagination);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <div>
-            <Table rowKey={'id'} columns={columns} dataSource={questions} />;
+            <Table rowKey={'id'} 
+                pagination={{
+                    pageSize: pagination.pageSize,
+                    current: pagination.current,
+                    total: questions.length,
+                    onChange: (page, pageSize) => {
+                        handleTableChange({ current: page, pageSize });
+                    }
+                }}
+                columns={columns} 
+                dataSource={questions} />
         </div>
     );
 }
