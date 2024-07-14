@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import useAuth from '../../../hooks/useAuth';
-import { getTutorById, getTutorStatistic } from '../../../utils/tutorAPI';
+import { getTutorById, getTutorMonthlyStatistic, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Col, Flex, Radio, RadioChangeEvent, Row, Skeleton, Spin, Typography, notification } from 'antd';
+import { Avatar, Col, DatePicker, Flex, Radio, RadioChangeEvent, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -17,7 +17,7 @@ import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
-
+import dayjs, {Dayjs} from 'dayjs'
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -35,8 +35,10 @@ const TutorProfile = () => {
     const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
     const { user, role, status } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
+    const [monthlyLoading, setMonthlyLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const [statistic, setStatistic] = useState<any>([]);
+    const [monthlyStat, setMonthlyStat] = useState<any>([]);
 
     //---------------------FETCH DATA---------------------
     useEffect(() => {
@@ -71,6 +73,33 @@ const TutorProfile = () => {
         })();
     }, [user, update]);
 
+    // Fetch monthly statistic
+    const fetchMonthlyStat = async (month: number, year: number) => {
+            try {
+                setLoading(true);
+
+                if (!user || !(role === "TUTOR")) return;
+                const response = await getTutorMonthlyStatistic(user.id, month, year);
+                if (response) {
+                    console.log(response)
+                    setMonthlyStat(response.data);
+                }
+            } catch (error: any) {
+                api.error({
+                    message: 'Error',
+                    description: error.response ? error.response.data : error.message,
+                });
+            } finally {
+                setLoading(false);
+            }
+        }
+
+    const onMonthlyStatChange = (date: Dayjs) => {
+        setMonthlyLoading(true);
+        fetchMonthlyStat(date.month() + 1, date.year());
+        setMonthlyLoading(false);
+    }
+    
     useEffect(() => {
         (async () => {
             try {
@@ -133,19 +162,13 @@ const TutorProfile = () => {
         })();
     }, [user, updateCert]);
 
-    const onTableChange = (e:RadioChangeEvent) => {
-        setLoading(true);
-        setTableDisplay(e.target.value)
-        setLoading(false);
-    }
-
 
     return (
         <>
             <Style.ProfileContainer>
                 <Container>
                     {contextHolder}
-                    <Spin spinning={loading} tip="Đang tải...">
+                    <Spin spinning={loading} tip="Loading...">
                         <Flex vertical gap={44}>
                             <Style.ProfileWrapper>
                                 <Row gutter={40}>
@@ -195,16 +218,24 @@ const TutorProfile = () => {
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
-                                                <Title level={3}>This month</Title>
-
+                                                <Flex justify='space-between'>
+                                                <Title level={3}>Monthly</Title>
+                                                <DatePicker
+                                                    format='MM/YYYY'
+                                                    picker='month'
+                                                    style={{ width: '150px' }}
+                                                    onChange={onMonthlyStatChange}
+                                                    defaultValue={dayjs()}
+                                                    />
+                                                </Flex>
                                                 <Style.ProfileInfoBox vertical gap={6}>
-                                                    <Skeleton loading={loading} paragraph={false}>
+                                                    <Skeleton loading={monthlyLoading} paragraph={false}>
                                                         <Flex justify="space-between">
                                                             <Text>Total lessons:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {statistic?.thisMonthLessons ? statistic?.thisMonthLessons : 0}
+                                                                    {monthlyStat.totalLessons?monthlyStat.totalLessons:0}
                                                                 </Text>
                                                                 <Text>lessons</Text>
                                                             </Paragraph>
@@ -268,7 +299,7 @@ const TutorProfile = () => {
                                         <Skeleton loading={loading} paragraph={false}>
                                             <Flex vertical gap="middle" >
                                                 <Radio.Group defaultValue={tableDisplay}
-                                                    onChange={onTableChange}
+                                                    onChange={(e) => setTableDisplay(e.target.value)}
                                                     buttonStyle="solid">
                                                     <Radio.Button value="education">Diplomas</Radio.Button>
                                                     <Radio.Button value="certificate">Certificates</Radio.Button>
