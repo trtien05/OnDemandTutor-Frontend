@@ -3,7 +3,7 @@ import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import useAuth from '../../../hooks/useAuth';
 import { getTutorById, getTutorMonthlyStatistic, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Col, DatePicker, Flex, Radio, RadioChangeEvent, Row, Skeleton, Spin, Typography, notification } from 'antd';
+import { Avatar, Col, DatePicker, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
