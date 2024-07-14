@@ -19,11 +19,11 @@ const Footer = () => {
         },
         {
             id: 3,
-            titleName: 'TOEFL',
+            titleName: 'MATHEMATICS',
         },
         {
             id: 4,
-            titleName: 'CAMBRIDGE',
+            titleName: 'CODING',
         },
     ]
 
@@ -46,7 +46,7 @@ const Footer = () => {
                                     dataSource={categoryList}
                                     renderItem={(category) => (
                                         <List.Item key={category.id}>
-                                            <Styled.FooterSocialsLink to={'/'}>
+                                            <Styled.FooterSocialsLink to={'/search-questions'}>
                                                 {category.titleName}
                                             </Styled.FooterSocialsLink>
                                         </List.Item>
