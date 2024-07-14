@@ -62,7 +62,7 @@ export const CustomerInfoItem = styled(Flex)`
     & h3.ant-typography {
         margin-bottom: 10px;
         color: ${theme.colors.primary};
-        font-size: 2.0rem;
+        font-size: 2rem;
         font-weight: 600;
         line-height: 1.4;
     }
@@ -164,4 +164,10 @@ export const CustomerItemContent = styled(Flex)`
             color: ${theme.colors.textSecondary};
         }
     }
+`;
+export const ScrollableContainer = styled.div`
+    overflow: auto;
+    max-width: 100%;
+    max-height: 100%;
+    // border: 1px solid #ddd; /* Optional: Add a border for better visibility */
 `;

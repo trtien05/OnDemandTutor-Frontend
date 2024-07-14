@@ -22,9 +22,6 @@ export const getStudentOneQuestion = (accountId: number, questionId: number) => 
     return get(`/api/students/${accountId}/questions/${questionId}`);
 };
 
-// export const getAllAccount = () => {
-//     return get('/auth/all');
-// };
 
 export const deleteQuestion = (accountId: number, questionId:number) => {
     return remove(`/api/students/${accountId}/questions/${questionId}`);
