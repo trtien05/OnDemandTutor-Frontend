@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
-import { Form, Input, Select, DatePicker, Button, Col, Typography } from 'antd';
+import { Form, Input, Select, Button, Col, Typography, notification } from 'antd';
 import { Rule } from 'antd/es/form';
-import dayjs from 'dayjs';
 import { Flex } from 'antd';
 import * as FormStyled from '../BecomeTutor/Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
+import { postTutorSalary } from '../../utils/salaryAPI';
 const { Option } = Select;
 const { Title } = Typography;
 type FieldType = {
@@ -34,8 +34,12 @@ const validateBankAccountNumber = (_: unknown, value: string) => {
     }
     return Promise.resolve();
 };
-
-const FormComponent: React.FC = () => {
+type FormComponentProps = {
+    month: string;
+    year: string;
+    tutorId: number;
+};
+const FormComponent: React.FC <FormComponentProps>=  ({ month, year, tutorId }) => {
     useDocumentTitle('Withdraw salary');
     useEffect(() => {
         window.scrollTo({ top: 100, behavior: 'smooth' });
@@ -43,7 +47,9 @@ const FormComponent: React.FC = () => {
     const [banks, setBanks] = useState<{ id: number; name: string }[]>([]);
     const [form] = Form.useForm();
     const fieldComponents = useRef<JSX.Element[]>([]);
-
+    const [api, contextHolderNotification] = notification.useNotification({
+        top: 100,
+      });
     useEffect(() => {
         const fetchBanks = async () => {
             try {
@@ -105,12 +111,12 @@ const FormComponent: React.FC = () => {
             key: 4,
             label: 'Month',
             name: 'month',
-            initialValue: dayjs().format('MMMM'),
+            initialValue: month,
             rules: [{ required: true, message: 'Please select a month' }],
             component: (
                 <Input
                     size="large"
-                    value={dayjs().format('MMMM')}
+                    value={month}
                     disabled
                     style={{ width: '100%' }}
                 />
@@ -121,12 +127,12 @@ const FormComponent: React.FC = () => {
             key: 5,
             label: 'Year',
             name: 'year',
-            initialValue: dayjs().format('YYYY'),
+            initialValue: year,
             rules: [{ required: true, message: 'Please select a year' }],
             component: (
                 <Input
                     size="large"
-                    value={dayjs().format('YYYY')}
+                    value={year}
                     disabled
                     style={{ width: '100%' }}
                 />
@@ -135,16 +141,36 @@ const FormComponent: React.FC = () => {
         },
     ];
 
-    const handleFinish = (values: any) => {
-        console.log('Success:', values);
+    const handleFinish = async(values: any) => {
+        try {
+            const { bankAccountNumber, bankAccountOwner, bankName } = values;
+            await postTutorSalary(tutorId, {
+                bankAccountNumber,
+                bankAccountOwner,
+                bankName,
+                month: parseInt(month),
+                year: parseInt(year),
+            });
+            api.success({
+                message: 'Success',
+                description: 'Your request has been submitted.',
+            });
+        } catch (error:any) {
+            const errorMessage =
+                error.response && error.response.data
+                    ? JSON.stringify(error.response.data)
+                    : error.message;
+            api.error({
+                message: 'Error',
+                description: errorMessage,
+            });
+        }
     };
 
-    const handleFinishFailed = (errorInfo: any) => {
-        console.log('Failed:', errorInfo);
-    };
 
     return (
         <div style={{ background: `white`, padding: `3%` }}>
+            {contextHolderNotification}
             <Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
                 <Title
                     style={{
@@ -158,7 +184,6 @@ const FormComponent: React.FC = () => {
                 <FormStyled.FormWrapper
                     form={form}
                     onFinish={handleFinish}
-                    onFinishFailed={handleFinishFailed}
                     labelAlign="left"
                     requiredMark={false}
                     size="middle"
