@@ -22,7 +22,6 @@ const Register = () => {
             setIsSubmitting(true);
 
             const { data } = await register(values);
-            console.log(data);
             if (!data) {
                 throw new Error('Network response was not ok');
             } else {

@@ -3,7 +3,7 @@ import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import useAuth from '../../../hooks/useAuth';
 import { getTutorById, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Col, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
+import { Avatar, Col, Flex, Radio, RadioChangeEvent, Row, Skeleton, Spin, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -132,6 +132,12 @@ const TutorProfile = () => {
             }
         })();
     }, [user, updateCert]);
+
+    const onTableChange = (e:RadioChangeEvent) => {
+        setLoading(true);
+        setTableDisplay(e.target.value)
+        setLoading(false);
+    }
 
 
     return (
@@ -262,7 +268,7 @@ const TutorProfile = () => {
                                         <Skeleton loading={loading} paragraph={false}>
                                             <Flex vertical gap="middle" >
                                                 <Radio.Group defaultValue={tableDisplay}
-                                                    onChange={(e) => setTableDisplay(e.target.value)}
+                                                    onChange={onTableChange}
                                                     buttonStyle="solid">
                                                     <Radio.Button value="education">Diplomas</Radio.Button>
                                                     <Radio.Button value="certificate">Certificates</Radio.Button>
