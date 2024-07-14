@@ -6,6 +6,7 @@ import * as FormStyled from '../BecomeTutor/Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
 import { postTutorSalary } from '../../utils/salaryAPI';
+import { useLocation } from 'react-router-dom';
 const { Option } = Select;
 const { Title } = Typography;
 type FieldType = {
@@ -34,12 +35,8 @@ const validateBankAccountNumber = (_: unknown, value: string) => {
     }
     return Promise.resolve();
 };
-type FormComponentProps = {
-    month: string;
-    year: string;
-    tutorId: number;
-};
-const FormComponent: React.FC <FormComponentProps>=  ({ month, year, tutorId }) => {
+
+const SalaryForm: React.FC =  () => {
     useDocumentTitle('Withdraw salary');
     useEffect(() => {
         window.scrollTo({ top: 100, behavior: 'smooth' });
@@ -50,6 +47,15 @@ const FormComponent: React.FC <FormComponentProps>=  ({ month, year, tutorId }) 
     const [api, contextHolderNotification] = notification.useNotification({
         top: 100,
       });
+      //useLocation gives you access to the current location object, which contains information about the current URL, 
+      //including the pathname, search, hash, and state.
+    const location = useLocation();
+    //checks if location.state exists -> checks if location.state.month exists. 
+    //If both -> assigns the value of location.state.month to the month variable. 
+    //Otherwise, it assigns null to month.
+    const month = location.state ? location.state.month ? location.state.month : null : null;
+    const year = location.state ? location.state.year ? location.state.year : null : null;
+    const tutorId = location.state ? location.state.tutorId ? location.state.tutorId : null : null;
     useEffect(() => {
         const fetchBanks = async () => {
             try {
@@ -242,4 +248,4 @@ const FormComponent: React.FC <FormComponentProps>=  ({ month, year, tutorId }) 
     );
 };
 
-export default FormComponent;
+export default SalaryForm;

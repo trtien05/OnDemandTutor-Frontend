@@ -19,6 +19,7 @@ import TutorDetail from '../pages/TutorDetail';
 import ChatRoom from '../pages/ChatRoom';
 import TutorAppointment from '../pages/Tutor/Appointment/TutorAppointment';
 import RegisterStatus from '../pages/BecomeTutor/RegisterStatus/RegisterStatus';
+import SalaryForm from '../pages/SalaryForm/SalaryForm';
 
 
 //* ====================  Authorization for PUBLIC ==================== */
@@ -91,6 +92,7 @@ const tutorRoutes = {
     children: [
         { path: config.routes.tutor.profile, element: <TutorProfile /> },
         { path: config.routes.tutor.teachingSchedule, element: <TutorAppointment /> },
+        { path:config.routes.tutor.withdrawRequest, element: <SalaryForm/>},
     ],
 };
 const notFoundRoutes = { path: '*', element: <NotFound /> };
