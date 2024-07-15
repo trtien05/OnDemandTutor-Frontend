@@ -5,6 +5,7 @@ import SalaryTable from './SalaryTable';
 
 const ManageSalary = () => {
   const [requestSalary, setRequestSalary] = useState([]);
+  const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageNo, setPageNo] = useState(0);
   const pageSize = 7;
@@ -14,6 +15,7 @@ const ManageSalary = () => {
 
     try {
       const response = await getWithdrawRequest(pageNo, pageSize);
+      setTotalElements(response.data.totalElements);
       setRequestSalary(response.data.content);
     } catch (error) {
       console.error('Error fetching moderators:', error);
@@ -34,7 +36,7 @@ const ManageSalary = () => {
   };
   return (
     <div>
-      <h2>Manage Moderator</h2>
+      <h2>Manage Salary</h2>
       <Skeleton active loading={loading} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }} title={false}>
         <div style={{ marginTop: '20px' }}>
           <SalaryTable
@@ -43,6 +45,7 @@ const ManageSalary = () => {
             onPageChange={handlePageChange}
             currentPage={pageNo + 1}
             pageSize={pageSize}
+            totalElements={totalElements}
           />
         </div>
       </Skeleton>

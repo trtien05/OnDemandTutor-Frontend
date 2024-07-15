@@ -19,6 +19,7 @@ interface SalaryTableProps {
   onPageChange: (page: number) => void;
   currentPage: number;
   pageSize: number;
+  totalElements: number;
 }
 
 const formatPrice = (price: number) => {
@@ -26,7 +27,7 @@ const formatPrice = (price: number) => {
   return `${safePrice.toLocaleString()} đ`;
 }
 
-const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, onPageChange, currentPage, pageSize }) => {
+const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
 
   const columns: TableColumnsType<Account> = [
     {
@@ -48,10 +49,12 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
     {
       title: 'Month',
       dataIndex: 'month',
+      sorter: (a, b) => (a.month || 0) - (b.month || 0),
     },
     {
       title: 'Year',
       dataIndex: 'year',
+      sorter: (a, b) => (a.year || 0) - (b.year || 0),
     },
     {
       title: 'Salary',
@@ -99,8 +102,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
           pageSize: pageSize,
           onChange: onPageChange,
           showSizeChanger: false,
-          total: withdrawRequest.length * 2,
-
+          total: totalElements,
         }}
       />
     </div>

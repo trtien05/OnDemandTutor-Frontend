@@ -18,15 +18,18 @@ const DeleteTutor: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
   const handleDelete = async (record: Record) => {
     const response = await deleteAccount(record.id);
     if (response) {
-      onReload();
+
       messageApi.open({
         type: 'success',
-        content: 'Delete Success',
+        content: 'Ban Account Success',
       });
+      setTimeout(() => {
+        onReload();
+      }, 1000);
     } else {
       messageApi.open({
         type: 'error',
-        content: 'Delete Fail',
+        content: 'Ban Account Fail',
       });
     }
   }

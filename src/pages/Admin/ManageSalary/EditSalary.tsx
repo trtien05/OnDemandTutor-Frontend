@@ -64,8 +64,10 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
           message: "Update Successful",
           description: `Successfully updated : ${record.bankAccountOwner}`
         });
-        onReload();
-        setIsModalOpen(false);
+        setTimeout(() => {
+          onReload();
+          setIsModalOpen(false);
+        }, 1000);
       }
     } catch (error: any) {
       apiNoti.error({
@@ -93,7 +95,7 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
         <Form
           onFinish={handleFinish}
           initialValues={{
-            ...record,
+            updatedStatus: record.status,
           }}
           form={form}
           layout="vertical"

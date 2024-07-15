@@ -28,27 +28,23 @@ interface Tutor {
 interface TutorTableProps {
   tutors: Tutor[];
   onReload: () => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
 }
 const formatPrice = (price: number) => {
   const safePrice = Number(price) || 0;
   return `${safePrice.toLocaleString()} đ`;
 }
 
-const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
 
-  const handleTableChange = (pagination: any) => {
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
 
   const columns: TableColumnsType<Tutor> = [
     {
       title: 'No',
-      dataIndex: 'index',
-      key: 'index',
-      render: (_text, _record, index) => (currentPage - 1) * pageSize + index + 1,
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Tutor Name',
@@ -143,14 +139,18 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
   ];
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} pagination={{
-        current: currentPage,
-        pageSize: pageSize,
-        total: tutors.length,
-        showSizeChanger: false,
-      }} dataSource={tutors}
-        onChange={handleTableChange}
+      <Table
+        rowKey={'id'}
+        columns={columns}
+        dataSource={tutors}
         scroll={{ x: true }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          onChange: onPageChange,
+          showSizeChanger: false,
+          total: totalElements,
+        }}
       />
     </div>
   );

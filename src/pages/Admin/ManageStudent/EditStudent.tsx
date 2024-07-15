@@ -56,18 +56,21 @@ const EditStudent: React.FC<EditProps> = ({ record, onReload }) => {
   };
 
   const handleFinish = async (values: any) => {
-    if (values.dateOfBirth) {
-      values.dateOfBirth = values.dateOfBirth.format('YYYY-MM-DD');
-    }
+    const updatedValues = {
+      ...values,
+      gender: values.gender === 'Female',
+    };
     try {
-      const response = await updateAccount(record.id, values);
+      const response = await updateAccount(record.id, updatedValues);
       if (response.status === 200) {
         apiNoti.success({
           message: "Update Successful",
           description: `Successfully updated : ${record.fullName}`
         });
-        onReload();
-        setIsModalOpen(false);
+        setTimeout(() => {
+          onReload();
+          setIsModalOpen(false);
+        }, 1000);
       }
     } catch (error: any) {
       apiNoti.error({
@@ -92,12 +95,11 @@ const EditStudent: React.FC<EditProps> = ({ record, onReload }) => {
         width={800}
       >
         <Form
+          form={form}
           onFinish={handleFinish}
           initialValues={{
             ...record,
-            gender: record.gender ? 'true' : 'false',
           }}
-          form={form}
           layout="vertical"
         >
           <Row gutter={16}>
@@ -117,8 +119,8 @@ const EditStudent: React.FC<EditProps> = ({ record, onReload }) => {
                 rules={[rules]}
               >
                 <Select>
-                  <Select.Option value='true'>Female</Select.Option>
-                  <Select.Option value='false'>Male</Select.Option>
+                  <Select.Option value='Female'>Female</Select.Option>
+                  <Select.Option value='Male'>Male</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
