@@ -76,6 +76,14 @@ const Profile = () => {
     const [selectedItem, setSelectedItem] = useState<Question | null>(null);
     const [reloadKey, setReloadKey] = useState(false); // State for reloading
 
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [total, setTotal] = useState(0);
+
+    const [paymentPage, setPaymentPage] = useState(1);
+    const [paymentPageSize, setPaymentPageSize] = useState(5);
+    const [paymentTotal, setPaymentTotal] = useState(0);
+
     useEffect(() => {
         (async () => {
             try {
@@ -118,11 +126,13 @@ const Profile = () => {
                 const { data } = await getLearnStatistic(user.id);
                 setLearnStatistic(data);
                 //get payment history
-                const { data: paymentData } = await getPaymentHistory(user.id);
+                const { data: paymentData } = await getPaymentHistory(user.id,paymentPage - 1, paymentPageSize);
                 setPaymentHistory(paymentData.content || []);
+                setPaymentTotal(paymentData.totalElements);
                 // get account's list of questions
-                const { data: questionData } = await getStudentListQuestion(user.id);
+                const { data: questionData } = await getStudentListQuestion(user.id, page - 1, pageSize);
                 setStudentListQuestion(questionData.content || []);
+                setTotal(questionData.totalElements);
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -133,8 +143,16 @@ const Profile = () => {
             }
         })();
 
-    }, [api, user, reloadKey]);
+    }, [api, user, reloadKey, paymentPage, paymentPageSize, page, pageSize]);
+    const handleTableChange = (pagination:any) => {
+        setPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    };
 
+    const handlePaymentTableChange = (pagination:any) => {
+        setPaymentPage(pagination.current);
+        setPaymentPageSize(pagination.pageSize);
+    };
     const confirm = () => {
         modal.confirm({
             centered: true,
@@ -266,7 +284,7 @@ const Profile = () => {
         }
         return null;
     };
-    const modifiedQuestionColumns = QuestionColumns(setReloadKey).map((column) => {
+    const modifiedQuestionColumns = QuestionColumns(setReloadKey, page, pageSize).map((column) => {
         if (column.key === 'view') {
             return {
                 ...column,
@@ -516,7 +534,8 @@ const Profile = () => {
                                             dataSource={studentListQuestion}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Question) => record.id.toString()}
-                                            pagination={{ pageSize: 4 }}
+                                            pagination={{ current: page, pageSize, total }}
+                                            onChange={handleTableChange}
                                         />
                                         </St.ScrollableContainer>
                                     </Col>
@@ -527,11 +546,12 @@ const Profile = () => {
                                         </St.CustomerInfoItem>
                                         <St.ScrollableContainer>
                                         <Table
-                                            columns={PaymentColumns}
+                                            columns={PaymentColumns(paymentPage, paymentPageSize)}
                                             dataSource={paymentHistory}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Payment) => record.id.toString()}
-                                            pagination={{ pageSize: 4 }}
+                                            pagination={{ current: paymentPage, pageSize: paymentPageSize, total: paymentTotal }}
+                                            onChange={handlePaymentTableChange}
                                         />
                                         </St.ScrollableContainer>
                                     </Col>
