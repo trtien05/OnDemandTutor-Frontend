@@ -84,7 +84,7 @@ const TutorProfile = () => {
             if (!user || !(role === "TUTOR")) return;
             const response = await getTutorMonthlyStatistic(user.id, month, year);
             if (response) {
-                setMonthlyStat({ ...response.data, month: month, year: year, canGetSalary: salaryState(month, year, response.data.totalIncome) });
+                setMonthlyStat({ ...response.data, month: month, year: year, canGetSalary: salaryState(month, year) });
             }
         } catch (error: any) {
             api.error({
@@ -108,7 +108,7 @@ const TutorProfile = () => {
         setMonthlyLoading(false);
     }
 
-    const salaryState = (month: number, year: number, salary: number) => {
+    const salaryState = (month: number, year: number) => {
         if (dayjs().year() === year && dayjs().month() === month - 1) {
             return false;
         }
