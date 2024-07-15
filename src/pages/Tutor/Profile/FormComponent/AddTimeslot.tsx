@@ -35,19 +35,23 @@ const AddTimeslot: React.FC<ScheduleProps> = (props) => {
         setLoading(true); // Set loading state to true when form is submitted
         try {
             const response = await saveTutorAvailableTimeslots(tutorId, values)
-            props.isUpdate(!props.update);
+            if (response) {
+                api.success({
+                    message: 'Your schedule has been updated!',
+                });
+                props.isUpdate(!props.update);
+                setTimeout(() => {
+                    setIsFormOpen(false);
+                }, 2000);
+            }
             values = null;
-            if (response)
-            api.success({
-                message: 'Your schedule has been updated!',
-            });
+
         } catch (error: any) {
             api.error({
                 message: 'Error adding timeslot '
             });
         } finally {
             setLoading(false);
-            setIsFormOpen(false);
         }
 
     };
