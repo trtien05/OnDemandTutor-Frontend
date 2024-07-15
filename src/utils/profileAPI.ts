@@ -15,8 +15,8 @@ interface UpdateAccount {
 export const getLearnStatistic = (accountId: number) => {
     return get(`/api/statistics/${accountId}/learn-statistics`);
 };
-export const getPaymentHistory = (accountId: number) => {
-    return get(`/api/appointments/accounts/${accountId}`);
+export const getPaymentHistory = (accountId: number, pageNo:number, pageSize:number) => {
+    return get(`/api/appointments/accounts/${accountId}?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
 export const getStudentOneQuestion = (accountId: number, questionId: number) => {
     return get(`/api/students/${accountId}/questions/${questionId}`);
@@ -27,8 +27,8 @@ export const deleteQuestion = (accountId: number, questionId:number) => {
     return remove(`/api/students/${accountId}/questions/${questionId}`);
 };
 
-export const getStudentListQuestion = (accountId: number) => {
-    return get(`/api/students/${accountId}/questions`);
+export const getStudentListQuestion = (accountId: number, pageNo:number, pageSize:number) => {
+    return get(`/api/students/${accountId}/questions?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
 
 
