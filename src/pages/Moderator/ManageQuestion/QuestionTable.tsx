@@ -6,9 +6,12 @@ import QuestionInfo from './QuestionInfo';
 interface TutorTableProps {
     questions: Question[];
     onReload: () => void;
+    pagination: { current: number, pageSize: number };
+    setPagination: (pagination: { current: number, pageSize: number }) => void;
+    total: { totalElements: number, totalPages: number };
 }
 
-const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
+const QuestionTable: React.FC<TutorTableProps> = (props) => {
     const columns = [
         {
             title: 'No',
@@ -48,16 +51,13 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
             key: 'action',
             render: (_: any, record: Question) => (
                 <>
-                <QuestionInfo question={record} onReload={onReload} />
+                <QuestionInfo question={record} onReload={props.onReload} />
                 </>
             )
         }
     ];
 
-    const [pagination, setPagination] = React.useState({
-        current: 1,
-        pageSize: 7,
-    });
+    const [pagination, setPagination] = [props.pagination, props.setPagination]
 
     const handleTableChange = (pagination: any) => {
         setPagination(pagination);
@@ -70,13 +70,13 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
                 pagination={{
                     pageSize: pagination.pageSize,
                     current: pagination.current,
-                    total: questions.length,
+                    total: props.total.totalElements,
                     onChange: (page, pageSize) => {
                         handleTableChange({ current: page, pageSize });
                     }
                 }}
                 columns={columns} 
-                dataSource={questions} />
+                dataSource={props.questions} />
         </div>
     );
 }

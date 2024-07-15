@@ -1,11 +1,11 @@
 import { get, post, put } from '../utils/apiCaller';
 
-export const getTutorByStatus = (status: string) => {
-    return get(`/api/moderators/tutors?status=${status}`);
+export const getTutorByStatus = (pageNo: number, pageSize: number, status: string) => {
+    return get(`/api/moderators/tutors?pageNo=${pageNo}&pageSize=${pageSize}&status=${status}`);
 };
 
-export const getTutorWithPendingDocument = () => {
-    return get(`/api/moderators/documents/tutors`);
+export const getTutorWithPendingDocument = (pageNo: number, pageSize: number) => {
+    return get(`/api/moderators/documents/tutors?pageNo=${pageNo}&pageSize=${pageSize}`);
 
 }
 
@@ -21,8 +21,8 @@ export const approveDocument = (tutorId:number, data: any) => {
     return put(`/api/moderators/documents/${tutorId}`, data);
 }
 
-export const getQuestionByStatus = (status: string) => {
-    return get(`/api/moderators/questions?status=${status}`);
+export const getQuestionByStatus = (pageNo: number, pageSize: number, status: string) => {
+    return get(`/api/moderators/questions?pageNo=${pageNo}&pageSize=${pageSize}&status=${status}`);
 }
 
 export const approveQuestion = (questionId: number, status:string) => {
