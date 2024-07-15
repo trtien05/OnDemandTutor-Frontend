@@ -6,10 +6,14 @@ import SalaryTable from './SalaryTable';
 const ManageSalary = () => {
   const [requestSalary, setRequestSalary] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [pageNo, setPageNo] = useState(0);
+  const pageSize = 7;
 
-  const fetchApi = async () => {
+  const fetchApi = async (pageNo: number) => {
+    setLoading(true);
+
     try {
-      const response = await getWithdrawRequest();
+      const response = await getWithdrawRequest(pageNo, pageSize);
       setRequestSalary(response.data.content);
     } catch (error) {
       console.error('Error fetching moderators:', error);
@@ -19,20 +23,27 @@ const ManageSalary = () => {
   };
 
   useEffect(() => {
-    fetchApi();
-  }, []);
+    fetchApi(pageNo);
+  }, [pageNo]);
 
   const handleReload = () => {
-    fetchApi();
+    fetchApi(pageNo);
   };
-  console.log(requestSalary)
-
+  const handlePageChange = (page: number) => {
+    setPageNo(page - 1);
+  };
   return (
     <div>
       <h2>Manage Moderator</h2>
       <Skeleton active loading={loading} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }} title={false}>
         <div style={{ marginTop: '20px' }}>
-          <SalaryTable withdrawRequest={requestSalary} onReload={handleReload} />
+          <SalaryTable
+            withdrawRequest={requestSalary}
+            onReload={handleReload}
+            onPageChange={handlePageChange}
+            currentPage={pageNo + 1}
+            pageSize={pageSize}
+          />
         </div>
       </Skeleton>
 

@@ -1,7 +1,7 @@
 import { get, post, put } from './apiCaller';
 
-export const getWithdrawRequest = () => {
-    return get('/api/salary/withdraw-requests');
+export const getWithdrawRequest = (pageNo: number, pageSize: number) => {
+    return get(`/api/salary/withdraw-requests?pageNo=${pageNo}&pageSize=${pageSize}`);
 };
 
 export const changeWithdrawRequest = (withdrawObj: any) => {

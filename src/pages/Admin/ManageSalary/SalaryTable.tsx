@@ -1,5 +1,5 @@
 import { Table, TableColumnsType, Tag } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import EditSalary from './EditSalary';
 
 interface Account {
@@ -16,25 +16,22 @@ interface Account {
 interface SalaryTableProps {
   withdrawRequest: Account[];
   onReload: () => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  pageSize: number;
 }
+
 const formatPrice = (price: number) => {
   const safePrice = Number(price) || 0;
   return `${safePrice.toLocaleString()} đ`;
 }
-const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
 
-  const handleTableChange = (pagination: any) => {
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
+const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, onPageChange, currentPage, pageSize }) => {
+
   const columns: TableColumnsType<Account> = [
     {
       title: 'No',
-      dataIndex: 'index',
-      key: 'index',
-      render: (_text, _record, index) => (currentPage - 1) * pageSize + index + 1,
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Bank Name',
@@ -48,13 +45,12 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload }) 
       title: 'Bank Account Owner',
       dataIndex: 'bankAccountOwner',
     },
-
     {
-      title: 'Month ',
+      title: 'Month',
       dataIndex: 'month',
     },
     {
-      title: 'Year ',
+      title: 'Year',
       dataIndex: 'year',
     },
     {
@@ -73,7 +69,6 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload }) 
       ],
       onFilter: (value, record) => record.status === value,
       render: (_, record) => (
-
         <Tag color={
           record.status === 'DONE' ? 'green' :
             record.status === 'PROCESSING' ? 'orange' :
@@ -81,33 +76,35 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload }) 
         }>
           {record.status}
         </Tag>
-
-      )
+      ),
     },
     {
       title: 'Action',
       dataIndex: 'action',
       render: (_: any, record: Account) => (
-        <>
-          <EditSalary record={record} onReload={onReload} />
-        </>
-      )
+        <EditSalary record={record} onReload={onReload} />
+      ),
     }
   ];
+
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} dataSource={withdrawRequest}
+      <Table
+        rowKey={'id'}
+        columns={columns}
+        dataSource={withdrawRequest}
+        scroll={{ x: true }}
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: withdrawRequest.length,
+          onChange: onPageChange,
           showSizeChanger: false,
+          total: withdrawRequest.length * 2,
+
         }}
-        onChange={handleTableChange}
-        scroll={{ x: true }}
       />
     </div>
   );
-}
+};
 
 export default SalaryTable;
