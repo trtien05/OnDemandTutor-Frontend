@@ -20,6 +20,7 @@ import config from '../../config';
 import TutorsList from '../../components/TutorsList/TutorsList';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
 import { getTutorList } from '../../utils/tutorAPI';
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 
 const text = [`
@@ -61,6 +62,12 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
 const Home = () => {
     useDocumentTitle('Home | MyTutor');
     const listCategory = [ieltsImg, mathImg, programImg, toeicImg];
+    const services = [
+        { src: listCategory[0], alt: "Ielts", ImageComponent: Styled.BestServiceImage },
+        { src: listCategory[1], alt: "Math", ImageComponent: Styled.BestServiceImageMath },
+        { src: listCategory[2], alt: "Programming", ImageComponent: Styled.BestServiceImageProgram },
+        { src: listCategory[3], alt: "Toeic", ImageComponent: Styled.BestServiceImage },
+    ];
     const [initLoading, setInitLoading] = useState(true);
     const { token } = theme.useToken();
     const [list, setList] = useState<Tutor[]>([]);
@@ -99,60 +106,21 @@ const Home = () => {
                         </Col>
                     </Row>
 
-                    <Row gutter={[20, 20]} >
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImage src={listCategory[0]} alt="Ielts" />
-                                </Styled.BestServiceImageDiv>
-
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-                            </Styled.BestServiceItem>
-                        </Col>
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImageMath src={listCategory[1]} alt="Ielts" />
-
-                                </Styled.BestServiceImageDiv>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-                            </Styled.BestServiceItem>
-                        </Col>
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImageProgram src={listCategory[2]} alt="Ielts" />
-
-                                </Styled.BestServiceImageDiv>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-                            </Styled.BestServiceItem>
-                        </Col>
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImage src={listCategory[3]} alt="Ielts" />
-
-                                </Styled.BestServiceImageDiv>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-
-                            </Styled.BestServiceItem>
-                        </Col>
+                    <Row gutter={[20, 20]}>
+                        {services.map((service, index) => (
+                            <Col key={index} xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
+                                <Styled.BestServiceItem>
+                                    <Styled.BestServiceImageDiv>
+                                        <service.ImageComponent src={service.src} alt={service.alt} />
+                                    </Styled.BestServiceImageDiv>
+                                    <Link to={config.routes.public.searchTutors}>
+                                        <Styled.BestServiceButton>
+                                            See More <MdOutlineKeyboardArrowRight size={15} style={{ marginTop: '2px' }} />
+                                        </Styled.BestServiceButton>
+                                    </Link>
+                                </Styled.BestServiceItem>
+                            </Col>
+                        ))}
                     </Row>
                 </Container>
             </Styled.BestServiceSection>

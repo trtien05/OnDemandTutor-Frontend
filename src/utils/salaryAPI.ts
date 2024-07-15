@@ -4,10 +4,7 @@ export const getWithdrawRequest = () => {
     return get('/api/salary/withdraw-requests');
 };
 
-export const changeWithdrawRequest = (withdrawObj: {
-    withdrawRequestId: number;
-    updatedStatus: string;
-}) => {
+export const changeWithdrawRequest = (withdrawObj: any) => {
     return put('/api/salary/withdraw-requests', withdrawObj);
 };
 

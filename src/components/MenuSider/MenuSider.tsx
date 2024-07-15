@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom';
 import type { MenuProps } from 'antd';
 import config from '../../config';
 import { TeamOutlined, UsergroupAddOutlined, ProjectOutlined } from '@ant-design/icons';
+import { GrMoney } from "react-icons/gr";
 import { LuLayoutDashboard } from "react-icons/lu";
 
 const MenuSider: React.FC = () => {
@@ -28,6 +29,11 @@ const MenuSider: React.FC = () => {
       key: config.routes.admin.manageStudent,
       icon: <UsergroupAddOutlined />,
       label: <Link to={config.routes.admin.manageStudent}>Student</Link>,
+    },
+    {
+      key: config.routes.admin.manageSalary,
+      icon: <GrMoney />,
+      label: <Link to={config.routes.admin.manageSalary}>Salary</Link>,
     }
   ];
 
