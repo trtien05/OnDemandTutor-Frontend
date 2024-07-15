@@ -1,6 +1,6 @@
 import { Skeleton, notification, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react'
-import { checkPaymentStatus } from '../../../utils/paymentAPI';
+import { checkPaymentPaypal, checkPaymentStatus } from '../../../utils/paymentAPI';
 import { useLocation } from 'react-router-dom';
 import cookieUtils from '../../../utils/cookieUtils';
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
@@ -34,8 +34,16 @@ const PaymentSuccess = () => {
         (async () => {
             try {
                 setLoading(true);
+                const paymentMethod = cookieUtils.getItem('bookingData').paymentMethod;
                 if (location.search) {
-                    const response = await checkPaymentStatus(location.search);
+                    console.log(location.search);
+                    let response: any;
+                    if (paymentMethod === 'paypal') {
+                        response = await checkPaymentPaypal(location.search)
+                    } else {
+                        response = await checkPaymentStatus(paymentMethod, location.search);
+                    }
+                    console.log(response)
                     if (response.status === 200) {
                         setPaymentResponse(response);
                         setBookingData(cookieUtils.getItem('bookingData'));

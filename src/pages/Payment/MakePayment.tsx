@@ -16,6 +16,8 @@ import { Schedule, ScheduleEvent } from '../../components/Schedule/Schedule.type
 import moment from 'moment';
 import config from '../../config';
 import useAuth from '../../hooks/useAuth';
+import { rollbackBooking } from '../../utils/tutorBookingAPI';
+import { ButtonDiv } from '../BecomeTutor/Form.styled';
 
 const { Title, Text } = Typography;
 const { Countdown } = Statistic;
@@ -196,17 +198,38 @@ const MakePayment = () => {
     return totalMinutes / 60;
   }
 
+  const handleCancel = async () => {
+    setLoading(true);
+    const response = await rollbackBooking(appointmentData.id);
+    if (response.status === 200) {
+      api.success({
+        message: 'Success',
+        description: 'Your booking has been cancelled',
+      });
+      setTimeout(() => {
+        navigate(config.routes.public.home);
+      }, 2000);
+    }
+  }
 
   const handleOrder = async () => {
     try {
       // Call API to create order
       // If success, show success message
       setLoading(true);
-      const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
+      if (!paymentMethod) {
+        api.error({
+          message: 'Error',
+          description: 'Please select a payment method',
+        });
+        return;
+      }
+      const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString(), "provider": paymentMethod.toUpperCase() });
       if (schedule !== undefined && tutor !== undefined && tutor !== null) {
         const totalHour = calculateTotalHour(schedule);
         const price = totalHour * tutor.teachingPricePerHour;
         await cookieUtils.setItem('bookingData', JSON.stringify({
+          paymentMethod: paymentMethod,
           appointmentId: appointmentData.id,
           tutor: tutor,
           schedule: schedule,
@@ -312,28 +335,14 @@ const MakePayment = () => {
           <Col xl={10} lg={10} sm={24} xs={24}>
             <Skeleton loading={loading}>
               <Styled.CheckoutWrapper >
-                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop:`20px` }} >Payment method</Styled.TutorName>
-                {/* <Styled.CheckoutPaymentImgWrapper>
-                <img
-                    src={momoLogo}
-                    loading="lazy"
-                    decoding="async"
-                    alt="MOMO"
-                  />
-                  <img
-                    src={vnpayLogo}
-                    loading="lazy"
-                    decoding="async"
-                    alt="VNPAY"
-                  />
-                </Styled.CheckoutPaymentImgWrapper> */}
+                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `20px` }} >Payment method</Styled.TutorName>
 
                 <Styled.CheckoutPayment>
 
                   <Radio.Group
                     name="payment"
-                   value={paymentMethod}
-                   onChange={(e)=> setPaymentMethod(e.target.value)}
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
                   >
                     <Radio
                       value={'paypal'}
@@ -376,8 +385,24 @@ const MakePayment = () => {
                     </Radio>
                   </Radio.Group>
                 </Styled.CheckoutPayment>
+                <ButtonDiv>
                 <Button
-                  block
+                  style={{ marginRight: '10px', width:`40%`}}
+                  type="default"
+                  size="large"
+                  onClick={handleCancel}
+                >
+                  {loading ? (
+                    <Loading3QuartersOutlined
+                      spin
+                      style={{ fontSize: '1.6rem' }}
+                    />
+                  ) : (
+                    'Cancel'
+                  )}
+                </Button>
+                <Button
+                  style={{ marginRight: '10px', width:`60%`}}
                   type="primary"
                   size="large"
                   onClick={handleOrder}
@@ -391,6 +416,7 @@ const MakePayment = () => {
                     'Pay'
                   )}
                 </Button>
+                </ButtonDiv>
                 <Styled.BorderLine />
 
                 <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
