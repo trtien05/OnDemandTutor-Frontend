@@ -3,7 +3,7 @@ import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import useAuth from '../../../hooks/useAuth';
 import { getTutorById, getTutorMonthlyStatistic, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Button, Col, DatePicker, Flex, Radio, Row, Skeleton, Spin, Typography, notification } from 'antd';
+import { Avatar, Button, Col, DatePicker, Flex, Radio, Row, Skeleton, Spin, Tag, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -308,11 +308,23 @@ const TutorProfile = () => {
                                                                 <Text>Withdraw salary:</Text>
 
                                                                 <Paragraph>
-                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" ? <Text>
-                                                                        <Button onClick={onWithdrawClick} type='link' 
-                                                                        style={{ fontSize: `1.6rem`, fontWeight: `500` }}> 
-                                                                            Withdraw </Button>
-                                                                    </Text> : monthlyStat.withdrawRequestStatus}
+                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" ?
+                                                                        <Text>
+                                                                            <Button onClick={onWithdrawClick} type='link'
+                                                                                style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
+                                                                                Withdraw </Button>
+                                                                        </Text> :
+                                                                        <Tag
+                                                                            style={{ fontSize: '16px', margin: '0' }}
+                                                                            color={
+                                                                                monthlyStat.withdrawRequestStatus === 'DONE' ? 'green' :
+                                                                                    monthlyStat.withdrawRequestStatus === 'PROCESSING' ? 'orange' :
+                                                                                        monthlyStat.withdrawRequestStatus === 'REJECTED' ? 'red' : ''
+                                                                            }
+                                                                        >
+                                                                            {monthlyStat.withdrawRequestStatus}
+                                                                        </Tag>
+                                                                    }
                                                                 </Paragraph>
                                                             </Flex>}
                                                     </Skeleton>

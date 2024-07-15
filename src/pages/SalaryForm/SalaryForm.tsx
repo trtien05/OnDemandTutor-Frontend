@@ -71,7 +71,7 @@ const SalaryForm: React.FC = () => {
             navigate(config.routes.public.home);
         }
     }, [month, year, navigate]);
-    
+
     useEffect(() => {
         const fetchBanks = async () => {
             try {
@@ -111,6 +111,7 @@ const SalaryForm: React.FC = () => {
             name: 'bankAccountNumber',
             rules: [
                 { required: true, message: 'Please enter a bank account number' },
+                { max: 100, message: 'Account number must be at most 100 characters long' },
                 { validator: validateBankAccountNumber },
             ],
             component: <Input size="large" placeholder="Enter bank account number" />,
@@ -236,7 +237,7 @@ const SalaryForm: React.FC = () => {
                                 htmlType="submit"
                                 style={{
                                     width: '150px',
-                                    borderRadius: '25px',
+                                    borderRadius: '6px',
                                 }}
                             >
                                 Send Request
