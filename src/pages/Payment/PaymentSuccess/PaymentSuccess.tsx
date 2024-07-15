@@ -36,14 +36,12 @@ const PaymentSuccess = () => {
                 setLoading(true);
                 const paymentMethod = cookieUtils.getItem('bookingData').paymentMethod;
                 if (location.search) {
-                    console.log(location.search);
                     let response: any;
                     if (paymentMethod === 'paypal') {
                         response = await checkPaymentPaypal(location.search)
                     } else {
                         response = await checkPaymentStatus(paymentMethod, location.search);
                     }
-                    console.log(response)
                     if (response.status === 200) {
                         setPaymentResponse(response);
                         setBookingData(cookieUtils.getItem('bookingData'));
