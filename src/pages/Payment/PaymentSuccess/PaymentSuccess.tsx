@@ -92,7 +92,7 @@ const PaymentSuccess = () => {
                                             <Title level={3}>
                                                 Total payment
                                             </Title>
-                                            <Text>{Math.round(bookingData.price).toLocaleString()} VND</Text>
+                                            <Text>{Math.round(bookingData.price).toLocaleString('en-US')} VND</Text>
                                         </Styled.PaymentMainPrice>
 
                                         <Styled.PaymentMainPrice>
