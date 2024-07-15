@@ -1,4 +1,4 @@
-import {Table} from 'antd';
+import { Table } from 'antd';
 import React from 'react';
 import TutorDocument from '../../ManageDocument/TutorDocument';
 import { Tutor } from '../Tutor.type'
@@ -8,9 +8,12 @@ interface TutorTableProps {
   tutors: Tutor[];
   onReload: () => void;
   manage: string;
+  pagination: { current: number, pageSize: number };
+  setPagination: (pagination: { current: number, pageSize: number }) => void;
+  total: { totalElements: number, totalPages: number };
 }
 
-const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => {
+const TutorTable: React.FC<TutorTableProps> = (props) => {
   const columns = [
     {
       title: 'No',
@@ -45,37 +48,34 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, manage }) => 
       key: 'action',
       render: (_: any, record: Tutor) => (
         <>
-          {manage.includes('tutor') ? 
-          <TutorInfo tutorId={record.id} tutor={record} onReload={onReload} />
-          : <TutorDocument tutorId={record.id} tutor={record} onReload={onReload} />}
+          {props.manage.includes('tutor') ?
+            <TutorInfo tutorId={record.id} tutor={record} onReload={props.onReload} />
+            : <TutorDocument tutorId={record.id} tutor={record} onReload={props.onReload} />}
         </>
       )
     }
   ];
 
-  const [pagination, setPagination] = React.useState({
-    current: 1,
-    pageSize: 7,
-});
+  const [pagination, setPagination] = [props.pagination, props.setPagination]
 
-const handleTableChange = (pagination: any) => {
+  const handleTableChange = (pagination: any) => {
     setPagination(pagination);
     window.scrollTo({ top: 0, behavior: 'smooth' });
-};
+  };
 
   return (
     <div>
-      <Table rowKey={'id'} 
-        columns={columns} 
-        dataSource={tutors} 
+      <Table rowKey={'id'}
+        columns={columns}
+        dataSource={props.tutors}
         pagination={{
           pageSize: pagination.pageSize,
           current: pagination.current,
-          total: tutors.length,
+          total: props.total.totalElements,
           onChange: (page, pageSize) => {
-              handleTableChange({ current: page, pageSize });
+            handleTableChange({ current: page, pageSize });
           }
-      }} />;
+        }} />;
     </div>
   );
 }

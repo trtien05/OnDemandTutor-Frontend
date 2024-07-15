@@ -303,7 +303,7 @@ const MakePayment = () => {
                 <Styled.PriceCalculation>
                   <Space>
                     <Title level={3}>Tutor's price per hour</Title>
-                    <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString() : ''} VND</Text>
+                    <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString('en-US') : ''} VND</Text>
                   </Space>
 
                   <Space>
@@ -323,7 +323,7 @@ const MakePayment = () => {
                       Total
                     </Title>
                     <Text>
-                      {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString() : ''} VND
+                      {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString('en-US') : ''} VND
                     </Text>
                   </Space>
                   <p></p>

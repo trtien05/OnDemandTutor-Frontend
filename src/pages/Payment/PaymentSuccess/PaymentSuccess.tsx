@@ -77,7 +77,7 @@ const PaymentSuccess = () => {
                     <Container>
                         <Styled.CheckInner>
                             <Skeleton loading={loading}>
-                                {(paymentResponse.status && bookingData) ? (
+                                {(paymentResponse.status === 200 && bookingData) ? (
                                     <>
                                         <Styled.CheckSuccessMsg>
                                             <AiOutlineCheckCircle
@@ -116,7 +116,8 @@ const PaymentSuccess = () => {
                                     </>) : (
                                     <Styled.CheckErrorMsg>
                                         <AiOutlineCloseCircle size={80} color={theme.colors.error} />
-                                        <Title level={2}>{paymentResponse.data}</Title>
+                                        
+                                        <Title level={2}>{paymentResponse.data.error ? paymentResponse.data.error: paymentResponse.data}</Title>
                                     </Styled.CheckErrorMsg>
                                 )}
                             </Skeleton>

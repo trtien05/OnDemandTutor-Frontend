@@ -8,19 +8,28 @@ import { Skeleton } from 'antd';
 const ManageQuestion = () => {
   const [questions, setQuestions] = useState<Question[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pagination, setPagination] = useState({
+    current: 1,
+    pageSize: 7,
+  });
+  const [total, setTotal] = useState({
+    totalElements: 0,
+    totalPages: 0,
+  })
   const fetchApi = async () => {
     setLoading(true);
     try {
-      const response = await getQuestionByStatus('PROCESSING');
+      const response = await getQuestionByStatus(pagination.current-1, pagination.pageSize, 'PROCESSING');
       setQuestions(response.data.content);
+      setTotal({totalElements: response.data.totalElements, totalPages: response.data.totalPages});
     } finally {
-      setLoading(false);
+        setLoading(false);
     }
   }
 
   useEffect(() => {
     fetchApi();
-  }, [])
+  }, [pagination])
 
   const handleReload = () => {
     fetchApi();
@@ -30,7 +39,7 @@ const ManageQuestion = () => {
       <h2>Processing Question</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>
-          <QuestionTable questions={questions} onReload={handleReload} />
+          <QuestionTable total={total} pagination={pagination} setPagination={setPagination} questions={questions} onReload={handleReload} />
         </div>
       </Skeleton>
     </div>
