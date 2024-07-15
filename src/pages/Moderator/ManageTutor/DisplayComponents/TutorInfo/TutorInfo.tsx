@@ -396,7 +396,7 @@ const TutorInfo: React.FC<TutorInfoProps> = (props) => {
                                     style={{ width: `300px` }}
                                 >
                                     <div onClick={() => toggleSwitch('teachingPricePerHour')}>
-                                        <span> {tutorInfo.teachingPricePerHour.toLocaleString()} VND/hour </span>
+                                        <span> {tutorInfo.teachingPricePerHour.toLocaleString('en-US')} VND/hour </span>
                                     </div>
                                 </FormItem>
 
