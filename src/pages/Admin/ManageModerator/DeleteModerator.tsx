@@ -18,11 +18,13 @@ const DeleteModerator: React.FC<DeleteTutorProps> = ({ record, onReload }) => {
   const handleDelete = async (record: Record) => {
     const response = await deleteAccount(record.id);
     if (response) {
-      onReload();
       messageApi.open({
         type: 'success',
         content: 'Delete Success',
       });
+      setTimeout(() => {
+        onReload();
+      }, 1000);
     } else {
       messageApi.open({
         type: 'error',

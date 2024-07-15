@@ -1,5 +1,5 @@
 import { Table, TableColumnsType, Tag } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import DeleteTutor from './DeleteTutor';
 import EditTutor from './EditTutor'
 import { FaStar } from 'react-icons/fa';

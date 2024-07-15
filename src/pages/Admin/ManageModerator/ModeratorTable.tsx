@@ -1,5 +1,5 @@
 import { Table, TableColumnsType, Tag } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import DeleteModerator from './DeleteModerator';
 import EditModerator from './EditModerator';
 
@@ -18,22 +18,18 @@ interface Moderator {
 interface ModeratorTableProps {
   moderators: Moderator[];
   onReload: () => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
 }
 
-const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
 
-  const handleTableChange = (pagination: any) => {
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
   const columns: TableColumnsType<Moderator> = [
     {
       title: 'No',
-      dataIndex: 'index',
-      key: 'index',
-      render: (_text, _record, index) => (currentPage - 1) * pageSize + index + 1,
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Moderator Name',
@@ -107,15 +103,18 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload })
   ];
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} dataSource={moderators}
+      <Table
+        rowKey={'id'}
+        columns={columns}
+        dataSource={moderators}
+        scroll={{ x: true }}
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: moderators.length,
+          onChange: onPageChange,
           showSizeChanger: false,
+          total: totalElements,
         }}
-        onChange={handleTableChange}
-        scroll={{ x: true }}
       />
     </div>
   );
