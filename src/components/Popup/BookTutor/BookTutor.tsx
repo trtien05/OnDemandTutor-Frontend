@@ -26,6 +26,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
   const [selectedId, setSelectedId] = useState<number[]>([]);
   const [subjects, setSubjects] = useState<string[]>([]);
   const [loading, setLoading] = useState(false);
+  const [confirm, setConfirm] = useState(false);
   const [form] = Form.useForm();
   const navigate = useNavigate();
 
@@ -91,6 +92,12 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
     form.validateFields(['selectedSlots']);
   }, [selectedSchedule]);
 
+  const handleConfirm = (e: any) => {
+    if (selectedSchedule.length > 0 && form.getFieldValue('subjects')!== undefined) {
+      setConfirm(e.target.checked);
+    } else form.validateFields(['selectedSlots']);
+  }
+
   const handleOk = async (values:any) => {
     setLoading(true); // Set loading state to true when form is submitted
     form.validateFields(['selectedSlots'])
@@ -142,6 +149,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
             htmlType="submit"
             loading={loading}
             form='bookTutorForm'
+            disabled={!confirm}
             style={{ marginRight: '2%', width: '45%' }}
           >
             Send
@@ -208,6 +216,14 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
             name='description' 
             placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
           </FormStyled.FormItem>
+          <FormStyled.FormCheckbox 
+            name='confirm'
+            style={{ margin: `auto`, marginBottom: `5px` }}
+            checked={confirm}
+            defaultChecked={confirm}
+            onChange={handleConfirm}>
+            I have carefully checked the schedule and confirm the booking.
+          </FormStyled.FormCheckbox>
         </FormStyled.FormWrapper>
       </Modal>
     </>
