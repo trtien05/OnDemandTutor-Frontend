@@ -39,15 +39,7 @@ const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
             key: config.routes.student.profile,
         },
         {
-            label: (
-                <span style={role === 'TUTOR' && status === 'ACTIVE' ? { fontWeight: '500' } : {}}>
-                    {role === 'TUTOR' && status === 'ACTIVE' ? (
-                        'My Schedule'
-                    ) : (
-                        <Link to={config.routes.student.studySchedule} style={{ color: 'black' }}>My Schedule</Link>
-                    )}
-                </span>
-            ),
+            label: role === 'TUTOR' && status === 'ACTIVE' ? <span style={{ fontWeight: '500' }}>My Schedule</span> : <Link to={config.routes.student.studySchedule}>My Schedule</Link>,
             key: 'my-schedule',
             children:
                 role === 'TUTOR' && status === 'ACTIVE'
