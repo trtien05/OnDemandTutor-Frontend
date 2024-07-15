@@ -3,16 +3,16 @@ import {
   UploadFile,
   Button,
   Image,
-  Input,
-  Row,
+  Form,
 } from "antd";
 import ImgCrop from "antd-img-crop";
-import Upload, { RcFile } from "antd/es/upload";
-import { useState } from "react";
+import Upload, { RcFile, UploadChangeParam } from "antd/es/upload";
+import { useEffect, useState } from "react";
 import { aboutForm } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { useAuth } from "../../hooks";
+import { validateFileSize, validateFileType } from "../../utils/UploadImg";
+import dayjs from 'dayjs';
 //Using the Form1Props interface ensures type safety and clarity,
 //making it easier to understand what props the Form1 component expects and how they should be used.
 interface Form1Props {
@@ -34,18 +34,48 @@ const Form1: React.FC<Form1Props> = ({
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState<string | null>(null);
-  const [imageUrl, setImageUrl] = useState<string | null>(initialValues?.imageUrl || null);
-  const { user } = useAuth();
+  const [previewImage, setPreviewImage] = useState<string>('');
+  const [form] = Form.useForm();
 
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
-    for (let index = 0; index < newFileList.length; index++) {
-      newFileList[index].status = 'done'
-
+  const onChange = ({ fileList: newFileList }: UploadChangeParam<UploadFile>) => {
+    if (newFileList.length < 1) {
+      setFileList(newFileList);
     }
-    console.log(user)
+    else {
+      setFileList(newFileList);
+      if (!validateFileSize(newFileList[0], 5)) {
+        newFileList[0].status = 'error';
+        newFileList[0].response = 'File size must be less than 5MB';
+        return;
+      }
+      if (!validateFileType(newFileList[0], 'image/png') &&
+        !validateFileType(newFileList[0], 'image/jpg') &&
+        !validateFileType(newFileList[0], 'image/jpeg')) {
+        newFileList[0].status = 'error';
+        newFileList[0].response = 'File type must be .png, .jpg or .jpeg';
+        return;
+      };
+
+      for (let index = 0; index < newFileList.length; index++) {
+        newFileList[index].status = 'done'
+      }
+    }
   };
+
+  useEffect(() => {
+    if (!initialValues) {
+      form.setFieldsValue({
+        fullName: dataSource.fullName,
+        email: dataSource.email,
+        phoneNumber: dataSource.phoneNumber,
+        address: dataSource.address,
+        dayOfBirth: dataSource.dateOfBirth ? dayjs(dataSource.dateOfBirth, 'YYYY-MM-DD') : null,
+        gender: dataSource.gender ? `${(dataSource.gender as string).slice(0, 1).toUpperCase()}${(dataSource.gender as string).slice(1)}` : null,
+      });
+    }
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }, [dataSource]);
+
   const getBase64 = (file: RcFile) =>
     new Promise<string>((resolve, reject) => {
       const reader = new FileReader();
@@ -53,29 +83,28 @@ const Form1: React.FC<Form1Props> = ({
       reader.onload = () => resolve(reader.result as string);
       reader.onerror = (error) => reject(error);
     });
+
   const handlePreview = async (file: UploadFile) => {
 
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
-    setPreviewImage(file.url || file.preview);
+
+    if (file.preview) {
+      setPreviewImage(file.preview);
+    } else if (file.url) {
+      setPreviewImage(file.url);
+    }
     setPreviewOpen(true);
   };
 
   const handleFinish = (values: any) => {
-    onFinish({ ...values, fileList, imageUrl });
-  };
-  const beforeUpload = (file: RcFile) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      //   // setFileList((prev) => [...prev, { uid: file.uid, name: file.name, status: 'done', url: reader.result as string }]);
-      setImageUrl(reader.result as string);
-      setFileList((prev) => [...prev, file]);
-    };
-
-    // then upload `file` from the argument manually
-    return false;
+    if (values.gender && (values.gender.toLocaleString()).includes('ale')) 
+      values.gender = form.getFieldValue('gender').includes('Female')?'true':'false';
+    if (fileList[0] && fileList[0].status === 'done') {
+      onFinish({ ...values, fileList });
+    }
+    else onFinish({ ...values, fileList: [] });
   };
 
   return (
@@ -89,8 +118,9 @@ const Form1: React.FC<Form1Props> = ({
         labelAlign="left"
         layout="vertical"
         requiredMark={false}
+        form={form}
         size="middle"
-        onFinish={handleFinish}
+        onFinish={(values) => handleFinish(values)}
         initialValues={initialValues}
       >
         <FormStyled.FormContainer>
@@ -108,70 +138,59 @@ const Form1: React.FC<Form1Props> = ({
                 name={field.name}
                 rules={field.rules}
                 $width={field.$width ? field.$width : "100%"}
-
+                initialValue={field.initialValue}
                 validateFirst
               >
-                {/* {field.name.includes('phoneNumber') && (<Input placeholder={dataSource[field.name] != null ? dataSource[field.name] : "0123456789"} />)} */}
-                {field.name.includes('email') && (<Input placeholder={dataSource[field.name]} disabled />)}
                 {field.children}
               </FormStyled.FormItem>
             );
           })}
-          <div style={{ 'margin': '20px 0', 'width': '100%' }}>
-            <div>
-              <FormStyled.FormTitle style={{ display: `block` }}>
-                Profile picture
-              </FormStyled.FormTitle>
+          <FormStyled.FormTitle style={{ display: `block` }}>
+            Profile picture
+          </FormStyled.FormTitle>{" "}
+          <br />
+          <FormStyled.FormDescription style={{ display: `block` }}>
+            Make a great first impression!
+            <br />
+            Tutors who look friendly and professional get the most students
+          </FormStyled.FormDescription>
+          <br />
+
+          <FormStyled.FormItem
+            name="avatar"
+            valuePropName="fileList"
+            getValueFromEvent={(e) => e && e.fileList}
+            rules={
+              [
+                {
+                  required: false,
+                  message: "Please upload an avatar!"
+                }
+              ]
+            }
+            tooltip={{ title: 'Please upload an avatar!' }}
+          >
+            <div style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}>
+              <ImgCrop
+                rotationSlider
+                quality={1}
+                showReset
+                showGrid
+              >
+                <Upload
+                  name="avatar"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onChange={onChange}
+                  onPreview={handlePreview}
+                  accept=".jpg,.jpeg,.png"
+                  style={{ display: `flex`, alignItems: `center`, justifyContent: `center` }}
+                >
+                  {fileList.length < 1 && "+ Upload"}
+                </Upload>
+              </ImgCrop>
             </div>
-
-            <div style={{ 'marginTop': '30px' }}>
-              <FormStyled.FormDescription>
-                Make a great first impression!
-                <br />
-                Tutors who look friendly and professional get the most students
-              </FormStyled.FormDescription>
-            </div>
-
-            <div>
-              <Row align='middle' justify='center'>
-                <Col style={{ margin: `0 auto` }}>
-                  <FormStyled.FormItem
-                    name="avatar"
-                    valuePropName="fileList"
-                    getValueFromEvent={(e) => e && e.fileList}
-                    rules={[{ required: false, message: "Please upload an avatar!" }]}
-
-                  >
-                    <ImgCrop
-                      rotationSlider
-                      quality={1}
-                      showReset
-                      showGrid
-                    >
-                      <Upload
-                        name="avatar"
-                        // action=''
-                        listType="picture-card"
-                        fileList={fileList}
-                        onChange={onChange}
-                        onPreview={handlePreview}
-                        accept=".jpg,.jpeg,.png"
-                      // beforeUpload={() => false} // Prevent upload by return false
-                      // beforeUpload={beforeUpload} 
-                      >
-                        {fileList.length < 1 && "+ Upload"}
-                      </Upload>
-                    </ImgCrop>
-
-                  </FormStyled.FormItem>
-                </Col>
-              </Row>
-
-            </div>
-          </div>
-
-
-
+          </FormStyled.FormItem>
 
           {previewImage && (
             <Image
@@ -202,8 +221,6 @@ const Form1: React.FC<Form1Props> = ({
               style={{ margin: `0px` }}
               checked={agreement}
               onChange={(e) => onAgreementChange(e.target.checked)}
-            // checked={isCheckedBox.current}
-            // onChange={(e) => setAgreement(e.target.checked)}
             >
               By clicking Save and continue, I confirm that I’m over 18 years
               old. I also have read and agreed with the{" "}
@@ -222,7 +239,7 @@ const Form1: React.FC<Form1Props> = ({
           </FormStyled.ButtonDiv>
         )}
       </FormStyled.FormWrapper>
-    </Col >
+    </Col>
   );
 };
 

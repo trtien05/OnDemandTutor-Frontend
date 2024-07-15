@@ -3,8 +3,9 @@ import { FieldType } from "./Form.fields";
 import * as FormStyled from "./Form.styled";
 import { InboxOutlined } from '@ant-design/icons';
 import useDocumentTitle from "../../hooks/useDocumentTitle";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Dragger from "antd/es/upload/Dragger";
+import { UploadChangeParam } from "antd/es/upload";
 
 const Form2 = ({
   diploma,
@@ -18,15 +19,18 @@ const Form2 = ({
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
 
+  useEffect(() => {
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }, []);
+
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
-    return e?.fileList;
+    return e?.fileList.length>0?[e.fileList[e.fileList.length - 1]]:[];
   };
-  const onChange = ({ fileList: newFileList }) => {
-    setFileList(newFileList);
+  const onChange = ({ fileList: newFileList }: UploadChangeParam<UploadFile>) => {
+    setFileList([newFileList[newFileList.length - 1]]);
   };
   const handleFinish = (values: any) => {
     onFinish({ ...values, fileList })
@@ -89,7 +93,6 @@ const Form2 = ({
                           fileList={fileList}
                           listType="picture"
                           showUploadList={true}
-                          // onChange={onDiplomaFileChange}
                           onChange={onChange}
                           accept=".jpg,.jpeg,.png,.pdf"
                           beforeUpload={() => false} // Prevent upload by return false
@@ -98,7 +101,7 @@ const Form2 = ({
                             <InboxOutlined />
                           </p>
                           <p className="ant-upload-text">Click or drag file to this area to upload</p>
-                          <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file.</p>
+                          <p className="ant-upload-hint">Support for a single image (JPG/PNG) or PDF file no larger than 5MB</p>
                         </Dragger>)}
                       {field.children}
                     </FormStyled.FormItem>

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
-import { Select, Row, Col, Slider } from 'antd';
+import { useEffect, useState } from 'react';
+import { Select, Row, Col, Slider, Skeleton } from 'antd';
 import * as Styled from './SearchTutors.styled';
 import Container from '../../components/Container';
 import TutorsList from '../../components/TutorsList/TutorsList'
 import { useDocumentTitle } from '../../hooks';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
 import Pagination from '../../components/Pagination/Pagination';
+import config from '../../config';
 const { Option } = Select;
 
 
@@ -21,25 +22,25 @@ const SearchTutors = () => {
   const [maxPrice, setMaxPrice] = useState<number>(priceRange[1]);
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Tutor[]>([]);
-  const [data, setData] = useState<Tutor[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [tutorPerPage] = useState(4);
   const [totalAmountofTutors, setTotalAmountTutors] = useState(0);
   const [totalPages, setTotalPages] = useState(0);
+  useEffect(() => {
+    setMinPrice(priceRange[0]);
+    setMaxPrice(priceRange[1]);
+  }, [])
 
   const [searchUrl, setSearchUrl] = useState('');
 
   const handleSpecialtyChange = (value: unknown) => {
     setSpecialty(value as string);
-    console.log(specialty);
   };
   const handleTutorLevelChange = (value: unknown) => {
     setTutorLevel(value as string);
-    console.log(tutorLevel);
   };
   const handleSortChange = (value: unknown) => {
     setSortBy(value as string);
-    console.log(sortBy);
   };
   const handleSave = () => {
     let url = ``;
@@ -66,7 +67,8 @@ const SearchTutors = () => {
 
 
   useEffect(() => {
-    const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
+    setInitLoading(true);
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
 
     let url: string = '';
 
@@ -79,7 +81,6 @@ const SearchTutors = () => {
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
-        setData(res.content);
         setList(res.content);
         setTotalAmountTutors(res.totalElements);
         setTotalPages(res.totalPages);
@@ -89,10 +90,10 @@ const SearchTutors = () => {
 
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
+
   const onChangeComplete = (value: number | number[]) => {
     setPriceRange(value as [number, number]);
   };
-
 
   const priceDropdownRender = () => (
     <div style={{ padding: 8 }}>
@@ -160,6 +161,7 @@ const SearchTutors = () => {
                 <Styled.StyledSelect placeholder="Sort By" onChange={handleSortChange}>
                   <Option value="Sort By">Sort By</Option>
                   <Option value="Rating">Rating</Option>
+                  <Option value="Price">Price</Option>
                 </Styled.StyledSelect>
               </Col>
 
@@ -182,7 +184,7 @@ const SearchTutors = () => {
       <Styled.TitleWrapper>
         <Container>
           <Styled.TotalTutorAvaiable level={1}>
-            {totalAmountofTutors} tutors available
+            {initLoading ? <Skeleton.Input active size='small' style={{ display: 'flex' }} /> : `${totalAmountofTutors}`} tutors available
           </Styled.TotalTutorAvaiable>
         </Container>
       </Styled.TitleWrapper>

@@ -7,3 +7,7 @@ export const getTutorSchedule = (tutorId: number) => {
 export const createBooking = (studentId: number, booking: any) => {
     return post(`/api/appointments/students/${studentId}`, booking);
 };
+
+export const sendBookingEmail = (appointmentId: number) => {
+    return post(`/api/appointments/${appointmentId}/send-booking-email`);
+}

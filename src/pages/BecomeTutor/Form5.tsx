@@ -1,8 +1,9 @@
-import { Col, Form, Button, Grid, Input } from 'antd';
+import { Col, Form, Button, Grid } from 'antd';
 import { FieldType } from './Form.fields';
 import * as FormStyled from './Form.styled';
 import useDocumentTitle from '../../hooks/useDocumentTitle';
 import { theme } from '../../themes';
+import { useEffect } from 'react';
 
 const { useBreakpoint } = Grid;
 
@@ -16,18 +17,15 @@ const Form5 = ({ onFinish,
   onVisibilityChange,
   onTimeslotAgreementChange,
   timeslotForm }: any) => {
-  useDocumentTitle('Become a tutor');
+  useDocumentTitle('Become A tutor | MyTutor');
 
   const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
   const screens = useBreakpoint()
-  const validateIntegerInRange = (_: unknown, value: number) => {
-    const parsedValue = Number(value);
-    if (!(Number.isInteger(parsedValue)) || value < 1 || value > 8) {
-      return Promise.reject("Please enter a valid integer between 1 and 8");
-    }
-    return Promise.resolve();
-  };
+
+  useEffect(() => {
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }, []);
 
   return (
     < Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
@@ -93,22 +91,6 @@ const Form5 = ({ onFinish,
                 )}
               </FormStyled.TimeslotStyle>
             ))}
-            <FormStyled.FormItem
-              key='noOfWeek'
-              label='Number of weeks apply'
-              name='noOfWeek'
-              rules={[{
-                required: true,
-                message: 'You must insert in this field'
-              },{
-                validator: validateIntegerInRange,
-                message: 'Please enter a valid integer between 1 and 8'
-              }]}
-              $width={'100%'}
-              validateFirst
-            >
-              <Input placeholder='Max 8' type='number' max='8' min='1' />
-            </FormStyled.FormItem>
           </FormStyled.FormContainer>
 
 
@@ -133,7 +115,7 @@ const Form5 = ({ onFinish,
               valuePropName="checked"
               rules={[{
                 required: true,
-                message: 'You must agree to our Terms and Condition to proceed'
+                message: 'You must make sure your availability to proceed.'
               }]}
               validateFirst
             >

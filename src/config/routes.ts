@@ -15,18 +15,36 @@ const routes = {
         searchQuestions: '/search-questions',
     },
     student: {
-        profile: '/profile',
-        studentSchedule: '/student-schedule',
-        makePayment: '/make-payment',
-        paymentSuccess: '/confirm-payment',
-        registerTutor: '/register-tutor',
-        chatRoom: '/chat-room',
+        profile: '/profile', // This can be accessed by both
+        makePayment: '/make-payment', // This can be accessed by both
+        studySchedule: '/study-schedule', // This can be accessed by both
+        paymentSuccess: '/confirm-payment', // This can be accessed by both
+        chatRoom: '/chat-room', // This can be accessed by both
+        registerTutor: '/register-tutor', // This can be accessed by both
+        registerStatus: '/register-status',
     },
     tutor: {
-        makePayment: '/make-payment',
-        paymentSuccess: '/confirm-payment',
         profile: '/tutor-profile',
-        tutorSchedule: '/tutor-schedule',
+        makePayment: '/make-payment', // This can be accessed by both
+        studySchedule: '/study-schedule', // This can be accessed by both
+        paymentSuccess: '/confirm-payment', // This can be accessed by both
+        teachingSchedule: '/teaching-schedule',
+        chatRoom: '/chat-room', // This can be accessed by both
+        registerTutor: '/register-tutor', // This can be accessed by both
+        withdrawRequest: '/withdraw-request',
+    },
+    admin: {
+        dashboard: '/admin',
+        manageTutor: '/admin/tutors',
+        manageModerator: '/admin/moderator',
+        manageStudent: '/admin/student',
+        manageSalary: '/admin/salary',
+    },
+    moderator: {
+        main: '/moderator',
+        manageTutor: 'tutors',
+        manageQuestion: 'questions',
+        manageDocument: 'documents',
     },
     api: {
         loginGoogle: '/api/auth/callback/google/redirect',

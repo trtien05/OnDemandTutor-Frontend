@@ -1,0 +1,84 @@
+import { Table } from 'antd';
+import React from 'react';
+import { Question } from '../../../components/QuestionList/Question.type';
+import QuestionInfo from './QuestionInfo';
+
+interface TutorTableProps {
+    questions: Question[];
+    onReload: () => void;
+}
+
+const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
+    const columns = [
+        {
+            title: 'No',
+            key: 'index',
+            dataIndex: 'id',
+            render: (_: unknown, __: unknown, index: number) => index + 1 + pagination.pageSize * (pagination.current - 1),
+        },
+        {
+            title: 'Title',
+            dataIndex: 'title',
+            key: 'title',
+        },
+        {
+            title: 'Subject',
+            dataIndex: 'subjectName',
+            key: 'subject',
+        },
+        {
+            title: 'Uploaded by',
+            key: 'fullName',
+            render: (record: Question) => record.account.fullName
+        },
+        {
+            title: 'Email',
+            key: 'email',
+            render: (record: Question) => record.account.email
+        },
+        {
+            title: 'Created at',
+            dataIndex: 'createdAt',
+            key: 'createdAt',
+        },
+
+        {
+            title: 'Action',
+            dataIndex: 'action',
+            key: 'action',
+            render: (_: any, record: Question) => (
+                <>
+                <QuestionInfo question={record} onReload={onReload} />
+                </>
+            )
+        }
+    ];
+
+    const [pagination, setPagination] = React.useState({
+        current: 1,
+        pageSize: 7,
+    });
+
+    const handleTableChange = (pagination: any) => {
+        setPagination(pagination);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
+    return (
+        <div>
+            <Table rowKey={'id'} 
+                pagination={{
+                    pageSize: pagination.pageSize,
+                    current: pagination.current,
+                    total: questions.length,
+                    onChange: (page, pageSize) => {
+                        handleTableChange({ current: page, pageSize });
+                    }
+                }}
+                columns={columns} 
+                dataSource={questions} />
+        </div>
+    );
+}
+
+export default QuestionTable;

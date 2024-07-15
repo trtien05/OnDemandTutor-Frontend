@@ -1,6 +1,6 @@
 import * as Styled from './Home.styled';
 
-import { Col, Collapse, theme, Row, Skeleton, List } from 'antd';
+import { Col, Collapse, theme, Row } from 'antd';
 import { CSSProperties, useEffect, useState } from 'react';
 
 import Container from '../../components/Container';
@@ -19,14 +19,16 @@ import Link from '../../components/Link';
 import config from '../../config';
 import TutorsList from '../../components/TutorsList/TutorsList';
 import { Tutor } from '../../components/TutorsList/Tutor.type';
+import { getTutorList } from '../../utils/tutorAPI';
+import { MdOutlineKeyboardArrowRight } from "react-icons/md";
 
 
 const text = [`
  My Tutor offers unparalleled flexible scheduling, accommodating the diverse needs of students and tutors. Whether you’re juggling school, work, or other activities, you can easily find a time that fits your busy lifestyle. Our platform allows for seamless coordination across different time zones and schedules, ensuring that education is convenient and accessible. This flexibility enhances learning by making it easier to maintain consistent study sessions, leading to better academic outcomes without the stress.
-`,`
+`, `
 Affordability is a key feature of My Tutor, designed to make quality education accessible to everyone. Our competitive pricing and various payment plans cater to different budgets, ensuring that financial constraints don’t hinder learning opportunities. We provide exceptional value without compromising on quality, allowing more students to benefit from personalized tutoring. By offering cost-effective solutions, My Tutor aims to remove financial barriers and support students in achieving their educational goals.`
-,`
-My Tutor boasts a team of industry-expert tutors who bring real-world experience and knowledge to their teaching. Each tutor is carefully selected for their expertise and passion for education, providing students with insights that extend beyond textbooks. This ensures that learners receive top-tier education from professionals who have excelled in their fields. Our expert tutors not only impart knowledge but also inspire and motivate students to reach their full potential through engaging and informative sessions.`,`
+    , `
+My Tutor boasts a team of industry-expert tutors who bring real-world experience and knowledge to their teaching. Each tutor is carefully selected for their expertise and passion for education, providing students with insights that extend beyond textbooks. This ensures that learners receive top-tier education from professionals who have excelled in their fields. Our expert tutors not only impart knowledge but also inspire and motivate students to reach their full potential through engaging and informative sessions.`, `
 My Tutor provides customized support tailored to each student’s unique learning needs. Recognizing that every learner is different, our platform offers personalized lesson plans and targeted feedback. Tutors focus on individual strengths and address specific challenges, creating a responsive and effective learning environment. This personalized approach helps students understand the material deeply, build confidence, and achieve their academic goals, ensuring a supportive and engaging educational experience.`
 ]
 
@@ -59,13 +61,16 @@ const getItems: (panelStyle: CSSProperties) => CollapseProps['items'] = (panelSt
 ];
 const Home = () => {
     useDocumentTitle('Home | MyTutor');
-    const [translateY, setTranslateY] = useState<number>(0);
-    const [hoveredTutor, setHoveredTutor] = useState<Tutor>();
     const listCategory = [ieltsImg, mathImg, programImg, toeicImg];
+    const services = [
+        { src: listCategory[0], alt: "Ielts", ImageComponent: Styled.BestServiceImage },
+        { src: listCategory[1], alt: "Math", ImageComponent: Styled.BestServiceImageMath },
+        { src: listCategory[2], alt: "Programming", ImageComponent: Styled.BestServiceImageProgram },
+        { src: listCategory[3], alt: "Toeic", ImageComponent: Styled.BestServiceImage },
+    ];
     const [initLoading, setInitLoading] = useState(true);
     const { token } = theme.useToken();
     const [list, setList] = useState<Tutor[]>([]);
-    const [data, setData] = useState<Tutor[]>([]);
     const panelStyle: React.CSSProperties = {
         marginBottom: 24,
         background: token.colorFillAlter,
@@ -74,17 +79,15 @@ const Home = () => {
         backgroundColor: '#B94AB7',
         padding: '10px',
     };
-
     useEffect(() => {
-        const baseUrl: string = `http://localhost:8080/api/tutors?pageNo=0&pageSize=3`;
-        fetch(baseUrl)
-            .then((res) => res.json())
-            .then((res) => {
-                setInitLoading(false);
-                setData(res.content);
-                setList(res.content);
-            });
+        const fetchTutors = async () => {
+            const responseTutorList = await getTutorList();
+            setInitLoading(false);
+            setList(responseTutorList.data.content);
+        }
+        fetchTutors();
     }, []);
+
     return (
         <>
             <DefaultBanner />
@@ -98,65 +101,26 @@ const Home = () => {
                             </Styled.BestServiceTitle>
 
                             <Styled.BestServiceDesc>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Explore popular categories to find the perfect tutor for your needs. Whether preparing for tests, learning a new language, or seeking academic help, our experienced tutors are here to guide you to success.
                             </Styled.BestServiceDesc>
                         </Col>
                     </Row>
 
-                    <Row gutter={[20, 20]} >
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImage src={listCategory[0]} alt="Ielts" />
-                                </Styled.BestServiceImageDiv>
-
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-                            </Styled.BestServiceItem>
-                        </Col>
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImageMath src={listCategory[1]} alt="Ielts" />
-
-                                </Styled.BestServiceImageDiv>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-                            </Styled.BestServiceItem>
-                        </Col>
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImageProgram src={listCategory[2]} alt="Ielts" />
-
-                                </Styled.BestServiceImageDiv>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-                            </Styled.BestServiceItem>
-                        </Col>
-                        <Col xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
-                            <Styled.BestServiceItem>
-                                <Styled.BestServiceImageDiv>
-                                    <Styled.BestServiceImage src={listCategory[3]} alt="Ielts" />
-
-                                </Styled.BestServiceImageDiv>
-                                <Link to={config.routes.public.searchTutors}>
-                                    <Styled.BestServiceButton>
-                                        See More {'>'}
-                                    </Styled.BestServiceButton>
-                                </Link>
-
-                            </Styled.BestServiceItem>
-                        </Col>
+                    <Row gutter={[20, 20]}>
+                        {services.map((service, index) => (
+                            <Col key={index} xxl={6} xl={6} lg={6} md={12} sm={24} xs={24}>
+                                <Styled.BestServiceItem>
+                                    <Styled.BestServiceImageDiv>
+                                        <service.ImageComponent src={service.src} alt={service.alt} />
+                                    </Styled.BestServiceImageDiv>
+                                    <Link to={config.routes.public.searchTutors}>
+                                        <Styled.BestServiceButton>
+                                            See More <MdOutlineKeyboardArrowRight size={15} style={{ marginTop: '2px' }} />
+                                        </Styled.BestServiceButton>
+                                    </Link>
+                                </Styled.BestServiceItem>
+                            </Col>
+                        ))}
                     </Row>
                 </Container>
             </Styled.BestServiceSection>
@@ -169,7 +133,7 @@ const Home = () => {
                                 Best Tutors
                             </Styled.BestServiceTitle>
                             <Styled.BestServiceDesc>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Connect with top-rated tutors who provide personalized and effective teaching. Achieve your goals with expert help in academics, test prep, and skill development. Excel with the best!
                             </Styled.BestServiceDesc>
                         </Col>
 
@@ -190,7 +154,7 @@ const Home = () => {
                             </Styled.BestServiceTitle>
 
                             <Styled.BestServiceDesc>
-                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                                Explore our FAQ section to find answers to common queries about our online tutoring services.
                             </Styled.BestServiceDesc>
                         </Col>
                     </Row>
@@ -246,10 +210,10 @@ const Home = () => {
                                     <Styled.FeedbackImg src={feedbackImg} alt="feedback" />
                                     <Styled.StudentInfor>
                                         <Styled.SchoolName>
-                                            College Student
+                                            FPT University
                                         </Styled.SchoolName>
                                         <Styled.StudentName>
-                                            ABC
+                                            Nguyen Van A
                                         </Styled.StudentName>
                                     </Styled.StudentInfor>
 

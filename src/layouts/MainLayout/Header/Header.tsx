@@ -13,29 +13,8 @@ import { HeaderProps, MenuType } from './Header.type';
 import * as Styled from './Header.styled';
 import MobileMenu from '../../../components/Mobile/MobileMenu';
 
-// const items: MenuProps['items'] = [
-//     {
-//         label: <Link to={config.routes.student.profile}>My Profile</Link>,
-//         key: config.routes.student.profile,
-//     },
-//     {
-//         label: <Link to={config.routes.student.studentSchedule}>My Schedule</Link>,
-//         key: config.routes.student.studentSchedule,
-//     },
-//     {
-//         type: 'divider',
-//     },
-//     {
-//         label: (
-//             <Link to={config.routes.public.login} onClick={() => cookieUtils.clear()}>
-//                 Log Out
-//             </Link>
-//         ),
-//         key: config.routes.public.login,
-//     },
-// ];
 
-const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
+const Header = ({ role, navbar, menu, avatarUrl, status }: HeaderProps) => {
     const navigate = useNavigate();
     const [show, setShow] = useState(false);
 
@@ -45,6 +24,7 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
         if (location.pathname !== config.routes.public.home) return;
 
         navigate(config.routes.public.home);
+
     }, [location.search]);
 
     const transitionNavBar = () => {
@@ -55,12 +35,27 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
 
     const items: MenuProps['items'] = [
         {
-            label: <Link to={config.routes.student.profile}>My Profile</Link>,
+            label: <Link to={config.routes.student.profile}>Profile</Link>,
             key: config.routes.student.profile,
         },
         {
-            label: <Link to={config.routes.student.studentSchedule}>My Schedule</Link>,
-            key: config.routes.student.studentSchedule,
+            label: (
+                <span style={role === 'TUTOR' && status === 'ACTIVE' ? { fontWeight: '500' } : {}}>
+                    {role === 'TUTOR' && status === 'ACTIVE' ? (
+                        'My Schedule'
+                    ) : (
+                        <Link to={config.routes.student.studySchedule} style={{ color: 'black' }}>My Schedule</Link>
+                    )}
+                </span>
+            ),
+            key: 'my-schedule',
+            children:
+                role === 'TUTOR' && status === 'ACTIVE'
+                    ? [
+                        { key: config.routes.student.studySchedule, label: <Link to={config.routes.student.studySchedule}>Study Session</Link> },
+                        { key: config.routes.tutor.teachingSchedule, label: <Link to={config.routes.tutor.teachingSchedule}>Teaching Session</Link> },
+                    ]
+                    : undefined,
         },
         {
             type: 'divider',
@@ -76,9 +71,9 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
     ];
 
     // Add "Tutoring Details" link if the role is "TUTOR"
-    if (role === 'TUTOR') {
+    if (role === 'TUTOR' && status === 'ACTIVE') {
         items.splice(1, 0, {
-            label: <Link to={config.routes.tutor.profile}>Tutor Profile</Link>,
+            label: <Link to={config.routes.tutor.profile}>Tutoring Info</Link>,
             key: config.routes.tutor.profile,
         });
     }
@@ -127,8 +122,6 @@ const Header = ({ role, navbar, menu, avatarUrl }: HeaderProps) => {
 
                     <Col lg={0}>
                         <Flex gap={16}>
-
-
                             <MobileMenu menu={menu} />
                         </Flex>
                     </Col>

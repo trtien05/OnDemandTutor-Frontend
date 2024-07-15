@@ -1,9 +1,6 @@
-import { Flex, Input } from 'antd';
+import { Flex } from 'antd';
 import styled, { css } from 'styled-components';
 import { theme } from '../../../themes';
-
-const { Password } = Input;
-
 export const CustomerWrapper = styled.div`
     padding: 30px;
     background-color: ${theme.colors.white};
@@ -63,9 +60,9 @@ export const CustomerInfoItem = styled(Flex)`
     width: 100%;
 
     & h3.ant-typography {
-        margin-bottom: 0;
+        margin-bottom: 10px;
         color: ${theme.colors.primary};
-        font-size: 2.0rem;
+        font-size: 2rem;
         font-weight: 600;
         line-height: 1.4;
     }
@@ -100,23 +97,6 @@ export const CustomerInfoBox = styled(Flex)`
             color: ${theme.colors.primary};
         }
     }
-`;
-
-export const CustomerIdentityCard = styled(Password)`
-    &.ant-input-password {
-        background-color: ${theme.colors.shadowButton};
-        border-color: ${theme.colors.borderInput};
-    }
-
-    & input.ant-input {
-        color: ${theme.colors.textQuaternary};
-        background-color: transparent;
-    }
-`;
-
-export const CustomerList = styled.div`
-    height: 515px;
-    overflow-y: scroll;
 `;
 
 export const CustomerItem = styled.article`
@@ -184,4 +164,10 @@ export const CustomerItemContent = styled(Flex)`
             color: ${theme.colors.textSecondary};
         }
     }
+`;
+export const ScrollableContainer = styled.div`
+    overflow: auto;
+    max-width: 100%;
+    max-height: 100%;
+    // border: 1px solid #ddd; /* Optional: Add a border for better visibility */
 `;

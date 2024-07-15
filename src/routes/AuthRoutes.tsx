@@ -5,8 +5,6 @@ import Login from '../pages/Login';
 import Register from '../pages/Register';
 import SetPassword from '../pages/SetPassword';
 import config from '../config';
-import BecomeTutor from '../pages/BecomeTutor';
-// import { useAuth } from '../hooks';
 import VerifyCode from '../pages/VerifyCode';
 import { useAuth } from '../hooks';
 

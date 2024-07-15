@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Select, Row, Col, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { Select, Row, Col, message, Skeleton } from 'antd';
 import * as Styled from './SearchQuestions.styled';
 import Container from '../../components/Container';
 import QuestionList from '../../components/QuestionList/QuestionList'
@@ -7,8 +7,8 @@ import { useDocumentTitle } from '../../hooks';
 import { Question } from '../../components/QuestionList/Question.type';
 import Pagination from '../../components/Pagination/Pagination';
 import CreateQuestion from '../../components/Popup/CreateQuestion/CreateQuestion';
+import config from '../../config';
 const { Option } = Select;
-
 
 const SearchQuestions = () => {
   useDocumentTitle("Search Question | MyTutor")
@@ -17,7 +17,6 @@ const SearchQuestions = () => {
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [initLoading, setInitLoading] = useState(true);
   const [list, setList] = useState<Question[]>([]);
-  const [data, setData] = useState<Question[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [questionPerPage] = useState(4);
   const [totalAmountQuestions, setTotalAmountQuestions] = useState(0);
@@ -29,10 +28,7 @@ const SearchQuestions = () => {
     setSubject(value as string);
   }
   const handleSave = () => {
-    const searchCriteria = {
-      subject,
-      searchKeyword,
-    };
+
     let url = ``;
 
     if (subject !== 'all') {
@@ -42,13 +38,13 @@ const SearchQuestions = () => {
       url += `&questionContent=${searchKeyword}`;
     }
     setSearchUrl(url);
-    console.log(searchCriteria)
-    // console.log(searchUrl);
+
   };
 
   useEffect(() => {
+    setInitLoading(true);
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
 
-    const baseUrl: string = `http://localhost:8080/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
     let url: string = '';
 
     if (searchUrl === '') {
@@ -56,27 +52,22 @@ const SearchQuestions = () => {
     } else {
       url = baseUrl + searchUrl
     }
-
     fetch(url)
       .then((res) => res.json())
       .then((res) => {
         setInitLoading(false);
-        setData(res.content);
         setList(res.content);
         setTotalAmountQuestions(res.totalElements);
         setTotalPages(res.totalPages);
-        // console.log("Fetched Data:", res.content);  // Add this line to debug the fetched data
       })
-      .catch((err) => console.error('Failed to fetch questions:', err));
-    window.scrollTo(0, 0);
-    console.log(url);
-
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [currentPage, searchUrl]);
 
 
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
   const options = [
+    { label: 'All', value: 'all' },
     { label: 'Mathematics', value: 'Mathematics' },
     { label: 'Chemistry', value: 'Chemistry' },
     { label: 'Biology', value: 'Biology' },
@@ -88,7 +79,8 @@ const SearchQuestions = () => {
     { label: 'Physics', value: 'Physics' },
     { label: 'Geography', value: 'Geography' },
     { label: 'History', value: 'History' },
-    { label: 'Coding', value: 'Coding' },
+    { label: 'Coding', value: 'Coding' }
+
   ];
   return (
     <>
@@ -126,11 +118,11 @@ const SearchQuestions = () => {
           </Styled.SearchWrapper>
         </Container>
       </Styled.FilterSection>
-
       <Styled.TitleWrapper>
         <Container>
           <Styled.TotalTutorAvaiable level={1}>
-            {totalAmountQuestions} questions available
+            {initLoading ? <Skeleton.Input active size='small' style={{ display: 'flex' }} /> : `${totalAmountQuestions}`} questions available
+
           </Styled.TotalTutorAvaiable>
         </Container>
       </Styled.TitleWrapper>

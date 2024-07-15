@@ -1,7 +1,5 @@
-import { Col, Image, Row, Space, Typography } from 'antd';
-
+import { Col, Image, Row, Typography } from 'antd';
 import styled from 'styled-components';
-import { theme } from '../../../themes';
 const { Title } = Typography;
 
 export const DefaultBannerSection = styled.section`

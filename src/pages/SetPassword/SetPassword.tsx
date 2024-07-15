@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 
 import AuthForm from '../../components/AuthForm';
@@ -31,7 +31,7 @@ const SetPassword = () => {
             setIsSubmitting(true);
 
             // Fetch API
-            const { data } = await resetPassword(newValues.password, newValues.email);
+            const { data } = await resetPassword(newValues);
             messageApi.success(data);
 
             // Navigate to login page
@@ -61,8 +61,7 @@ const SetPassword = () => {
 
     const description = (
         <SetPasswordDesc>
-            Must be 8 or more characters include a number, an uppercase letter, and a lowercase
-            letter.
+            Must be 8-16 characters, with at least 1 number, 1 uppercase, 1 lowercase, and 1 special character.
         </SetPasswordDesc>
     );
 

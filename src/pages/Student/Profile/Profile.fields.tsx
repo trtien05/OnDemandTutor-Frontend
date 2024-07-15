@@ -96,15 +96,11 @@ export const fields: FieldType[] = [
                 required: true,
                 message: 'Please select gender',
             },
-            // {
-            //     validator: validateWhitespace,
-            // },
         ],
         component: (
             <Select size="large" placeholder="Select gender" style={{ width: '100%' }}>
                 <Select.Option value={Gender.MALE}>Male</Select.Option>
                 <Select.Option value={Gender.FEMALE}>Female</Select.Option>
-                {/* <Select.Option value={Gender.OTHER}>Khác</Select.Option> */}
             </Select>
         ),
         halfWidth: true,

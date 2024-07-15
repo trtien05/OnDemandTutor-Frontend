@@ -1,67 +1,94 @@
-import React, { useEffect, useState } from 'react';
-import { Segmented, Divider, message } from 'antd';
+import { useEffect, useState } from 'react';
+import { message, Divider, Modal } from 'antd';
 import * as Styled from '../../Student/Appointment/Appointment.styled';
 import Container from '../../../components/Container/Container';
-import AppointmentList from '../../../components/AppointmentList/AppointmentList';
+import AppointmentList from '../../../components/AppointmentList/AppointmentList'
 import { useAuth, useDocumentTitle } from '../../../hooks';
-import { getAppointments } from '../../../utils/appointmentAPI';
-import type { Appointment } from '../../../components/AppointmentList/Appointment.type';
+import type { TimeSlot } from '../../../components/AppointmentList/Appointment.type';
+
 import AppointmentPagination from '../../Student/Appointment/AppointmentPagination/AppointmentPagination';
 
-const TeachingSchedule = () => {
-  useDocumentTitle('Teaching Schedule | MyTutor');
+import { cancelAppointment } from '../../../utils/appointmentAPI'; 
+import { ExclamationCircleOutlined } from '@ant-design/icons';
+import config from '../../../config';
+
+
+const StudentAppointment = () => {
+  useDocumentTitle("My Schedule | MyTutor")
+
 
   const [initLoading, setInitLoading] = useState(true);
-  const [list, setList] = useState<Appointment[]>([]);
+  const [list, setList] = useState<TimeSlot[]>([]);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(0);
+  const [appointmentsPerPage] = useState(5);
   const [messageApi, contextHolder] = message.useMessage();
-  const [viewMode, setViewMode] = useState<'Upcoming' | 'Past'>('Upcoming');
-  const user = useAuth();
+  const [modal, contextHolderModal] = Modal.useModal();
+  const { user } = useAuth();
+  const [viewMode, setViewMode] = useState<'Upcoming' | 'Past'>('Upcoming'); // State to manage view mode
+  const [update, setIsUpdate] = useState(false);
+
+  let isDone = false;
+  if (viewMode === 'Past') {
+    isDone = true;
+  }
 
   useEffect(() => {
-    const fetchAppointmentsData = async () => {
-      try {
-        const accountId = user?.accountId;
-        if (accountId) {
-          const res = await getAppointments(accountId, 'tutor'); // Pass role to API call
-          setList(res.content);
-          setTotalPages(res.totalPages);
-          setInitLoading(false);
-        }
-      } catch (error) {
-        console.error('Failed to fetch appointments:', error);
-        messageApi.error('Failed to fetch appointments');
-      }
-    };
+    if (!user) return;
+    setInitLoading(true);
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/schedules/accounts/${user?.id}?isDone=${isDone}&isLearner=false&pageNo=${currentPage - 1}&pageSize=${appointmentsPerPage}`;
 
-    fetchAppointmentsData();
-  }, [user, messageApi]);
+    fetch(baseUrl)
+      .then((res) => res.json())
+      .then((res) => {
+        setInitLoading(false);
+        setList(res.content);
+        setTotalPages(res.totalPages);
+      })
+      .catch((err) => console.error('Failed to fetch tutor appointment:', err));
+    window.scrollTo(0, 0);
 
-  const handleTabChange = (value: string) => {
+  }, [appointmentsPerPage, currentPage, user, viewMode, update, isDone]);
+
+  const handleTabChange = (value: any) => {
     setViewMode(value as 'Upcoming' | 'Past');
   };
-
   const paginate = (pageNumber: number) => setCurrentPage(pageNumber);
 
-  const filteredAppointments = () => {
-    if (viewMode === 'Upcoming') {
-      return list.filter(appointment => appointment.appointment.appointmentStatus === 'PAID');
-    } else if (viewMode === 'Past') {
-      return list.filter(appointment => ['DONE', 'CANCELED'].includes(appointment.appointment.appointmentStatus));
-    } else {
-      return [];
-    }
+  const confirmCancel = (timeslotId: number) => {
+    modal.confirm({
+      centered: true,
+      title: 'Do you want to cancel this lesson?',
+      content: 'Cancel this timeslot will not be refunded. Do you want to proceed?',
+      icon: <ExclamationCircleOutlined />,
+      okText: 'Confirm',
+      onOk: () => handleCancelAppointment(timeslotId),
+      cancelText: 'Back',
+    });
+  };
+  const handleCancelAppointment = (timeslotId: number) => {
+    if (!user) return;
+    cancelAppointment(timeslotId, user.id)
+      .then(() => {
+        messageApi.success('Lesson canceled successfully');
+        // Refetch appointments after cancellation
+        setCurrentPage(1); // Reset to first page
+        setIsUpdate(!update);
+      })
+      .catch(error => {
+        messageApi.error('Failed to cancel lesson');
+        console.error('Failed to cancel lesson:', error);
+      });
   };
 
   return (
-    <div style={{ backgroundColor: '#fff' }}>
+    <div style={{ backgroundColor: '#fff', paddingBottom: '30px' }}>
       {contextHolder}
-
+      {contextHolderModal}
       <Styled.TitleWrapper>
-        <Container>
+        <Container >
           <Styled.RowWrapper>
-            <Segmented<string>
+            <Styled.StyledSegmented
               options={['Upcoming', 'Past']}
               onChange={handleTabChange}
               value={viewMode}
@@ -69,18 +96,21 @@ const TeachingSchedule = () => {
           </Styled.RowWrapper>
           <Divider />
           <Styled.TotalTutorAvaiable level={1}>
-            {viewMode} Teaching
+            {viewMode} Teaching Lessons
           </Styled.TotalTutorAvaiable>
+
         </Container>
       </Styled.TitleWrapper>
 
-      <AppointmentList initLoading={initLoading} list={filteredAppointments()} />
+      <AppointmentList initLoading={initLoading} list={list} onCancel={confirmCancel} viewMode={viewMode} role='TUTOR' />
 
-      {totalPages > 1 && (
+      {totalPages > 1 &&
         <AppointmentPagination currentPage={currentPage} totalPages={totalPages} paginate={paginate} />
-      )}
+      }
     </div>
+
+
   );
 };
 
-export default TeachingSchedule;
+export default StudentAppointment;

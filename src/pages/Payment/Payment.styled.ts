@@ -1,4 +1,4 @@
-import { Form, Row, Typography } from 'antd';
+import { Row } from 'antd';
 import styled, { css } from 'styled-components';
 import { theme } from '../../themes';
 import Title from 'antd/es/typography/Title';
@@ -19,7 +19,6 @@ export const CheckoutWrapper = styled.div`
         font-weight: 500;
         line-height: 1.5;
     }
-
 `;
 
 export const PriceCalculation = styled.div`
@@ -75,7 +74,6 @@ export const PriceCalculation = styled.div`
     }
 `;
 
-
 export const CheckoutPayment = styled.div`
     margin-top: 12px;
     padding: 16px 20px 36px;
@@ -95,7 +93,6 @@ export const CheckoutPayment = styled.div`
     }
 
     & .ant-radio-wrapper:hover {
-        
     }
 
     & .ant-radio-wrapper:has(:checked) figure {
@@ -204,7 +201,7 @@ export const BorderLine = styled.hr`
     opacity: 20%;
     width: 100%;
     margin: 20px 0;
-`
+`;
 
 export const TutorItem = styled(Row)`
     display: flex;
@@ -223,11 +220,9 @@ export const TutorImage = styled.img`
     border-radius: 10px;
     display: flex;
     ${({ theme }) => theme.breakpoints.down('sm')} {
- 
-    margin-right: 15px;
-    max-width: 100%;
-    max-height: 100%;
-    
+        margin-right: 15px;
+        max-width: 100%;
+        max-height: 100%;
     }
 `;
 export const ResponsiveStyle = styled.div`
@@ -240,7 +235,7 @@ export const ResponsiveStyle = styled.div`
         justify-content: center;
         flex-wrap: wrap;
     }
-`
+`;
 
 export const TutorName = styled(Title)`
     &.ant-typography {
@@ -260,7 +255,6 @@ export const TutorEducationBachelorImage = styled.img`
     max-height: 20px;
     max-width: 20px;
     align-items: center;
-
 `;
 export const TutorEducationBachelor = styled.span`
     margin: 0 5px;
@@ -269,7 +263,7 @@ export const TutorEducationBachelor = styled.span`
 `;
 
 export const CheckSection = styled.section`
-    margin: 72px 0 134px;
+    margin: 130px 0 40px;
 `;
 
 export const CheckInner = styled.div`

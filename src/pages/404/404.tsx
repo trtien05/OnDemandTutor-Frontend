@@ -1,7 +1,7 @@
 import { useDocumentTitle } from '../../hooks';
 
 const NotFound = () => {
-    useDocumentTitle('Không Tìm Thấy Trang | MyTutor');
+    useDocumentTitle('Not Found Page | MyTutor');
 
     return <h1>Not Found Page</h1>;
 };

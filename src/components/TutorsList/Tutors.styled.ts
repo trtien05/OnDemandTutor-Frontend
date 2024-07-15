@@ -3,8 +3,7 @@ import { theme } from '../../themes';
 import { List, Row } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
-import { FaRegHeart, FaStar } from 'react-icons/fa';
-import { Link } from 'react-router-dom';
+import { FaStar } from 'react-icons/fa';
 
 export const FilterSection = styled.section`
     border-radius: 0px 0px 100px 100px;
@@ -42,7 +41,8 @@ export const BestTutorImage = styled.img`
 `;
 
 export const BestTutorContent = styled.div`
-    margin: 30px 0;
+    margin: 20px 0;
+    min-width: max-content;
     color: ${theme.colors.primary};
 `;
 
@@ -65,14 +65,10 @@ export const BestTutorEducationBachelorImage = styled.img`
     height: 16px;
 `;
 export const BestTutorEducationBachelor = styled.span`
-    margin: 0 5px;
-    line-height: 1.5;
     margin: 0 3px;
+    line-height: 1.5;
 `;
-export const BestTutorStudent = styled.div`
-    display: flex;
-    margin: 10px 0;
-`;
+
 export const BestTutorStudentImage = styled.img`
     width: 17px;
     height: 17px;
@@ -113,20 +109,7 @@ export const IconStyleStart = styled(FaStar)`
         height: 18px;
     }
 `;
-export const IconStyleHeart = styled(FaRegHeart)`
-    width: 18px;
-    height: 18px;
-    color: #b94ab7;
-    margintop: 10px;
-    ${({ theme }) => theme.breakpoints.down('xl')} {
-        width: 25px;
-        height: 25px;
-    }
-    ${({ theme }) => theme.breakpoints.down('lg')} {
-        width: 18px;
-        height: 18px;
-    }
-`;
+
 export const BookingRatingAndPrice = styled(Title)`
     &.ant-typography {
         color: ${theme.colors.primary};
@@ -196,14 +179,14 @@ export const ViewScheduleTutorButton = styled.button`
 export const TurtorVideo = styled.div<{ translate?: number }>`
     display: flex;
     justify-content: center;
-    align-items: center; /* Chú ý là "align-items", không phải "align-item" */
+    align-items: center;
     background: #fff;
     height: 200px;
     border-radius: 15px;
     margin-top: 20px;
     margin-bottom: 20px;
     transition: transform 0.3s ease;
-    transform: translateY(${(props) => props.translate}px); /* Sử dụng template literals và props */
+    transform: translateY(${(props) => props.translate}px);
 `;
 
 export const TutorFilteredSection = styled.section`

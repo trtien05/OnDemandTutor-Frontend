@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Modal, Input, Select, UploadFile, Typography, message, Form, Col } from 'antd';
+import { Button, Modal, Input, Select, UploadFile, Typography, message, Form } from 'antd';
 import Dragger from 'antd/es/upload/Dragger';
 import * as FormStyled from './CreateQuestion.styled';
 import { InboxOutlined } from '@ant-design/icons';
@@ -9,52 +9,45 @@ import { createQuestion } from '../../../utils/questionAPI';
 import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
 import config from '../../../config';
-import { RcFile } from 'antd/es/upload';
+const { Title } = Typography;
+
 interface CreateQuestionProps {
     messageApi: any;
 }
 const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
-    const {user, role} = useAuth();
+    const { user, role } = useAuth();
     const [open, setOpen] = useState(false);
-    const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
-    const [modalData, setModalData] = useState(null);
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
-        console.log('role:', role);
-        if(role === 'STUDENT'){
+        
+        if (role === 'STUDENT') {
             setOpen(true);
-        }else{
+        } else if (role === 'TUTOR') {
+            messageApi.error('Tutor Cannot Create Question')
+        }
+        else {
             navigate(config.routes.public.login);
         }
-        setOpen(true);
     };
     async function saveQuestion(studentId: number, formData: any) {
         const jsonBody = convertQuestionData(formData);
 
         try {
-            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
             const responseData = await createQuestion(studentId, jsonBody);
-
-            // Check response status
-
-            // Get response data
-            console.log('Question saved successfully:', responseData);
-            // Return success response
             messageApi.success('Question saved successfully'); // Display success message
             return responseData;
         } catch (error: any) {
-            console.log(error);
+            messageApi.error('Failed to save question'); // Display error message
         }
     }
 
     function convertQuestionData(formData: any) {
         const questionData = {
             content: formData[`content`],
+            //to ensure you are accessing the first file in the array of uploaded files.
             questionUrl: '' || formData[`questionFile`][0],
             subjectName: formData[`subject`],
             title: formData[`title`]
@@ -66,55 +59,52 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         setLoading(true);
         try {
             const values = await form.validateFields();
-            const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+
+            // Get the current date in YYYY-MM-DD format then slit it
+            //[0]accesses the first element of this array, which is the date part
+            const dateCreated = new Date().toISOString().split('T')[0]; 
+
             const uploadedFiles = await Promise.all(
-                fileList.map(async (file: UploadFile, index) => {
+                fileList.map(async (file: UploadFile) => {
                     if (file.originFileObj) {
                         const url = await uploadCreateQuestionFiles(
                             user?.id || 0,
                             file.originFileObj,
                             'CreateQuestion',
                             dateCreated,
-                            index,
                         );
-                        // console.log(`Uploaded file ${index} URL:`, url);
                         return { ...file, url };
                     }
                 }),
             );
-            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
-            setModalData(values);
-            // console.log('Clicked OK with values:', values);
-            setConfirmLoading(true);
-            await saveQuestion(user?.id||0, values);
+            // Add the file URLs to the form values
+            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); 
+            await saveQuestion(user?.id || 0, values);
             setTimeout(() => {
                 setOpen(false);
-                setConfirmLoading(false);
                 setLoading(false);
                 form.resetFields();
                 setFileList([]);
             }, 1000);
         } catch (info) {
-            console.log('Validate Failed:', info);
             setLoading(false);
         }
     };
 
     const handleCancel = () => {
-        // console.log('Clicked cancel button');
         form.resetFields(); // Reset the form fields
         setOpen(false);
     };
 
 
-    const handleFileSizeCheck = (file:any) => {
+    const handleFileSizeCheck = (file: any) => {
         const isLt5M = file.size / 1024 / 1024 < 5;
         if (!isLt5M) {
             message.error('File must be smaller than 5MB!');
         }
         return isLt5M;
     };
-    
+
     const onChange = (info: any) => {
         let newFileList = info.fileList;
 
@@ -128,7 +118,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
 
         setFileList(newFileList);
         form.setFieldsValue({ questionFile: newFileList }); // Update the form value
-        // console.log('File List:', newFileList);
     };
     const options = [
         { label: 'Mathematics', value: 'Mathematics' },
@@ -144,7 +133,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         { label: 'History', value: 'History' },
         { label: 'Coding', value: 'Coding' },
     ];
-    const { Title } = Typography;
     return (
         <>
             <Button
@@ -238,17 +226,13 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                                     max: 1000,
                                 }}
                                 placeholder="Type your question here"
-                                style={{ height: '200px' }}
+                                style={{ height: '200px', resize: 'none' }}
                             ></FormStyled.CommentInput>
                         </FormStyled.FormItem>
                         <FormStyled.FormTitle>Upload a File</FormStyled.FormTitle>
                         <FormStyled.FormItem
                             name="questionFile"
                             valuePropName="fileList"
-                            // getValueFromEvent={(e) => {
-                            //     console.log('Get value from event:', e); // Log the event to debug
-                            //     return Array.isArray(e) ? e : e && e.fileList;
-                            // }}
                         >
                             <Dragger
                                 name="questionFile"

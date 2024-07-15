@@ -1,6 +1,6 @@
 import { Row, Col, Checkbox, Button, Input } from "antd";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import * as FormStyled from "./Form.styled";
 import { CommentInput } from "./Form.styled";
@@ -22,6 +22,11 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
       setUrl("");
     }
   };
+
+  useEffect(() => {
+    window.scrollTo({ top: 100, behavior: "smooth" });
+  }, []);
+
   const onChange = (value: number | string | null) => {
     if (typeof value === "string") {
       setPriceValue(value);
@@ -46,9 +51,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     if (!value) return "";
     // Use the helper function to ensure value is a number
     const numberValue = formatNumberValue(value);
-    // Use Intl.NumberFormat for Vietnamese locale
-    const formattedValue = new Intl.NumberFormat("vi-VN").format(numberValue);
-    return formattedValue;
+    return numberValue.toLocaleString("en-US");
   };
   const parser = (value: string | undefined) => {
     // Remove non-digit characters (commas, spaces, etc.)
@@ -139,7 +142,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             hobbies.
           </FormStyled.FormDescription>
           <FormStyled.FormItem name="description" $width={"100%"}>
-            <CommentInput rows={6} placeholder="Tell us about yourself..." />
+            <CommentInput style={{ resize: 'none' }} rows={6} placeholder="Tell us about yourself..." />
           </FormStyled.FormItem>
 
           <FormStyled.FormTitle>Google Meet Link</FormStyled.FormTitle>
@@ -196,7 +199,6 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             ></Input>
           </FormStyled.FormItem>
           {url && (
-            // style={{ width: "100%", height: "100%", display: "flex" }}
             <div style={{ width: "100%", margin: "10px 0 20px 0" }}>
               <ReactPlayer url={url} controls={true} width="100%" />
             </div>

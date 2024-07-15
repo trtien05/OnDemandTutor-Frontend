@@ -14,7 +14,7 @@ export enum Degree {
 }
 
 export enum Subject {
-    MATH = 'Math',
+    MATH = 'Mathematics',
     CHEMISTRY = 'Chemistry',
     BIOLOGY = 'Biology',
     PHYSICS = 'Physics',
@@ -35,11 +35,11 @@ export enum Subject {
 }
 
 
-export enum AccountStatus {
-    ACTIVE = 'ACTIVE',
-    INACTIVE = 'UNVERIFIED',
-    PROCESSING = 'PROCESSING',
-    BANNED = 'BANNED',
+export const AccountStatus: { [key: string]: string } = {
+    ACTIVE : 'ACTIVE',
+    INACTIVE : 'UNVERIFIED',
+    PROCESSING : 'PROCESSING',
+    BANNED : 'BANNED',
 }
 
 export const Role: { [key: string]: string } = {
@@ -254,8 +254,8 @@ export enum CancelOption {
 }
 
 export enum Gender {
-    MALE = 1,
-    FEMALE = 0,
+    MALE = 0,
+    FEMALE = 1,
     
 }
 export enum AppointmentStatus {
@@ -265,4 +265,11 @@ export enum AppointmentStatus {
     CANCELED = 'CANCELED',
     REFUNDED = 'REFUNDED',
     DONE = 'DONE',
+}
+export enum QuestionStatus {
+    UNSOLVED = 'UNSOLVED',
+    SOLVED = 'SOLVED',
+    PROCESSING = 'PROCESSING',
+    REJECTED = 'REJECTED'
+    // Add more statuses as needed
 }
