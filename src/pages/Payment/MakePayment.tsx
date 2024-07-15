@@ -207,7 +207,7 @@ const MakePayment = () => {
         description: 'Your booking has been cancelled',
       });
       setTimeout(() => {
-        navigate(config.routes.public.home);
+        navigate(config.routes.public.searchTutors+`/${tutorId}`);
       }, 2000);
     }
   }
