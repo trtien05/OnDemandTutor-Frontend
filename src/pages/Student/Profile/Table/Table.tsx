@@ -146,7 +146,7 @@ export const PaymentColumns: TableColumnsType<Payment> = [
     {
         title: 'Created At',
         dataIndex: 'createdAt',
-        render: (text) => dayjs(text).format('YYYY-MM-DD'),
+        render: (text) => dayjs(text).format('DD-MM-YYYY'),
         sorter: (a, b) => (dayjs(a.createdAt).isAfter(dayjs(b.createdAt)) ? 1 : -1),
     },
     {

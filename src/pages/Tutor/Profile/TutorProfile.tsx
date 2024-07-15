@@ -1,9 +1,9 @@
 import { useEffect, useState } from 'react'
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
 import useAuth from '../../../hooks/useAuth';
-import { getTutorById, getTutorStatistic } from '../../../utils/tutorAPI';
+import { getTutorById, getTutorMonthlyStatistic, getTutorStatistic } from '../../../utils/tutorAPI';
 import { Certificate, Details, Education } from './TutorProfile.type';
-import { Avatar, Col, Flex, Radio, RadioChangeEvent, Row, Skeleton, Spin, Typography, notification } from 'antd';
+import { Avatar, Button, Col, DatePicker, Flex, Radio, Row, Skeleton, Spin, Tag, Typography, notification } from 'antd';
 import * as Style from './TutorProfile.styled';
 import Container from '../../../components/Container';
 import { UserOutlined } from '@ant-design/icons';
@@ -17,7 +17,9 @@ import ScheduleForm from './FormComponent/ScheduleForm';
 import DescriptionForm from './FormComponent/DescriptionForm';
 import AddTimeslot from './FormComponent/AddTimeslot';
 import DisplaySchedule from './DisplayComponent/DisplaySchedule';
-
+import dayjs, { Dayjs } from 'dayjs';
+import { useNavigate } from 'react-router-dom';
+import config from '../../../config';
 
 const { Title, Paragraph, Text } = Typography;
 
@@ -35,8 +37,11 @@ const TutorProfile = () => {
     const [updateSchedule, isUpdateSchedule] = useState<boolean>(false);
     const { user, role, status } = useAuth();
     const [loading, setLoading] = useState<boolean>(false);
+    const [monthlyLoading, setMonthlyLoading] = useState<boolean>(false);
     const [tableDisplay, setTableDisplay] = useState<string>("education");
     const [statistic, setStatistic] = useState<any>([]);
+    const [monthlyStat, setMonthlyStat] = useState<any>([]);
+    const navigate = useNavigate();
 
     //---------------------FETCH DATA---------------------
     useEffect(() => {
@@ -71,6 +76,60 @@ const TutorProfile = () => {
         })();
     }, [user, update]);
 
+    // Fetch monthly statistic
+    const fetchMonthlyStat = async (month: number, year: number) => {
+        try {
+            setMonthlyLoading(true);
+
+            if (!user || !(role === "TUTOR")) return;
+            const response = await getTutorMonthlyStatistic(user.id, month, year);
+            if (response) {
+                setMonthlyStat({ ...response.data, month: month, year: year, canGetSalary: salaryState(month, year, response.data.totalIncome) });
+            }
+        } catch (error: any) {
+            api.error({
+                message: 'Error',
+                description: error.response ? error.response.data : error.message,
+            });
+        } finally {
+            setMonthlyLoading(false);
+        }
+    }
+
+    useEffect(() => {
+        setMonthlyLoading(true);
+        fetchMonthlyStat(dayjs().month() + 1, dayjs().year());
+        setMonthlyLoading(false);
+    }, [user]);
+
+    const onMonthlyStatChange = (date: Dayjs) => {
+        setMonthlyLoading(true);
+        fetchMonthlyStat(date.month() + 1, date.year());
+        setMonthlyLoading(false);
+    }
+
+    const salaryState = (month: number, year: number, salary: number) => {
+        if (dayjs().year() === year && dayjs().month() === month - 1) {
+            return false;
+        }
+
+        if (salary === 0) {
+            return false;
+        }
+        return true;
+    }
+
+
+    const onWithdrawClick = () => {
+        const data = {
+            tutorId: user?.id,
+            month: monthlyStat.month,
+            year: monthlyStat.year
+        }
+        navigate(config.routes.tutor.withdrawRequest, { state: data });
+    }
+
+    // Fetch education
     useEffect(() => {
         (async () => {
             try {
@@ -102,6 +161,7 @@ const TutorProfile = () => {
         })();
     }, [user, updateEducation]);
 
+    // Fetch certification
     useEffect(() => {
         (async () => {
             try {
@@ -133,11 +193,6 @@ const TutorProfile = () => {
         })();
     }, [user, updateCert]);
 
-    const onTableChange = (e:RadioChangeEvent) => {
-        setLoading(true);
-        setTableDisplay(e.target.value)
-        setLoading(false);
-    }
 
 
     return (
@@ -145,7 +200,7 @@ const TutorProfile = () => {
             <Style.ProfileContainer>
                 <Container>
                     {contextHolder}
-                    <Spin spinning={loading} tip="Đang tải...">
+                    <Spin spinning={loading} tip="Loading...">
                         <Flex vertical gap={44}>
                             <Style.ProfileWrapper>
                                 <Row gutter={40}>
@@ -170,17 +225,25 @@ const TutorProfile = () => {
                                                     <Skeleton loading={loading} paragraph={false}>
                                                         <Flex justify="space-between">
                                                             <Text>Total lessons:</Text>
-
                                                             <Paragraph>
                                                                 <Text>
                                                                     {statistic?.totalLessons ? statistic?.totalLessons : 0}
                                                                 </Text>
-                                                                <Text>lessons</Text>
+                                                                <Text>lesson{statistic?.totalLessons > 1 ? 's' : ''}</Text>
                                                             </Paragraph>
                                                         </Flex>
-                                                    </Skeleton>
 
-                                                    <Skeleton loading={loading} paragraph={false}>
+                                                        <Flex justify="space-between">
+                                                            <Text>Total students:</Text>
+
+                                                            <Paragraph>
+                                                                <Text>
+                                                                    {statistic?.totalTaughtStudent ? statistic?.totalTaughtStudent : 0}
+                                                                </Text>
+                                                                <Text>student{statistic?.totalTaughtStudent > 1 ? 's' : ''}</Text>
+                                                            </Paragraph>
+                                                        </Flex>
+
                                                         <Flex justify="space-between">
                                                             <Text>Income made:</Text>
 
@@ -195,33 +258,75 @@ const TutorProfile = () => {
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
                                             <Style.ProfileInfoItem vertical gap={10}>
-                                                <Title level={3}>This month</Title>
-
+                                                <Flex justify='space-between'>
+                                                    <Title level={3}>Monthly</Title>
+                                                    <DatePicker
+                                                        format='MM/YYYY'
+                                                        picker='month'
+                                                        style={{ width: '150px' }}
+                                                        onChange={onMonthlyStatChange}
+                                                        defaultValue={dayjs()}
+                                                    />
+                                                </Flex>
                                                 <Style.ProfileInfoBox vertical gap={6}>
-                                                    <Skeleton loading={loading} paragraph={false}>
+                                                    <Skeleton loading={monthlyLoading} paragraph={false}>
                                                         <Flex justify="space-between">
                                                             <Text>Total lessons:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {statistic?.thisMonthLessons ? statistic?.thisMonthLessons : 0}
+                                                                    {monthlyStat.totalLessons ? monthlyStat.totalLessons : 0}
                                                                 </Text>
-                                                                <Text>lessons</Text>
+                                                                <Text>lesson{monthlyStat.totalLessons > 1 ? 's' : ''}</Text>
                                                             </Paragraph>
                                                         </Flex>
-                                                    </Skeleton>
 
-                                                    <Skeleton loading={loading} paragraph={false}>
+                                                        <Flex justify="space-between">
+                                                            <Text>Total students:</Text>
+
+                                                            <Paragraph>
+                                                                <Text>
+                                                                    {monthlyStat.totalTaughtStudent ? monthlyStat.totalTaughtStudent : 0}
+                                                                </Text>
+                                                                <Text>student{monthlyStat.totalTaughtStudent > 1 ? 's' : ''}</Text>
+                                                            </Paragraph>
+                                                        </Flex>
+
                                                         <Flex justify="space-between">
                                                             <Text>Income made:</Text>
 
                                                             <Paragraph>
                                                                 <Text>
-                                                                    {statistic?.totalMonthlyIncome ? Math.round(statistic?.totalMonthlyIncome).toLocaleString('en-US') : 0}
+                                                                    {monthlyStat?.totalIncome ? Math.round(monthlyStat?.totalIncome).toLocaleString('en-US') : 0}
                                                                 </Text>
                                                                 <Text>VND</Text>
                                                             </Paragraph>
                                                         </Flex>
+
+                                                        {monthlyStat.canGetSalary &&
+                                                            <Flex justify="space-between">
+                                                                <Text>Withdraw salary:</Text>
+
+                                                                <Paragraph>
+                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" ?
+                                                                        <Text>
+                                                                            <Button onClick={onWithdrawClick} type='link'
+                                                                                style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
+                                                                                Withdraw </Button>
+                                                                        </Text> :
+                                                                        <Tag
+                                                                            style={{ fontSize: '16px', margin: '0' }}
+                                                                            color={
+                                                                                monthlyStat.withdrawRequestStatus === 'DONE' ? 'green' :
+                                                                                    monthlyStat.withdrawRequestStatus === 'PROCESSING' ? 'orange' :
+                                                                                        monthlyStat.withdrawRequestStatus === 'REJECTED' ? 'red' : ''
+                                                                            }
+                                                                        >
+                                                                            {monthlyStat.withdrawRequestStatus}
+                                                                        </Tag>
+                                                                    }
+                                                                </Paragraph>
+                                                            </Flex>}
                                                     </Skeleton>
                                                 </Style.ProfileInfoBox>
                                             </Style.ProfileInfoItem>
@@ -268,7 +373,7 @@ const TutorProfile = () => {
                                         <Skeleton loading={loading} paragraph={false}>
                                             <Flex vertical gap="middle" >
                                                 <Radio.Group defaultValue={tableDisplay}
-                                                    onChange={onTableChange}
+                                                    onChange={(e) => setTableDisplay(e.target.value)}
                                                     buttonStyle="solid">
                                                     <Radio.Button value="education">Diplomas</Radio.Button>
                                                     <Radio.Button value="certificate">Certificates</Radio.Button>

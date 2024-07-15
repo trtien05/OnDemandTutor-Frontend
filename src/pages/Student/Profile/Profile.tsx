@@ -187,9 +187,7 @@ const Profile = () => {
                 message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
-        } finally {
-            // setLoading(false);
-        }
+        } 
     };
 
     const handleUpdateProfile = async (values: any) => {
@@ -512,6 +510,7 @@ const Profile = () => {
                                             <Title level={3}>Your questions</Title>
                                             <strong>* Click on the status of the question to update it</strong>
                                         </St.CustomerInfoItem>
+                                        <St.ScrollableContainer>
                                         <Table
                                             columns={modifiedQuestionColumns}
                                             dataSource={studentListQuestion}
@@ -519,12 +518,14 @@ const Profile = () => {
                                             rowKey={(record: Question) => record.id.toString()}
                                             pagination={{ pageSize: 4 }}
                                         />
+                                        </St.ScrollableContainer>
                                     </Col>
 
                                     <Col span={24}>
                                         <St.CustomerInfoItem vertical gap={10}>
                                             <Title level={3}>Payment History</Title>
                                         </St.CustomerInfoItem>
+                                        <St.ScrollableContainer>
                                         <Table
                                             columns={PaymentColumns}
                                             dataSource={paymentHistory}
@@ -532,6 +533,7 @@ const Profile = () => {
                                             rowKey={(record: Payment) => record.id.toString()}
                                             pagination={{ pageSize: 4 }}
                                         />
+                                        </St.ScrollableContainer>
                                     </Col>
                                 </Row>
                             </ProfileWrapper>
