@@ -113,9 +113,6 @@ const TutorProfile = () => {
             return false;
         }
 
-        if (salary === 0) {
-            return false;
-        }
         return true;
     }
 
@@ -264,6 +261,7 @@ const TutorProfile = () => {
                                                         format='MM/YYYY'
                                                         picker='month'
                                                         style={{ width: '150px' }}
+                                                        disabledDate={(current) => current && current > dayjs()}
                                                         onChange={onMonthlyStatChange}
                                                         defaultValue={dayjs()}
                                                     />
