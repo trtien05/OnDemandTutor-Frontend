@@ -26,10 +26,10 @@ const Schedule: React.FC<ScheduleProps> = ({
   tutorId,
   scheduleType,
   setSelectedId,
+  restrictedTime,
   setSelectedSchedule,
   selectedId,
   selectedSchedule,
-  restrictedTime,
   maxSlots,
   update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
@@ -59,18 +59,17 @@ const Schedule: React.FC<ScheduleProps> = ({
           const today = new Date();
           if (restrictedTime === undefined) restrictedTime = 12;
           today.setHours(today.getHours() + restrictedTime)
-
           const startDate = (start.getTime() < today.getTime()) ? today : start;
           let newSchedule: ScheduleData[] = [];
           let updateSchedule = response.data.schedules;
-          const currentDate = new Date(startDate);
+          const currentDate = new Date(startDate.getDate());
           updateSchedule.forEach((day: ScheduleDay) => {
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
                 const demo = new Date()
                 if (day.dayOfMonth < demo.getDate())
                   demo.setMonth(demo.getMonth() + 1)
-                demo.setDate(day.dayOfMonth);
+                demo.setDate(day.dayOfMonth+1);
                 const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
                 if (timeslotStart > currentDate) {
                   const value = {
