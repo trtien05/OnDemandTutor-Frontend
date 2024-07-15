@@ -4,10 +4,10 @@ import { theme } from '../../themes';
 import Title from 'antd/es/typography/Title';
 
 export const CheckoutWrapper = styled.div`
-margin: 50px 10%;
-${({ theme }) => theme.breakpoints.down('sm')} {
-    margin: 20px;
-}
+    margin: 50px 8%;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+        margin: 20px;
+    }
     padding: 27px 50px;
     background-color: #fff;
     border-radius: 15px;
@@ -77,11 +77,9 @@ export const PriceCalculation = styled.div`
 
 
 export const CheckoutPayment = styled.div`
-    margin-top: 36px;
+    margin-top: 12px;
     padding: 16px 20px 36px;
-    border-radius: 15px;
-    border: 1px solid ${theme.colors.descTabBorder};
-
+   
     & h3.ant-typography {
         color: ${theme.colors.textPrimary};
         font-size: 1.6rem;
@@ -102,7 +100,7 @@ export const CheckoutPayment = styled.div`
 
     & .ant-radio-wrapper:has(:checked) figure {
         outline: 1px solid ${theme.colors.primary};
-        box-shadow: 0px 17px 55px 0px ${theme.colors.shadowCartHover};
+        box-shadow: 0px 0px 55px 0px ${theme.colors.shadowCartHover};
     }
 
     & .ant-radio.ant-wave-target {
@@ -111,19 +109,20 @@ export const CheckoutPayment = styled.div`
 `;
 
 export const CheckoutPaymentImgWrapper = styled.figure`
-    align-content: center;
+display: flex;
+    align-items: center;
+    justify-content: center;    
     margin: auto;
     margin-top: 22px;
-    padding: 20px;
-    width: 160px;
-    height: 150px;
+    width: 120px;
+    height: 120px;
     border-radius: 15px;
     background: ${theme.colors.white};
 
     visibility: visible;
 
     & img {
-        width: 100%;
+        width: 90%;
         aspect-ratio: 16/9;
     }
 `;

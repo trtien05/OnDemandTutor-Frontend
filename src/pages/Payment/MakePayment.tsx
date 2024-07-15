@@ -1,10 +1,12 @@
-import { Col, Typography, Space, Button, notification, Statistic } from 'antd';
-import React, { useEffect, useState } from 'react'
+import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio } from 'antd';
+import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
 import rating from "../../assets/images/star.webp"
 import vnpayLogo from "../../assets/svg/vnpay-logo.svg"
+import momoLogo from "../../assets/svg/momo-logo.svg"
+import paypalLogo from "../../assets/svg/paypal-logo.svg"
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -82,6 +84,7 @@ const MakePayment = () => {
   const [deadline, setDeadline] = useState(new Date().getTime() + 15 * 60 * 1000); // 15 minutes
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [paymentMethod, setPaymentMethod] = useState('vnpay');
 
   useEffect(() => {
     (async () => {
@@ -216,7 +219,6 @@ const MakePayment = () => {
           price: price,
         }));
       } else throw new Error("Can't send Tutor and Schedule data")
-      // window.open(data.paymentUrl)
       setTutor(undefined);
       window.location.href = data.paymentUrl;
 
@@ -236,7 +238,6 @@ const MakePayment = () => {
     return (
       <>
         {contextHolder}
-        {/* <Row> */}
         <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
           <Col xl={13} lg={13} sm={24} xs={24} >
 
@@ -313,41 +314,95 @@ const MakePayment = () => {
             </Styled.CheckoutWrapper>
 
           </Col>
-          {/* </Row> */}
-          {/* <Row> */}
+
           <Col xl={10} lg={10} sm={24} xs={24}>
-            <Styled.CheckoutWrapper >
-              <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600` }} >Payment</Styled.TutorName>
-              <Styled.CheckoutPaymentImgWrapper>
+            <Skeleton loading={loading}>
+              <Styled.CheckoutWrapper >
+                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop:`20px` }} >Payment method</Styled.TutorName>
+                {/* <Styled.CheckoutPaymentImgWrapper>
                 <img
-                  src={vnpayLogo}
-                  loading="lazy"
-                  decoding="async"
-                  alt="VNPAY"
-                />
-              </Styled.CheckoutPaymentImgWrapper>
-              <Button
-                block
-                type="primary"
-                size="large"
-                onClick={handleOrder}
-              >
-                {loading ? (
-                  <Loading3QuartersOutlined
-                    spin
-                    style={{ fontSize: '1.6rem' }}
+                    src={momoLogo}
+                    loading="lazy"
+                    decoding="async"
+                    alt="MOMO"
                   />
-                ) : (
-                  'Pay'
-                )}
-              </Button>
-              <Styled.BorderLine />
+                  <img
+                    src={vnpayLogo}
+                    loading="lazy"
+                    decoding="async"
+                    alt="VNPAY"
+                  />
+                </Styled.CheckoutPaymentImgWrapper> */}
+
+                <Styled.CheckoutPayment>
+
+                  <Radio.Group
+                    name="payment"
+                   value={paymentMethod}
+                   onChange={(e)=> setPaymentMethod(e.target.value)}
+                  >
+                    <Radio
+                      value={'paypal'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={paypalLogo}
+                          loading="lazy"
+                          decoding="async"
+                        // alt={PaymentMethod.VNPAY}
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                    <Radio
+                      value={'momo'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={momoLogo}
+                          loading="lazy"
+                          decoding="async"
+                        // alt={PaymentMethod.MOMO}
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                    <Radio
+                      value={'vnpay'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={vnpayLogo}
+                          loading="lazy"
+                          decoding="async"
+                        // alt={PaymentMethod.MOMO}
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                  </Radio.Group>
+                </Styled.CheckoutPayment>
+                <Button
+                  block
+                  type="primary"
+                  size="large"
+                  onClick={handleOrder}
+                >
+                  {loading ? (
+                    <Loading3QuartersOutlined
+                      spin
+                      style={{ fontSize: '1.6rem' }}
+                    />
+                  ) : (
+                    'Pay'
+                  )}
+                </Button>
+                <Styled.BorderLine />
 
               <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
 
             </Styled.CheckoutWrapper>
           </Col>
-          {/* </Row> */}
         </div>
 
       </>
