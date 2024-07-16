@@ -130,6 +130,7 @@ const TutorDetail: React.FC = () => {
 
   const handleReload = () => {
     fetchReviews();
+    fetchStatusFeedback();
   }
 
   const onLoadMore = async () => {
