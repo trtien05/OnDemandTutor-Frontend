@@ -78,7 +78,18 @@ const MakePayment = () => {
 
   const [tutorId, setTutorId] = useState<number>(appointmentData ? appointmentData.tutor.tutorId ? appointmentData.tutor.tutorId : 0 : 0); // [TODO] Replace any with the correct type
   const selectedSchedule = location.state ? location.state.selectedSchedule ? location.state.selectedSchedule : null : null;
-  const deadline = new Date().getTime() + 15 * 60 * 1000; // 15 minutes
+  const [deadline, setDeadline] = useState(() => {
+    const storedDeadline = localStorage.getItem('deadline');
+    // Check if a deadline is stored in localStorage
+    if (storedDeadline && new Date(storedDeadline).getTime() > new Date().getTime()) {
+      return new Date(storedDeadline).getTime();
+    } else {
+      // Set a new deadline 15 minutes from now and store it
+      const newDeadline = new Date().getTime() + 15 * 60 * 1000;
+      localStorage.setItem('deadline', new Date(newDeadline).toISOString());
+      return newDeadline;
+    }
+  })
   const navigate = useNavigate();
   const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState('vnpay');
@@ -148,7 +159,10 @@ const MakePayment = () => {
 
   useEffect(() => {
     const timer = setInterval(() => {
-      if (moment().isAfter(deadline)) {
+      const now = new Date().getTime();
+      const distance = deadline - now;
+
+      if (distance < 0) {
         clearInterval(timer);
         handleTimerEnd();
       }
@@ -158,9 +172,8 @@ const MakePayment = () => {
   }, [deadline]);
 
   const handleTimerEnd = () => {
-    // Clear user data here
+    localStorage.removeItem('deadline');
     navigate(config.routes.student.paymentSuccess)
-    // Redirect or reset state as needed
   };
 
   function selectTutorEducation(education: EducationRaw[]) {
@@ -200,6 +213,7 @@ const MakePayment = () => {
 
   const handleCancel = async () => {
     setLoading(true);
+    localStorage.removeItem('deadline');
     const response = await rollbackBooking(appointmentData.id);
     if (response.status === 200) {
       api.success({
@@ -239,6 +253,7 @@ const MakePayment = () => {
         }));
       } else throw new Error("Can't send Tutor and Schedule data")
       setTutor(undefined);
+      localStorage.removeItem('deadline');
       window.location.href = data.paymentUrl;
 
     } catch (error: any) {
@@ -345,19 +360,6 @@ const MakePayment = () => {
                     onChange={(e) => setPaymentMethod(e.target.value)}
                   >
                     <Radio
-                      value={'paypal'}
-                      style={{ visibility: 'hidden' }}
-                    >
-                      <Styled.CheckoutPaymentImgWrapper>
-                        <img
-                          src={paypalLogo}
-                          loading="lazy"
-                          decoding="async"
-                        // alt={PaymentMethod.VNPAY}
-                        />
-                      </Styled.CheckoutPaymentImgWrapper>
-                    </Radio>
-                    <Radio
                       value={'momo'}
                       style={{ visibility: 'hidden' }}
                     >
@@ -366,7 +368,7 @@ const MakePayment = () => {
                           src={momoLogo}
                           loading="lazy"
                           decoding="async"
-                        // alt={PaymentMethod.MOMO}
+                         alt='MOMO'
                         />
                       </Styled.CheckoutPaymentImgWrapper>
                     </Radio>
@@ -379,7 +381,21 @@ const MakePayment = () => {
                           src={vnpayLogo}
                           loading="lazy"
                           decoding="async"
-                        // alt={PaymentMethod.MOMO}
+                          alt = "VNPAY"
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                    <Radio
+                      value={'paypal'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.BorderLine />
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={paypalLogo}
+                          loading="lazy"
+                          decoding="async"
+                         alt="PAYPAL"
                         />
                       </Styled.CheckoutPaymentImgWrapper>
                     </Radio>
