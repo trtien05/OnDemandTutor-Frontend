@@ -289,8 +289,9 @@ const TutorDetail: React.FC = () => {
                         <Styled.BestTutorEducationBachelorImage src={iconEducation} alt="education" />
                         {educations.map((education, index) => (
                           <React.Fragment key={education.id}>
-                            <Styled.BestTutorEducationBachelor>{education.degreeType}</Styled.BestTutorEducationBachelor>
-                            {index < educations.length - 1 && ', '}
+                            <Styled.BestTutorEducationBachelor key={index} >
+                              {index === 0 && `${education.degreeType} of ${education.majorName}`}
+                            </Styled.BestTutorEducationBachelor>
                           </React.Fragment>
                         ))}
                       </Styled.BestTutorEducation>

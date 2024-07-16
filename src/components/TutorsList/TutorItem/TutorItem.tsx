@@ -86,7 +86,6 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                       {index === 0 && `${education.degreeType} of ${education.majorName}`}
                     </Styled.BestTutorEducationBachelor>
                   ))}
-
                 </Styled.BestTutorEducation>
                 <Styled.BestTutorEducation>
                   <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
