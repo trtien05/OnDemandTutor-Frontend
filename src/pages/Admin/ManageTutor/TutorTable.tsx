@@ -19,7 +19,6 @@ interface Tutor {
   educations?: Education;
   subjects: string[],
   averageRating?: number;
-  loading: boolean;
   status: string;
   gender: boolean;
   dateOfBirth: string;
@@ -32,13 +31,14 @@ interface TutorTableProps {
   currentPage: number;
   pageSize: number;
   totalElements: number;
+  loading: boolean;
 }
 const formatPrice = (price: number) => {
   const safePrice = Number(price) || 0;
   return `${safePrice.toLocaleString()} đ`;
 }
 
-const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
+const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
 
   const columns: TableColumnsType<Tutor> = [
@@ -130,6 +130,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange,
           showSizeChanger: false,
           total: totalElements,
         }}
+        loading={loading}
       />
     </div>
   );

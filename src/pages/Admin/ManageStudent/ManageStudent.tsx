@@ -46,11 +46,10 @@ const ManageStudent = () => {
             currentPage={pageNo + 1}
             pageSize={pageSize}
             totalElements={totalElements}
+            loading={loading}
           />
         </div>
       </Skeleton>
-
-
     </div>
   );
 }

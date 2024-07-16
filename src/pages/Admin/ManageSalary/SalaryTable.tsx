@@ -20,6 +20,7 @@ interface SalaryTableProps {
   currentPage: number;
   pageSize: number;
   totalElements: number;
+  loading: boolean;
 }
 
 const formatPrice = (price: number) => {
@@ -27,7 +28,7 @@ const formatPrice = (price: number) => {
   return `${safePrice.toLocaleString()} đ`;
 }
 
-const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
+const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
   const columns: TableColumnsType<Account> = [
     {
@@ -98,6 +99,7 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
           showSizeChanger: false,
           total: totalElements,
         }}
+        loading={loading}
       />
     </div>
   );

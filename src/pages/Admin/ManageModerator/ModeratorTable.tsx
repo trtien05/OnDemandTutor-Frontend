@@ -22,9 +22,10 @@ interface ModeratorTableProps {
   currentPage: number;
   pageSize: number;
   totalElements: number;
+  loading: boolean;
 }
 
-const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
+const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
   const columns: TableColumnsType<Moderator> = [
     {
@@ -102,6 +103,7 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, o
           showSizeChanger: false,
           total: totalElements,
         }}
+        loading={loading}
       />
     </div>
   );

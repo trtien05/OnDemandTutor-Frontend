@@ -13,7 +13,6 @@ interface Student {
   dateOfBirth?: string;
   createAt?: string;
   status?: string;
-  loading: boolean;
 };
 
 interface StudentTableProps {
@@ -23,10 +22,11 @@ interface StudentTableProps {
   currentPage: number;
   pageSize: number;
   totalElements: number;
+  loading: boolean;
 }
 
 
-const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageChange, currentPage, pageSize, totalElements }) => {
+const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
   const columns: TableColumnsType<Student> = [
     {
@@ -109,6 +109,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageC
           showSizeChanger: false,
           total: totalElements,
         }}
+        loading={loading}
       />
     </div>
   );
