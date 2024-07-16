@@ -101,6 +101,7 @@ const TutorDetail: React.FC = () => {
   const [certification, setCertification] = useState<Certification[]>([]);
 
   const [loading, setLoading] = useState<boolean>(true);
+  const [reviewsLoading, setReviewsLoading] = useState<boolean>(false);
   const [page, setPage] = useState<number>(0);
 
   const [api, contextHolderNotification] = notification.useNotification({
@@ -132,6 +133,8 @@ const TutorDetail: React.FC = () => {
   }
 
   const onLoadMore = async () => {
+    setReviewsLoading(true);
+
     try {
       const newPage = page + 1;
       const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
@@ -153,6 +156,8 @@ const TutorDetail: React.FC = () => {
         message: 'Error',
         description: 'Failed to fetch more data.',
       });
+    } finally {
+      setReviewsLoading(false);
     }
   };
 
@@ -344,7 +349,7 @@ const TutorDetail: React.FC = () => {
                     <Feedback statusFeedback={statusFeedback} tutorId={tutorId} tutorFeedback={tutorFeedback} onReload={handleReload} tutorName={tutor?.fullName} />
                   </Styled.TitleWrapper>
                   <List
-                    loading={loading}
+                    loading={reviewsLoading}
                     itemLayout="horizontal"
                     loadMore={loadMore}
                     dataSource={reviews}
