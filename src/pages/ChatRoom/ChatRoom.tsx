@@ -62,7 +62,7 @@ const ChatRoom: React.FC = () => {
     message: '',
     name: ''
   });
-  let hasChats = false;
+  const [hasChats, setHasChats] = useState<boolean>(false);
 
   useEffect(() => {
     if (user && !userData.connected) {
@@ -82,9 +82,6 @@ const ChatRoom: React.FC = () => {
     if (privateChats.size > 0 && tab === "CHATROOM") {
       setTab([...privateChats.keys()][0].toString());
       setLoadingPrivateChats(false);
-      hasChats = true;
-    } else {
-      hasChats = false;
     }
   }, [privateChats]);
 
@@ -109,6 +106,11 @@ const ChatRoom: React.FC = () => {
     try {
       const response = await fetch(`${config.publicRuntime.API_URL}/api/messages/accounts/${user?.id}`);
       const data: ChatMessage[] = await response.json();
+      if (data.length > 0) {
+        setHasChats(true);
+      } else {
+        setHasChats(false);
+      }
       const chats = new Map(privateChats);
       const accounts = new Map(account);
 
