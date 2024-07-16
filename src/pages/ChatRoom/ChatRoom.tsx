@@ -72,8 +72,9 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     if (userData.connected) {
-      setLoading(false);
       fetchMessages();
+      setLoading(false);
+
     }
   }, [userData.connected]);
 
@@ -269,12 +270,12 @@ const ChatRoom: React.FC = () => {
           <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
             <Skeleton style={{ padding: '20px', backgroundColor: '#F4D1F3', borderRadius: '25px', }} avatar loading={loading} paragraph={{ rows: 2 }} active>
               <List
+                loading={loading}
                 itemLayout="horizontal"
                 dataSource={[...privateChats.keys()]}
                 renderItem={(id) => {
                   const isCurrentTab = tab === id.toString();
                   return (
-
                     <List.Item onClick={() => {
                       setTab(id.toString());
                       if (unreadTabs.has(id)) {

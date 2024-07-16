@@ -1,4 +1,4 @@
-import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio, Row } from 'antd';
 import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -18,6 +18,7 @@ import config from '../../config';
 import useAuth from '../../hooks/useAuth';
 import { rollbackBooking } from '../../utils/tutorBookingAPI';
 import { ButtonDiv } from '../BecomeTutor/Form.styled';
+import { useDocumentTitle } from '../../hooks';
 
 const { Title, Text } = Typography;
 const { Countdown } = Statistic;
@@ -67,6 +68,8 @@ export function toScheduleString(schedule: Schedule) {
 }
 
 const MakePayment = () => {
+  useDocumentTitle("Make Payment | MyTutor");
+
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
@@ -207,7 +210,7 @@ const MakePayment = () => {
         description: 'Your booking has been cancelled',
       });
       setTimeout(() => {
-        navigate(config.routes.public.searchTutors+`/${tutorId}`);
+        navigate(config.routes.public.searchTutors + `/${tutorId}`);
       }, 2000);
     }
   }
@@ -255,11 +258,10 @@ const MakePayment = () => {
     return (
       <>
         {contextHolder}
-        <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
+        <Row justify='space-around'>
           <Col xl={13} lg={13} sm={24} xs={24} >
-            <Skeleton loading={loading}>
+            <Skeleton loading={loading} style={{ backgroundColor: '#fff', padding: '27px 50px', margin: '50px 5px', borderRadius: '15px' }}>
               <Styled.CheckoutWrapper>
-
                 <Styled.TutorItem justify='space-between'>
                   <Styled.ResponsiveStyle>
                     <Styled.TutorImage src={tutor?.avatarUrl} alt="tutor" />
@@ -290,6 +292,7 @@ const MakePayment = () => {
                   </Styled.ResponsiveStyle>)}
 
                 </Styled.TutorItem>
+
                 <Styled.BorderLine />
                 <div style={{ marginLeft: `20px` }}>
                   <p>Subject: {appointmentData.subjectName}</p>
@@ -300,6 +303,7 @@ const MakePayment = () => {
                   <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>
                 </div>
                 <Styled.BorderLine />
+
                 <Styled.PriceCalculation>
                   <Space>
                     <Title level={3}>Tutor's price per hour</Title>
@@ -328,12 +332,13 @@ const MakePayment = () => {
                   </Space>
                   <p></p>
                 </Styled.PriceCalculation>
+
               </Styled.CheckoutWrapper>
             </Skeleton>
           </Col>
 
           <Col xl={10} lg={10} sm={24} xs={24}>
-            <Skeleton loading={loading}>
+            <Skeleton loading={loading} style={{ backgroundColor: '#fff', padding: '27px 30px', margin: '50px 5px', borderRadius: '15px' }}>
               <Styled.CheckoutWrapper >
                 <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `20px` }} >Payment method</Styled.TutorName>
 
@@ -386,36 +391,36 @@ const MakePayment = () => {
                   </Radio.Group>
                 </Styled.CheckoutPayment>
                 <ButtonDiv>
-                <Button
-                  style={{ marginRight: '10px', width:`40%`}}
-                  type="default"
-                  size="large"
-                  onClick={handleCancel}
-                >
-                  {loading ? (
-                    <Loading3QuartersOutlined
-                      spin
-                      style={{ fontSize: '1.6rem' }}
-                    />
-                  ) : (
-                    'Cancel'
-                  )}
-                </Button>
-                <Button
-                  style={{ marginRight: '10px', width:`60%`}}
-                  type="primary"
-                  size="large"
-                  onClick={handleOrder}
-                >
-                  {loading ? (
-                    <Loading3QuartersOutlined
-                      spin
-                      style={{ fontSize: '1.6rem' }}
-                    />
-                  ) : (
-                    'Pay'
-                  )}
-                </Button>
+                  <Button
+                    style={{ marginRight: '10px', width: `40%` }}
+                    type="default"
+                    size="large"
+                    onClick={handleCancel}
+                  >
+                    {loading ? (
+                      <Loading3QuartersOutlined
+                        spin
+                        style={{ fontSize: '1.6rem' }}
+                      />
+                    ) : (
+                      'Cancel'
+                    )}
+                  </Button>
+                  <Button
+                    style={{ marginRight: '10px', width: `60%` }}
+                    type="primary"
+                    size="large"
+                    onClick={handleOrder}
+                  >
+                    {loading ? (
+                      <Loading3QuartersOutlined
+                        spin
+                        style={{ fontSize: '1.6rem' }}
+                      />
+                    ) : (
+                      'Pay'
+                    )}
+                  </Button>
                 </ButtonDiv>
                 <Styled.BorderLine />
 
@@ -424,7 +429,7 @@ const MakePayment = () => {
               </Styled.CheckoutWrapper>
             </Skeleton>
           </Col>
-        </div>
+        </Row>
 
       </>
     )
