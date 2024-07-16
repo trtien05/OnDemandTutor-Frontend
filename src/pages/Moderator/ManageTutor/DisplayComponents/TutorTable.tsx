@@ -11,6 +11,7 @@ interface TutorTableProps {
   pagination: { current: number, pageSize: number };
   setPagination: (pagination: { current: number, pageSize: number }) => void;
   total: { totalElements: number, totalPages: number };
+  loading: boolean;
 }
 
 const TutorTable: React.FC<TutorTableProps> = (props) => {
@@ -66,6 +67,7 @@ const TutorTable: React.FC<TutorTableProps> = (props) => {
   return (
     <div>
       <Table rowKey={'id'}
+        loading={props.loading}
         columns={columns}
         dataSource={props.tutors}
         pagination={{

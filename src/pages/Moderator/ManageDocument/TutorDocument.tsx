@@ -130,7 +130,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
             });
         } finally {
             setTimeout(() => {
-            props.onReload && props.onReload();
+                props.onReload && props.onReload();
                 setLoading(false);
                 setIsFormOpen(false);
             }, 1000);
@@ -161,7 +161,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
                         style={{ marginRight: '3%', width: '35%' }}>
                         Cancel
                     </Button>
-                    
+
                     <Button
                         key="submit"
                         type="default"
@@ -197,7 +197,7 @@ const TutorDocument: React.FC<TutorInfoProps> = (props) => {
                     style={{ rowGap: `10px` }}
                 >
                     <Skeleton loading={loading}>
-                        
+
 
                         {tutorInfo.avatarUrl ? (
                             <Avatar

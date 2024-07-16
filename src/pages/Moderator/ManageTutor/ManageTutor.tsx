@@ -39,7 +39,14 @@ const ManageTutor = () => {
       <h2>Processing Tutor</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>
-          <TutorTable pagination={pagination} setPagination={setPagination} total={total} tutors={tutors} onReload={handleReload} manage={'tutor'} />
+          <TutorTable
+            loading={loading}
+            pagination={pagination}
+            setPagination={setPagination}
+            total={total}
+            tutors={tutors}
+            onReload={handleReload}
+            manage={'tutor'} />
         </div>
       </Skeleton>
     </div>

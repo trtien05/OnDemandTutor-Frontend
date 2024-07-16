@@ -19,11 +19,11 @@ const ManageQuestion = () => {
   const fetchApi = async () => {
     setLoading(true);
     try {
-      const response = await getQuestionByStatus(pagination.current-1, pagination.pageSize, 'PROCESSING');
+      const response = await getQuestionByStatus(pagination.current - 1, pagination.pageSize, 'PROCESSING');
       setQuestions(response.data.content);
-      setTotal({totalElements: response.data.totalElements, totalPages: response.data.totalPages});
+      setTotal({ totalElements: response.data.totalElements, totalPages: response.data.totalPages });
     } finally {
-        setLoading(false);
+      setLoading(false);
     }
   }
 
@@ -39,7 +39,14 @@ const ManageQuestion = () => {
       <h2>Processing Question</h2>
       <Skeleton active loading={loading} title={false} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }}>
         <div style={{ 'marginTop': '20px' }}>
-          <QuestionTable total={total} pagination={pagination} setPagination={setPagination} questions={questions} onReload={handleReload} />
+          <QuestionTable
+            total={total}
+            pagination={pagination}
+            setPagination={setPagination}
+            questions={questions}
+            onReload={handleReload}
+            loading={loading}
+          />
         </div>
       </Skeleton>
     </div>
