@@ -101,7 +101,7 @@ const Home = () => {
                             </Styled.BestServiceTitle>
 
                             <Styled.BestServiceDesc>
-                                Explore popular categories to find the perfect tutor for your needs. Whether preparing for tests, learning a new language, or seeking academic help, our experienced tutors are here to guide you to success.
+                                Find the perfect tutor for your needs, from test prep to language learning and academic help. Our experienced tutors are here to guide you to success.
                             </Styled.BestServiceDesc>
                         </Col>
                     </Row>
