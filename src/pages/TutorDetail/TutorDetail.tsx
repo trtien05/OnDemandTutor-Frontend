@@ -411,7 +411,7 @@ const TutorDetail: React.FC = () => {
                               <div>
                                 <Styled.StudentName>{item.createdBy}</Styled.StudentName>
                                 <Styled.DateRated>{item.createdAt}</Styled.DateRated>
-                                <Styled.Rating allowHalf disabled defaultValue={item.rating} />
+                                <Styled.Rating allowHalf disabled value={item.rating} />
                               </div>
                             </Styled.ReviewHeader>
                             <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
