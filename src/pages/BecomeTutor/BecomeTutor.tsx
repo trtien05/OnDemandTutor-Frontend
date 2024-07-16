@@ -712,7 +712,7 @@ const BecomeTutor = () => {
       {user?.role === "STUDENT" ? (
         <div style={{ background: `white`, padding: `3%` }}>
           {contextHolderNotification}
-          <Spin spinning={loading} tip="Loading...">
+          <Spin spinning={loading}>
             <Title
               style={{
                 color: `${theme.colors.primary}`,
