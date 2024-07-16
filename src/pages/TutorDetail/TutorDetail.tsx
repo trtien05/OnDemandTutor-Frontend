@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
+import { Tabs, Skeleton, Row, Col, List, Avatar, notification, Button } from "antd";
 import { useAuth, useDocumentTitle } from "../../hooks";
-import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews, getTutorStatistic } from "../../utils/tutorAPI";
+import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews, getTutorStatistic, deleteTutorReview } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
@@ -11,7 +11,7 @@ import iconPerson from "../../assets/images/image14.png";
 import iconBachelor from "../../assets/images/image13.png";
 import Schedule from "../../components/Schedule/Schedule";
 import BookTutor from "../../components/Popup/BookTutor";
-import { UserOutlined } from "@ant-design/icons";
+import { CloseOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getTutorBooked } from "../../utils/studentAPI";
 import Feedback from "../../components/Popup/Feedback";
@@ -19,6 +19,8 @@ import Feedback from "../../components/Popup/Feedback";
 const { TabPane } = Tabs;
 
 interface Reviews {
+  id: number
+  createdById?: number;
   content?: string;
   createdBy?: string;
   createdAt?: string;
@@ -239,6 +241,26 @@ const TutorDetail: React.FC = () => {
       });
     }
   };
+  const handleDeleteReview = async (reviewId: number) => {
+    setReviewsLoading(true);
+
+    try {
+      await deleteTutorReview(tutorId, reviewId);
+      api.success({
+        message: 'Success',
+        description: 'Review deleted successfully.',
+      });
+      fetchReviews();
+    } catch (error) {
+      console.error('Failed to delete review:', error);
+      api.error({
+        message: 'Error',
+        description: 'Failed to delete review.',
+      });
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
 
 
   const loadMore = !loading ? (
@@ -250,7 +272,7 @@ const TutorDetail: React.FC = () => {
       </Col>
     </Row>
   ) : null;
-
+  console.log(reviews);
   return (
     <>
       {contextHolderNotification}
@@ -355,7 +377,7 @@ const TutorDetail: React.FC = () => {
                     loadMore={loadMore}
                     dataSource={reviews}
                     renderItem={(item) => (
-                      <List.Item>
+                      <List.Item key={item.id}>
                         <Skeleton avatar title={false} loading={item.loading} active>
                           <Styled.ReviewCard>
                             <Styled.ReviewHeader>
@@ -363,11 +385,24 @@ const TutorDetail: React.FC = () => {
                               <div>
                                 <Styled.StudentName>{item.createdBy}</Styled.StudentName>
                                 <Styled.DateRated>{item.createdAt}</Styled.DateRated>
-                                <Styled.Rating disabled defaultValue={item.rating} />
+                                <Styled.Rating allowHalf disabled defaultValue={item.rating} />
                               </div>
                             </Styled.ReviewHeader>
                             <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
                           </Styled.ReviewCard>
+                          <div style={{ display: 'flex', alignSelf: 'start' }}>
+                            {(item.createdById === user?.id) && (
+                              <CloseOutlined
+                                style={{
+                                  color: '#B52121',
+                                  fontSize: '20px',
+                                  cursor: 'pointer',
+                                  border: 'none'
+                                }}
+                                onClick={() => handleDeleteReview(item.id!)}
+                              />
+                            )}
+                          </div>
                         </Skeleton>
                       </List.Item>
                     )}
