@@ -15,6 +15,7 @@ import { CloseOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getTutorBooked } from "../../utils/studentAPI";
 import Feedback from "../../components/Popup/Feedback";
+import EditFeedback from "../../components/Popup/Feedback/EditFeedback";
 
 const { TabPane } = Tabs;
 
@@ -122,11 +123,15 @@ const TutorDetail: React.FC = () => {
   }
 
   const fetchReviews = async () => {
+    setReviewsLoading(true);
+
     try {
       const reviewsResponse = await getTutorReviews(tutorId, page, 3);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
+    } finally {
+      setReviewsLoading(false);
     }
   };
 
@@ -392,15 +397,18 @@ const TutorDetail: React.FC = () => {
                           </Styled.ReviewCard>
                           <div style={{ display: 'flex', alignSelf: 'start' }}>
                             {(item.createdById === user?.id) && (
-                              <CloseOutlined
-                                style={{
-                                  color: '#B52121',
-                                  fontSize: '20px',
-                                  cursor: 'pointer',
-                                  border: 'none'
-                                }}
-                                onClick={() => handleDeleteReview(item.id!)}
-                              />
+                              <div>
+                                <CloseOutlined
+                                  style={{
+                                    color: '#B52121',
+                                    fontSize: '20px',
+                                    cursor: 'pointer',
+                                    margin: '0 5px',
+                                  }}
+                                  onClick={() => handleDeleteReview(item.id!)}
+                                />
+                                <EditFeedback tutorId={tutorId} tutorName={tutor?.fullName} reviewId={item.id!} onReload={handleReload} />
+                              </div>
                             )}
                           </div>
                         </Skeleton>

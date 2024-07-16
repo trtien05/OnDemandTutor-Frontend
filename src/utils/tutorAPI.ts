@@ -53,6 +53,9 @@ export const postTutorReviews = (tutorId: number, requestBody: any) => {
 export const deleteTutorReview = (tutorId: number, reviewId: number) => {
     return remove(`/api/tutors/${tutorId}/reviews/${reviewId}`);
 };
+export const editTutorReview = (tutorId: number, reviewId: number, reviewObj: any) => {
+    return put(`/api/tutors/${tutorId}/reviews/${reviewId}`, reviewObj);
+};
 
 export const getStatusReviews = (tutorId: number, studentId: number) => {
     return get(`/api/tutors/${tutorId}/students/${studentId}`);
