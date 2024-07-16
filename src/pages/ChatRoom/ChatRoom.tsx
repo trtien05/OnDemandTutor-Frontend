@@ -91,7 +91,7 @@ const ChatRoom: React.FC = () => {
   const connect = () => {
     let Sock = new SockJS(`${config.publicRuntime.API_URL}/ws`);
     stompClient = over(Sock);
-    stompClient.connect({}, onConnected, onError);
+    stompClient.connect({}, onConnected);
   };
 
   const onConnected = () => {
@@ -199,16 +199,10 @@ const ChatRoom: React.FC = () => {
     });
   };
 
-  const onError = (err: any) => {
-    console.log(err);
-  };
-
   const handleMessage = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     setUserData({ ...userData, message: value });
   };
-
-
 
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();

@@ -107,7 +107,7 @@ const Profile = () => {
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
-                
+
             } finally {
                 setLoading(false);
             }
@@ -126,7 +126,7 @@ const Profile = () => {
                 const { data } = await getLearnStatistic(user.id);
                 setLearnStatistic(data);
                 //get payment history
-                const { data: paymentData } = await getPaymentHistory(user.id,paymentPage - 1, paymentPageSize);
+                const { data: paymentData } = await getPaymentHistory(user.id, paymentPage - 1, paymentPageSize);
                 setPaymentHistory(paymentData.content || []);
                 setPaymentTotal(paymentData.totalElements);
                 // get account's list of questions
@@ -144,12 +144,12 @@ const Profile = () => {
         })();
 
     }, [api, user, reloadKey, paymentPage, paymentPageSize, page, pageSize]);
-    const handleTableChange = (pagination:any) => {
+    const handleTableChange = (pagination: any) => {
         setPage(pagination.current);
         setPageSize(pagination.pageSize);
     };
 
-    const handlePaymentTableChange = (pagination:any) => {
+    const handlePaymentTableChange = (pagination: any) => {
         setPaymentPage(pagination.current);
         setPaymentPageSize(pagination.pageSize);
     };
@@ -205,7 +205,7 @@ const Profile = () => {
                 message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
-        } 
+        }
     };
 
     const handleUpdateProfile = async (values: any) => {
@@ -246,7 +246,6 @@ const Profile = () => {
     };
 
     const handleUpdateProfileFailed = (values: any) => {
-        console.log("Error: ",values);
         api.error({
             message: 'Error',
             description: 'Something wrong occured. Please try again later.',
@@ -529,14 +528,14 @@ const Profile = () => {
                                             <strong>* Click on the status of the question to update it</strong>
                                         </St.CustomerInfoItem>
                                         <St.ScrollableContainer>
-                                        <Table
-                                            columns={modifiedQuestionColumns}
-                                            dataSource={studentListQuestion}
-                                            showSorterTooltip={{ target: 'sorter-icon' }}
-                                            rowKey={(record: Question) => record.id.toString()}
-                                            pagination={{ current: page, pageSize, total }}
-                                            onChange={handleTableChange}
-                                        />
+                                            <Table
+                                                columns={modifiedQuestionColumns}
+                                                dataSource={studentListQuestion}
+                                                showSorterTooltip={{ target: 'sorter-icon' }}
+                                                rowKey={(record: Question) => record.id.toString()}
+                                                pagination={{ current: page, pageSize, total }}
+                                                onChange={handleTableChange}
+                                            />
                                         </St.ScrollableContainer>
                                     </Col>
 
@@ -545,14 +544,14 @@ const Profile = () => {
                                             <Title level={3}>Payment History</Title>
                                         </St.CustomerInfoItem>
                                         <St.ScrollableContainer>
-                                        <Table
-                                            columns={PaymentColumns(paymentPage, paymentPageSize)}
-                                            dataSource={paymentHistory}
-                                            showSorterTooltip={{ target: 'sorter-icon' }}
-                                            rowKey={(record: Payment) => record.id.toString()}
-                                            pagination={{ current: paymentPage, pageSize: paymentPageSize, total: paymentTotal }}
-                                            onChange={handlePaymentTableChange}
-                                        />
+                                            <Table
+                                                columns={PaymentColumns(paymentPage, paymentPageSize)}
+                                                dataSource={paymentHistory}
+                                                showSorterTooltip={{ target: 'sorter-icon' }}
+                                                rowKey={(record: Payment) => record.id.toString()}
+                                                pagination={{ current: paymentPage, pageSize: paymentPageSize, total: paymentTotal }}
+                                                onChange={handlePaymentTableChange}
+                                            />
                                         </St.ScrollableContainer>
                                     </Col>
                                 </Row>
