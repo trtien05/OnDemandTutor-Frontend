@@ -1,22 +1,16 @@
-import { Modal, Rate, notification } from 'antd';
+import { Modal, Rate } from 'antd';
 import React, { useState } from 'react'
 import * as Styled from './Feedback.styled'
 import TextArea from 'antd/es/input/TextArea';
-import { editTutorReview } from '../../../utils/tutorAPI';
 import { EditOutlined } from '@ant-design/icons';
 
 interface FeedbackProps {
-  tutorId: number;
   tutorName?: string;
-  reviewId: number;
-  onReload: () => void;
+  handleEditReview: (values: any) => void; // Adjust the type to match what 'handleEditReview' expects
 
 }
 const EditFeedback: React.FC<FeedbackProps> = (props) => {
-  const { tutorId, tutorName, reviewId, onReload } = props;
-  const [api, contextHolder] = notification.useNotification({
-    top: 100,
-  });
+  const { tutorName, handleEditReview } = props;
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   function showModal() {
@@ -29,37 +23,14 @@ const EditFeedback: React.FC<FeedbackProps> = (props) => {
   const handleOk = () => {
     setIsFormOpen(false);
   };
-  const [loading, setLoading] = useState(false);
 
-  const handleFinish = async (values: any) => {
-    setLoading(true);
-    try {
-      const { data } = await editTutorReview(tutorId, reviewId, values);
-      if (!data) {
-        throw new Error("Error fetching tutor data");
-      } else {
-        onReload();
-        api.success({
-          message: 'Success',
-          description: 'Updated feedback successfully!',
-        });
-        setIsFormOpen(false);
-      }
-    } catch (error: any) {
-      // Xử lý các trường hợp lỗi khác
-      api.error({
-        message: 'Error',
-        description: error.response.data.message[0] || 'Failed to submit feedback. Please try again later.',
-      });
+  const handleFinish = (values: any) => {
+    handleEditReview(values)
+    setIsFormOpen(false);
 
-    } finally {
-      setLoading(false);
-    }
   };
   return (
     <>
-      {contextHolder}
-
       <EditOutlined
         style={{
           fontSize: '20px',
@@ -116,7 +87,7 @@ const EditFeedback: React.FC<FeedbackProps> = (props) => {
             <Styled.GradientButton
               type="primary"
               htmlType="submit"
-              loading={loading}
+            // loading={loading}
             >
               Confirm
             </Styled.GradientButton>
