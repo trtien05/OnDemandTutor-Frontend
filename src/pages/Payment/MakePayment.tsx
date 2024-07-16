@@ -1,4 +1,4 @@
-import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio, Spin } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic, Radio, Spin } from 'antd';
 import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -13,7 +13,6 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { getPaymentUrl, getTutorEducation, getTutorInfo } from '../../utils/paymentAPI';
 import cookieUtils from '../../utils/cookieUtils';
 import { Schedule, ScheduleEvent } from '../../components/Schedule/Schedule.type';
-import moment from 'moment';
 import config from '../../config';
 import useAuth from '../../hooks/useAuth';
 import { rollbackBooking } from '../../utils/tutorBookingAPI';
@@ -78,18 +77,7 @@ const MakePayment = () => {
 
   const [tutorId, setTutorId] = useState<number>(appointmentData ? appointmentData.tutor.tutorId ? appointmentData.tutor.tutorId : 0 : 0); // [TODO] Replace any with the correct type
   const selectedSchedule = location.state ? location.state.selectedSchedule ? location.state.selectedSchedule : null : null;
-  const [deadline, setDeadline] = useState(() => {
-    const storedDeadline = localStorage.getItem('deadline');
-    // Check if a deadline is stored in localStorage
-    if (storedDeadline && new Date(storedDeadline).getTime() > new Date().getTime()) {
-      return new Date(storedDeadline).getTime();
-    } else {
-      // Set a new deadline 15 minutes from now and store it
-      const newDeadline = new Date().getTime() + 15 * 60 * 1000;
-      localStorage.setItem('deadline', new Date(newDeadline).toISOString());
-      return newDeadline;
-    }
-  })
+  const deadline : number = location.state ? location.state.expired : 0;
   const navigate = useNavigate();
   const { user } = useAuth();
   const [paymentMethod, setPaymentMethod] = useState('vnpay');
@@ -172,7 +160,6 @@ const MakePayment = () => {
   }, [deadline]);
 
   const handleTimerEnd = () => {
-    localStorage.removeItem('deadline');
     navigate(config.routes.student.paymentSuccess)
   };
 
@@ -213,7 +200,6 @@ const MakePayment = () => {
 
   const handleCancel = async () => {
     setLoading(true);
-    localStorage.removeItem('deadline');
     const response = await rollbackBooking(appointmentData.id);
     if (response.status === 200) {
       api.success({
@@ -253,7 +239,6 @@ const MakePayment = () => {
         }));
       } else throw new Error("Can't send Tutor and Schedule data")
       setTutor(undefined);
-      localStorage.removeItem('deadline');
       window.location.href = data.paymentUrl;
 
     } catch (error: any) {
@@ -347,10 +332,10 @@ const MakePayment = () => {
             </Spin>
           </Col>
 
-          <Col xl={11} lg={11} sm={24} xs={24}>
+          <Col xl={12} lg={12} sm={24} xs={24}>
             <Spin spinning={loading}>
               <Styled.CheckoutWrapper >
-                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `20px` }} >Payment method</Styled.TutorName>
+                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `10px` }} >Payment method</Styled.TutorName>
 
                 <Styled.CheckoutPayment>
 
@@ -386,21 +371,24 @@ const MakePayment = () => {
                       </Styled.CheckoutPaymentImgWrapper>
                     </Radio>
                     <Styled.BorderLine />
-                    <div style={{ height: `100%`, width: `100%`, marginBottom:`10px` }}>
-                      <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `0px` }}>Overseas?</Styled.TutorName>
-                      <Text>For this payment method, we will apply the
-                        <span style={{ fontWeight: `bold` }}> VCB latest Currency transfer rate</span>.</Text>
+                    <div  style={{ height: `100%`, width: `100%`}}>
+                    <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600` }}>Overseas?</Styled.TutorName>
+                    </div>
+                    <div style={{ height: `100%`, width: `70%`, marginBottom:`10px` }}>
+                      <Text>We will use
+                        <span style={{ fontWeight: `bold` }}> VCB's latest currency transfer rate</span>.</Text>
                       <br />
-                      <Text>Paypal will also charge you additional fee of 
+                      <Text>Paypal also charges you additional fee of 
                         <span style={{ fontWeight: `bold` }}> 4.4% rate </span>  
-                        + <span style={{ fontWeight: `bold` }}>0.3 USD fixed fee</span> for each transaction.
+                        + <span style={{ fontWeight: `bold` }}>0.3$ fixed fee</span> per transaction.
                         </Text>
+                        
                     </div>
                     <Radio
                       value={'paypal'}
                       style={{ visibility: 'hidden' }}
                     >
-                      <Styled.CheckoutPaymentImgWrapper>
+                      <Styled.CheckoutPaymentImgWrapper style={{width:`80px`, height:`80px`, marginTop:`0`}}>
                         <img
                           src={paypalLogo}
                           loading="lazy"

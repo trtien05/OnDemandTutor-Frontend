@@ -110,7 +110,6 @@ display: flex;
     align-items: center;
     justify-content: center;    
     margin: auto;
-    margin-top: 10px;
     width: 120px;
     height: 120px;
     border-radius: 15px;

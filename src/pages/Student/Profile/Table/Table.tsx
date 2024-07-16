@@ -8,6 +8,7 @@ import { DeleteOutlined } from '@ant-design/icons';
 import { deleteQuestion, updateQuestionStatus } from '../../../../utils/profileAPI';
 import { QuestionStatus } from '../../../../utils/enums';
 import { theme } from '../../../../themes';
+import { rollbackBooking } from '../../../../utils/tutorBookingAPI';
 
 function toTimeSlotString(timeSlot: TimeSlot) {
     let timeSlotsString = '';
@@ -20,37 +21,66 @@ function toTimeSlotString(timeSlot: TimeSlot) {
     timeSlotsString = dateString + ' at ' + timeSlot.startTime + ' - ' + timeSlot.endTime;
     return timeSlotsString;
 }
+
+const handleDeletePending = async (appointmentId: number, setReloadKey: React.Dispatch<React.SetStateAction<boolean>>) => {
+    Modal.confirm({
+        title: 'Cancel pending appointment',
+        content: 'You are going to cancel this pending appointment. Do you want to proceed?',
+        onOk: async () => {
+            try {
+                await rollbackBooking(appointmentId);
+                notification.success({
+                    message: 'Success',
+                    description: 'Appointment cancelled successfully.',
+                });
+                setReloadKey(prevKey => !prevKey);
+            } catch (error: any) {
+                const errorMessage =
+                    error.response && error.response.data
+                        ? JSON.stringify(error.response.data)
+                        : error.message;
+                notification.error({
+                    message: 'Error',
+                    description: errorMessage,
+                });
+            }
+        },
+    });
+
+}
+
 const handleUpdateStatus = async (questionId: number, accountId: number, currentStatus: QuestionStatus, setReloadKey: React.Dispatch<React.SetStateAction<boolean>>) => {
     if (currentStatus !== QuestionStatus.SOLVED && currentStatus !== QuestionStatus.UNSOLVED) return;
     let newStatus = QuestionStatus.UNSOLVED;
-            if (currentStatus === QuestionStatus.UNSOLVED) {
-                newStatus = QuestionStatus.SOLVED;
-            } 
+    if (currentStatus === QuestionStatus.UNSOLVED) {
+        newStatus = QuestionStatus.SOLVED;
+    }
     Modal.confirm({
         title: 'Confirm Update Status',
         content:
             `Are you sure you want to update status ${currentStatus} to ${newStatus}? You cannot undo this action after confirm.`,
         onOk: async () => {
-                try {
-                    await updateQuestionStatus(accountId, questionId,newStatus);
-                    notification.success({
-                        message: 'Success',
-                        description: 'Question status updated successfully.',
-                    });
-                    setReloadKey(prevKey => !prevKey); // Trigger reload
-                } catch (error: any) {
-                    const errorMessage =
-                        error.response && error.response.data
-                            ? JSON.stringify(error.response.data)
-                            : error.message;
-                    notification.error({
-                        message: 'Error',
-                        description: errorMessage,
-                    });
-                }
+            try {
+                await updateQuestionStatus(accountId, questionId, newStatus);
+                notification.success({
+                    message: 'Success',
+                    description: 'Question status updated successfully.',
+                });
+                setReloadKey(prevKey => !prevKey); // Trigger reload
+            } catch (error: any) {
+                const errorMessage =
+                    error.response && error.response.data
+                        ? JSON.stringify(error.response.data)
+                        : error.message;
+                notification.error({
+                    message: 'Error',
+                    description: errorMessage,
+                });
             }
-        },
-)};
+        }
+    },
+    )
+};
 const handleDelete = async (accountId: number, questionId: number, setReloadKey: React.Dispatch<React.SetStateAction<boolean>>) => {
     Modal.confirm({
         title: 'Confirm Delete',
@@ -76,7 +106,7 @@ const handleDelete = async (accountId: number, questionId: number, setReloadKey:
         },
     });
 };
-export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction<boolean>>, page:any, pageSize:any) => TableColumnsType<Question> = (setReloadKey, page, pageSize) => [
+export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction<boolean>>, page: any, pageSize: any) => TableColumnsType<Question> = (setReloadKey, page, pageSize) => [
     {
         title: 'No',
         dataIndex: 'id',
@@ -107,7 +137,7 @@ export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction
         title: 'Status',
         dataIndex: 'status',
         sorter: (a, b) => a.status.localeCompare(b.status),
-        render: (status, record:Question) => (
+        render: (status, record: Question) => (
             <Button
                 type="link"
                 onClick={() => handleUpdateStatus(record.id, record.account.id, record.status as QuestionStatus, setReloadKey)}
@@ -123,22 +153,22 @@ export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction
     {
         title: 'Delete',
         dataIndex: 'delete',
-        render: (_text: any,record:Question) => (
+        render: (_text: any, record: Question) => (
             <Button
                 icon={<DeleteOutlined />}
-                onClick={() => handleDelete(record.account.id, record.id,setReloadKey)}
+                onClick={() => handleDelete(record.account.id, record.id, setReloadKey)}
             />
         ),
     },
 ];
-export const PaymentColumns:(paymentPage:any, paymentPageSize:any) => TableColumnsType<Payment> = (paymentPage, paymentPageSize)=> [
+export const PaymentColumns: ( setReloadKey: React.Dispatch<React.SetStateAction<boolean>>, paymentPage: any, paymentPageSize: any) => 
+    TableColumnsType<Payment> = (setReloadKey, paymentPage, paymentPageSize) => [
     {
         title: 'No',
         dataIndex: 'id',
         key: 'index',
         render: (_text, _record, index) => index + 1 + paymentPageSize * (paymentPage - 1),
         showSorterTooltip: { target: 'full-header' },
-        defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,
         sortDirections: ['ascend', 'descend'],
     },
@@ -146,6 +176,7 @@ export const PaymentColumns:(paymentPage:any, paymentPageSize:any) => TableColum
         title: 'Created At',
         dataIndex: 'createdAt',
         render: (text) => dayjs(text).format('DD-MM-YYYY'),
+        defaultSortOrder: 'descend',
         //If true, returns 1, indicating that row a should come after row b.
         sorter: (a, b) => (dayjs(a.createdAt).isAfter(dayjs(b.createdAt)) ? 1 : -1),
     },
@@ -192,8 +223,12 @@ export const PaymentColumns:(paymentPage:any, paymentPageSize:any) => TableColum
         title: 'Status',
         dataIndex: 'status',
         sorter: (a, b) => a.status.localeCompare(b.status),
-        render: (status) => (
-            <p style={{color:`${theme.colors.primary}`}}>{status}</p>
+        render: (status: string, record: Payment) => (
+            status !== 'PENDING_PAYMENT' ?
+                (<p style={{ color: `${theme.colors.primary}` }}>{status}</p>)
+                : (<a style={{ color: `${theme.colors.error}` }} 
+                        onClick={() => handleDeletePending(record.id, setReloadKey)}>
+                        {status}</a>)
         )
     },
 ];

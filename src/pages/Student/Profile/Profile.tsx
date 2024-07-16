@@ -546,7 +546,7 @@ const Profile = () => {
                                         </St.CustomerInfoItem>
                                         <St.ScrollableContainer>
                                         <Table
-                                            columns={PaymentColumns(paymentPage, paymentPageSize)}
+                                            columns={PaymentColumns(setReloadKey, paymentPage, paymentPageSize)}
                                             dataSource={paymentHistory}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Payment) => record.id.toString()}
