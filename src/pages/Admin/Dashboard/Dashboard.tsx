@@ -109,7 +109,6 @@ const Dashboard: React.FC = () => {
           </Styled.StyledBoxNumber>
         </Col>
       </Row>
-
       <Row gutter={[20, 20]} style={{ 'marginTop': '20px' }}>
         <Col xxl={15} xl={15} lg={15} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
@@ -134,7 +133,6 @@ const Dashboard: React.FC = () => {
             <Title level={5} style={{ color: '#B94AB7' }}>Revenue by Subjects</Title>
             <Skeleton loading={loading} active>
               <ColumnChart />
-
             </Skeleton>
           </Styled.StyledBox>
         </Col>

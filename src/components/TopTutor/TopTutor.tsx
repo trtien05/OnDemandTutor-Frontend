@@ -5,11 +5,13 @@ import { Table } from "antd";
 
 const TopTutor = () => {
   const [tutors, setTutors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await getTopTutorsByRating();
       setTutors(data.content);
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -69,8 +71,8 @@ const TopTutor = () => {
       dataSource={tutors}
       pagination={false}
       style={{ padding: '30px 0' }}
+      loading={loading}
       scroll={{ x: true }}
-
     />
   );
 };
