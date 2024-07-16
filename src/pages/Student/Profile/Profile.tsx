@@ -245,7 +245,7 @@ const Profile = () => {
         }
     };
 
-    const handleUpdateProfileFailed = (values: any) => {
+    const handleUpdateProfileFailed = () => {
         api.error({
             message: 'Error',
             description: 'Something wrong occured. Please try again later.',
