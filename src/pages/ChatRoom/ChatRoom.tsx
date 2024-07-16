@@ -51,8 +51,10 @@ const ChatRoom: React.FC = () => {
   const { id, fullName, avatar } = location.state || {};
 
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
+  const [loadingPrivateChats, setLoadingPrivateChats] = useState<boolean>(true);
+
   const [tab, setTab] = useState<string>("CHATROOM");
-  const [unreadTabs, setUnreadTabs] = useState<Set<number>>(new Set()); // Danh sách tab có tin nhắn chưa đọc
+  const [unreadTabs, setUnreadTabs] = useState<Set<number>>(new Set());
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<UserData>({
     id: 0,
@@ -81,6 +83,7 @@ const ChatRoom: React.FC = () => {
   useEffect(() => {
     if (privateChats.size > 0 && tab === "CHATROOM") {
       setTab([...privateChats.keys()][0].toString());
+      setLoadingPrivateChats(false);
     }
   }, [privateChats]);
 
@@ -270,7 +273,7 @@ const ChatRoom: React.FC = () => {
           <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
             <Skeleton style={{ padding: '20px', backgroundColor: '#F4D1F3', borderRadius: '25px', }} avatar loading={loading} paragraph={{ rows: 2 }} active>
               <List
-                loading={loading}
+                loading={loadingPrivateChats}
                 itemLayout="horizontal"
                 dataSource={[...privateChats.keys()]}
                 renderItem={(id) => {
