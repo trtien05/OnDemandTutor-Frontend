@@ -62,7 +62,7 @@ const ChatRoom: React.FC = () => {
     message: '',
     name: ''
   });
-  const [hasChats, setHasChats] = useState<boolean>(false);
+  let hasChats = true;
 
   useEffect(() => {
     if (user && !userData.connected) {
@@ -82,9 +82,7 @@ const ChatRoom: React.FC = () => {
     if (privateChats.size > 0 && tab === "CHATROOM") {
       setTab([...privateChats.keys()][0].toString());
       setLoadingPrivateChats(false);
-      setHasChats(true);
-    } else {
-      setHasChats(false);
+      hasChats = false;
     }
   }, [privateChats]);
 
