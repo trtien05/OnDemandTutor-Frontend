@@ -147,6 +147,7 @@ const ChatRoom: React.FC = () => {
       })));
       if (id && fullName && avatar) {
         setAccount(prev => new Map(prev.set(id, { fullName, avatarUrl: avatar })));
+        setHasChats(true);
         setPrivateChats(prev => {
           if (!prev.has(id)) {
             const newChats = new Map(prev);
@@ -269,7 +270,7 @@ const ChatRoom: React.FC = () => {
     if (!text) return undefined;
     return text.length > 20 ? `${text.slice(0, 20)}...` : text;
   };
-
+  console.log(hasChats);
   return (
     <Layout>
       <>
