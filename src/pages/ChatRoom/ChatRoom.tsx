@@ -8,7 +8,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
 import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
-import { format, addHours } from 'date-fns'; // Import addHours
+import { format, addHours, subHours } from 'date-fns'; // Import addHours
 import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import config from '../../config/index.ts';
@@ -211,7 +211,7 @@ const ChatRoom: React.FC = () => {
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      const currentDate = addHours(new Date(), 7);
+      const currentDate = subHours(new Date(), 7);
       const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
