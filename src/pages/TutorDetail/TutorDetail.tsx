@@ -138,7 +138,7 @@ const TutorDetail: React.FC = () => {
 
     try {
       const newPage = page + 1;
-      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
+      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 3);
       const newReviewsList = newReviewsResponse.data.content;
 
       if (newReviewsList.length === 0) {
