@@ -157,6 +157,8 @@ const ChatRoom: React.FC = () => {
           return prev;
         });
         setTab(id.toString());
+        setLoadingPrivateChats(false);
+
       }
     } catch (error) {
       console.error('Error fetching messages: ', error);
