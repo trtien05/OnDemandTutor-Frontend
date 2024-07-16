@@ -267,7 +267,7 @@ const ChatRoom: React.FC = () => {
       <>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
           <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
-            <Skeleton style={{ padding: '20px', backgroundColor: '#F4D1F3', borderRadius: '25px', }} avatar loading={true} paragraph={{ rows: 2 }} active>
+            <Skeleton style={{ padding: '20px', backgroundColor: '#F4D1F3', borderRadius: '25px', }} avatar loading={loading} paragraph={{ rows: 2 }} active>
               <List
                 itemLayout="horizontal"
                 dataSource={[...privateChats.keys()]}
