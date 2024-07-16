@@ -90,11 +90,13 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                 </Styled.BestTutorEducation>
                 <Styled.BestTutorEducation>
                   <Styled.BestTutorEducationBachelorImage src={iconBachelor} alt="bachelor" />
-                  {item.subjects.map((subject, index) => (
-                    <Styled.BestTutorEducationBachelor key={index}>
-                      {index === 0 && subject}
-                    </Styled.BestTutorEducationBachelor>
+                  {item.subjects.slice(0, 3).map((subject, index) => (
+                    <React.Fragment key={index}>
+                      <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
+                      {index < 2 && ', '}
+                    </React.Fragment>
                   ))}
+                  {item.subjects.length > 3 && '...'}
                 </Styled.BestTutorEducation>
                 <Styled.BestTutorEducation>
                   <Styled.BestTutorStudentImage src={iconPerson} alt="person" />

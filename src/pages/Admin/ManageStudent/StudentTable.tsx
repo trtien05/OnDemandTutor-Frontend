@@ -1,5 +1,5 @@
 import { Table, TableColumnsType, Tag } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import DeleteStudent from './DeleteStudent';
 import EditStudent from './EditStudent';
 
@@ -13,29 +13,25 @@ interface Student {
   dateOfBirth?: string;
   createAt?: string;
   status?: string;
-  loading: boolean;
 };
 
 interface StudentTableProps {
   students: Student[];
   onReload: () => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
+  loading: boolean;
 }
 
 
-const StudentTable: React.FC<StudentTableProps> = ({ students, onReload }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
-  const handleTableChange = (pagination: any) => {
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
   const columns: TableColumnsType<Student> = [
     {
       title: 'No',
-      dataIndex: 'index',
-      key: 'index',
-      render: (_text, _record, index) => (currentPage - 1) * pageSize + index + 1,
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Student Name',
@@ -47,12 +43,6 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload }) => {
     {
       title: 'Gender',
       dataIndex: 'gender',
-      filters: [
-        { text: 'Female', value: 'female' },
-        { text: 'Male', value: 'male' },
-
-      ],
-      onFilter: (value, record) => record.gender === value,
     },
     {
       title: 'Address',
@@ -81,13 +71,6 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload }) => {
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: [
-        { text: 'ACTIVE', value: 'ACTIVE' },
-        { text: 'PROCESSING', value: 'PROCESSING' },
-        { text: 'BANNED', value: 'BANNED' },
-        { text: 'UNVERIFIED', value: 'UNVERIFIED' },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
 
         <Tag color={
@@ -114,15 +97,20 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload }) => {
   ];
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} dataSource={students}
+      <Table
+        rowKey={'id'}
+        columns={columns}
+        dataSource={students}
+        scroll={{ x: true }}
         pagination={{
           current: currentPage,
           pageSize: pageSize,
-          total: students.length,
+          onChange: onPageChange,
           showSizeChanger: false,
+          total: totalElements,
         }}
-        scroll={{ x: true }}
-        onChange={handleTableChange} />
+        loading={loading}
+      />
     </div>
   );
 }

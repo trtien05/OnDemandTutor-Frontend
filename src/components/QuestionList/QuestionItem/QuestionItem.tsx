@@ -6,6 +6,7 @@ import { Question } from '../../QuestionList/Question.type';
 import { UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
 import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
+import FileViewer from '../../FileViewer/FileViewer';
 
 interface QuestionItemProps {
     item: Question;
@@ -43,9 +44,9 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
         setOpen(true);
     };
     const handleCancel = () => {
-        // console.log('Clicked cancel button');
         setOpen(false);
     };
+
     //This function extracts the file extension from the URL correctly
     //by using the URL constructor, which handles query parameters.
     const getFileExtension = (url: string) => {
@@ -53,24 +54,21 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
         const ext = path.split('.').pop();
         return ext ? ext.toLowerCase() : '';
     };
+    
     //This function now uses getFileExtension
     //to determine the file type and render the image or link accordingly.
     const renderQuestionFile = (url: string) => {
         const fileExtension = getFileExtension(url);
-        // console.log(fileExtension); // for debugging
-
         if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
         } else if (fileExtension === 'pdf') {
             return (
-                <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontStyle: 'italic', textDecoration: 'underline' }}
-                >
-                    Click to download PDF file
-                </a>
+                //Render pdf on the screen 
+                <FileViewer alt='image' 
+                fileUrl={url} 
+                width='600px'
+                height='300px' 
+                borderRadius='20px'/>
             );
         }
         return null;
@@ -91,10 +89,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
             {contextHolderNotification}
             <Col lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
-                    {/* justify="space-between" */}
                     <Styled.QuestionItem>
-                        {/* <Col lg={2} md={4} sm={4} xs={24}> */}
-                        {/* <Styled.BestTutorImage src={item.picture.large} alt="avatar" /> */}
                         {item.account.avatarUrl ? (
                             <Avatar
                                 size={64}
@@ -125,7 +120,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
 
                             />
                         )}
-                        {/* </Col> */}
                         <Col lg={21} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow>
@@ -151,10 +145,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     <Styled.QuestionRowSpan>
                                         {item.subjectName}
                                     </Styled.QuestionRowSpan>
-                                    {/* <Styled.QuestionRowSpan>
-                                        Uploaded:{' '}
-                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
-                                    </Styled.QuestionRowSpan> */}
                                     <Styled.QuestionRowSpan>
                                         Modified:{' '}
                                         {new Date(item.modifiedAt!).toISOString().split('T')[0]}
@@ -228,10 +218,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     <Styled.QuestionRowSpan>
                                         {item.subjectName}
                                     </Styled.QuestionRowSpan>
-                                    {/* <Styled.QuestionRowSpan>
-                                        Uploaded:{' '}
-                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
-                                    </Styled.QuestionRowSpan> */}
                                     <Styled.QuestionRowSpan>
                                         Modified:{' '}
                                         {new Date(item.modifiedAt!).toISOString().split('T')[0]}

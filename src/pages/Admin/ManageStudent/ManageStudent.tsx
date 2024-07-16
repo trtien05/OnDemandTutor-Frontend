@@ -5,11 +5,17 @@ import { Skeleton } from 'antd';
 
 const ManageStudent = () => {
   const [students, setStudents] = useState([]);
+  const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(true);
+  const [pageNo, setPageNo] = useState(0);
+  const pageSize = 7;
 
-  const fetchApi = async () => {
+  const fetchApi = async (pageNo: number) => {
+    setLoading(true);
+
     try {
-      const response = await getAccountByRole('STUDENT');
+      const response = await getAccountByRole(pageNo, pageSize, 'STUDENT');
+      setTotalElements(response.data.totalElements);
       setStudents(response.data.content);
     } catch (error) {
       console.error('Error fetching students:', error);
@@ -18,24 +24,32 @@ const ManageStudent = () => {
     }
 
   }
-
   useEffect(() => {
-    fetchApi();
-  }, [])
+    fetchApi(pageNo);
+  }, [pageNo]);
 
   const handleReload = () => {
-    fetchApi();
-  }
+    fetchApi(pageNo);
+  };
+  const handlePageChange = (page: number) => {
+    setPageNo(page - 1);
+  };
   return (
     <div>
       <h2>Manage Student</h2>
       <Skeleton active loading={loading} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }} title={false}>
         <div style={{ 'marginTop': '20px' }}>
-          <StudentTable students={students} onReload={handleReload} />
+          <StudentTable
+            students={students}
+            onReload={handleReload}
+            onPageChange={handlePageChange}
+            currentPage={pageNo + 1}
+            pageSize={pageSize}
+            totalElements={totalElements}
+            loading={loading}
+          />
         </div>
       </Skeleton>
-
-
     </div>
   );
 }

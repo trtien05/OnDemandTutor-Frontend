@@ -31,12 +31,14 @@ const routes = {
         teachingSchedule: '/teaching-schedule',
         chatRoom: '/chat-room', // This can be accessed by both
         registerTutor: '/register-tutor', // This can be accessed by both
+        withdrawRequest: '/withdraw-request',
     },
     admin: {
         dashboard: '/admin',
         manageTutor: '/admin/tutors',
         manageModerator: '/admin/moderator',
         manageStudent: '/admin/student',
+        manageSalary: '/admin/salary',
     },
     moderator: {
         main: '/moderator',

@@ -19,15 +19,17 @@ const DeleteStudent: React.FC<DeleteStudentProps> = ({ record, onReload }) => {
     const response = await deleteAccount(record.id);
     // const response = true;
     if (response) {
-      onReload();
       messageApi.open({
         type: 'success',
-        content: 'Delete Success',
+        content: 'Ban Account Success',
       });
+      setTimeout(() => {
+        onReload();
+      }, 1000);
     } else {
       messageApi.open({
         type: 'error',
-        content: 'Delete Fail',
+        content: 'Ban Account Fail',
       });
     }
   }

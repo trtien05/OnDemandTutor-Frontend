@@ -1,4 +1,4 @@
-import { get } from '../utils/apiCaller';
+import { get, post } from '../utils/apiCaller';
 
 export const getPaymentUrl = (appointment: any) => {
     return get(`/api/payment/create-payment`, appointment);
@@ -11,6 +11,10 @@ export const getTutorInfo = (tutorId: number) => {
 export const getTutorEducation = (tutorId: number) => {
     return get(`/api/tutors/${tutorId}/educations`);
 };
-export const checkPaymentStatus = (payment: any) => {
-    return get(`/api/payment/check-payment/vnpay${payment}`);
+export const checkPaymentStatus = (method:string, payment: any) => {
+    return get(`/api/payment/check-payment/${method}${payment}`);
 };
+
+export const checkPaymentPaypal = (payment: any) => {
+    return post(`/api/payment/check-payment/paypal${payment}`);
+}

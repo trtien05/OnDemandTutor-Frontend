@@ -39,7 +39,6 @@ const EducationForm: React.FC<EducationProps> = (props) => {
         educationForm
     ]);
     const normFile = (e: any) => {
-        console.log('Upload event:', e);
         if (Array.isArray(e)) {
             return e;
         }
@@ -61,7 +60,6 @@ const EducationForm: React.FC<EducationProps> = (props) => {
             $width: field.$width,
         }));
         setDiploma([...diploma, newForm]);
-        // console.log(form)
     };
 
     const handleRemoveDiploma = (formIndex: number) => {
@@ -136,7 +134,7 @@ const EducationForm: React.FC<EducationProps> = (props) => {
             return responseData;
         } catch (error: any) {
             api.error({
-                message: 'Lỗi',
+                message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
         }
@@ -255,7 +253,6 @@ const EducationForm: React.FC<EducationProps> = (props) => {
                                                         fileList={fileList}
                                                         listType="picture"
                                                         showUploadList={true}
-                                                        // onChange={onDiplomaFileChange}
                                                         onChange={onChange}
                                                         accept=".jpg,.jpeg,.png,.pdf"
                                                         beforeUpload={() => false} // Prevent upload by return false

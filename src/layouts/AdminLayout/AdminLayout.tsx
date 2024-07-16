@@ -9,9 +9,10 @@ import logo from '../../assets/svg/logo.png';
 import MiniNotify from '../../components/MiniNotify/MiniNotify';
 import MenuSider from '../../components/MenuSider/MenuSider';
 import * as Styled from './AdminLayout.styled'
-import { useAuth } from '../../hooks';
+import { useAuth, useDocumentTitle } from '../../hooks';
 
 const AdminLayout: React.FC = () => {
+  useDocumentTitle('Administrator Control | MyTutor');
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const { user } = useAuth();
   return (

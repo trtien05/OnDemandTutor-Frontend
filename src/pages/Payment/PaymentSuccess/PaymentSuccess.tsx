@@ -1,6 +1,6 @@
 import { Skeleton, notification, Typography } from 'antd';
 import { useEffect, useRef, useState } from 'react'
-import { checkPaymentStatus } from '../../../utils/paymentAPI';
+import { checkPaymentPaypal, checkPaymentStatus } from '../../../utils/paymentAPI';
 import { useLocation } from 'react-router-dom';
 import cookieUtils from '../../../utils/cookieUtils';
 import useDocumentTitle from '../../../hooks/useDocumentTitle';
@@ -14,7 +14,7 @@ import { sendBookingEmail } from '../../../utils/tutorBookingAPI';
 const { Title, Text } = Typography;
 
 const PaymentSuccess = () => {
-    useDocumentTitle('Payment Status');
+    useDocumentTitle('Payment Status | MyTutor');
     const [api, contextHolder] = notification.useNotification({
         top: 100,
     });
@@ -34,8 +34,14 @@ const PaymentSuccess = () => {
         (async () => {
             try {
                 setLoading(true);
+                const paymentMethod = cookieUtils.getItem('bookingData').paymentMethod;
                 if (location.search) {
-                    const response = await checkPaymentStatus(location.search);
+                    let response: any;
+                    if (paymentMethod === 'paypal') {
+                        response = await checkPaymentPaypal(location.search)
+                    } else {
+                        response = await checkPaymentStatus(paymentMethod, location.search);
+                    }
                     if (response.status === 200) {
                         setPaymentResponse(response);
                         setBookingData(cookieUtils.getItem('bookingData'));
@@ -71,7 +77,7 @@ const PaymentSuccess = () => {
                     <Container>
                         <Styled.CheckInner>
                             <Skeleton loading={loading}>
-                                {(paymentResponse.status && bookingData) ? (
+                                {(paymentResponse.status === 200 && bookingData) ? (
                                     <>
                                         <Styled.CheckSuccessMsg>
                                             <AiOutlineCheckCircle
@@ -86,7 +92,7 @@ const PaymentSuccess = () => {
                                             <Title level={3}>
                                                 Total payment
                                             </Title>
-                                            <Text>{Math.round(bookingData.price).toLocaleString()} VND</Text>
+                                            <Text>{Math.round(bookingData.price).toLocaleString('en-US')} VND</Text>
                                         </Styled.PaymentMainPrice>
 
                                         <Styled.PaymentMainPrice>
@@ -110,7 +116,8 @@ const PaymentSuccess = () => {
                                     </>) : (
                                     <Styled.CheckErrorMsg>
                                         <AiOutlineCloseCircle size={80} color={theme.colors.error} />
-                                        <Title level={2}>{paymentResponse.data}</Title>
+                                        
+                                        <Title level={2}>{paymentResponse.data.error ? paymentResponse.data.error: paymentResponse.data}</Title>
                                     </Styled.CheckErrorMsg>
                                 )}
                             </Skeleton>

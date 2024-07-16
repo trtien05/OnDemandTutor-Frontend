@@ -5,11 +5,13 @@ import { Table } from "antd";
 
 const TopTutor = () => {
   const [tutors, setTutors] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchData = async () => {
       const { data } = await getTopTutorsByRating();
       setTutors(data.content);
+      setLoading(false);
     };
     fetchData();
   }, []);
@@ -33,38 +35,32 @@ const TopTutor = () => {
       title: 'Tutor Name',
       dataIndex: 'fullName',
       key: 'fullName',
-      width: 150,
     },
     {
       title: 'Gender',
       dataIndex: 'gender',
       key: 'gender',
-      width: 100,
     },
     {
       title: 'Email',
       dataIndex: 'email',
       key: 'email',
-      width: 200,
     },
     {
       title: 'Phone Number',
       dataIndex: 'phoneNumber',
       key: 'phoneNumber',
-      width: 200,
     },
     {
       title: 'Price Per Hour',
       dataIndex: 'teachingPricePerHour',
       key: 'teachingPricePerHour',
-      width: 150,
       render: (price: number) => formatPrice(price),
     },
     {
       title: 'Rating',
       dataIndex: 'averageRating',
       key: 'averageRating',
-      width: 150,
       render: (rating: number) => renderRatingStars(rating),
     },
   ];
@@ -75,8 +71,8 @@ const TopTutor = () => {
       dataSource={tutors}
       pagination={false}
       style={{ padding: '30px 0' }}
+      loading={loading}
       scroll={{ x: true }}
-
     />
   );
 };

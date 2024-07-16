@@ -1,9 +1,9 @@
-import { Form, Typography, Input, Button, Card } from 'antd';
+import { Form, Typography, Input } from 'antd';
 import styled from 'styled-components';
 
 import { theme } from '../../../themes';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 const { TextArea } = Input;
 export const FormContainer = styled.div`
     display: flex;
@@ -11,9 +11,6 @@ export const FormContainer = styled.div`
     flex-direction: row;
     column-gap: 5%;
     margin: 0 auto;
-    // width: 100%;
-    // height: 100%;
-    // position: relative"
 
     ${({ theme }) => theme.breakpoints.down('sm')} {
         width: 100%;
@@ -39,16 +36,6 @@ export const FormTitle = styled(Title)`
     }
 `;
 
-export const FormDescription = styled(Text)`
-    display: flex;
-    text-align: left;
-
-    column-gap: 8px;
-    margin-top: -8px;
-    margin-bottom: 24px;
-    color: ${theme.colors.textPrimary};
-    font-size: 1.5rem;
-`;
 
 export const CommentInput = styled(TextArea)`
     &.ant-input-affix-wrapper {
@@ -59,7 +46,6 @@ export const CommentInput = styled(TextArea)`
 
     &.ant-input-affix-wrapper textarea.ant-input {
         padding: 12px 16px;
-        // font-size: ;
         background: ${theme.colors.white};
     }
 `;
@@ -70,11 +56,6 @@ export const ButtonDiv = styled.div`
     display: flex;
     align-items: center;
     justify-content: center;
-    // display: flex;
-    // justifyContent: flex-end;
-    // alignSelf: flex-end;
-    // width: 100%;
-    // marginTop: 20px;
 `;
 export const FormItem = styled(Form.Item)<{ $width?: string }>`
     width: ${({ $width }) => $width || '100%'};
@@ -162,29 +143,3 @@ export const FormItem = styled(Form.Item)<{ $width?: string }>`
     }
 `;
 
-export const DeleteButton = styled(Button)`
-    width: 5px;
-    margin: 16px 0px;
-    padding: 0;
-    align-item: center;
-    ${({ theme }) => theme.breakpoints.down('sm')} {
-        width: 100%;
-        margin: 0px auto;
-    }
-`;
-export const ReviewContainer = styled(Card)`
-    width: 100%;
-    background: ${theme.colors.secondary};
-    padding: 5%;
-    margin-top: 24px;
-    border-radius: 25px;
-
-    & .ant-card-body {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: wrap;
-        ${({ theme }) => theme.breakpoints.down('xs')} {
-            flex-direction: column;
-        }
-    }
-`;

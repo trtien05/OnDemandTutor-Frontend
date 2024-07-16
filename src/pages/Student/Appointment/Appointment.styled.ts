@@ -194,7 +194,4 @@ export const StyledSegmented = styled(Segmented)`
       color: white;
     }
   }
-//   .ant-segmented-thumb {
-//     display: none; /* Hide the default thumb */
-//   }
 `;

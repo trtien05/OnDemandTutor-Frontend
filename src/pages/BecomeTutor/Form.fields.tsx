@@ -6,8 +6,6 @@ import dayjs from 'dayjs';
 import customParseFormat from 'dayjs/plugin/customParseFormat';
 import { validateFileSize } from '../../utils/UploadImg';
 
-// import 'moment/locale/vi';
-// import locale from 'antd/es/locale/vi_VN';
 
 
 const { RangePicker } = DatePicker;
@@ -395,6 +393,7 @@ export const certificateForm: FieldType[] = [
                 message: 'Description must not exceed 100 characters.',
             },
         ],
+        
         children: <TextArea rows={3}
             style={{    resize: 'none' }}
             name='description'

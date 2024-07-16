@@ -13,7 +13,7 @@ import useAuth from '../../hooks/useAuth';
 import { useDocumentTitle } from '../../hooks';
 
 const ModeratorLayout: React.FC = () => {
-  useDocumentTitle('MyTutor | Moderator');
+  useDocumentTitle('Moderator Control | MyTutor');
   const [collapsed, setCollapsed] = useState<boolean>(false);
   const { user } = useAuth();
 

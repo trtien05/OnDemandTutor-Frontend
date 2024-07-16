@@ -81,7 +81,7 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
                     description: "Question has been rejected",
                 });
             }
-            
+
         } catch (error) {
             api.error({
                 message: "Error",
@@ -160,7 +160,6 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
             >
 
                 <Skeleton loading={loading}>
-                    {/* <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>Tutor Booking</FormStyled.FormTitle> */}
                     <Col sm={24}>
                         <Styled.ModalStudentInfo>
                             <Col sm={3}>
@@ -224,61 +223,61 @@ const QuestionInfo: React.FC<QuestionInfoProps> = (props) => {
                         form={form}
                         size="middle"
                         style={{ rowGap: `0px` }}>
-                            <Col sm={24}>
-                        <Styled.QuestionRow>
-                            <Styled.Name level={2}>{item.title}</Styled.Name>
-                        </Styled.QuestionRow>
-                        <Styled.Description>{item.content}</Styled.Description>
-                        <Styled.QuestionRow style={{ justifyContent: `center` }}>
-                            {item.questionUrl && (
-                                <Styled.QuestionRowSpan>
-                                    <FileViewer alt={item.title}
-                                        fileUrl={item.questionUrl}
-                                        width='500px'
-                                        borderRadius='25px'
-                                    />
-                                </Styled.QuestionRowSpan>
-                            )}
-                        </Styled.QuestionRow>
-                        <div style={{
-                            textAlign: `center`,
-                            margin: `20px`,
-                            fontWeight: `bold`
-                        }}>
-                            <FormCheckbox
-                                name='agreement'
-                                style={{ margin: `0px`, color: `${theme.colors.black}` }}
-                                checked={agreement}
-                                defaultChecked={agreement}
-                                onChange={(e) => setAgreement(e.target.checked)}
-                            >I have carefully read all related information in this question</FormCheckbox>
+                        <Col sm={24}>
+                            <Styled.QuestionRow>
+                                <Styled.Name level={2}>{item.title}</Styled.Name>
+                            </Styled.QuestionRow>
+                            <Styled.Description>{item.content}</Styled.Description>
+                            <Styled.QuestionRow style={{ justifyContent: `center` }}>
+                                {item.questionUrl && (
+                                    <Styled.QuestionRowSpan>
+                                        <FileViewer alt={item.title}
+                                            fileUrl={item.questionUrl}
+                                            width='500px'
+                                            borderRadius='25px'
+                                        />
+                                    </Styled.QuestionRowSpan>
+                                )}
+                            </Styled.QuestionRow>
+                            <div style={{
+                                textAlign: `center`,
+                                margin: `20px`,
+                                fontWeight: `bold`
+                            }}>
+                                <FormCheckbox
+                                    name='agreement'
+                                    style={{ margin: `0px`, color: `${theme.colors.black}` }}
+                                    checked={agreement}
+                                    defaultChecked={agreement}
+                                    onChange={(e) => setAgreement(e.target.checked)}
+                                >I have carefully read all related information in this question</FormCheckbox>
 
-                        </div>
+                            </div>
 
-                        {agreement && isRejected && (
-                            <><FormItem
-                                name='mailMessage'
-                                label='Reject reason:'
-                                valuePropName="value"
-                                rules={[{ required: true, message: 'Please select a reason for your rejection' }]}
-                                style={{ marginTop: `-10px` }}
-                                validateFirst
-                            >
-                                <Select
-                                    placeholder="Select a reason"
-                                    style={{ width: '100%' }}>
-                                    {questionRejectionMessages.map((item, index) => (
-                                        <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
-                                </Select>
-                            </FormItem>
-                                <Button
-                                    type='link'
-                                    style={{ color: `${theme.colors.primary}`, textDecoration: 'underline', marginTop: `-5px` }}
-                                    onClick={() => { setIsRejected(false); setAgreement(false) }}>
-                                    I don't want to reject this question</Button>
-                            </>)
+                            {agreement && isRejected && (
+                                <><FormItem
+                                    name='mailMessage'
+                                    label='Reject reason:'
+                                    valuePropName="value"
+                                    rules={[{ required: true, message: 'Please select a reason for your rejection' }]}
+                                    style={{ marginTop: `-10px` }}
+                                    validateFirst
+                                >
+                                    <Select
+                                        placeholder="Select a reason"
+                                        style={{ width: '100%' }}>
+                                        {questionRejectionMessages.map((item, index) => (
+                                            <Select.Option key={index} value={item.message}>{item.key}</Select.Option>))}
+                                    </Select>
+                                </FormItem>
+                                    <Button
+                                        type='link'
+                                        style={{ color: `${theme.colors.primary}`, textDecoration: 'underline', marginTop: `-5px` }}
+                                        onClick={() => { setIsRejected(false); setAgreement(false) }}>
+                                        I don't want to reject this question</Button>
+                                </>)
 
-                        }
+                            }
                         </Col>
                     </FormWrapper>
                 </Skeleton>

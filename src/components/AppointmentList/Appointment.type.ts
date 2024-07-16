@@ -1,21 +1,6 @@
 
 import { AppointmentStatus } from "../../utils/enums";
 
-
-// export interface Appointment {
-//     id: number;
-//     createdAt: Date | string | null;
-//     description: string | null;
-//     subjectName: string;
-//     status: AppointmentStatus;
-//     tutor: Tutor;
-//     student: Student;
-//     studentId: number;
-//     tuition: number;
-//     timeslots: TimeSlot[];
-//     loading: boolean;
-// }
-
 export interface Appointment {
     id: number;
     subjectName: string;

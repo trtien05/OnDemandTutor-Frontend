@@ -49,15 +49,14 @@ import { uploadAvatar } from '../../../utils/UploadImg';
 import { PaymentColumns, QuestionColumns } from './Table/Table';
 import { Payment } from '../../../components/AppointmentList/Appointment.type';
 import { Question } from '../../../components/QuestionList/Question.type';
+import FileViewer from '../../../components/FileViewer/FileViewer';
 
 dayjs.locale('vi');
 dayjs.extend(calendar);
 
 const { Title, Paragraph, Text } = Typography;
-// const { RangePicker } = DatePicker;
-
 const Profile = () => {
-    useDocumentTitle('Profile | MyTutor');
+    useDocumentTitle('Personal Profile | MyTutor');
 
     const { user } = useAuth();
 
@@ -77,6 +76,14 @@ const Profile = () => {
     const [selectedItem, setSelectedItem] = useState<Question | null>(null);
     const [reloadKey, setReloadKey] = useState(false); // State for reloading
 
+    const [page, setPage] = useState(1);
+    const [pageSize, setPageSize] = useState(5);
+    const [total, setTotal] = useState(0);
+
+    const [paymentPage, setPaymentPage] = useState(1);
+    const [paymentPageSize, setPaymentPageSize] = useState(5);
+    const [paymentTotal, setPaymentTotal] = useState(0);
+
     useEffect(() => {
         (async () => {
             try {
@@ -93,21 +100,19 @@ const Profile = () => {
                     email: user.email,
                     address: user.address,
                 });
-                // console.log(user);
                 setImageUrl(user.avatarUrl);
-                // Get learn statistic
-                
+
             } catch (error: any) {
                 api.error({
                     message: 'Error',
                     description: error.response ? error.response.data : error.message,
                 });
-                console.error(`get user: ${error}`);
+                
             } finally {
                 setLoading(false);
             }
         })();
-           
+
     }, [api, form, user, reloadKey]);
 
     useEffect(() => {
@@ -121,11 +126,13 @@ const Profile = () => {
                 const { data } = await getLearnStatistic(user.id);
                 setLearnStatistic(data);
                 //get payment history
-                const { data: paymentData } = await getPaymentHistory(user.id);
+                const { data: paymentData } = await getPaymentHistory(user.id,paymentPage - 1, paymentPageSize);
                 setPaymentHistory(paymentData.content || []);
+                setPaymentTotal(paymentData.totalElements);
                 // get account's list of questions
-                const { data: questionData } = await getStudentListQuestion(user.id);
+                const { data: questionData } = await getStudentListQuestion(user.id, page - 1, pageSize);
                 setStudentListQuestion(questionData.content || []);
+                setTotal(questionData.totalElements);
             } catch (error: any) {
                 api.error({
                     message: 'Error',
@@ -135,9 +142,17 @@ const Profile = () => {
                 setLoading(false);
             }
         })();
-        
-    }, [api, user, reloadKey]);
-    
+
+    }, [api, user, reloadKey, paymentPage, paymentPageSize, page, pageSize]);
+    const handleTableChange = (pagination:any) => {
+        setPage(pagination.current);
+        setPageSize(pagination.pageSize);
+    };
+
+    const handlePaymentTableChange = (pagination:any) => {
+        setPaymentPage(pagination.current);
+        setPaymentPageSize(pagination.pageSize);
+    };
     const confirm = () => {
         modal.confirm({
             centered: true,
@@ -184,15 +199,13 @@ const Profile = () => {
             if (!url) return;
 
             setImageUrl(url);
-           
+
         } catch (error: any) {
             api.error({
                 message: 'Error',
                 description: error.response ? error.response.data : error.message,
             });
-        } finally {
-            // setLoading(false);
-        }
+        } 
     };
 
     const handleUpdateProfile = async (values: any) => {
@@ -200,7 +213,6 @@ const Profile = () => {
             setLoading(true);
 
             if (!user?.id) return;
-            // const gender = values.gender===1?false:true;
 
             await updateProfile(user.id, {
                 fullName: values.fullName,
@@ -216,9 +228,9 @@ const Profile = () => {
                 message: 'Success',
                 description: 'Your profile has been updated successfully.',
             });
-            
-            
-            
+
+
+
         } catch (error: any) {
             const errorMessage =
                 error.response && error.response.data
@@ -232,12 +244,16 @@ const Profile = () => {
             setLoading(false);
         }
     };
-    
+
     const handleUpdateProfileFailed = (values: any) => {
-        console.log(values);
+        console.log("Error: ",values);
+        api.error({
+            message: 'Error',
+            description: 'Something wrong occured. Please try again later.',
+        });
     };
-    
-    
+
+
     const handleView = (item: Question) => {
         setSelectedItem(item);
         setOpen(true);
@@ -254,25 +270,21 @@ const Profile = () => {
     };
     const renderQuestionFile = (url: string) => {
         const fileExtension = getFileExtension(url);
-        console.log(fileExtension); // for debugging
 
         if (['jpg', 'jpeg', 'png'].includes(fileExtension)) {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
         } else if (fileExtension === 'pdf') {
             return (
-                <a
-                    href={url}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    style={{ fontStyle: 'italic', textDecoration: 'underline' }}
-                >
-                    Click to download PDF file
-                </a>
+                <FileViewer alt='image'
+                    fileUrl={url}
+                    width='600px'
+                    height='300px'
+                    borderRadius='20px' />
             );
         }
         return null;
     };
-    const modifiedQuestionColumns = QuestionColumns(setReloadKey).map((column) => {
+    const modifiedQuestionColumns = QuestionColumns(setReloadKey, page, pageSize).map((column) => {
         if (column.key === 'view') {
             return {
                 ...column,
@@ -514,30 +526,34 @@ const Profile = () => {
                                     <Col span={24}>
                                         <St.CustomerInfoItem vertical gap={10}>
                                             <Title level={3}>Your questions</Title>
+                                            <strong>* Click on the status of the question to update it</strong>
                                         </St.CustomerInfoItem>
+                                        <St.ScrollableContainer>
                                         <Table
-                                            // columns={QuestionColumns}
                                             columns={modifiedQuestionColumns}
                                             dataSource={studentListQuestion}
-                                            // reloadKey = {reloadKey}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Question) => record.id.toString()}
-                                            pagination={{ pageSize: 4 }}
+                                            pagination={{ current: page, pageSize, total }}
+                                            onChange={handleTableChange}
                                         />
+                                        </St.ScrollableContainer>
                                     </Col>
 
                                     <Col span={24}>
                                         <St.CustomerInfoItem vertical gap={10}>
                                             <Title level={3}>Payment History</Title>
                                         </St.CustomerInfoItem>
+                                        <St.ScrollableContainer>
                                         <Table
-                                            columns={PaymentColumns}
+                                            columns={PaymentColumns(paymentPage, paymentPageSize)}
                                             dataSource={paymentHistory}
-                                            // onChange={onChangeEducation}
                                             showSorterTooltip={{ target: 'sorter-icon' }}
                                             rowKey={(record: Payment) => record.id.toString()}
-                                            pagination={{ pageSize: 4 }}
+                                            pagination={{ current: paymentPage, pageSize: paymentPageSize, total: paymentTotal }}
+                                            onChange={handlePaymentTableChange}
                                         />
+                                        </St.ScrollableContainer>
                                     </Col>
                                 </Row>
                             </ProfileWrapper>
@@ -603,11 +619,6 @@ const Profile = () => {
                                     <Styled.QuestionRowSpan>
                                         {selectedItem?.subjectName}
                                     </Styled.QuestionRowSpan>
-                                    {/* <Styled.QuestionRowSpan>
-                                        Uploaded:{' '}
-                                        {new Date(item.createdAt!).toISOString().split('T')[0]}
-                                    </Styled.QuestionRowSpan> */}
-
                                     {selectedItem?.modifiedAt && (
                                         <Styled.QuestionRowSpan>
                                             Modified:{' '}

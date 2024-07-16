@@ -24,7 +24,6 @@ const Form2 = ({
   }, []);
 
   const normFile = (e: any) => {
-    console.log('Upload event:', e);
     if (Array.isArray(e)) {
       return e;
     }
@@ -94,7 +93,6 @@ const Form2 = ({
                           fileList={fileList}
                           listType="picture"
                           showUploadList={true}
-                          // onChange={onDiplomaFileChange}
                           onChange={onChange}
                           accept=".jpg,.jpeg,.png,.pdf"
                           beforeUpload={() => false} // Prevent upload by return false

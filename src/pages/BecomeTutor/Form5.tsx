@@ -17,7 +17,7 @@ const Form5 = ({ onFinish,
   onVisibilityChange,
   onTimeslotAgreementChange,
   timeslotForm }: any) => {
-  useDocumentTitle('Become a tutor');
+  useDocumentTitle('Become A tutor | MyTutor');
 
   const daysOfWeek = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 
@@ -26,7 +26,7 @@ const Form5 = ({ onFinish,
   useEffect(() => {
     window.scrollTo({ top: 100, behavior: "smooth" });
   }, []);
-  
+
   return (
     < Col lg={{ span: 12 }} sm={{ span: 16 }} xs={{ span: 24 }} style={{ margin: `auto` }}>
       <FormStyled.FormWrapper

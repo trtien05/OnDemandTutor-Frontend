@@ -51,8 +51,6 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
     if (!value) return "";
     // Use the helper function to ensure value is a number
     const numberValue = formatNumberValue(value);
-    // Use Intl.NumberFormat for Vietnamese locale
-    //const formattedValue = new Intl.NumberFormat("vi-VN").format(numberValue);
     return numberValue.toLocaleString("en-US");
   };
   const parser = (value: string | undefined) => {
@@ -201,7 +199,6 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
             ></Input>
           </FormStyled.FormItem>
           {url && (
-            // style={{ width: "100%", height: "100%", display: "flex" }}
             <div style={{ width: "100%", margin: "10px 0 20px 0" }}>
               <ReactPlayer url={url} controls={true} width="100%" />
             </div>

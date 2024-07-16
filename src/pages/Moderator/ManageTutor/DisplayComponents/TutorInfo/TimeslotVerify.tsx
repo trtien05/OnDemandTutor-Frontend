@@ -9,13 +9,11 @@ interface TimeslotVerifyProps {
 }
 
 const TimeslotVerify: React.FC<TimeslotVerifyProps> = (props) => {
-    // const setSwitchStates = () => {
-    //     props.handleChange(!props.switchStates);
-    // }
+    
     const dayOfWeek = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'];
     return (
         <div
-            // onClick={props.toggleSwitch}
+            
             style={{ display: `flex`, justifyContent: `flex-start`, marginTop:`10px` }}>
             <div style={{ display: `flex`, flexWrap:`wrap`, justifyContent:`flex-start` }}>
                 {props.schedule.map((day, index: number) => (

@@ -3,18 +3,22 @@ import React from 'react';
 import { Question } from '../../../components/QuestionList/Question.type';
 import QuestionInfo from './QuestionInfo';
 
-interface TutorTableProps {
+interface ModeratorTableProps {
     questions: Question[];
     onReload: () => void;
+    pagination: { current: number, pageSize: number };
+    setPagination: (pagination: { current: number, pageSize: number }) => void;
+    total: { totalElements: number, totalPages: number };
+    loading: boolean;
 }
 
-const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
+const QuestionTable: React.FC<ModeratorTableProps> = (props) => {
     const columns = [
         {
             title: 'No',
             key: 'index',
             dataIndex: 'id',
-            render: (_:unknown, __ :unknown, index:number) => index + 1,
+            render: (_: unknown, __: unknown, index: number) => index + 1 + pagination.pageSize * (pagination.current - 1),
         },
         {
             title: 'Title',
@@ -48,14 +52,34 @@ const QuestionTable: React.FC<TutorTableProps> = ({ questions, onReload }) => {
             key: 'action',
             render: (_: any, record: Question) => (
                 <>
-                <QuestionInfo question={record} onReload={onReload} />
+                    <QuestionInfo question={record} onReload={props.onReload} />
                 </>
             )
         }
     ];
+
+    const [pagination, setPagination] = [props.pagination, props.setPagination]
+
+    const handleTableChange = (pagination: any) => {
+        setPagination(pagination);
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    };
+
     return (
         <div>
-            <Table rowKey={'id'} columns={columns} dataSource={questions} />;
+            <Table
+                loading={props.loading}
+                rowKey={'id'}
+                pagination={{
+                    pageSize: pagination.pageSize,
+                    current: pagination.current,
+                    total: props.total.totalElements,
+                    onChange: (page, pageSize) => {
+                        handleTableChange({ current: page, pageSize });
+                    }
+                }}
+                columns={columns}
+                dataSource={props.questions} />
         </div>
     );
 }

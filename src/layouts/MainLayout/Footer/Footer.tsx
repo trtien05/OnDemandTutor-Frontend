@@ -5,8 +5,7 @@ import { aboutUs, pages, socials } from './Footer.data';
 import * as Styled from './Footer.styled';
 import myTutor from '../../../assets/images/mytutor.png'
 const { Title, Text } = Typography;
-import { FaPhoneAlt } from "react-icons/fa";
-import { IoMail } from "react-icons/io5";
+import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 
 const Footer = () => {
     const categoryList = [
@@ -20,17 +19,16 @@ const Footer = () => {
         },
         {
             id: 3,
-            titleName: 'TOEFL',
+            titleName: 'MATHEMATICS',
         },
         {
             id: 4,
-            titleName: 'CAMBRIDGE',
+            titleName: 'CODING',
         },
     ]
 
     return (
         <>
-            {/* {contextHolder} */}
 
             <Styled.FooterSection>
                 <Container>
@@ -48,7 +46,7 @@ const Footer = () => {
                                     dataSource={categoryList}
                                     renderItem={(category) => (
                                         <List.Item key={category.id}>
-                                            <Styled.FooterSocialsLink to={'/'}>
+                                            <Styled.FooterSocialsLink to={'/search-questions'}>
                                                 {category.titleName}
                                             </Styled.FooterSocialsLink>
                                         </List.Item>
@@ -83,9 +81,10 @@ const Footer = () => {
                                     renderItem={(about) => (
                                         <List.Item key={about.key}>
                                             <Link to={about.to} target={about.target}>
-                                                {about.key === 2 ? <IoMail /> : <FaPhoneAlt />}  {about.title}
+                                                {about.key === 2 ? <MailOutlined /> : <PhoneOutlined />} {about.title}
                                             </Link>
                                         </List.Item>
+
                                     )}
                                 />
                             </Styled.FooterColumnWrapper>

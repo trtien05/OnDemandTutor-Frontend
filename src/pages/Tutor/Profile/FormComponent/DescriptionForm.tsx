@@ -62,7 +62,7 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
         // Use the helper function to ensure value is a number
         const numberValue = formatNumberValue(value);
         // Use Intl.NumberFormat for Vietnamese locale
-        return numberValue.toLocaleString();
+        return numberValue.toLocaleString('en-US');
     };
     const parser = (value: string | undefined) => {
         // Remove non-digit characters (commas, spaces, etc.)

@@ -31,11 +31,6 @@ const handleUpdateStatus = async (questionId: number, accountId: number, current
         content:
             `Are you sure you want to update status ${currentStatus} to ${newStatus}? You cannot undo this action after confirm.`,
         onOk: async () => {
-            
-            // let newStatus = QuestionStatus.UNSOLVED;
-            // if (currentStatus === QuestionStatus.UNSOLVED) {
-            //     newStatus = QuestionStatus.SOLVED;
-            // } 
                 try {
                     await updateQuestionStatus(accountId, questionId,newStatus);
                     notification.success({
@@ -68,7 +63,6 @@ const handleDelete = async (accountId: number, questionId: number, setReloadKey:
                     description: 'Question deleted successfully.',
                 });
                 setReloadKey(prevKey => !prevKey); // Trigger reload
-                // Optionally, update the local state or fetch updated data
             } catch (error: any) {
                 const errorMessage =
                     error.response && error.response.data
@@ -82,12 +76,12 @@ const handleDelete = async (accountId: number, questionId: number, setReloadKey:
         },
     });
 };
-export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction<boolean>>) => TableColumnsType<Question> = (setReloadKey) => [
+export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction<boolean>>, page:any, pageSize:any) => TableColumnsType<Question> = (setReloadKey, page, pageSize) => [
     {
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (_text, _record, index) => index + 1,
+        render: (_text, _record, index) => index + 1 + pageSize * (page - 1),
         showSorterTooltip: { target: 'full-header' },
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,
@@ -125,10 +119,6 @@ export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction
     {
         title: 'View',
         key: 'view',
-        // render: (_text, _record) => (
-        //     <Button icon={<EyeOutlined />} onClick={() => handleView(record)} />
-        // ),
-        
     },
     {
         title: 'Delete',
@@ -141,12 +131,12 @@ export const QuestionColumns: (setReloadKey: React.Dispatch<React.SetStateAction
         ),
     },
 ];
-export const PaymentColumns: TableColumnsType<Payment> = [
+export const PaymentColumns:(paymentPage:any, paymentPageSize:any) => TableColumnsType<Payment> = (paymentPage, paymentPageSize)=> [
     {
         title: 'No',
         dataIndex: 'id',
         key: 'index',
-        render: (_text, _record, index) => index + 1,
+        render: (_text, _record, index) => index + 1 + paymentPageSize * (paymentPage - 1),
         showSorterTooltip: { target: 'full-header' },
         defaultSortOrder: 'ascend',
         sorter: (a, b) => a.id - b.id,
@@ -155,7 +145,8 @@ export const PaymentColumns: TableColumnsType<Payment> = [
     {
         title: 'Created At',
         dataIndex: 'createdAt',
-        render: (text) => dayjs(text).format('YYYY-MM-DD'),
+        render: (text) => dayjs(text).format('DD-MM-YYYY'),
+        //If true, returns 1, indicating that row a should come after row b.
         sorter: (a, b) => (dayjs(a.createdAt).isAfter(dayjs(b.createdAt)) ? 1 : -1),
     },
     {
@@ -180,10 +171,15 @@ export const PaymentColumns: TableColumnsType<Payment> = [
                 ))}
             </div>
         ),
-        // If you want to sort by the first timeslot's start time
+        // If sort by the first timeslot's start time
         sorter: (a, b) => {
             const aStartTime = dayjs(a.timeslots[0].startTime);
             const bStartTime = dayjs(b.timeslots[0].startTime);
+            // Checks if the start time of row a is before the start time of row b.
+            // If true, returns -1, indicating that row a should come before row b
+            // If false, checks if the start time of row a is after the start time of row b.
+            // If true, returns 1, indicating that row a should come after row b.
+            //If neither is true , returns 0, indicating that the order of these rows doesn't need to change.
             return aStartTime.isBefore(bStartTime) ? -1 : aStartTime.isAfter(bStartTime) ? 1 : 0;
         },
     },

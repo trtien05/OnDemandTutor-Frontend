@@ -1,10 +1,12 @@
-import { Col, Typography, Space, Button, notification, Statistic, Skeleton } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio } from 'antd';
 import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
 import iconBachelor from "../../assets/images/image13.png";
 import rating from "../../assets/images/star.webp"
 import vnpayLogo from "../../assets/svg/vnpay-logo.svg"
+import momoLogo from "../../assets/svg/momo-logo.svg"
+import paypalLogo from "../../assets/svg/paypal-logo.svg"
 import { Loading3QuartersOutlined } from '@ant-design/icons';
 import { theme } from '../../themes';
 import { useLocation, useNavigate } from 'react-router-dom';
@@ -14,6 +16,8 @@ import { Schedule, ScheduleEvent } from '../../components/Schedule/Schedule.type
 import moment from 'moment';
 import config from '../../config';
 import useAuth from '../../hooks/useAuth';
+import { rollbackBooking } from '../../utils/tutorBookingAPI';
+import { ButtonDiv } from '../BecomeTutor/Form.styled';
 
 const { Title, Text } = Typography;
 const { Countdown } = Statistic;
@@ -77,6 +81,7 @@ const MakePayment = () => {
   const deadline = new Date().getTime() + 15 * 60 * 1000; // 15 minutes
   const navigate = useNavigate();
   const { user } = useAuth();
+  const [paymentMethod, setPaymentMethod] = useState('vnpay');
 
   useEffect(() => {
     (async () => {
@@ -193,17 +198,38 @@ const MakePayment = () => {
     return totalMinutes / 60;
   }
 
+  const handleCancel = async () => {
+    setLoading(true);
+    const response = await rollbackBooking(appointmentData.id);
+    if (response.status === 200) {
+      api.success({
+        message: 'Success',
+        description: 'Your booking has been cancelled',
+      });
+      setTimeout(() => {
+        navigate(config.routes.public.searchTutors+`/${tutorId}`);
+      }, 2000);
+    }
+  }
 
   const handleOrder = async () => {
     try {
       // Call API to create order
       // If success, show success message
       setLoading(true);
-      const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString() });
+      if (!paymentMethod) {
+        api.error({
+          message: 'Error',
+          description: 'Please select a payment method',
+        });
+        return;
+      }
+      const { data } = await getPaymentUrl({ "appointmentId": appointmentData.id.toString(), "provider": paymentMethod.toUpperCase() });
       if (schedule !== undefined && tutor !== undefined && tutor !== null) {
         const totalHour = calculateTotalHour(schedule);
         const price = totalHour * tutor.teachingPricePerHour;
         await cookieUtils.setItem('bookingData', JSON.stringify({
+          paymentMethod: paymentMethod,
           appointmentId: appointmentData.id,
           tutor: tutor,
           schedule: schedule,
@@ -212,7 +238,6 @@ const MakePayment = () => {
           price: price,
         }));
       } else throw new Error("Can't send Tutor and Schedule data")
-      // window.open(data.paymentUrl)
       setTutor(undefined);
       window.location.href = data.paymentUrl;
 
@@ -230,7 +255,6 @@ const MakePayment = () => {
     return (
       <>
         {contextHolder}
-        {/* <Row> */}
         <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
           <Col xl={13} lg={13} sm={24} xs={24} >
             <Skeleton loading={loading}>
@@ -279,7 +303,7 @@ const MakePayment = () => {
                 <Styled.PriceCalculation>
                   <Space>
                     <Title level={3}>Tutor's price per hour</Title>
-                    <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString() : ''} VND</Text>
+                    <Text> {(tutor) ? (tutor.teachingPricePerHour).toLocaleString('en-US') : ''} VND</Text>
                   </Space>
 
                   <Space>
@@ -299,7 +323,7 @@ const MakePayment = () => {
                       Total
                     </Title>
                     <Text>
-                      {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString() : ''} VND
+                      {(schedule && tutor) ? (Math.round((calculateTotalHour(schedule) * tutor.teachingPricePerHour))).toLocaleString('en-US') : ''} VND
                     </Text>
                   </Space>
                   <p></p>
@@ -307,22 +331,78 @@ const MakePayment = () => {
               </Styled.CheckoutWrapper>
             </Skeleton>
           </Col>
-          {/* </Row> */}
-          {/* <Row> */}
+
           <Col xl={10} lg={10} sm={24} xs={24}>
             <Skeleton loading={loading}>
               <Styled.CheckoutWrapper >
-                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600` }} >Payment</Styled.TutorName>
-                <Styled.CheckoutPaymentImgWrapper>
-                  <img
-                    src={vnpayLogo}
-                    loading="lazy"
-                    decoding="async"
-                    alt="VNPAY"
-                  />
-                </Styled.CheckoutPaymentImgWrapper>
+                <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `20px` }} >Payment method</Styled.TutorName>
+
+                <Styled.CheckoutPayment>
+
+                  <Radio.Group
+                    name="payment"
+                    value={paymentMethod}
+                    onChange={(e) => setPaymentMethod(e.target.value)}
+                  >
+                    <Radio
+                      value={'paypal'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={paypalLogo}
+                          loading="lazy"
+                          decoding="async"
+                        // alt={PaymentMethod.VNPAY}
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                    <Radio
+                      value={'momo'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={momoLogo}
+                          loading="lazy"
+                          decoding="async"
+                        // alt={PaymentMethod.MOMO}
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                    <Radio
+                      value={'vnpay'}
+                      style={{ visibility: 'hidden' }}
+                    >
+                      <Styled.CheckoutPaymentImgWrapper>
+                        <img
+                          src={vnpayLogo}
+                          loading="lazy"
+                          decoding="async"
+                        // alt={PaymentMethod.MOMO}
+                        />
+                      </Styled.CheckoutPaymentImgWrapper>
+                    </Radio>
+                  </Radio.Group>
+                </Styled.CheckoutPayment>
+                <ButtonDiv>
                 <Button
-                  block
+                  style={{ marginRight: '10px', width:`40%`}}
+                  type="default"
+                  size="large"
+                  onClick={handleCancel}
+                >
+                  {loading ? (
+                    <Loading3QuartersOutlined
+                      spin
+                      style={{ fontSize: '1.6rem' }}
+                    />
+                  ) : (
+                    'Cancel'
+                  )}
+                </Button>
+                <Button
+                  style={{ marginRight: '10px', width:`60%`}}
                   type="primary"
                   size="large"
                   onClick={handleOrder}
@@ -336,6 +416,7 @@ const MakePayment = () => {
                     'Pay'
                   )}
                 </Button>
+                </ButtonDiv>
                 <Styled.BorderLine />
 
                 <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
@@ -343,7 +424,6 @@ const MakePayment = () => {
               </Styled.CheckoutWrapper>
             </Skeleton>
           </Col>
-          {/* </Row> */}
         </div>
 
       </>

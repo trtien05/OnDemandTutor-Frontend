@@ -55,7 +55,6 @@ const BecomeTutor = () => {
     if (user === null) navigate(config.routes.public.login);
     setAccountId(user?.id);
   }, [user]);
-  // setAccountId(user?.id);
 
   async function fetchAccount(tutorId: number) {
     setLoading(true);
@@ -64,7 +63,7 @@ const BecomeTutor = () => {
       setDataSource(response.data)
     } catch (error: any) {
       api.error({
-        message: 'Lỗi',
+        message: 'Error',
         description: error.response ? error.response.data : error.message,
       });
     } finally {
@@ -253,18 +252,11 @@ const BecomeTutor = () => {
 
       } catch (error: any) {
         api.error({
-          message: 'Lỗi',
+          message: 'Error',
           description: error.response ? error.response.data.message : error.message,
         });
       }
     }
-    // api.success({
-    //   message: 'Success',
-    //   description: 'Your form has been Sent',
-    // });
-    // setTimeout(() => {
-    //   navigate('/');
-    // }, 2000);
 
     next();
   };
@@ -396,7 +388,6 @@ const BecomeTutor = () => {
       $width: field.$width,
     }));
     setCertificate((prevForm) => [...prevForm, newForm]);
-    // console.log(form)
   }, [certificate.length]);
 
   const handleRemoveDiploma = (formIndex: number) => {
@@ -476,7 +467,6 @@ const BecomeTutor = () => {
       return aboutValues === null || agreement === false;
     }
     if (stepNumber == 2) {
-      console.log(educationValues)
       return aboutValues === null || educationValues === null;
     }
     if (stepNumber == 3) {
@@ -498,12 +488,11 @@ const BecomeTutor = () => {
   //------------------------------------FETCH BECOME TUTOR API-------------------------------
   async function saveBecomeTutor(tutorId: number) {
     try {
-      const response = await becomeTutor(tutorId);
-      console.log(' saved successfully:', response);
+      await becomeTutor(tutorId);
       return 'success'
     } catch (error: any) {
       api.error({
-        message: 'Lỗi',
+        message: 'Error',
         description: error.response ? error.response.data : error.message,
       });
     }
@@ -518,16 +507,12 @@ const BecomeTutor = () => {
 
     try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
       const responseData = await updateDetails(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
         throw new Error(`Error: ${responseData.statusText}`);
       }
-
-      // Get response data
-      console.log('Account details saved successfully:', responseData);
 
       // Return success response
       return responseData;
@@ -554,16 +539,12 @@ const BecomeTutor = () => {
 
     try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
       const responseData = await addEducations(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
         throw new Error(`Error: ${responseData.statusText}`);
       }
-
-      // Get response data
-      console.log('Educations saved successfully:', responseData);
 
       // Return success response
       return responseData
@@ -606,16 +587,12 @@ const BecomeTutor = () => {
 
     try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
       const responseData = await addCertificates(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
         throw new Error(`Error: ${responseData.statusText}`);
       }
-
-      // Get response data
-      console.log('Certificates saved successfully:', responseData);
 
       // Return success response
       return responseData;
@@ -657,16 +634,12 @@ const BecomeTutor = () => {
 
     try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
       const responseData = await addTutorDescription(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
         throw new Error(`Error: ${responseData.statusText}`);
       }
-
-      // Get response data
-      console.log('Tutor description saved successfully:', responseData);
 
       // Return success response
       return responseData;
@@ -694,16 +667,12 @@ const BecomeTutor = () => {
     const jsonRequestBody = convertTimeslotsToJSON(formData);
     try {
 
-      // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
       const responseData = await addAvailableSchedule(tutorId, jsonRequestBody);
 
       // Check response status
       if (!api.success) {
         throw new Error(`Error: ${responseData.statusText}`);
       }
-
-      // Get response data
-      console.log('Tutor available timeslots saved successfully:', responseData);
 
       // Return success response
       return responseData;

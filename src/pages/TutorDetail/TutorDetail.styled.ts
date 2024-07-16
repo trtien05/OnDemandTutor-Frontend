@@ -175,6 +175,7 @@ export const BestTutorEducationBachelorImage = styled.img`
 export const BestTutorEducation = styled.div`
     display: flex;
     margin: 10px 0;
+    flex-wrap: wrap;
 `;
 
 export const BookingTutorButton = styled.button`

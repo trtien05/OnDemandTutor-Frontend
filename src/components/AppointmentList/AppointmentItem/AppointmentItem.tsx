@@ -1,7 +1,7 @@
 import React from 'react';
 import { Skeleton, Avatar } from 'antd';
 import * as Styled from '../Appointment.styled';
-import { CloseOutlined, UserOutlined } from '@ant-design/icons'; // Import the UserOutlined icon
+import { CloseOutlined, UserOutlined } from '@ant-design/icons'; 
 import { TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
@@ -15,14 +15,21 @@ interface AppointmentItemProps {
     role: 'STUDENT' | 'TUTOR';
 }
 
-// QuestionItemProps
+
 const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewMode, role }) => {
-    const { startTime, endTime, scheduleDate, appointment } = item;
-    // const timeslot = item.timeslots[0];
-    const appointmentDate = new Date(`${scheduleDate}T${startTime}`);
+
+    //Destructuring: Extracts startTime, endTime, scheduleDate, and appointment from the item prop.
+    const { startTime, endTime, scheduleDate, appointment } = item; 
+
+    //appointmentDate: Creates a new Date object for the appointment.
+    const appointmentDate = new Date(`${scheduleDate}T${startTime}`); 
+
     const isTutor = role === 'TUTOR';
     const displayPerson = isTutor ? appointment.student : appointment.tutor;
-    const canReschedule = appointmentDate.getTime() - new Date().getTime() > 24 * 60 * 60 * 1000;
+
+    //Determines if the appointment can be rescheduled (if it's more than 24 hours away).
+    const canReschedule = appointmentDate.getTime() - new Date().getTime() > 24 * 60 * 60 * 1000; 
+
     // Helper function to format time to "HH:mm"
     const formatTime = (time: string) => {
         const [hours, minutes] = time.split(':');
@@ -33,7 +40,6 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
         <Skeleton avatar title={false} loading={item.loading} active>
             <Styled.StyleCol lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
-                    {/* justify="space-between" */}
                     <Styled.QuestionItem>
                         <Styled.StyleCol lg={2} md={4} sm={4} xs={24}>
                             <Styled.QuestionContent>
@@ -65,21 +71,6 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        {/* <Styled.StyleCol lg={8} md={20} sm={19} xs={16}>
-                            <Styled.QuestionContent>
-                                
-                                <Styled.QuestionRow>
-                                    <Styled.QuestionRow
-                                        style={{
-                                            fontSize: '16px',
-                                            alignContent: 'center',
-                                        }}
-                                    >
-                                        {appointmentDate.toLocaleString('default', { weekday: 'long' })}, {timeslot.startTime} - {timeslot.endTime}
-                                    </Styled.QuestionRow>
-                                </Styled.QuestionRow>
-                            </Styled.QuestionContent>
-                        </Styled.StyleCol> */}
                         <Styled.StyleCol lg={5} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
@@ -142,16 +133,6 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                         </Styled.StyleCol>
                         {viewMode === 'Upcoming' && (
                             <>
-                                {/* <Styled.StyleCol
-                            lg={2}
-                            md={24}
-                            sm={24}
-                            xs={24}
-                            style={{ textAlign: 'center' }}
-                        >
-                            <Reschedule tutorId={item.appointment.tutor.tutorId} oldBooking={item}/>
-                            
-                        </Styled.StyleCol> */}
 
                                 <Styled.StyleCol
                                     lg={2}

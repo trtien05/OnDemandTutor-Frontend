@@ -1,5 +1,5 @@
 import { Table, TableColumnsType, Tag } from 'antd';
-import React, { useState } from 'react';
+import React from 'react';
 import DeleteTutor from './DeleteTutor';
 import EditTutor from './EditTutor'
 import { FaStar } from 'react-icons/fa';
@@ -19,7 +19,6 @@ interface Tutor {
   educations?: Education;
   subjects: string[],
   averageRating?: number;
-  loading: boolean;
   status: string;
   gender: boolean;
   dateOfBirth: string;
@@ -28,27 +27,24 @@ interface Tutor {
 interface TutorTableProps {
   tutors: Tutor[];
   onReload: () => void;
+  onPageChange: (page: number) => void;
+  currentPage: number;
+  pageSize: number;
+  totalElements: number;
+  loading: boolean;
 }
 const formatPrice = (price: number) => {
   const safePrice = Number(price) || 0;
   return `${safePrice.toLocaleString()} đ`;
 }
 
-const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
-  const [currentPage, setCurrentPage] = useState(1);
-  const [pageSize, setPageSize] = useState(5);
+const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
-  const handleTableChange = (pagination: any) => {
-    setCurrentPage(pagination.current);
-    setPageSize(pagination.pageSize);
-  };
 
   const columns: TableColumnsType<Tutor> = [
     {
       title: 'No',
-      dataIndex: 'index',
-      key: 'index',
-      render: (_text, _record, index) => (currentPage - 1) * pageSize + index + 1,
+      render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
       title: 'Tutor Name',
@@ -60,12 +56,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
     {
       title: 'Gender',
       dataIndex: 'gender',
-      filters: [
-        { text: 'Female', value: 'female' },
-        { text: 'Male', value: 'male' },
-
-      ],
-      onFilter: (value, record) => record.gender === value,
     },
     {
       title: 'Address',
@@ -88,14 +78,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
     {
       title: 'Rating',
       dataIndex: 'averageRating',
-      filters: [
-        { text: '1 Star', value: 1 },
-        { text: '2 Stars', value: 2 },
-        { text: '3 Stars', value: 3 },
-        { text: '4 Stars', value: 4 },
-        { text: '5 Stars', value: 5 },
-      ],
-      onFilter: (value, record) => record.averageRating === value,
       sorter: (a, b) => (a.averageRating ?? 0) - (b.averageRating ?? 0),
       render: (_, record) => (
         <>
@@ -109,13 +91,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: [
-        { text: 'ACTIVE', value: 'ACTIVE' },
-        { text: 'PROCESSING', value: 'PROCESSING' },
-        { text: 'BANNED', value: 'BANNED' },
-        { text: 'UNVERIFIED', value: 'UNVERIFIED' },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
 
         <Tag color={
@@ -143,14 +118,19 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload }) => {
   ];
   return (
     <div>
-      <Table rowKey={'id'} columns={columns} pagination={{
-        current: currentPage,
-        pageSize: pageSize,
-        total: tutors.length,
-        showSizeChanger: false,
-      }} dataSource={tutors}
-        onChange={handleTableChange}
+      <Table
+        rowKey={'id'}
+        columns={columns}
+        dataSource={tutors}
         scroll={{ x: true }}
+        pagination={{
+          current: currentPage,
+          pageSize: pageSize,
+          onChange: onPageChange,
+          showSizeChanger: false,
+          total: totalElements,
+        }}
+        loading={loading}
       />
     </div>
   );

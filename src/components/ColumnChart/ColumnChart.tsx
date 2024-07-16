@@ -18,7 +18,7 @@ const ColumnChart = () => {
     xField: 'subjectName',
     yField: 'totalTuition',
     legend: false,
-    height: 420,
+    height: 378,
     axis: { y: { labelFormatter: '~s' } },
 
     slider: {

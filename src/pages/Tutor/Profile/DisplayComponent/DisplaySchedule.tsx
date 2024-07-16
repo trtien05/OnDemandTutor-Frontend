@@ -46,7 +46,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, updat
           const date = startDate.getDate();
           response.data.schedules.forEach((day: ScheduleDay, dayIndex: number) => {
             const currentDate = startDate;
-            currentDate.setDate(date + dayIndex);
+            currentDate.setDate(date + dayIndex+1);
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
                 const value = {
@@ -154,9 +154,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, updat
       <ScheduleStyle.ScheduleWrapper>
         <ScheduleComponent
           key={tutorId} // Add key to force re-render
-          // style={{maxHeight: '500px'}}
           height={300}
-          
           startHour={start}
           endHour={end}
           eventSettings={{ ...eventSettings, template: eventTemplate }}

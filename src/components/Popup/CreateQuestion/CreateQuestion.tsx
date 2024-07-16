@@ -18,15 +18,9 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const [form] = Form.useForm();
     const { user, role } = useAuth();
     const [open, setOpen] = useState(false);
-    // const [confirmLoading, setConfirmLoading] = useState(false);
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
-
-
-    // const [modalData, setModalData] = useState(null);
-
     const [fileList, setFileList] = useState<UploadFile[]>([]);
-    // const [messageApi, contextHolder] = message.useMessage();
     const showModal = () => {
 
         if (role === 'STUDENT') {
@@ -42,24 +36,18 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         const jsonBody = convertQuestionData(formData);
 
         try {
-            // if (!user?.userId) return; // sau nay set up jwt xong xuoi thi xet sau
             const responseData = await createQuestion(studentId, jsonBody);
-
-            // Check response status
-
-            // Get response data
-            console.log('Question saved successfully:', responseData);
-            // Return success response
             messageApi.success('Question saved successfully'); // Display success message
             return responseData;
         } catch (error: any) {
-            console.log(error);
+            messageApi.error('Failed to save question'); // Display error message
         }
     }
 
     function convertQuestionData(formData: any) {
         const questionData = {
             content: formData[`content`],
+            //to ensure you are accessing the first file in the array of uploaded files.
             questionUrl: '' || formData[`questionFile`][0],
             subjectName: formData[`subject`],
             title: formData[`title`]
@@ -71,7 +59,11 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
         setLoading(true);
         try {
             const values = await form.validateFields();
-            const dateCreated = new Date().toISOString().split('T')[0]; // Get the current date in YYYY-MM-DD format
+
+            // Get the current date in YYYY-MM-DD format then slit it
+            //[0]accesses the first element of this array, which is the date part
+            const dateCreated = new Date().toISOString().split('T')[0];
+
             const uploadedFiles = await Promise.all(
                 fileList.map(async (file: UploadFile) => {
                     if (file.originFileObj) {
@@ -80,33 +72,26 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                             file.originFileObj,
                             'CreateQuestion',
                             dateCreated,
-                            // index,
                         );
-                        // console.log(`Uploaded file ${index} URL:`, url);
                         return { ...file, url };
                     }
                 }),
             );
-            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); // Add the file URLs to the form values
-            // setModalData(values);
-            // console.log('Clicked OK with values:', values);
-            // setConfirmLoading(true);
+            // Add the file URLs to the form values
+            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean);
             await saveQuestion(user?.id || 0, values);
             setTimeout(() => {
                 setOpen(false);
-                // setConfirmLoading(false);
                 setLoading(false);
                 form.resetFields();
                 setFileList([]);
             }, 1000);
         } catch (info) {
-            console.log('Validate Failed:', info);
             setLoading(false);
         }
     };
 
     const handleCancel = () => {
-        // console.log('Clicked cancel button');
         form.resetFields(); // Reset the form fields
         setOpen(false);
     };
@@ -133,7 +118,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
 
         setFileList(newFileList);
         form.setFieldsValue({ questionFile: newFileList }); // Update the form value
-        // console.log('File List:', newFileList);
     };
     const options = [
         { label: 'Mathematics', value: 'Mathematics' },
@@ -249,10 +233,6 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                         <FormStyled.FormItem
                             name="questionFile"
                             valuePropName="fileList"
-                        // getValueFromEvent={(e) => {
-                        //     console.log('Get value from event:', e); // Log the event to debug
-                        //     return Array.isArray(e) ? e : e && e.fileList;
-                        // }}
                         >
                             <Dragger
                                 name="questionFile"

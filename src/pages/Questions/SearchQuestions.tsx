@@ -7,6 +7,7 @@ import { useDocumentTitle } from '../../hooks';
 import { Question } from '../../components/QuestionList/Question.type';
 import Pagination from '../../components/Pagination/Pagination';
 import CreateQuestion from '../../components/Popup/CreateQuestion/CreateQuestion';
+import config from '../../config';
 const { Option } = Select;
 
 const SearchQuestions = () => {
@@ -42,8 +43,7 @@ const SearchQuestions = () => {
 
   useEffect(() => {
     setInitLoading(true);
-    // const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
-    const baseUrl: string = `https://my-tutor-render.onrender.com/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/questions?pageNo=${currentPage - 1}&pageSize=${questionPerPage}&type=UNSOLVED`;
 
     let url: string = '';
 
