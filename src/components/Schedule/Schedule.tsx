@@ -38,6 +38,7 @@ const Schedule: React.FC<ScheduleProps> = ({
     top: 100,
   });
   const [loading, setLoading] = useState<boolean>(true);
+  const [startDate, setStartDate] = useState<Date>(new Date());
   const maxSlot = maxSlots ? maxSlots : 5;
 
 
@@ -51,32 +52,28 @@ const Schedule: React.FC<ScheduleProps> = ({
 
         if (response) {
           //format data    
-          const start = new Date(response.data.startDate);
-          const today = new Date();
+          setStartDate(new Date(response.data.startDate))
+          const start = new Date(response.data.startDate)
           if (restrictedTime === undefined) restrictedTime = 12;
-          today.setHours(today.getHours() + restrictedTime)
-          const startDate = (start.getTime() < today.getTime()) ? today : start;
+          start.setHours(start.getHours()+restrictedTime)
           let newSchedule: ScheduleData[] = [];
           let updateSchedule = response.data.schedules;
-          const currentDate = new Date(startDate.getDate());
           updateSchedule.forEach((day: ScheduleDay) => {
             if (day.timeslots.length > 0) {
               day.timeslots.forEach((timeslot) => {
-                const demo = new Date()
-                if (day.dayOfMonth < demo.getDate())
-                  demo.setMonth(demo.getMonth() + 1)
-                demo.setDate(day.dayOfMonth + 1);
-                const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
-                if (timeslotStart > currentDate) {
+                const currTimeslot = start;
+                if (day.dayOfMonth < currTimeslot.getDate())
+                  currTimeslot.setMonth(currTimeslot.getMonth() + 1)
+                currTimeslot.setDate(day.dayOfMonth);
                   const value = {
                     id: timeslot.id,
-                    scheduleDate: demo.toISOString().split('T')[0],
+                    scheduleDate: currTimeslot.toISOString().split('T')[0],
                     startTime: timeslot.startTime.slice(0, 5),
                     endTime: timeslot.endTime.slice(0, 5),
                     isSelected: false
                   };
                   newSchedule.push(value);
-                }
+                
               });
             }
           });
@@ -138,10 +135,8 @@ const Schedule: React.FC<ScheduleProps> = ({
     });
   }, [schedule]);
 
-
-  const today = new Date();
   const next7Days = new Date();
-  next7Days.setDate(today.getDate() + 7);
+  next7Days.setDate(startDate.getDate() + 7);
 
   const onPopupOpen = (args: PopupOpenEventArgs) => {
     args.cancel = true; // Disable the event popup
@@ -229,8 +224,8 @@ const Schedule: React.FC<ScheduleProps> = ({
               <ScheduleComponent
                 key={tutorId} // Add key to force re-render
                 height='300px'
-                selectedDate={today}
-                minDate={today}
+                selectedDate={startDate}
+                minDate={startDate}
                 maxDate={next7Days}
                 startHour={start}
                 endHour={end}
