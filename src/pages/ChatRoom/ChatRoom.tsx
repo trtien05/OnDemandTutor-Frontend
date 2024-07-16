@@ -12,6 +12,7 @@ import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import config from '../../config/index.ts';
+import moment from "moment-timezone";
 
 type ChatMessage = {
   senderId: number;
@@ -207,7 +208,7 @@ const ChatRoom: React.FC = () => {
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      const currentDate = new Date();
+      const currentDate = moment().tz("Asia/Ho_Chi_Minh").toDate();
       const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
@@ -252,7 +253,6 @@ const ChatRoom: React.FC = () => {
     const latestMessage = messages[messages.length - 1];
     const senderName = latestMessage.senderId === user?.id ? 'You:' : '';
 
-    // Lấy chỉ 20 từ đầu tiên của tin nhắn
     const messageContent = latestMessage.message.slice(0, 20);
 
     return `${senderName} ${messageContent}`;
@@ -266,14 +266,15 @@ const ChatRoom: React.FC = () => {
     <Layout>
       <>
         <div style={{ display: 'flex', flexDirection: 'row', width: '100%' }}>
-          <Skeleton style={{ padding: '0 50px', width: '30%', backgroundColor: '#ffff' }} loading={loading} active>
-            <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
+          <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
+            <Skeleton style={{ padding: '20px', backgroundColor: '#F4D1F3', borderRadius: '25px', }} avatar loading={loading} paragraph={{ rows: 2 }} active>
               <List
                 itemLayout="horizontal"
                 dataSource={[...privateChats.keys()]}
                 renderItem={(id) => {
                   const isCurrentTab = tab === id.toString();
                   return (
+
                     <List.Item onClick={() => {
                       setTab(id.toString());
                       if (unreadTabs.has(id)) {
@@ -283,11 +284,13 @@ const ChatRoom: React.FC = () => {
                           return newUnreadTabs;
                         });
                       }
-                    }} style={{
-                      cursor: 'pointer',
-                      padding: '20px', borderRadius: '25px',
-                      backgroundColor: isCurrentTab ? '#F4D1F3' : ''
-                    }}>
+                    }}
+                      style={{
+                        cursor: 'pointer',
+                        padding: '20px', borderRadius: '25px',
+                        backgroundColor: isCurrentTab ? '#F4D1F3' : ''
+                      }}
+                    >
                       <Styled.CustomListItemMeta
                         avatar={<Avatar size={50} src={account.get(id)?.avatarUrl} />}
                         title={truncateText(account.get(id)?.fullName) || 'Unknown'}
@@ -303,10 +306,10 @@ const ChatRoom: React.FC = () => {
                   )
                 }}
               />
-            </Sider>
-          </Skeleton>
+            </Skeleton>
+          </Sider>
 
-          <Skeleton style={{ padding: '0 50px', width: '70%', backgroundColor: '#fff' }} loading={loading} active>
+          <Skeleton style={{ padding: '0 50px', backgroundColor: '#fff' }} paragraph={{ rows: 6 }} avatar loading={loading} active>
             <Content style={{ minHeight: 280 }}>
               <Styled.ChatBox>
                 <Styled.ChatMessages ref={chatMessagesRef}>
@@ -351,7 +354,6 @@ const ChatRoom: React.FC = () => {
             </Content>
           </Skeleton>
         </div>
-
       </>
     </Layout>
   );
