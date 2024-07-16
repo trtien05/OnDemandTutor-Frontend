@@ -12,7 +12,6 @@ import { format } from 'date-fns';
 import { useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import config from '../../config/index.ts';
-import moment from "moment-timezone";
 
 type ChatMessage = {
   senderId: number;
@@ -212,7 +211,7 @@ const ChatRoom: React.FC = () => {
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      const currentDate = moment().tz("Asia/Ho_Chi_Minh").toDate();
+      const currentDate = new Date();
       const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
