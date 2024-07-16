@@ -69,7 +69,7 @@ const Schedule: React.FC<ScheduleProps> = ({
                 const demo = new Date()
                 if (day.dayOfMonth < demo.getDate())
                   demo.setMonth(demo.getMonth() + 1)
-                demo.setDate(day.dayOfMonth+1);
+                demo.setDate(day.dayOfMonth);
                 const timeslotStart = new Date(`${demo.toISOString().split('T')[0]}T${timeslot.startTime}`);
                 if (timeslotStart > currentDate) {
                   const value = {
@@ -235,7 +235,7 @@ const Schedule: React.FC<ScheduleProps> = ({
             startHour={start}
             endHour={end}
             eventSettings={{ ...eventSettings, template: eventTemplate }}
-
+          
             eventClick={selectedId ? onEventClick : () => { }}
             eventRendered={selectedId ? onEventRendered : defaultEventRendered}
             actionBegin={onActionBegin}
