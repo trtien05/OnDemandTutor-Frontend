@@ -211,7 +211,7 @@ const ChatRoom: React.FC = () => {
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      const currentDate = new Date();
+      const currentDate = addHours(new Date(), 7);
       const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
