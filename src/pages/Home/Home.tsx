@@ -115,7 +115,7 @@ const Home = () => {
                                     </Styled.BestServiceImageDiv>
                                     <Link to={config.routes.public.searchTutors}>
                                         <Styled.BestServiceButton>
-                                            See More <MdOutlineKeyboardArrowRight size={15} style={{ marginTop: '2px' }} />
+                                            See More <MdOutlineKeyboardArrowRight size={20} />
                                         </Styled.BestServiceButton>
                                     </Link>
                                 </Styled.BestServiceItem>

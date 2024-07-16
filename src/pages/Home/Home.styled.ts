@@ -121,7 +121,7 @@ export const BestServiceButton = styled.button`
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: 12px;
+    font-size: 14px;
     width: 100%;
     border-radius: 50px;
     background-color: ${theme.colors.primary};
