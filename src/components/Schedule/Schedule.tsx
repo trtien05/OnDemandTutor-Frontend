@@ -55,7 +55,7 @@ const Schedule: React.FC<ScheduleProps> = ({
           setStartDate(new Date(response.data.startDate))
           const start = new Date(response.data.startDate)
           if (restrictedTime === undefined) restrictedTime = 12;
-          start.setHours(start.getHours()+restrictedTime)
+          start.setHours(start.getHours() + restrictedTime)
           let newSchedule: ScheduleData[] = [];
           let updateSchedule = response.data.schedules;
           updateSchedule.forEach((day: ScheduleDay) => {
@@ -65,15 +65,15 @@ const Schedule: React.FC<ScheduleProps> = ({
                 if (day.dayOfMonth < currTimeslot.getDate())
                   currTimeslot.setMonth(currTimeslot.getMonth() + 1)
                 currTimeslot.setDate(day.dayOfMonth);
-                  const value = {
-                    id: timeslot.id,
-                    scheduleDate: currTimeslot.toISOString().split('T')[0],
-                    startTime: timeslot.startTime.slice(0, 5),
-                    endTime: timeslot.endTime.slice(0, 5),
-                    isSelected: false
-                  };
-                  newSchedule.push(value);
-                
+                const value = {
+                  id: timeslot.id,
+                  scheduleDate: currTimeslot.toISOString().split('T')[0],
+                  startTime: timeslot.startTime.slice(0, 5),
+                  endTime: timeslot.endTime.slice(0, 5),
+                  isSelected: false
+                };
+                newSchedule.push(value);
+
               });
             }
           });
@@ -191,6 +191,7 @@ const Schedule: React.FC<ScheduleProps> = ({
           : prevIds.length < maxSlot ? [...prevIds, id] : prevIds
       );
     }
+
   };
 
   const defaultEventRendered = (args: EventRenderedArgs) => {
