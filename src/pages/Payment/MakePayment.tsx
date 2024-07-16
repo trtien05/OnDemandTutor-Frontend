@@ -1,4 +1,4 @@
-import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio, Spin } from 'antd';
 import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -221,7 +221,7 @@ const MakePayment = () => {
         description: 'Your booking has been cancelled',
       });
       setTimeout(() => {
-        navigate(config.routes.public.searchTutors+`/${tutorId}`);
+        navigate(config.routes.public.searchTutors + `/${tutorId}`);
       }, 2000);
     }
   }
@@ -271,8 +271,8 @@ const MakePayment = () => {
       <>
         {contextHolder}
         <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
-          <Col xl={13} lg={13} sm={24} xs={24} >
-            <Skeleton loading={loading}>
+          <Col xl={12} lg={13} sm={24} xs={24} >
+            <Spin spinning={loading}>
               <Styled.CheckoutWrapper>
 
                 <Styled.TutorItem justify='space-between'>
@@ -344,11 +344,11 @@ const MakePayment = () => {
                   <p></p>
                 </Styled.PriceCalculation>
               </Styled.CheckoutWrapper>
-            </Skeleton>
+            </Spin>
           </Col>
 
-          <Col xl={10} lg={10} sm={24} xs={24}>
-            <Skeleton loading={loading}>
+          <Col xl={11} lg={11} sm={24} xs={24}>
+            <Spin spinning={loading}>
               <Styled.CheckoutWrapper >
                 <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `20px` }} >Payment method</Styled.TutorName>
 
@@ -368,7 +368,7 @@ const MakePayment = () => {
                           src={momoLogo}
                           loading="lazy"
                           decoding="async"
-                         alt='MOMO'
+                          alt='MOMO'
                         />
                       </Styled.CheckoutPaymentImgWrapper>
                     </Radio>
@@ -381,64 +381,75 @@ const MakePayment = () => {
                           src={vnpayLogo}
                           loading="lazy"
                           decoding="async"
-                          alt = "VNPAY"
+                          alt="VNPAY"
                         />
                       </Styled.CheckoutPaymentImgWrapper>
                     </Radio>
+                    <Styled.BorderLine />
+                    <div style={{ height: `100%`, width: `100%`, marginBottom:`10px` }}>
+                      <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `0px` }}>Overseas?</Styled.TutorName>
+                      <Text>For this payment method, we will apply the
+                        <span style={{ fontWeight: `bold` }}> VCB latest Currency transfer rate</span>.</Text>
+                      <br />
+                      <Text>Paypal will also charge you additional fee of 
+                        <span style={{ fontWeight: `bold` }}> 4.4% rate </span>  
+                        + <span style={{ fontWeight: `bold` }}>0.3 USD fixed fee</span> for each transaction.
+                        </Text>
+                    </div>
                     <Radio
                       value={'paypal'}
                       style={{ visibility: 'hidden' }}
                     >
-                      <Styled.BorderLine />
                       <Styled.CheckoutPaymentImgWrapper>
                         <img
                           src={paypalLogo}
                           loading="lazy"
                           decoding="async"
-                         alt="PAYPAL"
+                          alt="PAYPAL"
                         />
                       </Styled.CheckoutPaymentImgWrapper>
                     </Radio>
+
                   </Radio.Group>
                 </Styled.CheckoutPayment>
                 <ButtonDiv>
-                <Button
-                  style={{ marginRight: '10px', width:`40%`}}
-                  type="default"
-                  size="large"
-                  onClick={handleCancel}
-                >
-                  {loading ? (
-                    <Loading3QuartersOutlined
-                      spin
-                      style={{ fontSize: '1.6rem' }}
-                    />
-                  ) : (
-                    'Cancel'
-                  )}
-                </Button>
-                <Button
-                  style={{ marginRight: '10px', width:`60%`}}
-                  type="primary"
-                  size="large"
-                  onClick={handleOrder}
-                >
-                  {loading ? (
-                    <Loading3QuartersOutlined
-                      spin
-                      style={{ fontSize: '1.6rem' }}
-                    />
-                  ) : (
-                    'Pay'
-                  )}
-                </Button>
+                  <Button
+                    style={{ marginRight: '10px', width: `40%` }}
+                    type="default"
+                    size="large"
+                    onClick={handleCancel}
+                  >
+                    {loading ? (
+                      <Loading3QuartersOutlined
+                        spin
+                        style={{ fontSize: '1.6rem' }}
+                      />
+                    ) : (
+                      'Cancel'
+                    )}
+                  </Button>
+                  <Button
+                    style={{ marginRight: '10px', width: `60%` }}
+                    type="primary"
+                    size="large"
+                    onClick={handleOrder}
+                  >
+                    {loading ? (
+                      <Loading3QuartersOutlined
+                        spin
+                        style={{ fontSize: '1.6rem' }}
+                      />
+                    ) : (
+                      'Pay'
+                    )}
+                  </Button>
                 </ButtonDiv>
                 <Styled.BorderLine />
 
                 <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
 
               </Styled.CheckoutWrapper>
-            </Skeleton>
+            </Spin>
           </Col>
         </div>
 

@@ -95,7 +95,7 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
   const handleConfirm = (e: any) => {
     if (selectedSchedule.length > 0 && form.getFieldValue('subjects')!== undefined) {
       setConfirm(e.target.checked);
-    } else form.validateFields(['selectedSlots']);
+    } else form.validateFields(['selectedSlots','subjects']);
   }
 
   const handleOk = async (values:any) => {
