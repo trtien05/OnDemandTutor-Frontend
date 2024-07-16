@@ -45,8 +45,8 @@ export const aboutUs: DataType[] = [
     },
     {
         key: 2,
-        title: 'info@gmail.com',
-        to: 'mailto:info@gmail.com',
+        title: 'mytutor.official@gmail.com ',
+        to: 'mailto:mytutor.official@gmail.com ',
     },
 ];
 

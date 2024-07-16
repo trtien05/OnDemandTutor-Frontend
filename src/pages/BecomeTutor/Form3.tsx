@@ -18,7 +18,7 @@ const Form3 = ({
   initialValues,
   onClickBack,
 }: any) => {
-  useDocumentTitle("Become a tutor");
+  useDocumentTitle("Become A tutor | MyTutor");
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
 
   useEffect(() => {

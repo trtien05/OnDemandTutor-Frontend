@@ -1,4 +1,4 @@
-import { Col, Typography, Space, Button, notification, Statistic, Radio, Spin } from 'antd';
+import { Col, Typography, Space, Button, notification, Statistic, Skeleton, Radio, Row } from 'antd';
 import { useEffect, useState } from 'react'
 import * as Styled from './Payment.styled'
 import iconEducation from "../../assets/images/image12.png";
@@ -17,6 +17,7 @@ import config from '../../config';
 import useAuth from '../../hooks/useAuth';
 import { rollbackBooking } from '../../utils/tutorBookingAPI';
 import { ButtonDiv } from '../BecomeTutor/Form.styled';
+import { useDocumentTitle } from '../../hooks';
 
 const { Title, Text } = Typography;
 const { Countdown } = Statistic;
@@ -66,6 +67,8 @@ export function toScheduleString(schedule: Schedule) {
 }
 
 const MakePayment = () => {
+  useDocumentTitle("Make Payment | MyTutor");
+
   const [api, contextHolder] = notification.useNotification({
     top: 100,
   });
@@ -255,11 +258,10 @@ const MakePayment = () => {
     return (
       <>
         {contextHolder}
-        <div style={{ display: `flex`, flexDirection: `row`, flexWrap: `wrap` }}>
-          <Col xl={12} lg={13} sm={24} xs={24} >
-            <Spin spinning={loading}>
+        <Row justify='space-around'>
+          <Col xl={13} lg={13} sm={24} xs={24} >
+            <Skeleton loading={loading} style={{ backgroundColor: '#fff', padding: '27px 50px', margin: '50px 5px', borderRadius: '15px' }}>
               <Styled.CheckoutWrapper>
-
                 <Styled.TutorItem justify='space-between'>
                   <Styled.ResponsiveStyle>
                     <Styled.TutorImage src={tutor?.avatarUrl} alt="tutor" />
@@ -290,6 +292,7 @@ const MakePayment = () => {
                   </Styled.ResponsiveStyle>)}
 
                 </Styled.TutorItem>
+
                 <Styled.BorderLine />
                 <div style={{ marginLeft: `20px` }}>
                   <p>Subject: {appointmentData.subjectName}</p>
@@ -300,6 +303,7 @@ const MakePayment = () => {
                   <p>{appointmentData.description ? `Description: ${appointmentData.description}` : ''}</p>
                 </div>
                 <Styled.BorderLine />
+
                 <Styled.PriceCalculation>
                   <Space>
                     <Title level={3}>Tutor's price per hour</Title>
@@ -328,12 +332,13 @@ const MakePayment = () => {
                   </Space>
                   <p></p>
                 </Styled.PriceCalculation>
+
               </Styled.CheckoutWrapper>
-            </Spin>
+            </Skeleton>
           </Col>
 
-          <Col xl={12} lg={12} sm={24} xs={24}>
-            <Spin spinning={loading}>
+          <Col xl={10} lg={10} sm={24} xs={24}>
+            <Skeleton loading={loading} style={{ backgroundColor: '#fff', padding: '27px 30px', margin: '50px 5px', borderRadius: '15px' }}>
               <Styled.CheckoutWrapper >
                 <Styled.TutorName style={{ textAlign: `center`, fontWeight: `600`, marginTop: `10px` }} >Payment method</Styled.TutorName>
 
@@ -437,9 +442,9 @@ const MakePayment = () => {
                 <Countdown style={{ width: `fit-content`, margin: `auto` }} title="Remaining Time" value={deadline} onFinish={handleTimerEnd} />
 
               </Styled.CheckoutWrapper>
-            </Spin>
+            </Skeleton>
           </Col>
-        </div>
+        </Row>
 
       </>
     )

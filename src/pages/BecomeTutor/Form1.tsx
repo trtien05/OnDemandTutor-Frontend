@@ -30,7 +30,7 @@ const Form1: React.FC<Form1Props> = ({
   initialValues,
   dataSource
 }: any) => {
-  useDocumentTitle("Become a tutor");
+  useDocumentTitle("Become A tutor | MyTutor");
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -99,8 +99,8 @@ const Form1: React.FC<Form1Props> = ({
   };
 
   const handleFinish = (values: any) => {
-    if (values.gender && (values.gender.toLocaleString()).includes('ale')) 
-      values.gender = form.getFieldValue('gender').includes('Female')?'true':'false';
+    if (values.gender && (values.gender.toLocaleString()).includes('ale'))
+      values.gender = form.getFieldValue('gender').includes('Female') ? 'true' : 'false';
     if (fileList[0] && fileList[0].status === 'done') {
       onFinish({ ...values, fileList });
     }
