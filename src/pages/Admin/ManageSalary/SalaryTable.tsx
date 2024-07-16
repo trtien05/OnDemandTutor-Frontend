@@ -65,12 +65,6 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: [
-        { text: 'DONE', value: 'DONE' },
-        { text: 'PROCESSING', value: 'PROCESSING' },
-        { text: 'REJECTED', value: 'REJECTED' },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
         <Tag color={
           record.status === 'DONE' ? 'green' :

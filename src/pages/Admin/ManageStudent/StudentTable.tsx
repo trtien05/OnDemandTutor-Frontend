@@ -43,12 +43,6 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageC
     {
       title: 'Gender',
       dataIndex: 'gender',
-      filters: [
-        { text: 'Female', value: 'female' },
-        { text: 'Male', value: 'male' },
-
-      ],
-      onFilter: (value, record) => record.gender === value,
     },
     {
       title: 'Address',
@@ -77,13 +71,6 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageC
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: [
-        { text: 'ACTIVE', value: 'ACTIVE' },
-        { text: 'PROCESSING', value: 'PROCESSING' },
-        { text: 'BANNED', value: 'BANNED' },
-        { text: 'UNVERIFIED', value: 'UNVERIFIED' },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
 
         <Tag color={

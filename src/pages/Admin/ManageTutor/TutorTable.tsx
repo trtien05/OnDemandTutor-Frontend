@@ -56,12 +56,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange,
     {
       title: 'Gender',
       dataIndex: 'gender',
-      filters: [
-        { text: 'Female', value: 'female' },
-        { text: 'Male', value: 'male' },
-
-      ],
-      onFilter: (value, record) => record.gender === value,
     },
     {
       title: 'Address',
@@ -84,14 +78,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange,
     {
       title: 'Rating',
       dataIndex: 'averageRating',
-      filters: [
-        { text: '1 Star', value: 1 },
-        { text: '2 Stars', value: 2 },
-        { text: '3 Stars', value: 3 },
-        { text: '4 Stars', value: 4 },
-        { text: '5 Stars', value: 5 },
-      ],
-      onFilter: (value, record) => record.averageRating === value,
       sorter: (a, b) => (a.averageRating ?? 0) - (b.averageRating ?? 0),
       render: (_, record) => (
         <>
@@ -105,13 +91,6 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange,
     {
       title: 'Status',
       dataIndex: 'status',
-      filters: [
-        { text: 'ACTIVE', value: 'ACTIVE' },
-        { text: 'PROCESSING', value: 'PROCESSING' },
-        { text: 'BANNED', value: 'BANNED' },
-        { text: 'UNVERIFIED', value: 'UNVERIFIED' },
-      ],
-      onFilter: (value, record) => record.status === value,
       render: (_, record) => (
 
         <Tag color={
