@@ -8,11 +8,10 @@ import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
 import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
-import { format } from 'date-fns';
-import { useLocation } from 'react-router-dom';
+import { format, addHours, subHours } from 'date-fns';
+import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import config from '../../config/index.ts';
-import moment from "moment-timezone";
 
 type ChatMessage = {
   senderId: number;
@@ -51,8 +50,9 @@ const ChatRoom: React.FC = () => {
   const { id, fullName, avatar } = location.state || {};
 
   const [privateChats, setPrivateChats] = useState<Map<number, ChatMessage[]>>(new Map());
+  const [loadingPrivateChats, setLoadingPrivateChats] = useState<boolean>(true);
   const [tab, setTab] = useState<string>("CHATROOM");
-  const [unreadTabs, setUnreadTabs] = useState<Set<number>>(new Set()); // Danh sách tab có tin nhắn chưa đọc
+  const [unreadTabs, setUnreadTabs] = useState<Set<number>>(new Set());
   const chatMessagesRef = useRef<HTMLDivElement>(null);
   const [userData, setUserData] = useState<UserData>({
     id: 0,
@@ -62,6 +62,7 @@ const ChatRoom: React.FC = () => {
     message: '',
     name: ''
   });
+  const [hasChats, setHasChats] = useState<boolean>(false);
 
   useEffect(() => {
     if (user && !userData.connected) {
@@ -72,14 +73,15 @@ const ChatRoom: React.FC = () => {
 
   useEffect(() => {
     if (userData.connected) {
-      setLoading(false);
       fetchMessages();
+      setLoading(false);
     }
   }, [userData.connected]);
 
   useEffect(() => {
     if (privateChats.size > 0 && tab === "CHATROOM") {
       setTab([...privateChats.keys()][0].toString());
+      setLoadingPrivateChats(false);
     }
   }, [privateChats]);
 
@@ -92,7 +94,7 @@ const ChatRoom: React.FC = () => {
   const connect = () => {
     let Sock = new SockJS(`${config.publicRuntime.API_URL}/ws`);
     stompClient = over(Sock);
-    stompClient.connect({}, onConnected, onError);
+    stompClient.connect({}, onConnected);
   };
 
   const onConnected = () => {
@@ -104,6 +106,11 @@ const ChatRoom: React.FC = () => {
     try {
       const response = await fetch(`${config.publicRuntime.API_URL}/api/messages/accounts/${user?.id}`);
       const data: ChatMessage[] = await response.json();
+      if (data.length > 0) {
+        setHasChats(true);
+      } else {
+        setHasChats(false);
+      }
       const chats = new Map(privateChats);
       const accounts = new Map(account);
 
@@ -122,7 +129,7 @@ const ChatRoom: React.FC = () => {
         if (!chats.has(chatKey)) {
           chats.set(chatKey, []);
         }
-        chats.get(chatKey)!.push({ ...msg }); // Thêm tin nhắn vào map chats
+        chats.get(chatKey)!.push({ ...msg });
 
         if (!accounts.has(chatKey)) {
           accounts.set(chatKey, {
@@ -140,6 +147,7 @@ const ChatRoom: React.FC = () => {
       })));
       if (id && fullName && avatar) {
         setAccount(prev => new Map(prev.set(id, { fullName, avatarUrl: avatar })));
+        setHasChats(true);
         setPrivateChats(prev => {
           if (!prev.has(id)) {
             const newChats = new Map(prev);
@@ -149,6 +157,8 @@ const ChatRoom: React.FC = () => {
           return prev;
         });
         setTab(id.toString());
+        setLoadingPrivateChats(false);
+
       }
     } catch (error) {
       console.error('Error fetching messages: ', error);
@@ -200,21 +210,15 @@ const ChatRoom: React.FC = () => {
     });
   };
 
-  const onError = (err: any) => {
-    console.log(err);
-  };
-
   const handleMessage = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
     const { value } = event.target;
     setUserData({ ...userData, message: value });
   };
 
-
-
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      const currentDate = moment().tz("Asia/Ho_Chi_Minh").toDate();
+      const currentDate = subHours(new Date(), 7);
       const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
@@ -268,6 +272,7 @@ const ChatRoom: React.FC = () => {
     if (!text) return undefined;
     return text.length > 20 ? `${text.slice(0, 20)}...` : text;
   };
+  console.log(hasChats);
   return (
     <Layout>
       <>
@@ -275,12 +280,12 @@ const ChatRoom: React.FC = () => {
           <Sider width={350} style={{ background: '#fff', height: '600px', padding: '0 20px', overflowY: 'auto' }}>
             <Skeleton style={{ padding: '20px', backgroundColor: '#F4D1F3', borderRadius: '25px', }} avatar loading={loading} paragraph={{ rows: 2 }} active>
               <List
+                loading={loadingPrivateChats}
                 itemLayout="horizontal"
                 dataSource={[...privateChats.keys()]}
                 renderItem={(id) => {
                   const isCurrentTab = tab === id.toString();
                   return (
-
                     <List.Item onClick={() => {
                       setTab(id.toString());
                       if (unreadTabs.has(id)) {
@@ -318,26 +323,33 @@ const ChatRoom: React.FC = () => {
           <Skeleton style={{ padding: '0 50px', backgroundColor: '#fff' }} paragraph={{ rows: 6 }} avatar loading={loading} active>
             <Content style={{ minHeight: 280 }}>
               <Styled.ChatBox>
-                <Styled.ChatMessages ref={chatMessagesRef}>
-                  {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
-                    const isSelf = chat.senderId === user?.id;
-                    const messageTime = chat.createdAt ? format(parseDate(chat.createdAt), 'HH:mm') : 'Invalid Date';
+                {hasChats ? (
+                  <Styled.ChatMessages ref={chatMessagesRef}>
+                    {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
+                      const isSelf = chat.senderId === user?.id;
+                      const messageTime = chat.createdAt ? format(addHours(parseDate(chat.createdAt), 7), 'HH:mm') : 'Invalid Date';
 
-                    return (
-                      <Styled.Message self={isSelf} key={index}>
-                        {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
-                        <Styled.MessageData self={isSelf}>
-                          <Styled.MessageTime self={isSelf}>
-                            {messageTime}
-                          </Styled.MessageTime>
-                          <Styled.MessageContent self={isSelf}>{chat.message}</Styled.MessageContent>
-                        </Styled.MessageData>
-                      </Styled.Message>
-                    )
-                  })}
-                </Styled.ChatMessages>
+                      return (
+                        <Styled.Message self={isSelf} key={index}>
+                          {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
+                          <Styled.MessageData self={isSelf}>
+                            <Styled.MessageTime self={isSelf}>
+                              {messageTime}
+                            </Styled.MessageTime>
+                            <Styled.MessageContent self={isSelf}>{chat.message}</Styled.MessageContent>
+                          </Styled.MessageData>
+                        </Styled.Message>
+                      )
+                    })}
+                  </Styled.ChatMessages>
+                ) : (
+                  <div style={{ textAlign: 'center', padding: '20px', height: '600px', backgroundColor: '#fff', color: '#b8b8b8' }}>
+                    <p>No conversations yet. Start a new chat!</p>
+                    <p>You can schedule with our teachers and send messages to them in the tutor details section</p>
+                    <p>or if you don't have any teachers yet</p> <Link to={config.routes.public.searchTutors}>Click Here</Link>
+                  </div>
+                )}
                 <Styled.SendMessage>
-
                   <TextArea
                     required
                     maxLength={100}
@@ -346,17 +358,19 @@ const ChatRoom: React.FC = () => {
                     style={{ height: 120, resize: 'none', margin: '0 10px' }}
                     onChange={handleMessage}
                     placeholder="Your message..."
+                    disabled={!hasChats}
                   />
                   <Button
                     type="primary"
                     shape="circle"
-                    disabled={!userData.message.trim()}
+                    disabled={!userData.message.trim() || !hasChats}
                     icon={<SendOutlined />}
                     onClick={sendPrivateValue}
                   />
-
                 </Styled.SendMessage>
+
               </Styled.ChatBox>
+
             </Content>
           </Skeleton>
         </div>

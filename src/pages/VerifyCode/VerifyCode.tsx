@@ -112,10 +112,10 @@ const VerifyCode = () => {
         }
     }
 
-
     const onFinishFailed = (errorInfo: any) => {
-        console.log(errorInfo);
+        console.log('Failed:', errorInfo);
     };
+
     const description = (
         <Styled.ResendCodeDescWrapper>
             <Styled.ResendCodeText>

@@ -22,7 +22,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
     const navigate = useNavigate();
     const [fileList, setFileList] = useState<UploadFile[]>([]);
     const showModal = () => {
-        
+
         if (role === 'STUDENT') {
             setOpen(true);
         } else if (role === 'TUTOR') {
@@ -62,7 +62,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
 
             // Get the current date in YYYY-MM-DD format then slit it
             //[0]accesses the first element of this array, which is the date part
-            const dateCreated = new Date().toISOString().split('T')[0]; 
+            const dateCreated = new Date().toISOString().split('T')[0];
 
             const uploadedFiles = await Promise.all(
                 fileList.map(async (file: UploadFile) => {
@@ -78,7 +78,7 @@ const CreateQuestion: React.FC<CreateQuestionProps> = ({ messageApi }) => {
                 }),
             );
             // Add the file URLs to the form values
-            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean); 
+            values.questionFile = uploadedFiles.map((file: any) => file.url).filter(Boolean);
             await saveQuestion(user?.id || 0, values);
             setTimeout(() => {
                 setOpen(false);

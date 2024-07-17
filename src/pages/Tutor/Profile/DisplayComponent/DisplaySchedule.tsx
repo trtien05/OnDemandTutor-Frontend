@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import * as ScheduleStyle from './Schedule.styled';
 import { Schedule as ScheduleData, ScheduleDay, ScheduleEvent } from '../../../../components/Schedule/Schedule.type';
 import { getFullSchedule } from '../../../../utils/tutorAPI';
+import { Skeleton, Spin } from 'antd';
 
 registerLicense("Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHVRdkdnWXledXVURGdYUE1yXUs=");
 
@@ -21,25 +22,18 @@ interface ScheduleProps {
 const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, update }) => {
   const [schedule, setSchedule] = useState<ScheduleData[]>([]);
   const [eventSettings, setEventSettings] = useState<EventSettingsModel>({ dataSource: [] });
- 
   const [isScheduleLoaded, setIsScheduleLoaded] = useState<boolean>(false);
-
-  useEffect(() => {
-    setTimeout(() => {
-      
-    }, 2000); // Adjust this delay as needed
-  }, []);
 
   useEffect(() => {
     const fetchSchedule = async () => {
       try {
-
+        setIsScheduleLoaded(false)
         const response = await getFullSchedule(tutorId)
         if (response) {
           //format data    
           const start = new Date();
-          while (start.toLocaleString('en-US',{ weekday: 'short'}) !== 'Mon') {
-            start.setDate(start.getDate() -1);
+          while (start.toLocaleString('en-US', { weekday: 'short' }) !== 'Mon') {
+            start.setDate(start.getDate() - 1);
           }
           const startDate = new Date(start);
           let newSchedule: ScheduleData[] = [];
@@ -62,7 +56,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, updat
           });
 
           setSchedule(newSchedule);
-         
+
         } else throw new Error('Network response was not ok') // Set state once, after processing all schedules
 
       } catch (error: any) {
@@ -71,10 +65,7 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, updat
           description: error.response ? error.response.data : error.message,
         });
       } finally {
-        setTimeout(() => {
-          setIsScheduleLoaded(true);
-
-        }, 1000);
+        setIsScheduleLoaded(true);
       }
     };
 
@@ -149,28 +140,32 @@ const DisplaySchedule: React.FC<ScheduleProps> = ({ tutorId, noRestricted, updat
     );
   };
 
-  if (isScheduleLoaded) return (
+  return (
     <div>
-      <ScheduleStyle.ScheduleWrapper>
-        <ScheduleComponent
-          key={tutorId} // Add key to force re-render
-          height={300}
-          startHour={start}
-          endHour={end}
-          eventSettings={{ ...eventSettings, template: eventTemplate }}
-          eventClick={() => { }}
-          eventRendered={defaultEventRendered}
-          actionBegin={onActionBegin}
-          popupOpen={onPopupOpen}
+      <Spin spinning={!isScheduleLoaded}>
+        <Skeleton loading={!isScheduleLoaded} active>
+          <ScheduleStyle.ScheduleWrapper>
+            <ScheduleComponent
+              key={tutorId} // Add key to force re-render
+              height={300}
+              startHour={start}
+              endHour={end}
+              eventSettings={{ ...eventSettings, template: eventTemplate }}
+              eventClick={() => { }}
+              eventRendered={defaultEventRendered}
+              actionBegin={onActionBegin}
+              popupOpen={onPopupOpen}
 
-        >
-          <ViewsDirective>
-            <ViewDirective option="Day" interval={7} />
-          </ViewsDirective>
-          <Inject services={[Day]} />
-        </ScheduleComponent>
-      </ScheduleStyle.ScheduleWrapper>
-      {!noRestricted? schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>): schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
+            >
+              <ViewsDirective>
+                <ViewDirective option="Day" interval={7} />
+              </ViewsDirective>
+              <Inject services={[Day]} />
+            </ScheduleComponent>
+          </ScheduleStyle.ScheduleWrapper>
+          {!noRestricted ? schedule.length === 0 && (<p style={{ textAlign: 'center' }}>This tutor has no available time slot for the next 7 days</p>) : schedule.length === 0 && (<p style={{ textAlign: 'center' }}>Your schedule is currently empty</p>)}
+        </Skeleton>
+      </Spin>
     </div>
   )
 }

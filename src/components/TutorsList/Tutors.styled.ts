@@ -74,7 +74,7 @@ export const BestTutorEducationBachelorImage = styled.img`
     height: 16px;
 `;
 export const BestTutorEducationBachelor = styled.span`
-    margin: 0 3px;
+    margin: 0 5px;
     line-height: 1.5;
 `;
 
@@ -128,7 +128,7 @@ export const BookingRatingAndPrice = styled(Title)`
         font-size: 30px;
         font-weight: 700;
         line-height: 1.25;
-        margin: 0;
+        margin: 0 5px;
         ${({ theme }) => theme.breakpoints.down('xl')} {
             font-size: 20px;
         }

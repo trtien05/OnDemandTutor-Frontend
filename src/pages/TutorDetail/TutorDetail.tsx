@@ -121,7 +121,7 @@ const TutorDetail: React.FC = () => {
 
   const fetchReviews = async () => {
     try {
-      const reviewsResponse = await getTutorReviews(tutorId, page, 1);
+      const reviewsResponse = await getTutorReviews(tutorId, page, 3);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
@@ -130,6 +130,7 @@ const TutorDetail: React.FC = () => {
 
   const handleReload = () => {
     fetchReviews();
+    fetchStatusFeedback();
   }
 
   const onLoadMore = async () => {
