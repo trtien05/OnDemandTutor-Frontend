@@ -6,6 +6,8 @@ import { TimeSlot } from '../Appointment.type';
 import { UserType } from '../../../hooks/useAuth';
 import Reschedule from '../../../pages/Student/Appointment/Reschedule';
 import { theme } from '../../../themes';
+import Link from '../../Link';
+import config from '../../../config';
 
 interface AppointmentItemProps {
     item: TimeSlot;
@@ -101,7 +103,16 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                         marginLeft: '10px',
                                     }}
                                 >
-                                    {displayPerson.fullName},
+                                    {/* {displayPerson.fullName}, */}
+                                    {isTutor ? (
+                                        <Link to={`${config.routes.student.chatRoom}`} underline scroll>
+                                        {displayPerson.fullName}
+                                    </Link>
+                                    ) : (
+                                        <Link to={`${config.routes.public.searchTutors}/${appointment.tutor.tutorId}`} underline scroll>
+                                            {displayPerson.fullName}
+                                        </Link>
+                                    )},
                                 </Styled.QuestionRowSpan>
                                 <Styled.QuestionRowSpan>
                                     {appointment.subjectName}
