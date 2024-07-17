@@ -92,7 +92,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                   {item.subjects.slice(0, 3).map((subject, index) => (
                     <React.Fragment key={index}>
                       <Styled.BestTutorEducationBachelor>{subject}</Styled.BestTutorEducationBachelor>
-                      {index < 2 && ', '}
+                      {index < item.subjects.slice(0, 3).length - 1 && ', '}
                     </React.Fragment>
                   ))}
                   {item.subjects.length > 3 && '...'}

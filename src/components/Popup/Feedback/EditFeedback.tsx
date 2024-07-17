@@ -6,16 +6,17 @@ import { EditOutlined } from '@ant-design/icons';
 
 interface FeedbackProps {
   tutorName?: string;
-  handleEditReview: (values: any) => void; // Adjust the type to match what 'handleEditReview' expects
+  handleEditReview: (values: any) => void;
+  initialValues: { rating: number; content: string; };
 
 }
 const EditFeedback: React.FC<FeedbackProps> = (props) => {
-  const { tutorName, handleEditReview } = props;
+  const { tutorName, handleEditReview, initialValues } = props;
   const [isFormOpen, setIsFormOpen] = useState(false);
 
   function showModal() {
     setIsFormOpen(true);
-  };
+  }
 
   const handleCancel = () => {
     setIsFormOpen(false);
@@ -57,6 +58,7 @@ const EditFeedback: React.FC<FeedbackProps> = (props) => {
         <Styled.FormWrapper
           name="review"
           onFinish={handleFinish}
+          initialValues={initialValues}
         >
           <Styled.FormTitle>REVIEW TUTOR</Styled.FormTitle>
 

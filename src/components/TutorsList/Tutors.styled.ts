@@ -65,7 +65,7 @@ export const BestTutorEducationBachelorImage = styled.img`
     height: 16px;
 `;
 export const BestTutorEducationBachelor = styled.span`
-    margin: 0 5px;
+    margin: 0 2px 0 5px;
     line-height: 1.5;
 `;
 

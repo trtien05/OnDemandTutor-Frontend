@@ -298,7 +298,6 @@ const TutorDetail: React.FC = () => {
       </Col>
     </Row>
   ) : null;
-  console.log(reviews);
   return (
     <>
       {contextHolderNotification}
@@ -428,7 +427,13 @@ const TutorDetail: React.FC = () => {
                                   }}
                                   onClick={() => handleDeleteReview(item.id!)}
                                 />
-                                <EditFeedback handleEditReview={(values: any) => handleEditReview(values, item.id)} tutorName={tutor?.fullName} />
+                                <EditFeedback
+                                  initialValues={{
+                                    rating: item.rating ?? 0,
+                                    content: item.content ?? "",
+                                  }}
+                                  handleEditReview={(values: any) => handleEditReview(values, item.id)}
+                                  tutorName={tutor?.fullName} />
                               </div>
                             )}
                           </div>
