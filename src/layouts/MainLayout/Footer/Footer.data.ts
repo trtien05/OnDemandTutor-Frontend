@@ -40,13 +40,13 @@ export const pages: DataType[] = [
 export const aboutUs: DataType[] = [
     {
         key: 1,
-        title: '091-123-4567',
-        to: 'tel:0949442727',
+        title: '028-7300-5588',
+        to: 'tel:02873005588',
     },
     {
         key: 2,
-        title: 'info@gmail.com',
-        to: 'mailto:info@gmail.com',
+        title: 'mytutor.main.official@gmail.com',
+        to: 'mailto:mytutor.main.official@gmail.com',
     },
 ];
 
