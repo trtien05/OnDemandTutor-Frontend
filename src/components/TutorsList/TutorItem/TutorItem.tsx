@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Col, Row, Skeleton } from 'antd';
+import { Avatar, Col, Skeleton } from 'antd';
 import iconEducation from "../../../assets/images/image12.png";
 import iconBachelor from "../../../assets/images/image13.png";
 import iconPerson from "../../../assets/images/image14.png";

@@ -53,7 +53,7 @@ const Login = () => {
             <Link to={config.routes.public.home} underline scroll>
                 <Text>My Tutor</Text>
             </Link>
-            everything is easier. Start now.
+            , everything is easier. Start now.
         </Styled.LoginDesc>
     );
 
