@@ -8,6 +8,7 @@ import Reschedule from '../../../pages/Student/Appointment/Reschedule';
 import { theme } from '../../../themes';
 import Link from '../../Link';
 import config from '../../../config';
+import { useNavigate } from 'react-router-dom';
 
 interface AppointmentItemProps {
     item: TimeSlot;
@@ -19,7 +20,7 @@ interface AppointmentItemProps {
 
 
 const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewMode, role }) => {
-
+    const navigate = useNavigate();
     //Destructuring: Extracts startTime, endTime, scheduleDate, and appointment from the item prop.
     const { startTime, endTime, scheduleDate, appointment } = item; 
 
@@ -37,7 +38,9 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
         const [hours, minutes] = time.split(':');
         return `${hours}:${minutes}`;
     };
-
+    const handleSendMessage = () => {
+        navigate(`/chat-room`, { state: { id: appointment.student.studentId, fullName: displayPerson.fullName, avatar: displayPerson.avatarUrl } });
+    };
     return (
         <Skeleton avatar title={false} loading={item.loading} active>
             <Styled.StyleCol lg={24} md={24} sm={24} xs={24}>
@@ -102,12 +105,12 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                         fontWeight: '500',
                                         marginLeft: '10px',
                                     }}
-                                >
-                                    {/* {displayPerson.fullName}, */}
+                                >   
                                     {isTutor ? (
-                                        <Link to={`${config.routes.student.chatRoom}`} underline scroll>
+                                        <span onClick={handleSendMessage} style={{ cursor: 'pointer', color: `${theme.colors.primary}` }} >
                                         {displayPerson.fullName}
-                                    </Link>
+                                        </span>
+                                    
                                     ) : (
                                         <Link to={`${config.routes.public.searchTutors}/${appointment.tutor.tutorId}`} underline scroll>
                                             {displayPerson.fullName}
