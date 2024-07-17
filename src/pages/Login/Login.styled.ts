@@ -27,7 +27,7 @@ export const LoginDesc = styled(Paragraph)`
 
             span:last-child {
                 font-size: inherit;
-                color: ${theme.colors.secondary};
+                color: ${theme.colors.primary};
             }
 
             &:hover {
