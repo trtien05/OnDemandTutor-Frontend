@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Avatar, Col, Skeleton } from 'antd';
+import { Avatar, Col, Row, Skeleton } from 'antd';
 import iconEducation from "../../../assets/images/image12.png";
 import iconBachelor from "../../../assets/images/image13.png";
 import iconPerson from "../../../assets/images/image14.png";
@@ -38,23 +38,18 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
         <Styled.BoxHover>
 
           <Styled.BestTutorItem justify='space-between'>
-            <Col lg={7} md={8} sm={9} xs={24}>
+            <Col xl={7} lg={8} md={7} sm={8} xs={24}>
               {item.avatarUrl ? (
                 <Link to={route}>
-                  <Avatar
-                    size={150}
+
+                  <Styled.AvatarTutor
                     src={item.avatarUrl}
                     icon={<UserOutlined />}
                     style={{
-                      cursor: 'pointer',
-                      width: '210px',
-                      height: '210px',
-                      borderRadius: '50px',
-                      left: '-5px',
-                      bottom: '2px',
                       boxShadow: 'rgba(0, 0, 0, 0.25) 0px 14px 28px',
                     }}
                   />
+
                 </Link>
 
               ) : (
@@ -74,7 +69,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                 </Link>
               )}
             </Col>
-            <Col lg={8} md={8} sm={6} xs={0}>
+            <Col xl={8} lg={8} md={9} sm={5} xs={0}>
               <Styled.BestTutorContent>
                 <Styled.BestTutorName level={2}>
                   {truncateText(item.fullName)}
@@ -108,7 +103,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                 </Styled.BestTutorDescription>
               </Styled.BestTutorContent>
             </Col>
-            <Col lg={9} md={8} sm={8} xs={24}>
+            <Col xl={9} lg={8} md={8} sm={10} xs={24}>
               <Styled.BestTutorBooking>
                 <Styled.BookingInformation>
                   <div style={{ 'textAlign': 'center' }}>
@@ -130,6 +125,7 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                     </Styled.BookingTutorButton>
                   </Link>
                 </Styled.BookingThisTutor>
+
                 <Styled.BookingThisTutor>
                   <Link to={route}>
                     <Styled.ViewScheduleTutorButton>
@@ -137,6 +133,8 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                     </Styled.ViewScheduleTutorButton>
                   </Link>
                 </Styled.BookingThisTutor>
+
+
               </Styled.BestTutorBooking>
             </Col>
           </Styled.BestTutorItem>

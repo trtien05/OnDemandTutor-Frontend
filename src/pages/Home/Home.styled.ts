@@ -1,6 +1,5 @@
 import { Collapse, List, Row, Typography } from 'antd';
 
-// import ServiceList from '@/components/ServiceList';
 import styled from 'styled-components';
 import { theme } from '../../themes';
 
@@ -60,6 +59,9 @@ export const StudentName = styled(Paragraph)`
         margin: 0;
         font-style: normal;
         font-weight: 400;
+        ${({ theme }) => theme.breakpoints.down('md')} {
+            font-size: 14px;
+        }
         ${({ theme }) => theme.breakpoints.down('xs')} {
             display: none;
         }
@@ -83,6 +85,9 @@ export const SchoolName = styled(Paragraph)`
         font-style: normal;
         font-weight: 400;
         line-height: 1.625;
+        ${({ theme }) => theme.breakpoints.down('md')} {
+            font-size: 15px;
+        }
         ${({ theme }) => theme.breakpoints.down('xs')} {
             display: none;
         }
@@ -128,6 +133,9 @@ export const BestServiceButton = styled.button`
 `;
 export const BestServiceImage = styled.img`
     width: 210px;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        width: 180px;
+    }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
     }
@@ -250,12 +258,18 @@ export const BestTutorEducationBachelor = styled.span`
 `;
 export const BestServiceImageMath = styled.img`
     width: 190px;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        width: 150px;
+    }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
     }
 `;
 export const BestServiceImageProgram = styled.img`
     width: 200px;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        width: 150px;
+    }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
     }
@@ -299,7 +313,7 @@ export const QuestionTitle = styled(Title)`
             font-size: 20px;
         }
         ${({ theme }) => theme.breakpoints.down('sm')} {
-            font-size: 9px;
+            font-size: 15px;
         }
         ${({ theme }) => theme.breakpoints.down('xs')} {
             display: none;
@@ -319,6 +333,9 @@ export const AnswerWrapper = styled.div`
     border-radius: 50px;
     background-color: #fff;
     padding: 80px;
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        padding: 30px;
+    }
 `;
 export const QuestionWrapper = styled.div`
     width: 100%;
@@ -327,7 +344,12 @@ export const QuestionWrapper = styled.div`
     border-radius: 0px 10px 10px 0px;
     background-color: #f4d1f3;
     ${({ theme }) => theme.breakpoints.down('lg')} {
-        padding: 20px;
+        padding: 100px;
+        border-radius: 50px;
+    }
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        padding: 50px;
+        border-radius: 50px;
     }
 `;
 
@@ -339,8 +361,12 @@ export const QuestionFeedbackWrapper = styled.div`
     height: 526px;
     border-radius: 150px 10px 10px 150px;
     background-color: #fff;
+    ${({ theme }) => theme.breakpoints.down('xl')} {
+        padding: 150px 50px 200px 320px;
+    }
     ${({ theme }) => theme.breakpoints.down('lg')} {
-        padding: 100px 50px 100px 120px;
+        padding: 100px;
+        border-radius: 50px;
     }
     ${({ theme }) => theme.breakpoints.down('md')} {
         padding: 50px;
@@ -354,10 +380,13 @@ export const QuestionTitleRight = styled(Title)`
         font-weight: 800;
         line-height: 1.25;
         ${({ theme }) => theme.breakpoints.down('lg')} {
-            font-size: 30px;
+            font-size: 40px;
         }
         ${({ theme }) => theme.breakpoints.down('md')} {
             padding: 18px;
+        }
+        ${({ theme }) => theme.breakpoints.down('sm')} {
+            font-size: 20px;
         }
     }
 `;

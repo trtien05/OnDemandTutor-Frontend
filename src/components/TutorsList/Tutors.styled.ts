@@ -1,6 +1,6 @@
 import styled from 'styled-components';
 import { theme } from '../../themes';
-import { List, Row } from 'antd';
+import { Avatar, List, Row } from 'antd';
 import Title from 'antd/es/typography/Title';
 import Paragraph from 'antd/es/typography/Paragraph';
 import { FaStar } from 'react-icons/fa';
@@ -44,6 +44,9 @@ export const BestTutorContent = styled.div`
     margin: 20px 0;
     min-width: max-content;
     color: ${theme.colors.primary};
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        margin-left: 5px;
+    }
 `;
 
 export const BestTutorName = styled(Title)`
@@ -54,11 +57,17 @@ export const BestTutorName = styled(Title)`
         font-weight: 700;
         line-height: 140.625%; /* 33.75px */
         text-transform: uppercase;
+        ${({ theme }) => theme.breakpoints.down('md')} {
+            font-size: 18px;
+        }
     }
 `;
 export const BestTutorEducation = styled.div`
     display: flex;
     margin: 10px 0;
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        font-size: 12px;
+    }
 `;
 export const BestTutorEducationBachelorImage = styled.img`
     width: 22px;
@@ -85,8 +94,11 @@ export const BestTutorBooking = styled.div`
     gap: 10px;
 
     ${({ theme }) => theme.breakpoints.down('md')} {
-        padding: 30px;
-        margin: 0;
+        padding: 0;
+        margin-right: 5px;
+    }
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        margin: 30px;
     }
 `;
 export const BookingInformation = styled.div`
@@ -106,7 +118,7 @@ export const IconStyleStart = styled(FaStar)`
     }
     ${({ theme }) => theme.breakpoints.down('lg')} {
         width: 18px;
-        height: 18px;
+        height: 23px;
     }
 `;
 
@@ -120,20 +132,30 @@ export const BookingRatingAndPrice = styled(Title)`
         ${({ theme }) => theme.breakpoints.down('xl')} {
             font-size: 20px;
         }
-        ${({ theme }) => theme.breakpoints.down('lg')} {
-            font-size: 18px;
-        }
         ${({ theme }) => theme.breakpoints.down('md')} {
-            font-size: 14px;
+            font-size: 18px;
         }
     }
 `;
 export const BookingThisTutor = styled.div`
     margin: 0 auto;
 `;
+
+export const AvatarTutor = styled(Avatar)`
+    cursor: pointer;
+    width: 210px;
+    height: 210px;
+    border-radius: 50px;
+    left: -5px;
+    bottom: 2px;
+    ${({ theme }) => theme.breakpoints.down('md')} {
+        width: 100%;
+        height: 100%;
+    }
+`;
 export const BookingTutorButton = styled.button`
     cursor: pointer;
-    width: 197px;
+    width: 200px;
     height: 41px;
     color: #fff;
     font-size: 18px;
@@ -146,16 +168,16 @@ export const BookingTutorButton = styled.button`
         width: 150px;
     }
     ${({ theme }) => theme.breakpoints.down('sm')} {
-        width: 250px;
+        width: 230px;
     }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
-        padding: 10px;
+        padding: 0 20px;
     }
 `;
 export const ViewScheduleTutorButton = styled.button`
     cursor: pointer;
-    width: 197px;
+    width: 200px;
     height: 41px;
     color: ${theme.colors.primary};
     font-size: 18px;
@@ -169,11 +191,11 @@ export const ViewScheduleTutorButton = styled.button`
         width: 150px;
     }
     ${({ theme }) => theme.breakpoints.down('sm')} {
-        width: 250px;
+        width: 230px;
     }
     ${({ theme }) => theme.breakpoints.down('xs')} {
         width: 100%;
-        padding: 10px;
+        padding: 0 20px;
     }
 `;
 export const TurtorVideo = styled.div<{ translate?: number }>`
