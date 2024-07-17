@@ -8,7 +8,7 @@ import TextArea from 'antd/es/input/TextArea';
 import { SendOutlined } from '@ant-design/icons';
 import useAuth from '../../hooks/useAuth.ts';
 import useDocumentTitle from '../../hooks/useDocumentTitle.ts';
-import { format, addHours, subHours } from 'date-fns';
+import { format } from 'date-fns';
 import { Link, useLocation } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 import config from '../../config/index.ts';
@@ -218,7 +218,7 @@ const ChatRoom: React.FC = () => {
   const sendPrivateValue = (event: React.MouseEvent<HTMLElement>) => {
     event.preventDefault();
     if (stompClient && tab && userData.message.trim() !== "") {
-      const currentDate = subHours(new Date(), 7);
+      const currentDate = new Date();
       const chatMessage: ChatMessage = {
         senderId: user?.id || 0,
         receiverId: parseInt(tab),
@@ -326,7 +326,7 @@ const ChatRoom: React.FC = () => {
                   <Styled.ChatMessages ref={chatMessagesRef}>
                     {(privateChats.get(parseInt(tab)) ?? []).map((chat, index) => {
                       const isSelf = chat.senderId === user?.id;
-                      const messageTime = chat.createdAt ? format(addHours(parseDate(chat.createdAt), 7), 'HH:mm') : 'Invalid Date';
+                      const messageTime = chat.createdAt ? format(parseDate(chat.createdAt), 'HH:mm') : 'Invalid Date';
 
                       return (
                         <Styled.Message self={isSelf} key={index}>
