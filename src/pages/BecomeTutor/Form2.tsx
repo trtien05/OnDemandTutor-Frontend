@@ -15,7 +15,7 @@ const Form2 = ({
   initialValues,
   onClickBack,
 }: any) => {
-  useDocumentTitle("Become a tutor");
+  useDocumentTitle("Become A tutor | MyTutor");
 
   const [fileList, setFileList] = useState<UploadFile[]>(initialValues?.fileList || []);
 
@@ -27,7 +27,7 @@ const Form2 = ({
     if (Array.isArray(e)) {
       return e;
     }
-    return e?.fileList.length>0?[e.fileList[e.fileList.length - 1]]:[];
+    return e?.fileList.length > 0 ? [e.fileList[e.fileList.length - 1]] : [];
   };
   const onChange = ({ fileList: newFileList }: UploadChangeParam<UploadFile>) => {
     setFileList([newFileList[newFileList.length - 1]]);

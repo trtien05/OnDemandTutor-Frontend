@@ -40,7 +40,7 @@ const validateBankAccountNumber = (_: unknown, value: string) => {
 
 const SalaryForm: React.FC = () => {
     const navigate = useNavigate();
-    useDocumentTitle('Withdraw salary');
+    useDocumentTitle('Withdraw salary | MyTutor');
 
     const [banks, setBanks] = useState<{ id: number; name: string }[]>([]);
     const [form] = Form.useForm();

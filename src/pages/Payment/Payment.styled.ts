@@ -8,7 +8,7 @@ export const CheckoutWrapper = styled.div`
     ${({ theme }) => theme.breakpoints.down('sm')} {
         margin: 20px;
     }
-    padding: 27px 50px;
+    padding: 27px 40px;
     background-color: #fff;
     border-radius: 15px;
     border: 1px solid ${theme.colors.descTabBorder};
@@ -110,7 +110,6 @@ display: flex;
     align-items: center;
     justify-content: center;    
     margin: auto;
-    margin-top: 22px;
     width: 120px;
     height: 120px;
     border-radius: 15px;

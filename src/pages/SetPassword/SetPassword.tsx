@@ -50,7 +50,7 @@ const SetPassword = () => {
     };
 
     const onFinishFailed = (errorInfo: any) => {
-        console.log(errorInfo);
+        console.log('Failed:', errorInfo);
     };
 
     const redirect = {
