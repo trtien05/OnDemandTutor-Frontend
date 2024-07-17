@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
 import { useAuth, useDocumentTitle } from "../../hooks";
-import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews, getTutorStatistic } from "../../utils/tutorAPI";
+import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews, getTutorStatistic, deleteTutorReview, editTutorReview } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
 import Container from "../../components/Container";
 import * as Styled from './TutorDetail.styled';
@@ -11,14 +11,17 @@ import iconPerson from "../../assets/images/image14.png";
 import iconBachelor from "../../assets/images/image13.png";
 import Schedule from "../../components/Schedule/Schedule";
 import BookTutor from "../../components/Popup/BookTutor";
-import { UserOutlined } from "@ant-design/icons";
+import { CloseOutlined, UserOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { getTutorBooked } from "../../utils/studentAPI";
 import Feedback from "../../components/Popup/Feedback";
+import EditFeedback from "../../components/Popup/Feedback/EditFeedback";
 
 const { TabPane } = Tabs;
 
 interface Reviews {
+  id: number
+  createdById?: number;
   content?: string;
   createdBy?: string;
   createdAt?: string;
@@ -120,11 +123,15 @@ const TutorDetail: React.FC = () => {
   }
 
   const fetchReviews = async () => {
+    setReviewsLoading(true);
+
     try {
       const reviewsResponse = await getTutorReviews(tutorId, page, 3);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
+    } finally {
+      setReviewsLoading(false);
     }
   };
 
@@ -239,7 +246,48 @@ const TutorDetail: React.FC = () => {
       });
     }
   };
+  const handleDeleteReview = async (reviewId: number) => {
+    setReviewsLoading(true);
 
+    try {
+      await deleteTutorReview(tutorId, reviewId);
+      api.success({
+        message: 'Success',
+        description: 'Review deleted successfully.',
+      });
+      await fetchReviews();
+    } catch (error) {
+      console.error('Failed to delete review:', error);
+      api.error({
+        message: 'Error',
+        description: 'Failed to delete review.',
+      });
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
+  const handleEditReview = async (values: any, reviewId: number) => {
+    setReviewsLoading(true);
+    try {
+      const { data } = await editTutorReview(tutorId, reviewId, values);
+      if (!data) {
+        throw new Error("Error fetching tutor data");
+      } else {
+        await fetchReviews();
+        api.success({
+          message: 'Success',
+          description: 'Updated feedback successfully!',
+        });
+      }
+    } catch (error: any) {
+      api.error({
+        message: 'Error',
+        description: error.response.data.message[0] || 'Failed to submit feedback. Please try again later.',
+      });
+    } finally {
+      setReviewsLoading(false);
+    }
+  };
 
   const loadMore = !loading ? (
     <Row>
@@ -250,7 +298,6 @@ const TutorDetail: React.FC = () => {
       </Col>
     </Row>
   ) : null;
-
   return (
     <>
       {contextHolderNotification}
@@ -355,7 +402,7 @@ const TutorDetail: React.FC = () => {
                     loadMore={loadMore}
                     dataSource={reviews}
                     renderItem={(item) => (
-                      <List.Item>
+                      <List.Item key={item.id}>
                         <Skeleton avatar title={false} loading={item.loading} active>
                           <Styled.ReviewCard>
                             <Styled.ReviewHeader>
@@ -363,11 +410,33 @@ const TutorDetail: React.FC = () => {
                               <div>
                                 <Styled.StudentName>{item.createdBy}</Styled.StudentName>
                                 <Styled.DateRated>{item.createdAt}</Styled.DateRated>
-                                <Styled.Rating disabled defaultValue={item.rating} />
+                                <Styled.Rating allowHalf disabled value={item.rating} />
                               </div>
                             </Styled.ReviewHeader>
                             <Styled.ReviewContent>{item.content}</Styled.ReviewContent>
                           </Styled.ReviewCard>
+                          <div style={{ display: 'flex', alignSelf: 'start' }}>
+                            {(item.createdById === user?.id) && (
+                              <div>
+                                <CloseOutlined
+                                  style={{
+                                    color: '#B52121',
+                                    fontSize: '20px',
+                                    cursor: 'pointer',
+                                    margin: '0 5px',
+                                  }}
+                                  onClick={() => handleDeleteReview(item.id!)}
+                                />
+                                <EditFeedback
+                                  initialValues={{
+                                    rating: item.rating ?? 0,
+                                    content: item.content ?? "",
+                                  }}
+                                  handleEditReview={(values: any) => handleEditReview(values, item.id)}
+                                  tutorName={tutor?.fullName} />
+                              </div>
+                            )}
+                          </div>
                         </Skeleton>
                       </List.Item>
                     )}

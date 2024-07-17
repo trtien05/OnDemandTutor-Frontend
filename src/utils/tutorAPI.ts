@@ -1,4 +1,4 @@
-import { get, post, put } from './apiCaller';
+import { get, post, put, remove } from './apiCaller';
 
 export const getTutorList = () => {
     return get(`/api/tutors?pageNo=0&pageSize=3&sortBy=rating`);
@@ -49,6 +49,12 @@ export const getFullSchedule = (tutorId: number) => {
 
 export const postTutorReviews = (tutorId: number, requestBody: any) => {
     return post(`/api/tutors/${tutorId}/reviews`, requestBody);
+};
+export const deleteTutorReview = (tutorId: number, reviewId: number) => {
+    return remove(`/api/tutors/${tutorId}/reviews/${reviewId}`);
+};
+export const editTutorReview = (tutorId: number, reviewId: number, reviewObj: any) => {
+    return put(`/api/tutors/${tutorId}/reviews/${reviewId}`, reviewObj);
 };
 
 export const getStatusReviews = (tutorId: number, studentId: number) => {

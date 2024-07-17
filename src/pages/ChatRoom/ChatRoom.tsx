@@ -272,7 +272,6 @@ const ChatRoom: React.FC = () => {
     if (!text) return undefined;
     return text.length > 20 ? `${text.slice(0, 20)}...` : text;
   };
-  console.log(hasChats);
   return (
     <Layout>
       <>
