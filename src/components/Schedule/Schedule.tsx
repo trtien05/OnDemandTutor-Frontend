@@ -13,7 +13,6 @@ registerLicense('Ngo9BigBOggjHTQxAR8/V1NBaF5cXmZCf1FpRmJGdld5fUVHYVZUTXxaS00DNHV
 interface ScheduleProps {
   tutorId: number;
   scheduleType?: string;
-  restrictedTime?: number;
   setSelectedSchedule?: React.Dispatch<React.SetStateAction<ScheduleEvent[]>>;
   setSelectedId?: React.Dispatch<React.SetStateAction<number[]>>;
   selectedId?: number[];
@@ -26,7 +25,6 @@ const Schedule: React.FC<ScheduleProps> = ({
   tutorId,
   scheduleType,
   setSelectedId,
-  restrictedTime,
   setSelectedSchedule,
   selectedId,
   selectedSchedule,
@@ -54,8 +52,7 @@ const Schedule: React.FC<ScheduleProps> = ({
           //format data    
           setStartDate(new Date(response.data.startDate))
           const start = new Date(response.data.startDate)
-          if (restrictedTime === undefined) restrictedTime = 12;
-          start.setHours(start.getHours() + restrictedTime)
+          start.setHours(start.getHours())
           let newSchedule: ScheduleData[] = [];
           let updateSchedule = response.data.schedules;
           updateSchedule.forEach((day: ScheduleDay) => {

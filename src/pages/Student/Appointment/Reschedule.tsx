@@ -167,7 +167,6 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
               selectedId={selectedId}
               selectedSchedule={selectedSchedule}
               maxSlots={2}
-              restrictedTime={24}
               scheduleType='reschedule'
             />
           </FormStyled.FormItem>
