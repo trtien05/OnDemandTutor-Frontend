@@ -10,6 +10,8 @@ export type MenuType = {
 export type PIIProps = {
     avatarUrl?: string;
     fullName: string;
+    role: string;
+    status: string;
 };
 
 export type HeaderProps = {

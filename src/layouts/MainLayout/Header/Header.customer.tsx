@@ -2,7 +2,8 @@ import {
     AiOutlineHome,
     AiOutlineLogin,
     AiOutlineLogout,
-    AiOutlineQuestionCircle
+    AiOutlineQuestionCircle,
+    AiTwotoneCalendar
 } from 'react-icons/ai';
 import { PiStudentDuotone } from "react-icons/pi";
 import { FaChalkboardTeacher } from "react-icons/fa";
@@ -65,6 +66,8 @@ export const menuLogged = (user: PIIProps) => {
         cookieUtils.removeItem(config.cookies.token);
     };
 
+    const isTutor = user?.role === 'TUTOR' && user?.status === 'ACTIVE';
+
     const menu: MenuType[] = [
         {
             key: config.routes.student.profile,
@@ -79,12 +82,22 @@ export const menuLogged = (user: PIIProps) => {
                     </Link>
                     <Text>{user?.fullName}</Text>
                     <Divider />
-                    </HeaderAvatarWrapper>
+                    <Link to={config.routes.student.studySchedule}>
+                        Study Schedule
+                    </Link>
+                    {isTutor && (
+                        <>
+                            <Link to={config.routes.tutor.teachingSchedule}>
+                                Teaching Schedule
+                            </Link>
+                            <Link to={config.routes.tutor.profile}>
+                                Tutor Profile
+                            </Link>
+                        </>
+                    )}
+                </HeaderAvatarWrapper>
             ),
         },
-
-
-        ...menuUnLogged().slice(0, -1),
 
         createMenuItem(
             config.routes.student.chatRoom,
