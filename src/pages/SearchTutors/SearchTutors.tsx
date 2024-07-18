@@ -60,7 +60,7 @@ const SearchTutors = () => {
     if (priceRange[0] !== 100000 || priceRange[1] !== 500000) {
       url += `&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}`;
     }
-
+    setCurrentPage(1);
     setSearchUrl(url);
 
   };
