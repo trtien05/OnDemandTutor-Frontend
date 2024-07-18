@@ -128,7 +128,7 @@ const Dashboard: React.FC = () => {
         </Col>
       </Row>
       <Row gutter={[20, 20]} style={{ 'marginTop': '20px' }}>
-        <Col xxl={9} xl={9} lg={24} md={24} sm={24} xs={24}>
+        <Col xxl={8} xl={8} lg={24} md={24} sm={24} xs={24}>
           <Styled.StyledBox>
             <Title level={5} style={{ color: '#B94AB7' }}>Revenue by Subjects</Title>
             <Skeleton loading={loading} active>
@@ -136,7 +136,7 @@ const Dashboard: React.FC = () => {
             </Skeleton>
           </Styled.StyledBox>
         </Col>
-        <Col xxl={15} xl={15} lg={24} md={24} sm={24} xs={24}>
+        <Col xxl={16} xl={16} lg={24} md={24} sm={24} xs={24}>
           <Styled.StyledBox >
             <Title level={5} style={{ color: '#B94AB7' }}>Top Tutors</Title>
             <Skeleton active loading={loading}>

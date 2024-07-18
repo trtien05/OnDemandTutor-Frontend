@@ -5,7 +5,9 @@ import type { MenuProps } from 'antd';
 import config from '../../config';
 import { TeamOutlined, UsergroupAddOutlined, ProjectOutlined } from '@ant-design/icons';
 import { GrMoney } from "react-icons/gr";
+import { GrDocumentPerformance } from "react-icons/gr";
 import { LuLayoutDashboard } from "react-icons/lu";
+import { IoIosTimer } from "react-icons/io";
 
 const MenuSider: React.FC = () => {
 
@@ -34,6 +36,28 @@ const MenuSider: React.FC = () => {
       key: config.routes.admin.manageSalary,
       icon: <GrMoney />,
       label: <Link to={config.routes.admin.manageSalary}>Salary</Link>,
+    },
+    {
+      key: 'Report',
+      icon: <GrDocumentPerformance />,
+      label: <span style={{ fontWeight: 500 }}>Report</span>,
+      children: [
+        {
+          key: config.routes.admin.manageReportByAppointment,
+          icon: <IoIosTimer />,
+          label: <Link to={config.routes.admin.manageReportByAppointment}>Appointment</Link>
+        },
+        {
+          key: config.routes.admin.manageReportByTutor,
+          icon: <TeamOutlined />,
+          label: <Link to={config.routes.admin.manageReportByTutor}>Tutor</Link>
+        },
+        {
+          key: config.routes.admin.manageReportByStudent,
+          icon: <UsergroupAddOutlined />,
+          label: <Link to={config.routes.admin.manageReportByStudent}>Student</Link>
+        },
+      ]
     }
   ];
 

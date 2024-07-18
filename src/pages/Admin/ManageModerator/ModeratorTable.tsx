@@ -35,6 +35,7 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, o
     {
       title: 'Moderator Name',
       dataIndex: 'fullName',
+      width: 180,
       showSorterTooltip: { target: 'full-header' },
       sorter: (a, b) => (a.fullName?.length ?? 0) - (b.fullName?.length ?? 0),
       sortDirections: ['descend'],
