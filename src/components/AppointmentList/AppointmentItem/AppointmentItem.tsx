@@ -128,19 +128,9 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                     <Styled.QuestionRow
                                         style={{
                                             fontSize: '16px',
-                                            fontWeight: 'bold',
-                                            textDecoration: 'underline',
-                                            color: `${theme.colors.primary}`,
                                         }}
                                     >
-                                        <a
-                                            href={appointment.tutor.meetingLink}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            style={{ color: `${theme.colors.primary}` }}
-                                        >
-                                            Meet Link
-                                        </a>
+                                        <Link to={`${appointment.tutor.meetingLink}`} underline scroll>Meet Link</Link>
                                     </Styled.QuestionRow>
                                 )}
                             </Styled.QuestionContent>

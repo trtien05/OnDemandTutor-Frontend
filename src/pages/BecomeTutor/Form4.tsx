@@ -116,7 +116,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
               {
                 required: true,
                 type: 'number',
-                min: 0,
+                min: 100000,
                 max: 1000000
               },
             ]}>
