@@ -2,10 +2,9 @@ import {
     AiOutlineHome,
     AiOutlineLogin,
     AiOutlineLogout,
+    AiOutlineQuestionCircle
 } from 'react-icons/ai';
-import { SiGoogleclassroom } from "react-icons/si";
 import { PiStudentDuotone } from "react-icons/pi";
-import { GrContact } from "react-icons/gr";
 import { FaChalkboardTeacher } from "react-icons/fa";
 import { IoChatboxOutline } from "react-icons/io5";
 
@@ -40,16 +39,15 @@ const createMenuItem = (
 export const menuUnLogged = () => {
     const menu: MenuType[] = [
         createMenuItem(config.routes.public.home, <AiOutlineHome size={20} />, 'Home'),
-        createMenuItem(config.routes.public.searchClasses, <SiGoogleclassroom size={20} />, 'Classes'),
         createMenuItem(
             config.routes.public.searchTutors,
             <PiStudentDuotone size={20} />,
             'Tutors',
         ),
         createMenuItem(
-            config.routes.public.contact,
-            <GrContact size={20} />,
-            'Contact',
+            config.routes.public.searchQuestions,
+            <AiOutlineQuestionCircle size={20} />,
+            'Questions',
         ),
         createMenuItem(
             config.routes.student.registerTutor,
@@ -81,9 +79,10 @@ export const menuLogged = (user: PIIProps) => {
                     </Link>
                     <Text>{user?.fullName}</Text>
                     <Divider />
-                </HeaderAvatarWrapper>
+                    </HeaderAvatarWrapper>
             ),
         },
+
 
         ...menuUnLogged().slice(0, -1),
 
