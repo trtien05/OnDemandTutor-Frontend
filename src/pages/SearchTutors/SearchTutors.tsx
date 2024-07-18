@@ -68,7 +68,7 @@ const SearchTutors = () => {
 
   useEffect(() => {
     setInitLoading(true);
-    const baseUrl: string = `${config.publicRuntime.API_URL}/api/tutors?pageNo=${currentPage - 1}&pageSize=${tutorPerPage}`;
+    const baseUrl: string = `${config.publicRuntime.API_URL}/api/tutors?pageNo=0&pageSize=${tutorPerPage}`;
 
     let url: string = '';
 
