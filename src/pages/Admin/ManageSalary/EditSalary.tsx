@@ -2,7 +2,7 @@ import { Button, Form, Modal, Select, Tooltip, notification, Row, Col, Checkbox,
 import React, { useState } from 'react';
 import { EditOutlined } from '@ant-design/icons';
 import { theme } from '../../../themes';
-import { changeWithdrawRequest } from '../../../utils/salaryAPI';
+import { changeWithdrawRequest, sendWithdrawEmail } from '../../../utils/salaryAPI';
 
 interface Record {
   id: number;
@@ -58,8 +58,11 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
       ...(values.updatedStatus === 'REJECTED' && { rejectReason: values.rejectReason })
     };
     try {
-      const response = await changeWithdrawRequest(payload);
-      if (response.status === 200) {
+      const [response, responseEmail] = await Promise.all([
+        changeWithdrawRequest(payload),
+        sendWithdrawEmail(payload)
+      ]);
+      if (response.status === 200 && responseEmail.status === 200) {
         apiNoti.success({
           message: "Update Successful",
           description: `Successfully updated : ${record.bankAccountOwner}`

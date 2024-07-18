@@ -126,7 +126,7 @@ const TutorDetail: React.FC = () => {
     setReviewsLoading(true);
 
     try {
-      const reviewsResponse = await getTutorReviews(tutorId, page, 3);
+      const reviewsResponse = await getTutorReviews(tutorId, page, 2);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
@@ -145,7 +145,7 @@ const TutorDetail: React.FC = () => {
 
     try {
       const newPage = page + 1;
-      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
+      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 2);
       const newReviewsList = newReviewsResponse.data.content;
 
       if (newReviewsList.length === 0) {

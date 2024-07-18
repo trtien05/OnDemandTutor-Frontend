@@ -7,7 +7,9 @@ export const getWithdrawRequest = (pageNo: number, pageSize: number) => {
 export const changeWithdrawRequest = (withdrawObj: any) => {
     return put('/api/salary/withdraw-requests', withdrawObj);
 };
-
+export const sendWithdrawEmail = (withdrawObj: any) => {
+    return post('/api/salary/send-withdraw-email', withdrawObj);
+};
 export const postTutorSalary = (
     tutorId: number,
     tutorObj: {
