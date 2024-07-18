@@ -161,7 +161,7 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
                     initialValues={{ selectedSlots: new Set<number>() }}
                 >
                     <FormStyled.FormTitle style={{ margin: `auto`, marginBottom: `0` }}>
-                        Tutor Booking
+                        Reschedule Appointment
                     </FormStyled.FormTitle>
                     <FormStyled.FormItem
                         name="selectedSlots"
@@ -187,11 +187,11 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
                             scheduleType="reschedule"
                         />
                     </FormStyled.FormItem>
-                    <FormStyled.FormDescription style={{ marginBottom: `0px`, color: 'red' }}>
-                        Please be aware of the following rescheduling policies: <br/>
-                        1. No Refund for Shorter Time Slots: We will not refund for any fewer hours than the original booking. <br/>
-                        2. 24-Hour Rescheduling Limit: You cannot reschedule your lesson if the new time slot is within 24 hours of the
-                        original lesson start time. <br/>
+                    <FormStyled.FormDescription style={{ marginBottom: `0px`, fontStyle:'italic'}}>*New time slot must be at least 24 hours ahead of the original booking. </FormStyled.FormDescription>
+                    <FormStyled.FormDescription style={{ marginBottom: `0px`, color: 'red', display:'block' }}>
+                    Please be aware that we will not refund for any fewer hours than the original booking. <br/>
+                        {/* <b style={{display:'content'}}>2. 24-Hour Rescheduling Limit:</b> You cannot reschedule your lesson again if the current time is within 24 hours of the
+                        new time slot's start time. <br/> */}
                         Make sure to select an appropriate time slot to avoid any inconvenience. Thank you for your understanding.
                     </FormStyled.FormDescription>
                     <FormStyled.FormItem
