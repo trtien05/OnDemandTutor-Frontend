@@ -217,6 +217,11 @@ export const PaymentColumns: ( setReloadKey: React.Dispatch<React.SetStateAction
     {
         title: 'Tuition',
         dataIndex: 'tuition',
+        render: (tuition) => (
+            <Text>
+                {tuition.toLocaleString("en-US")}
+            </Text>
+        ),
         sorter: (a, b) => a.tuition - b.tuition,
     },
     {

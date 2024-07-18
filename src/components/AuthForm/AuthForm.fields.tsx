@@ -213,9 +213,28 @@ export const setPasswordFields: FieldType[] = [
         ),
     },
 ];
-export const verifyCodeFields: OTPFieldType[] = Array.from({ length: 6 }, (_, index) => ({
-    key: index,
-    name: `otp${index}`,
-    children:
-        <Input maxLength={1} />,
-}));
+export const verifyCodeFields: OTPFieldType[] = Array.from({ length: 6 }, (_, index) => {
+    const autoFocus = (input: HTMLInputElement, index: number) => {
+        if (input.value === '') {
+            return;
+        }
+        if (!/^[1-9]*$/.test(input.value)) {
+            input.value = input.value.replace(/[^0-9]/g, '');
+        }
+        if (input.value.length > 1) input.value = input.value[1];
+        if (index === 5) {
+            document.getElementById(`input${index}`)?.blur();
+        }
+        if (input.value.length !== 0) document.getElementById(`input${index + 1}`)?.focus();
+    }
+
+    return {
+        key: index,
+        name: `otp${index}`,
+        children:
+            <Input id={`input${index}`}
+                onInput={(event) => autoFocus(event.currentTarget, index)}
+                onClick={(e) => e.currentTarget.select() }
+            />,
+    }
+});

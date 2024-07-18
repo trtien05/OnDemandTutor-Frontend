@@ -1,4 +1,4 @@
-import { message } from 'antd';
+import { message, Typography } from 'antd';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import AuthForm from '../../components/AuthForm';
@@ -8,6 +8,8 @@ import { login } from '../../utils/authAPI';
 import cookieUtils from '../../utils/cookieUtils';
 import { PageEnum } from '../../utils/enums';
 import { useDocumentTitle } from '../../hooks';
+import * as Styled from './Login.styled';
+import Link from '../../components/Link';
 
 const Login = () => {
     useDocumentTitle('Log In | MyTutor');
@@ -16,9 +18,8 @@ const Login = () => {
     const navigate = useNavigate();
 
     const [messageApi, contextHolder] = message.useMessage();
-
+    const { Text } = Typography;
     const onFinish = async (values: any) => {
-
         try {
             setIsSubmitting(true);
 
@@ -46,7 +47,15 @@ const Login = () => {
         title: 'Register',
         url: config.routes.public.register,
     };
-
+    const description = (
+        <Styled.LoginDesc>
+            With
+            <Link to={config.routes.public.home} underline scroll>
+                <Text>My Tutor</Text>,
+            </Link>
+            everything is easier. Start now.
+        </Styled.LoginDesc>
+    );
 
     return (
         <>
@@ -55,6 +64,7 @@ const Login = () => {
                 page={PageEnum.LOGIN}
                 formTitle="Log In"
                 buttonTitle="Log In"
+                description={description}
                 fields={loginFields}
                 redirect={redirect}
                 onFinish={onFinish}

@@ -217,6 +217,8 @@ const BookTutor: React.FC<BookTutorProps> = (props) => {
             name='description' 
             placeholder="By adding the subject and your special needs, the tutor can know you better and assist you more effectively." />
           </FormStyled.FormItem>
+          <FormStyled.FormDescription style={{ marginBottom: `0px`, color: 'red', fontStyle:'italic'}}>Please be aware that you cannot 
+            reschedule your time slot if the current time is within 24 hours before the booking time slot's start time</FormStyled.FormDescription>
           <FormStyled.FormCheckbox 
             name='confirm'
             style={{ margin: `auto`, marginBottom: `5px` }}
