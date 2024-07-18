@@ -2,8 +2,7 @@ import {
     AiOutlineHome,
     AiOutlineLogin,
     AiOutlineLogout,
-    AiOutlineQuestionCircle,
-    AiTwotoneCalendar
+    AiOutlineQuestionCircle
 } from 'react-icons/ai';
 import { PiStudentDuotone } from "react-icons/pi";
 import { FaChalkboardTeacher } from "react-icons/fa";
@@ -67,7 +66,8 @@ export const menuLogged = (user: PIIProps) => {
     };
 
     const isTutor = user?.role === 'TUTOR' && user?.status === 'ACTIVE';
-
+    let limit = -1;
+    if (isTutor) limit = -2;
     const menu: MenuType[] = [
         {
             key: config.routes.student.profile,
@@ -98,6 +98,8 @@ export const menuLogged = (user: PIIProps) => {
                 </HeaderAvatarWrapper>
             ),
         },
+
+        ...menuUnLogged().slice(0, limit),
 
         createMenuItem(
             config.routes.student.chatRoom,
