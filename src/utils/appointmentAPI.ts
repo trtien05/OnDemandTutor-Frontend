@@ -17,3 +17,27 @@ export const cancelAppointment = (timeslotId: number, accountId: number) => {
 export const getAppointmentReport = () => {
     return get(`/api/appointments/reports`);
 };
+
+export const getStudentReport = (month?: number, year?: number) => {
+    let url = '/api/appointments/reports/students';
+    if (month && year) {
+        url += `?month=${month}&year=${year}`;
+    } else if (month) {
+        url += `?month=${month}`;
+    } else if (year) {
+        url += `?year=${year}`;
+    }
+    return get(url);
+};
+export const getTutorReport = (month?: number, year?: number) => {
+    let url = '/api/appointments/reports/tutors';
+
+    if (month && year) {
+        url += `?month=${month}&year=${year}`;
+    } else if (month) {
+        url += `?month=${month}`;
+    } else if (year) {
+        url += `?year=${year}`;
+    }
+    return get(url);
+};

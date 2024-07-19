@@ -22,7 +22,7 @@ const ManageProfitByAppointment = () => {
     };
     fetchApi();
   }, []);
-  console.log(reportByAppointment)
+
   return (
     <div>
       <h2>Salary management by appointment</h2>

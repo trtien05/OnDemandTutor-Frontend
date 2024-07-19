@@ -129,7 +129,7 @@ const SearchTutors = () => {
           <Styled.SearchWrapper>
             <Row justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect placeholder="Specialties" onChange={handleSpecialtyChange}>
+                <Styled.StyledSelect allowClear placeholder="Specialties" onChange={handleSpecialtyChange}>
                   {options.map((option, index) => (
                     <Option key={index} value={option.value}>
                       {option.label}
@@ -139,14 +139,14 @@ const SearchTutors = () => {
               </Col>
 
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect
+                <Styled.StyledSelect allowClear
                   dropdownRender={priceDropdownRender}
                   value={`Price range: ${priceRange[0].toLocaleString() + 'đ'} - ${priceRange[1].toLocaleString() + 'đ'}`} >
                 </Styled.StyledSelect>
               </Col>
 
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect placeholder="Tutor Level" onChange={handleTutorLevelChange}>
+                <Styled.StyledSelect allowClear placeholder="Tutor Level" onChange={handleTutorLevelChange}>
                   <Option value="Tutor Level">Tutor Level</Option>
                   <Option value="Associate">Associate</Option>
                   <Option value="Bachelor">Bachelor</Option>
@@ -158,7 +158,7 @@ const SearchTutors = () => {
 
             <Styled.RowWrapper justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={4} lg={4} xs={24}>
-                <Styled.StyledSelect placeholder="Sort By" onChange={handleSortChange}>
+                <Styled.StyledSelect allowClear placeholder="Sort By" onChange={handleSortChange}>
                   <Option value="Sort By">Sort By</Option>
                   <Option value="Rating">Rating</Option>
                   <Option value="Price">Price</Option>

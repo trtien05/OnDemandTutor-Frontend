@@ -8,9 +8,9 @@ import ManageTutor from "../pages/Admin/ManageTutor/ManageTutor";
 import ManageStudent from "../pages/Admin/ManageStudent/ManageStudent";
 import ManageModerator from "../pages/Admin/ManageModerator/ManageModerator";
 import ManageSalary from "../pages/Admin/ManageSalary/ManageSalary";
-import ManageProfitByTutor from "../pages/Admin/ManageReport/ManageProfitByTutor/ManageProfitByAppointment";
+import ManageProfitByTutor from "../pages/Admin/ManageReport/ManageProfitByTutor/ManageProfitByTutor";
 import ManageProfitByAppointment from "../pages/Admin/ManageReport/ManageProfitByAppointment/ManageProfitByAppointment";
-import ManageProfitByStudent from "../pages/Admin/ManageReport/ManageProfitByStudent/ManageProfitByAppointment";
+import ManageProfitByStudent from "../pages/Admin/ManageReport/ManageProfitByStudent/ManageProfitByStudent";
 
 
 // Authorization
