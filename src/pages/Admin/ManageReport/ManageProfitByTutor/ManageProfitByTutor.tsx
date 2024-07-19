@@ -46,7 +46,6 @@ const ManageProfitByTutor = () => {
     };
     fetchApi();
   }, []);
-  console.log(reportByTutor)
 
   return (
     <div>

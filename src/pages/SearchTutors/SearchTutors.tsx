@@ -108,7 +108,6 @@ const SearchTutors = () => {
     </div>
   );
   const options = [
-    { label: 'Specialties', value: 'Specialties' },
     { label: 'Mathematics', value: 'Mathematics' },
     { label: 'Chemistry', value: 'Chemistry' },
     { label: 'Biology', value: 'Biology' },
@@ -139,7 +138,7 @@ const SearchTutors = () => {
               </Col>
 
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect allowClear
+                <Styled.StyledSelect
                   dropdownRender={priceDropdownRender}
                   value={`Price range: ${priceRange[0].toLocaleString() + 'đ'} - ${priceRange[1].toLocaleString() + 'đ'}`} >
                 </Styled.StyledSelect>
@@ -147,7 +146,6 @@ const SearchTutors = () => {
 
               <Col xl={8} lg={8} xs={24}>
                 <Styled.StyledSelect allowClear placeholder="Tutor Level" onChange={handleTutorLevelChange}>
-                  <Option value="Tutor Level">Tutor Level</Option>
                   <Option value="Associate">Associate</Option>
                   <Option value="Bachelor">Bachelor</Option>
                   <Option value="Master">Master</Option>
@@ -159,7 +157,6 @@ const SearchTutors = () => {
             <Styled.RowWrapper justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={4} lg={4} xs={24}>
                 <Styled.StyledSelect allowClear placeholder="Sort By" onChange={handleSortChange}>
-                  <Option value="Sort By">Sort By</Option>
                   <Option value="Rating">Rating</Option>
                   <Option value="Price">Price</Option>
                 </Styled.StyledSelect>
