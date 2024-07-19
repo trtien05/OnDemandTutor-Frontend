@@ -164,6 +164,7 @@ const SearchTutors = () => {
 
               <Col xl={8} lg={8} xs={24}>
                 <Styled.InputStyled
+                  allowClear
                   placeholder="Search by name or keyword"
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}
