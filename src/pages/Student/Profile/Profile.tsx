@@ -629,7 +629,7 @@ const Profile = () => {
                                         </Styled.QuestionRowSpan>
                                     )}
                                     <Styled.QuestionRowSpan>
-                                        <Styled.Button>{selectedItem?.status}</Styled.Button>
+                                        <Styled.Button style={{position:'unset'}}>{selectedItem?.status}</Styled.Button>
                                     </Styled.QuestionRowSpan>
                                 </Styled.ModalStudentInfo>
                             </div>
@@ -642,7 +642,7 @@ const Profile = () => {
                 <Styled.Description>{selectedItem?.content}</Styled.Description>
                 <Styled.QuestionRow>
                     {selectedItem?.questionUrl && (
-                        <Styled.QuestionRowSpan>
+                        <Styled.QuestionRowSpan style={{overflow:'scroll'}}>
                             {renderQuestionFile(selectedItem?.questionUrl)}
                         </Styled.QuestionRowSpan>
                     )}
