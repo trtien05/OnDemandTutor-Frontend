@@ -134,7 +134,6 @@ const TutorItem: React.FC<TutorItemProps> = ({ item }) => {
                   </Link>
                 </Styled.BookingThisTutor>
 
-
               </Styled.BestTutorBooking>
             </Col>
           </Styled.BestTutorItem>

@@ -49,6 +49,7 @@ const TutorTable: React.FC<TutorTableProps> = ({ tutors, onReload, onPageChange,
     {
       title: 'Tutor Name',
       dataIndex: 'fullName',
+      width: 150,
       showSorterTooltip: { target: 'full-header' },
       sorter: (a, b) => (a.fullName?.length ?? 0) - (b.fullName?.length ?? 0),
       sortDirections: ['descend'],

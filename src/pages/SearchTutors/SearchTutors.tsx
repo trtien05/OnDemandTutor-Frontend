@@ -60,7 +60,7 @@ const SearchTutors = () => {
     if (priceRange[0] !== 100000 || priceRange[1] !== 500000) {
       url += `&priceMin=${priceRange[0]}&priceMax=${priceRange[1]}`;
     }
-
+    setCurrentPage(1);
     setSearchUrl(url);
 
   };
@@ -108,7 +108,6 @@ const SearchTutors = () => {
     </div>
   );
   const options = [
-    { label: 'Specialties', value: 'Specialties' },
     { label: 'Mathematics', value: 'Mathematics' },
     { label: 'Chemistry', value: 'Chemistry' },
     { label: 'Biology', value: 'Biology' },
@@ -129,7 +128,7 @@ const SearchTutors = () => {
           <Styled.SearchWrapper>
             <Row justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect placeholder="Specialties" onChange={handleSpecialtyChange}>
+                <Styled.StyledSelect allowClear placeholder="Specialties" onChange={handleSpecialtyChange}>
                   {options.map((option, index) => (
                     <Option key={index} value={option.value}>
                       {option.label}
@@ -146,8 +145,7 @@ const SearchTutors = () => {
               </Col>
 
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect placeholder="Tutor Level" onChange={handleTutorLevelChange}>
-                  <Option value="Tutor Level">Tutor Level</Option>
+                <Styled.StyledSelect allowClear placeholder="Tutor Level" onChange={handleTutorLevelChange}>
                   <Option value="Associate">Associate</Option>
                   <Option value="Bachelor">Bachelor</Option>
                   <Option value="Master">Master</Option>
@@ -158,8 +156,7 @@ const SearchTutors = () => {
 
             <Styled.RowWrapper justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={4} lg={4} xs={24}>
-                <Styled.StyledSelect placeholder="Sort By" onChange={handleSortChange}>
-                  <Option value="Sort By">Sort By</Option>
+                <Styled.StyledSelect allowClear placeholder="Sort By" onChange={handleSortChange}>
                   <Option value="Rating">Rating</Option>
                   <Option value="Price">Price</Option>
                 </Styled.StyledSelect>
@@ -167,6 +164,7 @@ const SearchTutors = () => {
 
               <Col xl={8} lg={8} xs={24}>
                 <Styled.InputStyled
+                  allowClear
                   placeholder="Search by name or keyword"
                   value={searchKeyword}
                   onChange={(e) => setSearchKeyword(e.target.value)}

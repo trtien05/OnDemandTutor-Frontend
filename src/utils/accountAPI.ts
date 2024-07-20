@@ -1,4 +1,4 @@
-import { get, put, remove } from './apiCaller';
+import { get, put, remove, post } from './apiCaller';
 
 export const getInfoCurrentUser = () => {
     return get(`/api/auth/profile`);
@@ -11,4 +11,10 @@ export const deleteAccount = (accountId: number) => {
 };
 export const updateAccount = (accountId: number, accountObject: any) => {
     return put(`/api/accounts/${accountId}/update-details`, accountObject);
+};
+export const createModerator = (accountObject: any) => {
+    return post(`/api/accounts/moderators`, accountObject);
+};
+export const createAdmin = (accountObject: any) => {
+    return post(`/api/accounts/admins`, accountObject);
 };

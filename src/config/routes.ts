@@ -35,10 +35,16 @@ const routes = {
     },
     admin: {
         dashboard: '/admin',
+        manageAdmin: '/admin/manage-admin',
+        createAdmin: '/admin/manage-admin/create-admin',
         manageTutor: '/admin/tutors',
         manageModerator: '/admin/moderator',
+        createModerator: '/admin/moderator/create-moderator',
         manageStudent: '/admin/student',
         manageSalary: '/admin/salary',
+        manageReportByTutor: '/admin/report-tutor',
+        manageReportByAppointment: '/admin/report-appointment',
+        manageReportByStudent: '/admin/report-student',
     },
     moderator: {
         main: '/moderator',

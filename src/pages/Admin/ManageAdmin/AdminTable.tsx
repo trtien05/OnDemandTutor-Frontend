@@ -1,9 +1,8 @@
 import { Table, TableColumnsType, Tag } from 'antd';
 import React from 'react';
-import DeleteModerator from './DeleteModerator';
-import EditModerator from './EditModerator';
+import EditAdmin from './EditAdmin';
 
-interface Moderator {
+interface Admin {
   id: number;
   fullName?: string;
   gender?: boolean;
@@ -15,8 +14,8 @@ interface Moderator {
   status?: string;
 };
 
-interface ModeratorTableProps {
-  moderators: Moderator[];
+interface AdminTableProps {
+  admins: Admin[];
   onReload: () => void;
   onPageChange: (page: number) => void;
   currentPage: number;
@@ -25,15 +24,15 @@ interface ModeratorTableProps {
   loading: boolean;
 }
 
-const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
+const AdminTable: React.FC<AdminTableProps> = ({ admins, onReload, onPageChange, currentPage, pageSize, totalElements, loading }) => {
 
-  const columns: TableColumnsType<Moderator> = [
+  const columns: TableColumnsType<Admin> = [
     {
       title: 'No',
       render: (_, __, index) => (currentPage - 1) * pageSize + index + 1,
     },
     {
-      title: 'Moderator Name',
+      title: 'Admin Name',
       dataIndex: 'fullName',
       width: 180,
       showSorterTooltip: { target: 'full-header' },
@@ -81,11 +80,9 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, o
     {
       title: 'Action',
       dataIndex: 'action',
-      render: (_: any, record: Moderator) => (
+      render: (_: any, record: Admin) => (
         <>
-          <EditModerator record={record} onReload={onReload} />
-          <DeleteModerator record={record} onReload={onReload} />
-
+          <EditAdmin record={record} onReload={onReload} />
         </>
       )
     }
@@ -95,7 +92,7 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, o
       <Table
         rowKey={'id'}
         columns={columns}
-        dataSource={moderators}
+        dataSource={admins}
         scroll={{ x: true }}
         pagination={{
           current: currentPage,
@@ -110,4 +107,4 @@ const ModeratorTable: React.FC<ModeratorTableProps> = ({ moderators, onReload, o
   );
 }
 
-export default ModeratorTable;
+export default AdminTable;

@@ -36,6 +36,7 @@ const StudentTable: React.FC<StudentTableProps> = ({ students, onReload, onPageC
     {
       title: 'Student Name',
       dataIndex: 'fullName',
+      width: 150,
       showSorterTooltip: { target: 'full-header' },
       sorter: (a, b) => (a.fullName?.length ?? 0) - (b.fullName?.length ?? 0),
       sortDirections: ['descend'],

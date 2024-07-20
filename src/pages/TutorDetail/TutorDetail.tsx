@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { Tabs, Skeleton, Row, Col, List, Avatar, notification } from "antd";
+import { Tabs, Skeleton, Row, Col, List, Avatar, notification, Popconfirm } from "antd";
 import { useAuth, useDocumentTitle } from "../../hooks";
 import { getTutorById, getTutorReviews, getTutorEducation, getTutorCertification, getStatusReviews, getTutorStatistic, deleteTutorReview, editTutorReview } from "../../utils/tutorAPI";
 import { Tutor } from "../../components/TutorsList/Tutor.type";
@@ -126,7 +126,7 @@ const TutorDetail: React.FC = () => {
     setReviewsLoading(true);
 
     try {
-      const reviewsResponse = await getTutorReviews(tutorId, page, 3);
+      const reviewsResponse = await getTutorReviews(tutorId, page, 2);
       setReviews(reviewsResponse.data.content);
     } catch (error) {
       console.error('Failed to fetch reviews', error);
@@ -145,7 +145,7 @@ const TutorDetail: React.FC = () => {
 
     try {
       const newPage = page + 1;
-      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 1);
+      const newReviewsResponse = await getTutorReviews(tutorId, newPage, 2);
       const newReviewsList = newReviewsResponse.data.content;
 
       if (newReviewsList.length === 0) {
@@ -418,15 +418,17 @@ const TutorDetail: React.FC = () => {
                           <div style={{ display: 'flex', alignSelf: 'start' }}>
                             {(item.createdById === user?.id) && (
                               <div>
-                                <CloseOutlined
-                                  style={{
-                                    color: '#B52121',
-                                    fontSize: '20px',
-                                    cursor: 'pointer',
-                                    margin: '0 5px',
-                                  }}
-                                  onClick={() => handleDeleteReview(item.id!)}
-                                />
+                                <Popconfirm title="Sure to delete?" onConfirm={() => handleDeleteReview(item.id!)}>
+                                  <CloseOutlined
+                                    style={{
+                                      color: '#B52121',
+                                      fontSize: '20px',
+                                      cursor: 'pointer',
+                                      margin: '0 5px',
+                                    }}
+                                  />
+                                </Popconfirm>
+
                                 <EditFeedback
                                   initialValues={{
                                     rating: item.rating ?? 0,

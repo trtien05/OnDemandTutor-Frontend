@@ -1,12 +1,12 @@
 import { useEffect, useState } from 'react';
 import { Button, Skeleton } from 'antd';
 import { getAccountByRole } from '../../../utils/accountAPI';
-import ModeratorTable from './ModeratorTable';
+import AdminTable from './AdminTable';
 import { Link } from 'react-router-dom';
 import config from '../../../config';
 
-const ManageModerator = () => {
-  const [moderator, setModerator] = useState([]);
+const ManageAdmin = () => {
+  const [admin, setAdmin] = useState([]);
   const [totalElements, setTotalElements] = useState(0);
   const [loading, setLoading] = useState(true);
   const [pageNo, setPageNo] = useState(0);
@@ -16,11 +16,11 @@ const ManageModerator = () => {
     setLoading(true);
 
     try {
-      const response = await getAccountByRole(pageNo, pageSize, 'MODERATOR');
+      const response = await getAccountByRole(pageNo, pageSize, 'ADMIN');
       setTotalElements(response.data.totalElements);
-      setModerator(response.data.content);
+      setAdmin(response.data.content);
     } catch (error) {
-      console.error('Error fetching moderators:', error);
+      console.error('Error fetching Admins:', error);
     } finally {
       setLoading(false);
     }
@@ -38,10 +38,10 @@ const ManageModerator = () => {
   return (
     <div>
       <div style={{ display: 'flex' }}>
-        <h2>Manage Moderator</h2>
+        <h2>Manage Admin</h2>
         <div style={{ margin: '0 20px' }}>
-          <Link to={config.routes.admin.createModerator}>
-            <Button>Create Moderator</Button>
+          <Link to={config.routes.admin.createAdmin}>
+            <Button>Create Admin</Button>
           </Link>
         </div>
 
@@ -49,8 +49,8 @@ const ManageModerator = () => {
 
       <Skeleton active loading={loading} style={{ marginTop: '20px' }} paragraph={{ rows: 4 }} title={false}>
         <div style={{ marginTop: '20px' }}>
-          <ModeratorTable
-            moderators={moderator}
+          <AdminTable
+            admins={admin}
             onReload={handleReload}
             onPageChange={handlePageChange}
             currentPage={pageNo + 1}
@@ -65,4 +65,4 @@ const ManageModerator = () => {
   );
 };
 
-export default ManageModerator;
+export default ManageAdmin;

@@ -33,11 +33,11 @@ const Footer = () => {
             <Styled.FooterSection>
                 <Container>
                     <Row gutter={24}>
-                        <Col lg={5} md={6} sm={12} xs={24}>
+                        <Col xl={5} lg={5} md={6} sm={12} xs={24}>
                             <Styled.MyTutorImage src={myTutor} />
                         </Col>
 
-                        <Col lg={5} md={6} sm={12} xs={24}>
+                        <Col xl={4} lg={4} md={5} sm={12} xs={24}>
                             <Styled.FooterColumnWrapper>
                                 <Title level={2}>LEARN</Title>
 
@@ -55,7 +55,7 @@ const Footer = () => {
                             </Styled.FooterColumnWrapper>
                         </Col>
 
-                        <Col lg={4} md={6} sm={12} xs={24}>
+                        <Col xl={4} lg={4} md={4} sm={12} xs={24}>
                             <Styled.FooterColumnWrapper>
                                 <Title level={2}>PAGE</Title>
 
@@ -71,7 +71,7 @@ const Footer = () => {
                             </Styled.FooterColumnWrapper>
                         </Col>
 
-                        <Col lg={6} md={6} sm={12} xs={24}>
+                        <Col xl={7} lg={7} md={9} sm={12} xs={24}>
                             <Styled.FooterColumnWrapper>
                                 <Title level={2}>CONTACT</Title>
 
@@ -90,7 +90,7 @@ const Footer = () => {
                             </Styled.FooterColumnWrapper>
                         </Col>
 
-                        <Col lg={4} md={24} sm={24} xs={24}>
+                        <Col xl={4} lg={4} md={24} sm={24} xs={24}>
                             <Styled.FooterSocials>
                                 {socials.map((social) => {
                                     const Icon = social.icon;
