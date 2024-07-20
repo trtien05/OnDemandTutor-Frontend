@@ -25,6 +25,7 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
   const [form] = Form.useForm();
   const [agreement, setAgreement] = useState(false);
   const [status, setStatus] = useState(record.status || '');
+  const [loading, setLoading] = useState(false);
 
 
   const rules = {
@@ -51,6 +52,7 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
   };
 
   const handleFinish = async (values: any) => {
+    setLoading(true);
 
     const payload = {
       withdrawRequestId: record.id,
@@ -77,6 +79,8 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
         message: "Update Failed",
         description: ` ${error.response.data.message}`
       });
+    } finally {
+      setLoading(false);
     }
   }
   const handleStatusChange = (value: string) => {
@@ -156,7 +160,7 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
           <Row gutter={16}>
             <Col span={24}>
               <Form.Item>
-                <Button type="primary" htmlType="submit">
+                <Button loading={loading} type="primary" htmlType="submit">
                   Submit
                 </Button>
               </Form.Item>

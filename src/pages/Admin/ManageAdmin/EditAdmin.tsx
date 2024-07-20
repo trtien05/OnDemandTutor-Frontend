@@ -20,7 +20,7 @@ interface EditProps {
   onReload: () => void;
 }
 
-const EditStudent: React.FC<EditProps> = ({ record, onReload }) => {
+const EditAdmin: React.FC<EditProps> = ({ record, onReload }) => {
   const [apiNoti, contextHolder] = notification.useNotification();
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -100,11 +100,11 @@ const EditStudent: React.FC<EditProps> = ({ record, onReload }) => {
         width={800}
       >
         <Form
-          form={form}
           onFinish={handleFinish}
           initialValues={{
             ...record,
           }}
+          form={form}
           layout="vertical"
         >
           <Row gutter={16}>
@@ -191,4 +191,4 @@ const EditStudent: React.FC<EditProps> = ({ record, onReload }) => {
   );
 }
 
-export default EditStudent;
+export default EditAdmin;

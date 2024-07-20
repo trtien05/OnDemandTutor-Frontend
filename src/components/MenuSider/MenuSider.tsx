@@ -8,6 +8,7 @@ import { GrMoney } from "react-icons/gr";
 import { GrDocumentPerformance } from "react-icons/gr";
 import { LuLayoutDashboard } from "react-icons/lu";
 import { IoIosTimer } from "react-icons/io";
+import { RiAdminLine } from "react-icons/ri";
 
 const MenuSider: React.FC = () => {
 
@@ -16,6 +17,11 @@ const MenuSider: React.FC = () => {
       key: 'dashboard',
       icon: <LuLayoutDashboard />,
       label: <Link to={config.routes.admin.dashboard}>Dashboard</Link>,
+    },
+    {
+      key: config.routes.admin.manageAdmin,
+      icon: <RiAdminLine />,
+      label: <Link to={config.routes.admin.manageAdmin}>Admin</Link>,
     },
     {
       key: config.routes.admin.manageModerator,
