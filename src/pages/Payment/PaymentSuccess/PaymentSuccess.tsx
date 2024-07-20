@@ -11,6 +11,7 @@ import { theme } from '../../../themes';
 import { toScheduleString } from '../MakePayment';
 import { Schedule } from '../../../components/Schedule/Schedule.type';
 import { sendBookingEmail } from '../../../utils/tutorBookingAPI';
+import config from '../../../config';
 const { Title, Text } = Typography;
 
 const PaymentSuccess = () => {
@@ -80,6 +81,7 @@ const PaymentSuccess = () => {
                                                 color={theme.colors.success}
                                             />
                                             <Title level={2}>Thank you for trusting us!</Title>
+                                            <Text>You can view your booked lessons in <a href={config.routes.student.studySchedule}>My Schedule</a> and payment history in <a href={config.routes.student.profile}>My Profile</a>.</Text>
                                         </Styled.CheckSuccessMsg>
                                         <Styled.BorderLine />
 

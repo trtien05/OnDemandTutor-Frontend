@@ -186,7 +186,8 @@ const Reschedule: React.FC<RescheduleProps> = (props) => {
                             scheduleType="reschedule"
                         />
                     </FormStyled.FormItem>
-                    <FormStyled.FormDescription style={{ marginBottom: `0px`, fontStyle:'italic'}}>*New time slot must be at least 24 hours ahead of the original booking. </FormStyled.FormDescription>
+                    <FormStyled.FormDescription style={{ marginBottom: `0px`, fontStyle:'italic'}}>
+                        *Rescheduling is only available for lessons that are at least 24 hours ahead of the current time. Please be cautious. </FormStyled.FormDescription>
                     <FormStyled.FormDescription style={{ marginBottom: `0px`, color: 'red', display:'block' }}>
                     Please be aware that we will not refund for any fewer hours than the original booking. <br/>
                         {/* <b style={{display:'content'}}>2. 24-Hour Rescheduling Limit:</b> You cannot reschedule your lesson again if the current time is within 24 hours of the
