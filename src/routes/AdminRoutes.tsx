@@ -11,6 +11,7 @@ import ManageSalary from "../pages/Admin/ManageSalary/ManageSalary";
 import ManageProfitByTutor from "../pages/Admin/ManageReport/ManageProfitByTutor/ManageProfitByTutor";
 import ManageProfitByAppointment from "../pages/Admin/ManageReport/ManageProfitByAppointment/ManageProfitByAppointment";
 import ManageProfitByStudent from "../pages/Admin/ManageReport/ManageProfitByStudent/ManageProfitByStudent";
+import CreateModerator from "../pages/Admin/ManageModerator/CreateModerator";
 import ManageAdmin from "../pages/Admin/ManageAdmin";
 import CreateAdmin from "../pages/Admin/ManageAdmin/CreateAdmin";
 
@@ -36,6 +37,7 @@ const AdminRoutes = {
         { path: config.routes.admin.manageReportByAppointment, element: <ManageProfitByAppointment /> },
         { path: config.routes.admin.manageReportByStudent, element: <ManageProfitByStudent /> },
         { path: config.routes.admin.createAdmin, element: <CreateAdmin /> },
+        { path: config.routes.admin.createModerator, element: <CreateModerator /> },
         { path: config.routes.admin.manageAdmin, element: <ManageAdmin /> },
 
     ],
