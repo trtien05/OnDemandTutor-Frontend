@@ -88,8 +88,9 @@ export const Button = styled.button`
     position: absolute;
     top: 24px;
     right: 10px;
-    ${({ theme }) => theme.breakpoints.down('xs')} {
-        // width: 100%;
+    ${({ theme }) => theme.breakpoints.down('sm')} {
+        position: unset;
+        width: auto;
         padding: 10px;
     }
 `;

@@ -129,7 +129,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                             {item.title}
                                         </Styled.Name>
                                         <Styled.QuestionRowSpan >
-                                            <Styled.Button style={{position:'unset', marginLeft:'10px'}}>{item.status}</Styled.Button>
+                                            <Styled.Button style={{marginLeft:'10px'}}>{item.status}</Styled.Button>
                                         </Styled.QuestionRowSpan>
                                     </Styled.QuestionRow>
                                 
@@ -222,7 +222,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                         {new Date(item.modifiedAt!).toISOString().split('T')[0]}
                                     </Styled.QuestionRowSpan>
                                     <Styled.QuestionRowSpan>
-                                        <Styled.Button style={{position:'unset'}}>{item.status}</Styled.Button>
+                                        <Styled.Button >{item.status}</Styled.Button>
                                     </Styled.QuestionRowSpan>
                                     <Styled.QuestionRowSpan>
                                         <Styled.BookingTutorButton onClick={handleSendMessage}>
