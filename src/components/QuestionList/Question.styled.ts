@@ -89,7 +89,7 @@ export const Button = styled.button`
     top: 24px;
     right: 10px;
     ${({ theme }) => theme.breakpoints.down('xs')} {
-        width: 100%;
+        // width: 100%;
         padding: 10px;
     }
 `;

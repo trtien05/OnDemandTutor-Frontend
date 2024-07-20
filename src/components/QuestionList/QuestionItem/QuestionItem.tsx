@@ -7,7 +7,6 @@ import { UserOutlined } from '@ant-design/icons'; // Import the UserOutlined ico
 import { useAuth } from '../../../hooks';
 import { useNavigate } from 'react-router-dom';
 import FileViewer from '../../FileViewer/FileViewer';
-
 interface QuestionItemProps {
     item: Question;
 }
@@ -31,10 +30,10 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
             setStudent({
                 id: item.account.id,
                 fullName: item.account.fullName,
-                avatarUrl: item.account.avatarUrl || ''
-            })
+                avatarUrl: item.account.avatarUrl || '',
+            });
         }
-    }, [])
+    }, []);
 
     const navigate = useNavigate();
     const [api, contextHolderNotification] = notification.useNotification({
@@ -54,7 +53,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
         const ext = path.split('.').pop();
         return ext ? ext.toLowerCase() : '';
     };
-    
+
     //This function now uses getFileExtension
     //to determine the file type and render the image or link accordingly.
     const renderQuestionFile = (url: string) => {
@@ -63,12 +62,14 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
             return <Styled.QuestionImage src={url} alt="Question Image" />;
         } else if (fileExtension === 'pdf') {
             return (
-                //Render pdf on the screen 
-                <FileViewer alt='image' 
-                fileUrl={url} 
-                width='600px'
-                height='300px' 
-                borderRadius='20px'/>
+                //Render pdf on the screen
+                <FileViewer
+                    alt="image"
+                    fileUrl={url}
+                    width="600px"
+                    height="300px"
+                    borderRadius="20px"
+                />
             );
         }
         return null;
@@ -76,12 +77,14 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
 
     const handleSendMessage = () => {
         if (user?.role === 'TUTOR') {
-            navigate(`/chat-room`, { state: { id: student?.id, fullName: student?.fullName, avatar: student?.avatarUrl } });
+            navigate(`/chat-room`, {
+                state: { id: student?.id, fullName: student?.fullName, avatar: student?.avatarUrl },
+            });
         } else {
             api.warning({
                 message: 'Warning',
                 description: 'You can not send messages to other student!',
-            })
+            });
         }
     };
     return (
@@ -100,10 +103,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     borderRadius: '15px',
                                     left: '-30px',
                                     top: '-30px',
-
                                 }}
-
-
                             />
                         ) : (
                             <Avatar
@@ -115,22 +115,24 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     borderRadius: '15px',
                                     left: '-30px',
                                     top: '-30px',
-
                                 }}
-
                             />
                         )}
                         <Col lg={21} md={20} sm={19} xs={16}>
                             <Styled.QuestionContent>
-                                <Styled.QuestionRow>
-                                    <Styled.Name
-                                        level={2}
-                                        onClick={showModal}
-                                        style={{ cursor: 'pointer' }}
-                                    >
-                                        {item.title}
-                                    </Styled.Name>
-                                </Styled.QuestionRow>
+                                    <Styled.QuestionRow>
+                                        <Styled.Name
+                                            level={2}
+                                            onClick={showModal}
+                                            style={{ cursor: 'pointer' }}
+                                        >
+                                            {item.title}
+                                        </Styled.Name>
+                                        <Styled.QuestionRowSpan >
+                                            <Styled.Button style={{position:'unset', marginLeft:'10px'}}>{item.status}</Styled.Button>
+                                        </Styled.QuestionRowSpan>
+                                    </Styled.QuestionRow>
+                                
                                 <Styled.QuestionRow>
                                     <Styled.QuestionRowSpan
                                         style={{
@@ -148,9 +150,6 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     <Styled.QuestionRowSpan>
                                         Modified:{' '}
                                         {new Date(item.modifiedAt!).toISOString().split('T')[0]}
-                                    </Styled.QuestionRowSpan>
-                                    <Styled.QuestionRowSpan>
-                                        <Styled.Button>{item.status}</Styled.Button>
                                     </Styled.QuestionRowSpan>
                                 </Styled.QuestionRow>
                                 <Styled.Description>
@@ -193,13 +192,12 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                     style={{
                                         borderRadius: '15px',
                                     }}
-
                                 />
                             )}
-
                         </Col>
                         <Col sm={21}>
                             <div>
+                                
                                 <Styled.ModalStudentInfo
                                     style={{
                                         fontSize: '16px',
@@ -209,6 +207,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                 >
                                     {item.account.fullName}
                                 </Styled.ModalStudentInfo>
+                                
                                 <Styled.ModalStudentInfo
                                     style={{
                                         display: 'inline',
@@ -223,7 +222,7 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                                         {new Date(item.modifiedAt!).toISOString().split('T')[0]}
                                     </Styled.QuestionRowSpan>
                                     <Styled.QuestionRowSpan>
-                                        <Styled.Button>{item.status}</Styled.Button>
+                                        <Styled.Button style={{position:'unset'}}>{item.status}</Styled.Button>
                                     </Styled.QuestionRowSpan>
                                     <Styled.QuestionRowSpan>
                                         <Styled.BookingTutorButton onClick={handleSendMessage}>
@@ -241,14 +240,13 @@ const QuestionItem: React.FC<QuestionItemProps> = ({ item }) => {
                 <Styled.Description>{item.content}</Styled.Description>
                 <Styled.QuestionRow>
                     {item.questionUrl && (
-                        <Styled.QuestionRowSpan>
+                        <Styled.QuestionRowSpan style={{overflow:'scroll'}} >
                             {renderQuestionFile(item.questionUrl)}
                         </Styled.QuestionRowSpan>
                     )}
                 </Styled.QuestionRow>
             </Modal>
         </>
-
     );
 };
 
