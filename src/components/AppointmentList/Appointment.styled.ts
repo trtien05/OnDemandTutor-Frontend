@@ -54,4 +54,5 @@ export const TutorFiltered = styled.div``;
 
 export const StyleCol = styled(Col)`
     align-content: center;
+    
 `

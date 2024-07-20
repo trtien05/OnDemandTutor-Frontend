@@ -46,7 +46,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
             <Styled.StyleCol lg={24} md={24} sm={24} xs={24}>
                 <Styled.BoxHover>
                     <Styled.QuestionItem>
-                        <Styled.StyleCol lg={2} md={4} sm={4} xs={24}>
+                        <Styled.StyleCol lg={2} md={2} sm={8} xs={8} >
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
                                     style={{
@@ -76,7 +76,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={5} md={20} sm={19} xs={16}>
+                        <Styled.StyleCol lg={5} md={5} sm={24} xs={16} >
                             <Styled.QuestionContent>
                                 <Styled.QuestionRow
                                     style={{
@@ -92,7 +92,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                 </Styled.QuestionRow>
                             </Styled.QuestionContent>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={10} md={24} sm={24} xs={24}>
+                        <Styled.StyleCol lg={10} md={10} sm={24} xs={24}>
                             <Styled.QuestionRow>
                                 {displayPerson.avatarUrl ? (
                                     <Avatar size={64} src={displayPerson.avatarUrl} />
@@ -122,7 +122,7 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
                                 </Styled.QuestionRowSpan>
                             </Styled.QuestionRow>
                         </Styled.StyleCol>
-                        <Styled.StyleCol lg={3} md={24} sm={24} xs={24}>
+                        <Styled.StyleCol lg={3} md={3} sm={10} xs={10}>
                             <Styled.QuestionContent>
                                 {viewMode === 'Upcoming' && (
                                     <Styled.QuestionRow
@@ -140,9 +140,9 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
 
                                 <Styled.StyleCol
                                     lg={2}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
+                                    md={2}
+                                    sm={7}
+                                    xs={7}
                                     style={{ textAlign: 'center' }}
                                 >
                                     {canReschedule && (
@@ -155,9 +155,9 @@ const AppointmentItem: React.FC<AppointmentItemProps> = ({ item, onCancel, viewM
 
                                 <Styled.StyleCol
                                     lg={2}
-                                    md={24}
-                                    sm={24}
-                                    xs={24}
+                                    md={2}
+                                    sm={7}
+                                    xs={7}
                                     style={{ textAlign: 'center' }}
                                 >
                                     <CloseOutlined
