@@ -80,7 +80,10 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
       title: 'Action',
       dataIndex: 'action',
       render: (_: any, record: Account) => (
-        <EditSalary record={record} onReload={onReload} />
+        <>
+        {record.status === 'PROCESSING' && 
+        <EditSalary record={record} onReload={onReload} />}
+        </>
       ),
     }
   ];

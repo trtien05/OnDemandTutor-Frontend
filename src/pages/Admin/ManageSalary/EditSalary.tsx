@@ -152,7 +152,7 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
                   defaultChecked={agreement}
                   style={{ margin: `20px 0`, color: `${theme.colors.black}`, fontWeight: `bold` }}
                   onChange={(e) => setAgreement(e.target.checked)}
-                >I have carefully read all related information in this question</Checkbox>
+                >I have processed this request carefully</Checkbox>
               </Form.Item>
 
             </Col>
