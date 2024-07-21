@@ -124,6 +124,19 @@ const EditSalary: React.FC<EditProps> = ({ record, onReload }) => {
               </Form.Item>
             </Col>
           </Row>
+          {status === 'DONE' && (
+            <Row gutter={16}>
+              <Col span={24}>
+                {/* <Form.Item
+                  name='rejectReason'
+                  label='Rejection Reason'
+                  rules={charLimitRule}
+                >
+                  <Input style={{ resize: 'none' }} />
+                </Form.Item> */}
+              </Col>
+            </Row>
+          )}
           {status === 'REJECTED' && (
             <Row gutter={16}>
               <Col span={24}>
