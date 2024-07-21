@@ -330,7 +330,11 @@ const ChatRoom: React.FC = () => {
 
                       return (
                         <Styled.Message self={isSelf} key={index}>
-                          {!isSelf && <Avatar size={45} src={chat.senderAvatarUrl} />}
+                          {!isSelf && (
+                            <Link to={`${config.routes.public.searchTutors}/${chat.senderId}`}>
+                              <Avatar size={45} src={chat.senderAvatarUrl} />
+                            </Link>
+                          )}
                           <Styled.MessageData self={isSelf}>
                             <Styled.MessageTime self={isSelf}>
                               {messageTime}
