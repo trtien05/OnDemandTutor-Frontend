@@ -164,6 +164,9 @@ const SalaryForm: React.FC = () => {
                 message: 'Success',
                 description: 'Your request has been submitted.',
             });
+            setTimeout(() => {
+                navigate(config.routes.public.home);
+            }, 1000); // 500ms delay
         } catch (error: any) {
             const errorMessage =
                 error.response && error.response.data
