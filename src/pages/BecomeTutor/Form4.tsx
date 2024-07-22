@@ -117,7 +117,8 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
                 required: true,
                 type: 'number',
                 min: 100000,
-                max: 1000000
+                max: 1000000,
+                message: 'The amount must be between 100,000 and 1,000,000 VND'
               },
             ]}>
             <FormStyled.NumberInput
@@ -132,7 +133,7 @@ const TutorForm4 = ({ onFinish, initialValues, onClickBack }: any) => {
           </FormStyled.FormItem>
           <FormStyled.FormDescription>
             We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
-            The remaining will be transferred automatically to your bank account every 28 days.
+            You can request to withdraw the remaining amount at the start of each new month.
           </FormStyled.FormDescription>
 
           <FormStyled.FormTitle>Profile description</FormStyled.FormTitle>

@@ -203,7 +203,7 @@ export const aboutForm: FieldType[] = [
                 message: 'Address must not exceed 50 characters.',
             },
         ],
-        children: <Input name='address' placeholder="Phuong 7, Ho Van Hue, Phu Nhuan" />,
+        children: <Input name='address' placeholder="Ho Chi Minh City" />,
     },
 ];
 

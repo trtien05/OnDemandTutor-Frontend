@@ -95,7 +95,7 @@ const Form5 = ({ onFinish,
 
 
           <FormStyled.ReviewContainer>
-            <FormStyled.FormTitle style={{ fontSize: `24px`, color: `${theme.colors.black}`, marginTop: `-12px` }}>Are you sure you can teach at these times?</FormStyled.FormTitle>
+            <FormStyled.FormTitle style={{ fontSize: `24px`, color: `${theme.colors.black}`, marginTop: `-12px` }}>Availability schedule</FormStyled.FormTitle>
             {Object.keys(timeslotForm).map((day) => (
               <div key={day} style={{ width: '30%' }}>
                 <h4 style={{ marginBottom: '3px' }}>{day.charAt(0).toUpperCase() + day.slice(1)}</h4>
@@ -125,7 +125,7 @@ const Form5 = ({ onFinish,
                 checked={timeslotAgreement}
                 defaultChecked={timeslotAgreement}
                 onChange={(e) => onTimeslotAgreementChange(e.target.checked)}
-              >Yes, I'm available at those times.</FormStyled.FormCheckbox>
+              >I confirm my availability for the time slots I have selected.</FormStyled.FormCheckbox>
             </FormStyled.FormItem>
           </FormStyled.ReviewContainer>
         </FormStyled.FormContainer>
