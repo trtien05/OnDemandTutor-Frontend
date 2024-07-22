@@ -312,7 +312,7 @@ const TutorProfile = () => {
                                                             <Flex justify="space-between">
                                                                 <Text>Withdraw salary:</Text>
 
-                                                                <Paragraph>
+                                                                <Paragraph style={{textAlign:`right`}}>
                                                                     {monthlyStat.withdrawRequestStatus === "notRequested"  ?
                                                                         <Text >
                                                                             <Button onClick={onWithdrawClick} type='link'

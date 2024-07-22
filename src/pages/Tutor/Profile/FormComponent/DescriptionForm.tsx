@@ -156,8 +156,8 @@ const DescriptionForm: React.FC<DescriptionFormProps> = (props) => {
                     </FormStyled.NumberInput>
                 </FormStyled.FormItem>
                 <FormStyled.FormDescription>
-                    We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
-                    The remaining will be transferred automatically to your bank account every 28 days.
+                We will charge a 15% commission fee on each lesson. This fee is for the maintenance of the platform and marketing purposes.
+                You can request to withdraw the remaining amount at the start of each new month.
                 </FormStyled.FormDescription>
 
                 <FormStyled.FormItem
