@@ -34,7 +34,6 @@ const ManageSalary = () => {
   const handlePageChange = (page: number) => {
     setPageNo(page - 1);
   };
-  console.log(requestSalary);
   return (
     <div>
       <h2>Manage Salary</h2>
