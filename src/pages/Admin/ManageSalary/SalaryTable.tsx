@@ -2,6 +2,10 @@ import { Table, TableColumnsType, Tag } from 'antd';
 import React from 'react';
 import EditSalary from './EditSalary';
 
+interface Tutor {
+  fullName?: string;
+  email?: string;
+};
 interface Account {
   id: number;
   bankAccountNumber?: string;
@@ -11,6 +15,7 @@ interface Account {
   year?: number;
   amount: number;
   status?: string;
+  tutor?: Tutor;
 };
 
 interface SalaryTableProps {
@@ -64,6 +69,15 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
       sorter: (a, b) => a.amount - b.amount,
     },
     {
+      title: 'Tutor Name',
+      dataIndex: ['tutor', 'fullName'],
+    },
+    {
+      title: 'Email',
+      width: 50,
+      dataIndex: ['tutor', 'email'],
+    },
+    {
       title: 'Status',
       dataIndex: 'status',
       render: (_, record) => (
@@ -81,8 +95,8 @@ const SalaryTable: React.FC<SalaryTableProps> = ({ withdrawRequest, onReload, on
       dataIndex: 'action',
       render: (_: any, record: Account) => (
         <>
-        {record.status === 'PROCESSING' && 
-        <EditSalary record={record} onReload={onReload} />}
+          {record.status === 'PROCESSING' &&
+            <EditSalary record={record} onReload={onReload} />}
         </>
       ),
     }
