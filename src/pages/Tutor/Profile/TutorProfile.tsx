@@ -325,7 +325,7 @@ const TutorProfile = () => {
                                                                             color={'red'}
                                                                         >
                                                                             {monthlyStat.withdrawRequestStatus}
-                                                                        </Tag><br/>
+                                                                        </Tag>
                                                                         <Button onClick={onWithdrawClick} type='link'
                                                                             style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
                                                                             Withdraw again</Button>
