@@ -314,9 +314,9 @@ const TutorProfile = () => {
 
                                                                 <Paragraph>
                                                                     {monthlyStat.withdrawRequestStatus === "notRequested"  ?
-                                                                        <Text>
+                                                                        <Text >
                                                                             <Button onClick={onWithdrawClick} type='link'
-                                                                                style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
+                                                                                style={{ fontSize: `1.6rem`, fontWeight: `500`, padding:`0` }}>
                                                                                 Withdraw</Button>
                                                                         </Text> : monthlyStat.withdrawRequestStatus === 'REJECTED'? 
                                                                         <Text>
@@ -325,9 +325,9 @@ const TutorProfile = () => {
                                                                             color={'red'}
                                                                         >
                                                                             {monthlyStat.withdrawRequestStatus}
-                                                                        </Tag>
+                                                                        </Tag> <br/>
                                                                         <Button onClick={onWithdrawClick} type='link'
-                                                                            style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
+                                                                            style={{ fontSize: `1.6rem`, fontWeight: `500`, padding:`0` }}>
                                                                             Withdraw again</Button>
                                                                     </Text> :
                                                                         <Tag
