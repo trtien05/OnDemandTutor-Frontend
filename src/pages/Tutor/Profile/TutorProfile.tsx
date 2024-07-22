@@ -313,12 +313,23 @@ const TutorProfile = () => {
                                                                 <Text>Withdraw salary:</Text>
 
                                                                 <Paragraph>
-                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" || monthlyStat.withdrawRequestStatus === 'REJECTED'  ?
+                                                                    {monthlyStat.withdrawRequestStatus === "notRequested"  ?
                                                                         <Text>
                                                                             <Button onClick={onWithdrawClick} type='link'
                                                                                 style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
                                                                                 Withdraw</Button>
-                                                                        </Text> :
+                                                                        </Text> : monthlyStat.withdrawRequestStatus === 'REJECTED'? 
+                                                                        <Text>
+                                                                            <Tag
+                                                                            style={{ fontSize: '16px', margin: '0' }}
+                                                                            color={'red'}
+                                                                        >
+                                                                            {monthlyStat.withdrawRequestStatus}
+                                                                        </Tag><br/>
+                                                                        <Button onClick={onWithdrawClick} type='link'
+                                                                            style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
+                                                                            Withdraw again</Button>
+                                                                    </Text> :
                                                                         <Tag
                                                                             style={{ fontSize: '16px', margin: '0' }}
                                                                             color={
