@@ -128,7 +128,7 @@ const SearchTutors = () => {
           <Styled.SearchWrapper>
             <Row justify='center' align='middle' gutter={[20, 20]}>
               <Col xl={8} lg={8} xs={24}>
-                <Styled.StyledSelect allowClear placeholder="Specialties" onChange={handleSpecialtyChange}>
+                <Styled.StyledSelect allowClear placeholder="Subject" onChange={handleSpecialtyChange}>
                   {options.map((option, index) => (
                     <Option key={index} value={option.value}>
                       {option.label}

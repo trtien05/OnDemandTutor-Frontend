@@ -361,7 +361,7 @@ const TutorDetail: React.FC = () => {
                         <Styled.BestTutorStudentImage src={iconPerson} alt="person" />
                         <Styled.BestTutorEducationBachelor>{totalTaughtStudent} students taught</Styled.BestTutorEducationBachelor>
                       </Styled.BestTutorStudent>
-                      <Styled.BestTutorDescription>{tutor?.backgroundDescription}</Styled.BestTutorDescription>
+                      
                     </Styled.TutorDetails>
                   </Col>
                 </Styled.TutorInfoCard>
@@ -462,7 +462,7 @@ const TutorDetail: React.FC = () => {
                               <Styled.Year>{education.startYear} - {education.endYear}</Styled.Year>
                               <Styled.Description>
                                 {education.universityName}<br />
-                                {education.degreeType}
+                                {education.degreeType} of {education.majorName}
                               </Styled.Description>
                             </Styled.Item>
                           ))}

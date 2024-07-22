@@ -256,6 +256,10 @@ const BecomeTutor = () => {
           description: error.response ? error.response.data.message : error.message,
         });
       }
+      finally
+      {
+        setLoading(false);
+      }
     }
 
     next();

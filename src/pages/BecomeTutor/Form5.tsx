@@ -95,7 +95,7 @@ const Form5 = ({ onFinish,
 
 
           <FormStyled.ReviewContainer>
-            <FormStyled.FormTitle style={{ fontSize: `24px`, color: `${theme.colors.black}`, marginTop: `-12px` }}>Availability schedule</FormStyled.FormTitle>
+            <FormStyled.FormTitle style={{ fontSize: `24px`, color: `${theme.colors.black}`, marginTop: `-12px`, width:`100%` }}>Availability schedule</FormStyled.FormTitle>
             {Object.keys(timeslotForm).map((day) => (
               <div key={day} style={{ width: '30%' }}>
                 <h4 style={{ marginBottom: '3px' }}>{day.charAt(0).toUpperCase() + day.slice(1)}</h4>

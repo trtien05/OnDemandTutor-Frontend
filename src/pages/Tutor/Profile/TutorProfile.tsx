@@ -84,7 +84,7 @@ const TutorProfile = () => {
             if (!user || !(role === "TUTOR")) return;
             const response = await getTutorMonthlyStatistic(user.id, month, year);
             if (response) {
-                setMonthlyStat({ ...response.data, month: month, year: year, canGetSalary: salaryState(month, year) });
+                setMonthlyStat({ ...response.data, month: month, year: year, canGetSalary: salaryState(month, year, response.data.totalIncome) });
             }
         } catch (error: any) {
             api.error({
@@ -97,19 +97,19 @@ const TutorProfile = () => {
     }
 
     useEffect(() => {
-        setMonthlyLoading(true);
         fetchMonthlyStat(dayjs().month() + 1, dayjs().year());
-        setMonthlyLoading(false);
     }, [user]);
 
     const onMonthlyStatChange = (date: Dayjs) => {
-        setMonthlyLoading(true);
         fetchMonthlyStat(date.month() + 1, date.year());
-        setMonthlyLoading(false);
     }
 
-    const salaryState = (month: number, year: number) => {
+    const salaryState = (month: number, year: number, salary: number) => {
         if (dayjs().year() === year && dayjs().month() === month - 1) {
+            return false;
+        }
+        console.log(salary);    
+        if (salary === 0) {
             return false;
         }
 
@@ -313,18 +313,17 @@ const TutorProfile = () => {
                                                                 <Text>Withdraw salary:</Text>
 
                                                                 <Paragraph>
-                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" ?
+                                                                    {monthlyStat.withdrawRequestStatus === "notRequested" || monthlyStat.withdrawRequestStatus === 'REJECTED'  ?
                                                                         <Text>
                                                                             <Button onClick={onWithdrawClick} type='link'
                                                                                 style={{ fontSize: `1.6rem`, fontWeight: `500` }}>
-                                                                                Withdraw </Button>
+                                                                                Withdraw</Button>
                                                                         </Text> :
                                                                         <Tag
                                                                             style={{ fontSize: '16px', margin: '0' }}
                                                                             color={
                                                                                 monthlyStat.withdrawRequestStatus === 'DONE' ? 'green' :
-                                                                                    monthlyStat.withdrawRequestStatus === 'PROCESSING' ? 'orange' :
-                                                                                        monthlyStat.withdrawRequestStatus === 'REJECTED' ? 'red' : ''
+                                                                                    monthlyStat.withdrawRequestStatus === 'PROCESSING' ? 'orange' : ''
                                                                             }
                                                                         >
                                                                             {monthlyStat.withdrawRequestStatus}
