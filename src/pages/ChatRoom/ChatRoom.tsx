@@ -331,9 +331,15 @@ const ChatRoom: React.FC = () => {
                       return (
                         <Styled.Message self={isSelf} key={index}>
                           {!isSelf && (
-                            <Link to={`${config.routes.public.searchTutors}/${chat.senderId}`}>
-                              <Avatar size={45} src={chat.senderAvatarUrl} />
-                            </Link>
+                            user?.role === "TUTOR" ? (
+                              <Link to={`${config.routes.public.searchTutors}/${chat.senderId}`}>
+                                <Avatar size={45} src={chat.senderAvatarUrl} />
+                              </Link>
+                            ) : (
+                              user?.role === "STUDENT" && (
+                                <Avatar size={45} src={chat.senderAvatarUrl} />
+                              )
+                            )
                           )}
                           <Styled.MessageData self={isSelf}>
                             <Styled.MessageTime self={isSelf}>
