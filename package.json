@@ -16,7 +16,6 @@
     "@ant-design/plots": "^2.2.5",
     "@esbuild-plugins/node-globals-polyfill": "^0.2.3",
     "@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-    "@reduxjs/toolkit": "^1.9.6",
     "@stomp/stompjs": "^7.0.0",
     "@syncfusion/ej2-base": "^25.2.7",
     "@syncfusion/ej2-react-schedule": "^25.2.7",
