@@ -1,11 +1,13 @@
 import { useDocumentTitle } from '../../hooks';
+import { useTranslation } from 'react-i18next';
 
 const NotFound = () => {
-    useDocumentTitle('Not Found Page | MyTutor');
+    const { t } = useTranslation();
+    useDocumentTitle(`${t('not_found_page_title')} | MyTutor`);
 
-    return <h1>Not Found Page</h1>;
+ return <h1>{t('not_found_page_title')}</h1>;
 };
 
-NotFound.propTypes = {};
+
 
 export default NotFound;

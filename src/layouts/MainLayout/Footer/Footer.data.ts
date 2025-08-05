@@ -37,7 +37,8 @@ export const pages: DataType[] = [
     },
 ];
 
-export const aboutUs: DataType[] = [
+// Define a default/fallback value for aboutUs
+const defaultAboutUs: DataType[] = [
     {
         key: 1,
         title: '028-7300-5588',
@@ -70,3 +71,17 @@ export const socials: DataType[] = [
         label: 'Instagram',
     },
 ];
+
+// Read and parse the environment variable for aboutUs
+let envAboutUs: DataType[] = defaultAboutUs;
+try {
+    if (import.meta.env.VITE_ABOUT_US_DATA) {
+        envAboutUs = JSON.parse(import.meta.env.VITE_ABOUT_US_DATA as string);
+    }
+} catch (error) {
+    console.error('Failed to parse VITE_ABOUT_US_DATA:', error);
+    // The fallback is already set, so we do nothing here
+}
+
+// Export the parsed environment data
+export const aboutUs: DataType[] = envAboutUs;

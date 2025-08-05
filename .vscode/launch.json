@@ -1,0 +1,28 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Chrome",
+            "request": "launch",
+            "type": "chrome",
+            "url": "http://localhost:5173",
+            "webRoot": "${workspaceFolder}"
+        },
+        {
+            "name": "Launch development server",
+            "request": "launch",
+            "type": "node-terminal",
+            "command": "npm run dev",
+            "cwd": "${workspaceFolder}"
+        }
+    ],
+    "compounds": [
+        {
+            "name": "Launch and Debug",
+            "configurations": [
+                "Launch development server",
+                "Launch Chrome"
+            ]
+        }
+    ]
+}

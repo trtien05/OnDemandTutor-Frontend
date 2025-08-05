@@ -1,0 +1,45 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node-version: [24.x]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set Node.js ${{ matrix.node-version }} and Cache Dependencies
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: 'npm'
+          # A more robust cache key that includes OS, Node.js version, and a hash of package-lock.json
+          # This ensures the cache is unique for each combination and invalidates when package-lock.json changes.
+          cache-dependency-path: 'package-lock.json' # This is still the primary dependency for the cache key
+
+      - name: Install dependencies
+        # npm ci will be fast if the cache hits.
+        # If there's a cache miss, it will install dependencies from scratch.
+        run: npm install
+
+      - name: Build slim version
+        run: npm run build
+        env:
+          GENERATE_SOURCEMAP: false
+          USE_COREJS: false
+
+      - name: Upload slim version
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.node-version }}-mytutor
+          path: dist/

@@ -113,7 +113,7 @@ const Footer = () => {
                         <Col lg={24} md={24} sm={24} xs={24}>
                             <Styled.FooterCopyright>
                                 <Text>
-                                    @2024 Copyright All Rights Reserved
+                                    @2025 Copyright All Rights Reserved
                                 </Text>
                                 <Text>
                                     Privacy Policy
